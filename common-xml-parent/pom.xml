@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.bremersee</groupId>
+    <artifactId>common-parent</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>common-xml-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Common Xml Parent Module</name>
+  <description>Common XML Processing Project</description>
+  <inceptionYear>2020</inceptionYear>
+  <url>https://github.com/bremersee/common-xml</url>
+
+  <modules>
+    <module>common-xml-modelling</module>
+    <module>common-xml</module>
+    <module>common-xml-spring-web</module>
+    <module>common-xml-spring-webflux</module>
+    <module>common-xml-spring-boot-autoconfigure</module>
+    <module>common-xml-spring-boot-starter</module>
+    <module>common-xml-spring-boot-web-starter</module>
+    <module>common-xml-spring-boot-webflux-starter</module>
+  </modules>
+
+  <properties>
+    <github.repo>common-xml</github.repo>
+    <!--suppress UnresolvedMavenProperty -->
+    <gh-pages-staging-dir>${maven.multiModuleProjectDirectory}/target/staging</gh-pages-staging-dir>
+  </properties>
+
+  <developers>
+    <developer>
+      <id>bremersee</id>
+      <name>Christian Bremer</name>
+      <organization>bremersee.org</organization>
+      <organizationUrl>https://bremersee.org</organizationUrl>
+      <email>christian@bremersee.org</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <organization>
+    <name>bremersee.org</name>
+    <url>https://bremersee.org</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/bremersee/common-xml</url>
+    <connection>scm:git:git://github.com/bremersee/common-xml.git</connection>
+    <developerConnection>scm:git:git@github.com:bremersee/common-xml.git</developerConnection>
+  </scm>
+
+  <issueManagement>
+    <url>https://github.com/bremersee/common-xml/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>bremersee-sites</id>
+      <url>
+        dav:https://nexus.bremersee.org/repository/maven-sites/common-xml/${project.version}
+      </url>
+    </site>
+  </distributionManagement>
+
+</project>
