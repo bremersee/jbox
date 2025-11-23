@@ -24,6 +24,7 @@
     <module>acl-parent</module>
     <module>geojson-parent</module>
     <module>garmin-model</module>
+    <module>gpx-model</module>
   </modules>
 
   <properties>
