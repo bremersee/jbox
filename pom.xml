@@ -20,6 +20,7 @@
     <module>common-exception-parent</module>
     <module>comparator</module>
     <module>pagebuilder</module>
+    <module>spring-integration-parent</module>
   </modules>
 
   <properties>
