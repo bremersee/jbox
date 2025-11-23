@@ -19,6 +19,7 @@
     <module>common-xml-parent</module>
     <module>common-exception-parent</module>
     <module>comparator</module>
+    <module>pagebuilder</module>
   </modules>
 
   <properties>
@@ -30,7 +31,7 @@
          if you have a multi module project or to '${project.build.directory}/staging' if you have
          a normal maven project.
     -->
-    <github.repo>common-parent</github.repo>
+    <github.repo>jbox</github.repo>
     <!--suppress UnresolvedMavenProperty -->
     <gh-pages-staging-dir>${maven.multiModuleProjectDirectory}/target/staging</gh-pages-staging-dir>
 
@@ -139,13 +140,13 @@
   </licenses>
 
   <scm>
-    <url>https://github.com/bremersee/common-parent</url>
-    <connection>scm:git:git://github.com/bremersee/common-parent.git</connection>
-    <developerConnection>scm:git:git@github.com:bremersee/common-parent.git</developerConnection>
+    <url>https://github.com/bremersee/jbox</url>
+    <connection>scm:git:git://github.com/bremersee/jbox.git</connection>
+    <developerConnection>scm:git:git@github.com:bremersee/jbox.git</developerConnection>
   </scm>
 
   <issueManagement>
-    <url>https://github.com/bremersee/common-parent/issues</url>
+    <url>https://github.com/bremersee/jbox/issues</url>
     <system>GitHub Issues</system>
   </issueManagement>
 

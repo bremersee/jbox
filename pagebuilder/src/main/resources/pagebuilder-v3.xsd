@@ -1,0 +1,89 @@
+<?xml version="1.0" standalone="yes"?>
+<!--+
+    | Copyright 2025 Christian Bremer.
+    |
+    | Licensed under the Apache License, Version 2.0 (the "License");
+    | you may not use this file except in compliance with the License.
+    | You may obtain a copy of the License at
+    |
+    |      http://www.apache.org/licenses/LICENSE-2.0
+    |
+    | Unless required by applicable law or agreed to in writing, software
+    | distributed under the License is distributed on an "AS IS" BASIS,
+    | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    | See the License for the specific language governing permissions and
+    | limitations under the License.
+    +-->
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://bremersee.org/xmlschemas/pagebuilder/v3" xmlns:tns="http://bremersee.org/xmlschemas/pagebuilder/v3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://bremersee.org/xmlschemas/comparator/v4">
+
+  <xs:import namespace="http://bremersee.org/xmlschemas/comparator/v4" schemaLocation="http://bremersee.github.io/xmlschemas/comparator-v4.xsd"/>
+
+  <xs:element name="page" type="tns:pageType"/>
+
+  <xs:element name="slice" type="tns:sliceType"/>
+
+  <xs:complexType name="pageType">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractPageType">
+        <xs:sequence>
+          <xs:element name="content" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPageType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractSliceType">
+        <xs:sequence>
+          <xs:element name="totalElements" type="xs:long"/>
+          <xs:element name="totalPages" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSliceType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractChunkType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractChunkType" abstract="true">
+    <xs:sequence>
+      <xs:element name="contentPresent" type="xs:boolean"/>
+      <xs:element name="first" type="xs:boolean"/>
+      <xs:element name="last" type="xs:boolean"/>
+      <xs:element name="nextAvailable" type="xs:boolean"/>
+      <xs:element name="number" type="xs:int"/>
+      <xs:element name="numberOfElements" type="xs:int"/>
+      <xs:element name="previousAvailable" type="xs:boolean"/>
+      <xs:element name="size" type="xs:int"/>
+      <xs:element ref="ns1:sortOrder"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="sliceType">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractSliceType">
+        <xs:sequence>
+          <xs:element name="content" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
