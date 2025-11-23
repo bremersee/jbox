@@ -30,11 +30,6 @@
     <module>common-exception-spring-boot-webflux-starter</module>
   </modules>
 
-  <properties>
-    <!-- see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
-    <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine>
-  </properties>
-
   <developers>
     <developer>
       <id>bremersee</id>

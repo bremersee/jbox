@@ -22,6 +22,7 @@
     <module>pagebuilder</module>
     <module>spring-integration-parent</module>
     <module>acl-parent</module>
+    <module>geojson-parent</module>
   </modules>
 
   <properties>
@@ -41,6 +42,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>17</java.version>
+
+    <!-- see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
+    <argLine>-Dorg.bremersee.test.executor=BUILD_SYSTEM</argLine> <!-- NOT_SPECIFIED -->
 
     <product.vendor>bremersee.org</product.vendor>
 
