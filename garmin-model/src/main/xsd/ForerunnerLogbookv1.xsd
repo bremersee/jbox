@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+
+<xsd:schema xmlns="http://www.garmin.com/xmlschemas/ForerunnerLogbook"
+		    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://www.garmin.com/xmlschemas/ForerunnerLogbook"
+			elementFormDefault="qualified">
+
+	<xsd:element name="History" type="History_t" />
+
+	<xsd:complexType name="History_t">
+		<xsd:sequence>
+			<xsd:element name="Run"
+			             type="Run_t"
+			             minOccurs="1"
+			             maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:nonNegativeInteger" fixed="1" />
+	</xsd:complexType>
+
+	<xsd:complexType name="Run_t">
+		<xsd:sequence>
+			<xsd:element name="Notes" type="xsd:string" />
+			<xsd:element name="Lap"
+			             type="Lap_t"
+			             minOccurs="1"
+			             maxOccurs="unbounded" />
+			<xsd:element name="Track"
+						 type="Track_t"
+						 minOccurs="0"
+						 maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Lap_t">
+		<xsd:sequence>
+			<xsd:element name="StartTime" type="xsd:dateTime" />
+			<xsd:element name="Duration" type="xsd:duration" />
+			<xsd:element name="BeginPosition"
+						 type="Position_t"
+						 minOccurs="0"
+						 maxOccurs="1" />
+			<xsd:element name="EndPosition"
+						 type="Position_t"
+						 minOccurs="0"
+						 maxOccurs="1" />
+			<xsd:element name="Length" type="Meters_t" />
+			<xsd:element name="Calories" type="xsd:nonNegativeInteger" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Track_t">
+		<xsd:sequence>
+			<xsd:element name="Trackpoint"
+			             type="Trackpoint_t"
+			             minOccurs="1"
+			             maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Trackpoint_t">
+		<xsd:sequence>
+			<xsd:element name="Position" type="Position_t" />
+			<xsd:element name="Time"
+						 type="xsd:dateTime"
+						 minOccurs="0"
+						 maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Position_t">
+		<xsd:sequence>
+			<xsd:element name="Latitude" type="Degrees_t" />
+			<xsd:element name="Longitude" type="Degrees_t" />
+			<xsd:element name="Altitude"
+						 type="Meters_t"
+						 minOccurs="0"
+						 maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="Meters_t">
+		<xsd:union memberTypes="xsd:decimal"/>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Degrees_t">
+		<xsd:union memberTypes="xsd:decimal"/>
+	</xsd:simpleType>
+
+
+</xsd:schema>

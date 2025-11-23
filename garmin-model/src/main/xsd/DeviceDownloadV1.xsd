@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+
+<xsd:schema xmlns="http://www.garmin.com/xmlschemas/DeviceDownload/v1"
+		    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://www.garmin.com/xmlschemas/DeviceDownload/v1"
+			elementFormDefault="qualified">
+
+	<xsd:element name="DeviceDownload" type="DeviceDownload_t">
+		<xsd:annotation><xsd:documentation>
+        The DeviceDownload element is the root node of the XmlDataDownload
+        parameter of the Garmin Browser Plugin StartDownloadData method.
+        </xsd:documentation></xsd:annotation>
+	</xsd:element>
+	
+	<xsd:complexType name="DeviceDownload_t">
+        <xsd:annotation><xsd:documentation>
+        A list of files to be downloaded and placed on the unit.
+        </xsd:documentation></xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="File" type="File_t" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="File_t">
+        <xsd:annotation><xsd:documentation>
+        Information about a file that can be downloaded. The Destination should
+        not include the drive letter of the mass storage device.
+        </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Source" type="Source_t" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:sequence>
+		<xsd:attribute name="Destination" type="xsd:string" use="required" >
+			<xsd:annotation><xsd:documentation>
+			The local path of the file on the Garmin Device, relative to the root of
+      the device. For devices which do not support mass storage format,
+      use the name of the file.
+			</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="IsRegionPackage" type="xsd:boolean" use="optional">
+			<xsd:annotation><xsd:documentation>
+			Set to true if the source is known to be a region
+			package file containing binary data for one or more memory regions.
+			</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="RegionId" type="xsd:byte" use="optional">
+			<xsd:annotation><xsd:documentation>
+			Set to true if the data does not come in the form of a region package
+			file but must be placed on a specific memory region. For example, a
+			gpi file contains points of interest which must be programmed to region
+			46 on legacy Garmin-Mode devices which do not present themselves as
+			mass storage devices.
+			</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
+    <xsd:attribute name="ContentMD5" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          The MD5 checksum as a hexadeximal string for the destination file after
+          all source components are concatenated. Same as HTTP/1.1 Content-MD5
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="ContentLength" type="xsd:unsignedLong" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          The byte count of the entire file after all source components are
+          contatenated. Same as HTTP/1.1 Content-Length
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="ContentType" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          MIME type of downloaded content. Same a HTTP/1.1 Content-Type
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="ContentEncoding" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          Content Encoding such a gzip. Sams as HTTP/1.1 Content-Encoding
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+
+  </xsd:complexType>
+
+  <xsd:complexType name="Source_t">
+    <xsd:attribute name="Location" type="xsd:anyURI" use="required">
+      <xsd:annotation>
+        <xsd:documentation>
+          The absolute path of a binary source file on the world wide web.
+          If a download consists of more than one source, the source files
+          are concatenated when the file is transferred to the destination.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="MD5Sum" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          The MD5 checksum as a hexadeximal string. If the download has
+          been split into multiple source components, this message digest
+          is the digest of only the bytes of this component.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="ByteCount" type="xsd:unsignedLong" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          If the byte counts for all components of a download are specified,
+          progress can and will be reported for the download as a whole,
+          instead of progress being reported for each individual component.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+
+  </xsd:complexType>
+	
+</xsd:schema>
+
+

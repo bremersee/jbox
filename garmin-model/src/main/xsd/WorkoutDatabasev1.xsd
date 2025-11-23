@@ -1,0 +1,329 @@
+<?xml version="1.0" ?>
+<xsd:schema
+    xmlns="http://www.garmin.com/xmlschemas/WorkoutDatabase/v1"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.garmin.com/xmlschemas/WorkoutDatabase/v1"
+    xmlns:wd1="http://www.garmin.com/xmlschemas/WorkoutDatabase/v1"
+    elementFormDefault="qualified">
+
+    <xsd:annotation><xsd:documentation>
+    This schema defines the Garmin workout file format.
+    </xsd:documentation></xsd:annotation>
+
+	<xsd:element name="WorkoutDatabase" type="WorkoutDatabase_t">
+      <xsd:annotation><xsd:documentation>
+      The workouts stored in a workout file should have unique names.
+      </xsd:documentation></xsd:annotation>
+      <xsd:unique name="WorkoutNameMustBeUnique">
+        <xsd:selector xpath="wd1:Workout"/>
+        <xsd:field xpath="wd1:Name"/>
+      </xsd:unique>
+    </xsd:element>
+
+    <xsd:complexType name="WorkoutDatabase_t">
+      <xsd:sequence>
+
+        <xsd:element name="Running" type="Folder_t">
+          <xsd:unique name="RunningSubFolderNamesMustBeUnique">
+            <xsd:selector xpath="wd1:Folder"/>
+            <xsd:field xpath="@Name"/>
+          </xsd:unique>
+        </xsd:element>
+
+        <xsd:element name="Biking" type="Folder_t">
+          <xsd:unique name="BikingSubFolderNamesMustBeUnique">
+            <xsd:selector xpath="wd1:Folder"/>
+            <xsd:field xpath="@Name"/>
+          </xsd:unique>
+        </xsd:element>
+
+        <xsd:element name="Other" type="Folder_t">
+          <xsd:unique name="OtherSubFolderNamesMustBeUnique">
+            <xsd:selector xpath="wd1:Folder"/>
+            <xsd:field xpath="@Name"/>
+          </xsd:unique>
+        </xsd:element>
+
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Folder_t">
+      <xsd:sequence>
+        <xsd:element name="Folder" type="Folder_t" minOccurs="0" maxOccurs="unbounded">
+          <xsd:unique name="SubFolderNamesMustBeUnique">
+            <xsd:selector xpath="wd1:Folder"/>
+            <xsd:field xpath="@Name"/>
+          </xsd:unique>
+        </xsd:element>
+        <xsd:element name="Workout" type="Workout_t" minOccurs="0" maxOccurs="unbounded">
+          <xsd:annotation><xsd:documentation>
+          The StepId should be unique within a workout and should not
+          exceed 20. This restricts the number of steps in a workout to 20.
+          </xsd:documentation></xsd:annotation>
+          <xsd:unique name="StepIdMustBeUnique">
+            <xsd:selector xpath=".//*"/>
+            <xsd:field xpath="wd1:StepId"/>
+          </xsd:unique>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="Name" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="Workout_t">
+      <xsd:sequence>
+        <xsd:element name="Name" type="RestrictedToken_t" />
+        <xsd:element name="Step" type="AbstractStep_t" maxOccurs="unbounded"/>
+        <xsd:element name="ScheduledOn" type="xsd:date" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="Notes" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="RestrictedToken_t">
+      <xsd:restriction base="xsd:token">
+        <xsd:minLength value="1"/>
+        <xsd:maxLength value="15"/>	
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="AbstractStep_t" abstract="true">
+      <xsd:sequence>
+        <xsd:element name="StepId" type="StepId_t"/>
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="StepId_t">
+      <xsd:restriction base="xsd:positiveInteger">
+        <xsd:maxInclusive value="20"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Repeat_t">
+      <xsd:complexContent>
+        <xsd:extension base = "AbstractStep_t">
+          <xsd:sequence>
+            <xsd:element name="Repetitions" type="Repetitions_t"/>
+            <xsd:element name="Child" type="AbstractStep_t" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="Repetitions_t">
+      <xsd:restriction base="xsd:positiveInteger">
+        <xsd:minInclusive value="2"/>
+        <xsd:maxInclusive value="99"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Step_t">
+      <xsd:complexContent>
+        <xsd:extension base = "AbstractStep_t">
+          <xsd:sequence>
+            <xsd:element name="Name" type="RestrictedToken_t" minOccurs="0"/>
+            <xsd:element name="Duration" type="Duration_t" />
+            <xsd:element name="Intensity" type="Intensity_t" />
+            <xsd:element name="Target" type="Target_t"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Duration_t" abstract="true">
+    </xsd:complexType>
+
+    <xsd:simpleType name="Intensity_t">
+      <xsd:restriction base="xsd:token">
+        <xsd:enumeration value="Active"/>
+        <xsd:enumeration value="Resting"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Target_t" abstract="true">
+    </xsd:complexType>
+
+    <xsd:complexType name="Time_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Duration_t">
+          <xsd:sequence>
+   	        <xsd:element name="Seconds" type="xsd:unsignedShort"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Distance_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Duration_t">
+          <xsd:sequence>
+            <xsd:element name="Meters" type="xsd:unsignedShort" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="HeartRateAbove_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Duration_t">
+          <xsd:sequence>
+            <xsd:element name="HeartRate" type="HeartRateValue_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="HeartRateValue_t" abstract="true">
+    </xsd:complexType>
+
+    <xsd:complexType name="HeartRateBelow_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Duration_t">
+          <xsd:sequence>
+            <xsd:element name="HeartRate" type="HeartRateValue_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="CaloriesBurned_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Duration_t">
+          <xsd:sequence>
+            <xsd:element name="Calories" type="xsd:unsignedShort" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="UserInitiated_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Duration_t">
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Speed_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Target_t">
+          <xsd:sequence>
+            <xsd:element name="SpeedZone" type="Zone_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="HeartRate_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Target_t">
+          <xsd:sequence>
+            <xsd:element name="HeartRateZone" type="Zone_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="None_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Target_t">
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Zone_t" abstract="true">
+    </xsd:complexType>
+
+    <xsd:complexType name="PredefinedSpeedZone_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Zone_t">
+          <xsd:sequence>
+            <xsd:element name="Number" type="SpeedZoneNumbers_t"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="SpeedZoneNumbers_t">
+      <xsd:restriction base="xsd:positiveInteger">
+        <xsd:maxInclusive value="10"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="CustomSpeedZone_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Zone_t">
+          <xsd:sequence>
+            <xsd:element name="ViewAs" type="SpeedType_t" />
+            <xsd:element name="LowInMetersPerSecond" type="SpeedInMetersPerSecond_t" />
+            <xsd:element name="HighInMetersPerSecond" type="SpeedInMetersPerSecond_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="SpeedInMetersPerSecond_t">
+      <xsd:restriction base="xsd:double">
+        <xsd:minExclusive value="0"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SpeedType_t">
+      <xsd:restriction base="xsd:token">
+        <xsd:enumeration value="Pace"/>
+        <xsd:enumeration value="Speed"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="PredefinedHeartRateZone_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Zone_t">
+          <xsd:sequence>
+            <xsd:element name="Number" type="HeartRateZoneNumbers_t"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="HeartRateZoneNumbers_t">
+      <xsd:restriction base="xsd:positiveInteger">
+        <xsd:maxInclusive value="5"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="CustomHeartRateZone_t">
+      <xsd:complexContent>
+        <xsd:extension base = "Zone_t">
+          <xsd:sequence>
+	        <xsd:element name="Low" type="HeartRateValue_t" />
+	        <xsd:element name="High" type="HeartRateValue_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="HeartRateInBeatsPerMinute_t">
+      <xsd:complexContent>
+        <xsd:extension base = "HeartRateValue_t">
+          <xsd:sequence>
+          <xsd:element name="Value" type="xsd:unsignedByte" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="HeartRateAsPercentOfMax_t">
+      <xsd:complexContent>
+        <xsd:extension base = "HeartRateValue_t">
+          <xsd:sequence>
+          <xsd:element name="Value" type="PercentOfMax_t" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="PercentOfMax_t">
+      <xsd:restriction base="xsd:unsignedByte">
+        <xsd:minInclusive value="0"/>
+        <xsd:maxInclusive value="100"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

@@ -23,6 +23,7 @@
     <module>spring-integration-parent</module>
     <module>acl-parent</module>
     <module>geojson-parent</module>
+    <module>garmin-model</module>
   </modules>
 
   <properties>

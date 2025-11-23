@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Glenn Peterman (Garmin) -->
+<xs:schema xmlns="http://www.garmin.com/xmlschemas/GarminTextTranslation/v1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.garmin.com/xmlschemas/GarminTextTranslation/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="gtt" type="translationType"/>
+	<xs:complexType name="translationType">
+		<xs:annotation>
+			<xs:documentation>Holds the translated text package</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="hdr" type="hdrType"/>
+			<xs:element name="str" type="strType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Element of the string table.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="hdrType">
+		<xs:annotation>
+			<xs:documentation>Provides information about the translated text package.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lang" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The language of the translated text</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="desc" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The description of the language to be used when selecting the language on the unit.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type">
+				<xs:annotation>
+					<xs:documentation>The Type of translations that are present in this file.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Primary"/>
+						<xs:enumeration value="User"/>
+						<xs:enumeration value="Guidance"/>
+						<xs:enumeration value="Gdnc"/>
+						<xs:enumeration value="Traffic"/>
+						<xs:enumeration value="Trf"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="sort" type="xs:nonNegativeInteger">
+				<xs:annotation>
+					<xs:documentation>Presently not used, set to 0</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cpage" type="xs:positiveInteger">
+				<xs:annotation>
+					<xs:documentation>The code page that should be used to render the text in this file. Presently should be set to 1252</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pnum" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Garmin Part Number of the form 006-D0xxx-xx</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ver" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Version of the text translation file. Should be of the form 1.23</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="strType">
+		<xs:annotation>
+			<xs:documentation>Contains a single translated string and its unique identifier.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tag" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>A unique identifier for the translated string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="txt" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The translated string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
