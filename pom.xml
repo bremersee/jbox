@@ -18,6 +18,7 @@
     <module>common-service-parent</module>
     <module>common-xml-parent</module>
     <module>common-exception-parent</module>
+    <module>comparator</module>
   </modules>
 
   <properties>
