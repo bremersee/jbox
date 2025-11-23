@@ -21,6 +21,7 @@
     <module>comparator</module>
     <module>pagebuilder</module>
     <module>spring-integration-parent</module>
+    <module>acl-parent</module>
   </modules>
 
   <properties>
