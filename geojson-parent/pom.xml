@@ -28,10 +28,6 @@
     <module>geojson-spring-boot-autoconfigure</module>
   </modules>
 
-  <properties>
-    <jts.version>1.20.0</jts.version>
-  </properties>
-
   <developers>
     <developer>
       <id>bremersee</id>
@@ -60,11 +56,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.locationtech.jts</groupId>
-        <artifactId>jts-core</artifactId>
-        <version>${jts.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-data-mongodb</artifactId>
