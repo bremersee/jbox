@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestApiExceptionParserImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Common Exception Spring Web</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.exception</a> &gt; <span class="el_source">RestApiExceptionParserImpl.java</span></div><h1>RestApiExceptionParserImpl.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.exception;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.springframework.util.StringUtils.hasText;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.bremersee.exception.model.RestApiException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.util.ObjectUtils;
+
+/**
+ * The default implementation of a http response parser that creates a {@link RestApiException}.
+ *
+ * @author Christian Bremer
+ */
+<span class="fc" id="L43">@Slf4j</span>
+public class RestApiExceptionParserImpl implements RestApiExceptionParser {
+
+  private final ObjectMapper objectMapper;
+
+  private final XmlMapper xmlMapper;
+
+  private final Charset defaultCharset;
+
+  /**
+   * Instantiates a new rest api exception parser.
+   */
+  public RestApiExceptionParserImpl() {
+<span class="fc" id="L56">    this(new Jackson2ObjectMapperBuilder());</span>
+<span class="fc" id="L57">  }</span>
+
+  /**
+   * Instantiates a new rest api exception parser.
+   *
+   * @param defaultCharset the default charset
+   */
+  public RestApiExceptionParserImpl(Charset defaultCharset) {
+<span class="fc" id="L65">    this(new Jackson2ObjectMapperBuilder(), defaultCharset);</span>
+<span class="fc" id="L66">  }</span>
+
+  /**
+   * Instantiates a new rest api exception parser.
+   *
+   * @param objectMapperBuilder the object mapper builder
+   */
+  public RestApiExceptionParserImpl(Jackson2ObjectMapperBuilder objectMapperBuilder) {
+<span class="fc" id="L74">    this(objectMapperBuilder.build(), objectMapperBuilder.createXmlMapper(true).build());</span>
+<span class="fc" id="L75">  }</span>
+
+  /**
+   * Instantiates a new rest api exception parser.
+   *
+   * @param objectMapperBuilder the object mapper builder
+   * @param charset the charset
+   */
+  public RestApiExceptionParserImpl(
+      Jackson2ObjectMapperBuilder objectMapperBuilder,
+      Charset charset) {
+<span class="fc" id="L86">    this(objectMapperBuilder.build(), objectMapperBuilder.createXmlMapper(true).build(), charset);</span>
+<span class="fc" id="L87">  }</span>
+
+  /**
+   * Instantiates a new rest api exception parser.
+   *
+   * @param objectMapper the object mapper
+   * @param xmlMapper the xml mapper
+   */
+  public RestApiExceptionParserImpl(ObjectMapper objectMapper, XmlMapper xmlMapper) {
+<span class="fc" id="L96">    this(objectMapper, xmlMapper, null);</span>
+<span class="fc" id="L97">  }</span>
+
+  /**
+   * Instantiates a new rest api exception parser.
+   *
+   * @param objectMapper the object mapper
+   * @param xmlMapper the xml mapper
+   * @param defaultCharset the default charset
+   */
+  public RestApiExceptionParserImpl(
+      ObjectMapper objectMapper,
+      XmlMapper xmlMapper,
+<span class="fc" id="L109">      Charset defaultCharset) {</span>
+<span class="fc" id="L110">    this.objectMapper = objectMapper;</span>
+<span class="fc" id="L111">    this.xmlMapper = xmlMapper;</span>
+<span class="fc" id="L112">    this.defaultCharset = Optional.ofNullable(defaultCharset)</span>
+<span class="fc" id="L113">        .orElse(StandardCharsets.UTF_8);</span>
+<span class="fc" id="L114">  }</span>
+
+  private ObjectMapper getJsonMapper() {
+<span class="fc" id="L117">    return objectMapper;</span>
+  }
+
+  private XmlMapper getXmlMapper() {
+<span class="fc" id="L121">    return xmlMapper;</span>
+  }
+
+  /**
+   * Gets object mapper.
+   *
+   * @param responseType the response type
+   * @return the object mapper
+   */
+  Optional&lt;ObjectMapper&gt; getObjectMapper(RestApiResponseType responseType) {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">    if (responseType == RestApiResponseType.JSON) {</span>
+<span class="fc" id="L132">      return Optional.of(getJsonMapper());</span>
+    }
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (responseType == RestApiResponseType.XML) {</span>
+<span class="fc" id="L135">      return Optional.of(getXmlMapper());</span>
+    }
+<span class="fc" id="L137">    return Optional.empty();</span>
+  }
+
+  /**
+   * Gets default charset.
+   *
+   * @return the default charset
+   */
+  protected Charset getDefaultCharset() {
+<span class="fc" id="L146">    return defaultCharset;</span>
+  }
+
+  @Override
+  public RestApiException parseException(
+      byte[] response,
+      HttpStatusCode httpStatus,
+      HttpHeaders headers) {
+
+    String responseStr;
+<span class="pc bpc" id="L156" title="1 of 4 branches missed.">    if (isNull(response) || response.length == 0) {</span>
+<span class="fc" id="L157">      responseStr = null;</span>
+    } else {
+<span class="fc" id="L159">      responseStr = new String(response, getContentTypeCharset(headers.getContentType()));</span>
+    }
+<span class="fc" id="L161">    return parseException(responseStr, httpStatus, headers);</span>
+  }
+
+  @Override
+  public RestApiException parseException(
+      String response,
+      HttpStatusCode httpStatus,
+      HttpHeaders headers) {
+
+<span class="fc" id="L170">    RestApiResponseType responseType = RestApiResponseType</span>
+<span class="fc" id="L171">        .detectByContentType(headers.getContentType());</span>
+<span class="fc" id="L172">    return Optional.ofNullable(response)</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        .filter(res -&gt; !res.isBlank())</span>
+<span class="fc" id="L174">        .flatMap(res -&gt; getObjectMapper(responseType).flatMap(om -&gt; {</span>
+          try {
+<span class="fc" id="L176">            return Optional.of(om.readValue(res, RestApiException.class));</span>
+<span class="fc" id="L177">          } catch (Exception ignored) {</span>
+<span class="fc" id="L178">            log.debug(&quot;Response is not a 'RestApiException' as {}.&quot;, responseType.name());</span>
+<span class="fc" id="L179">            return Optional.empty();</span>
+          }
+        }))
+<span class="fc" id="L182">        .map(restApiException -&gt; {</span>
+<span class="fc" id="L183">          restApiException.setStatus(httpStatus.value());</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">          if ((httpStatus instanceof HttpStatus status)</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">              &amp;&amp; ObjectUtils.isEmpty(restApiException.getError())) {</span>
+<span class="nc" id="L186">            restApiException.setError(status.getReasonPhrase());</span>
+          }
+<span class="fc" id="L188">          return restApiException;</span>
+        })
+<span class="fc" id="L190">        .orElseGet(() -&gt; getRestApiExceptionFromHeaders(response, httpStatus, headers));</span>
+  }
+
+  /**
+   * Gets rest api exception from headers.
+   *
+   * @param response the response
+   * @param httpStatus the http status
+   * @param httpHeaders the http headers
+   * @return the rest api exception from headers
+   */
+  protected RestApiException getRestApiExceptionFromHeaders(
+      String response,
+      HttpStatusCode httpStatus,
+      HttpHeaders httpHeaders) {
+
+<span class="fc" id="L206">    RestApiException restApiException = new RestApiException();</span>
+
+<span class="fc" id="L208">    String tmp = httpHeaders.getFirst(RestApiExceptionConstants.ID_HEADER_NAME);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">    if (hasText(tmp)) {</span>
+<span class="fc" id="L210">      restApiException.setId(tmp);</span>
+    }
+
+<span class="fc" id="L213">    tmp = httpHeaders.getFirst(RestApiExceptionConstants.TIMESTAMP_HEADER_NAME);</span>
+<span class="fc" id="L214">    restApiException.setTimestamp(parseErrorTimestamp(tmp));</span>
+
+<span class="fc" id="L216">    tmp = httpHeaders.getFirst(RestApiExceptionConstants.CODE_HEADER_NAME);</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (hasText(tmp)) {</span>
+<span class="fc" id="L218">      restApiException.setErrorCode(tmp);</span>
+
+<span class="fc" id="L220">      tmp = httpHeaders.getFirst(RestApiExceptionConstants.CODE_INHERITED_HEADER_NAME);</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">      if (hasText(tmp)) {</span>
+<span class="fc" id="L222">        restApiException.setErrorCodeInherited(Boolean.valueOf(tmp));</span>
+      }
+    }
+
+<span class="fc" id="L226">    tmp = httpHeaders.getFirst(RestApiExceptionConstants.MESSAGE_HEADER_NAME);</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">    if (hasText(tmp)) {</span>
+<span class="fc" id="L228">      restApiException.setMessage(tmp);</span>
+    } else {
+<span class="fc" id="L230">      restApiException.setMessage(response);</span>
+    }
+
+<span class="fc" id="L233">    tmp = httpHeaders.getFirst(RestApiExceptionConstants.EXCEPTION_HEADER_NAME);</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">    if (hasText(tmp)) {</span>
+<span class="fc" id="L235">      restApiException.setException(tmp);</span>
+    }
+
+<span class="fc" id="L238">    tmp = httpHeaders.getFirst(RestApiExceptionConstants.APPLICATION_HEADER_NAME);</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">    if (hasText(tmp)) {</span>
+<span class="fc" id="L240">      restApiException.setApplication(tmp);</span>
+    }
+
+<span class="fc" id="L243">    tmp = httpHeaders.getFirst(RestApiExceptionConstants.PATH_HEADER_NAME);</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">    if (hasText(tmp)) {</span>
+<span class="fc" id="L245">      restApiException.setPath(tmp);</span>
+    }
+
+<span class="fc" id="L248">    restApiException.setStatus(httpStatus.value());</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">    if (httpStatus instanceof HttpStatus status) {</span>
+<span class="fc" id="L250">      restApiException.setError(status.getReasonPhrase());</span>
+    }
+
+<span class="fc" id="L253">    return restApiException;</span>
+  }
+
+  /**
+   * Gets content type charset.
+   *
+   * @param contentType the content type
+   * @return the content type charset
+   */
+  protected Charset getContentTypeCharset(MediaType contentType) {
+<span class="fc" id="L263">    return Optional.ofNullable(contentType)</span>
+<span class="fc" id="L264">        .map(ct -&gt; {</span>
+<span class="fc" id="L265">          RestApiResponseType responseType = RestApiResponseType.detectByContentType(ct);</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">          if (RestApiResponseType.JSON == responseType) {</span>
+<span class="fc" id="L267">            return StandardCharsets.UTF_8;</span>
+          }
+<span class="fc" id="L269">          Charset charset = ct.getCharset();</span>
+<span class="pc bpc" id="L270" title="1 of 4 branches missed.">          if (isNull(charset) &amp;&amp; RestApiResponseType.XML == responseType) {</span>
+<span class="fc" id="L271">            return StandardCharsets.UTF_8;</span>
+          }
+<span class="fc" id="L273">          return charset;</span>
+        })
+<span class="fc" id="L275">        .orElseGet(this::getDefaultCharset);</span>
+  }
+
+  /**
+   * Parse the 'timestamp' header value.
+   *
+   * @param value the 'timestamp' header value
+   * @return the timestamp
+   */
+  protected OffsetDateTime parseErrorTimestamp(String value) {
+<span class="fc" id="L285">    OffsetDateTime time = null;</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">    if (nonNull(value)) {</span>
+      try {
+<span class="fc" id="L288">        time = OffsetDateTime.parse(value, RestApiExceptionConstants.TIMESTAMP_FORMATTER);</span>
+<span class="fc" id="L289">      } catch (Exception e) {</span>
+<span class="fc" id="L290">        log.debug(&quot;Parsing timestamp failed, timestamp = '{}'.&quot;, value);</span>
+<span class="fc" id="L291">      }</span>
+    }
+<span class="fc" id="L293">    return time;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
