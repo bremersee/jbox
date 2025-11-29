@@ -64,7 +64,6 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
   @JsonProperty(BBOX)
   private final double[] bbox;
 
-  @SuppressWarnings("DefaultAnnotationParam")
   @Schema(description = "GeoJSON", implementation = org.bremersee.geojson.model.Geometry.class)
   @JsonSerialize(using = JacksonGeometrySerializer.class)
   @JsonInclude(Include.ALWAYS)

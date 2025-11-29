@@ -3,7 +3,7 @@ pipeline {
     label 'maven'
   }
   environment {
-    CODECOV_TOKEN = credentials('common-xml-codecov-token')
+    CODECOV_TOKEN = credentials('jbox-codecov-token')
     TEST = true
     DEPLOY = true
     SNAPSHOT_SITE = true
@@ -29,7 +29,7 @@ pipeline {
         environment name: 'TEST', value: 'true'
       }
       steps {
-        sh 'mvn -B clean test'
+        sh 'mvn -B -P build-system clean test'
       }
       post {
         always {
@@ -53,7 +53,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -B -P deploy clean deploy'
+        sh 'mvn -B -P build-system,deploy deploy'
       }
     }
     stage('Snapshot Site') {
@@ -68,7 +68,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -B clean site-deploy'
+        sh 'mvn -B -P build-system clean site-deploy'
       }
       post {
         always {
@@ -84,7 +84,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -B -P gh-pages-site clean site site:stage scm-publish:publish-scm'
+        sh 'mvn -B -P build-system,gh-pages-site site site:stage scm-publish:publish-scm'
       }
       post {
         always {
@@ -100,7 +100,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -B -P feature,allow-features clean deploy'
+        sh 'mvn -B -P build-system,feature,allow-features clean deploy'
       }
     }
   }
