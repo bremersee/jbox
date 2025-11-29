@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortOrderConverterAutoConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Boot Autoconfiguration</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.boot.autoconfigure.data.commons</a> &gt; <span class="el_source">SortOrderConverterAutoConfiguration.java</span></div><h1>SortOrderConverterAutoConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.boot.autoconfigure.data.commons;
+
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.bremersee.comparator.model.SortOrderTextSeparators;
+import org.bremersee.comparator.spring.converter.SortOrderConverter;
+import org.bremersee.comparator.spring.converter.SortOrderItemConverter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
+
+/**
+ * The sort order converter autoconfiguration.
+ *
+ * @author Christian Bremer
+ */
+@ConditionalOnClass(name = {
+    &quot;org.bremersee.comparator.spring.converter.SortOrderConverter&quot;,
+    &quot;org.bremersee.comparator.spring.converter.SortOrderItemConverter&quot;
+})
+@AutoConfiguration
+@EnableConfigurationProperties(SortOrderConverterProperties.class)
+<span class="fc" id="L45">@Slf4j</span>
+public class SortOrderConverterAutoConfiguration {
+
+  private final SortOrderTextSeparators separators;
+
+  /**
+   * Instantiates a new sort order converter autoconfiguration.
+   *
+   * @param properties the properties
+   */
+<span class="fc" id="L55">  public SortOrderConverterAutoConfiguration(SortOrderConverterProperties properties) {</span>
+<span class="fc" id="L56">    SortOrderTextSeparators defaults = SortOrderTextSeparators.defaults();</span>
+<span class="fc" id="L57">    this.separators = SortOrderTextSeparators.builder()</span>
+<span class="fc" id="L58">        .argumentSeparator(Optional.ofNullable(properties.getArgumentSeparator())</span>
+<span class="fc" id="L59">            .filter(StringUtils::hasText)</span>
+<span class="fc" id="L60">            .orElse(defaults.getArgumentSeparator()))</span>
+<span class="fc" id="L61">        .chainSeparator(Optional.ofNullable(properties.getChainSeparator())</span>
+<span class="fc" id="L62">            .filter(StringUtils::hasText)</span>
+<span class="fc" id="L63">            .orElse(defaults.getChainSeparator()))</span>
+<span class="fc" id="L64">        .build();</span>
+<span class="fc" id="L65">  }</span>
+
+  /**
+   * Init.
+   */
+  @EventListener(ApplicationReadyEvent.class)
+  public void init() {
+<span class="fc" id="L72">    log.info(&quot;&quot;&quot;</span>
+            
+            *********************************************************************************
+            * {}
+            *********************************************************************************&quot;&quot;&quot;,
+<span class="fc" id="L77">        ClassUtils.getUserClass(getClass()).getSimpleName());</span>
+<span class="fc" id="L78">  }</span>
+
+  /**
+   * Creates sort order converter.
+   *
+   * @return the sort order converter
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public SortOrderConverter sortOrderConverter() {
+<span class="fc" id="L88">    return new SortOrderConverter(separators);</span>
+  }
+
+  /**
+   * Creates sort order item converter.
+   *
+   * @return the sort order item converter
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public SortOrderItemConverter sortOrderItemConverter() {
+<span class="fc" id="L99">    return new SortOrderItemConverter(separators);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
