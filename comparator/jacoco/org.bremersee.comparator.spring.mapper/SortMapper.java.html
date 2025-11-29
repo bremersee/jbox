@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Comparator</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.comparator.spring.mapper</a> &gt; <span class="el_source">SortMapper.java</span></div><h1>SortMapper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.comparator.spring.mapper;
+
+import static java.util.Objects.isNull;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.bremersee.comparator.model.SortOrder;
+import org.bremersee.comparator.model.SortOrderItem;
+import org.bremersee.comparator.model.SortOrderItem.CaseHandling;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.NullHandling;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
+/**
+ * This mapper provides methods to transform a {@link SortOrderItem} into a {@code Sort} object from
+ * the Spring framework (spring-data-common) and vice versa.
+ *
+ * @author Christian Bremer
+ */
+public interface SortMapper {
+
+  /**
+   * Returns default sort mapper.
+   *
+   * @return the sort mapper
+   */
+  static SortMapper defaultSortMapper() {
+<span class="fc" id="L55">    return DefaultSortMapper.getInstance();</span>
+  }
+
+  /**
+   * Transforms sort orders into a {@code Sort} object.
+   *
+   * @param sortOrders the sort orders
+   * @return the sort
+   */
+  @NonNull
+  default Sort toSort(@Nullable Collection&lt;? extends SortOrder&gt; sortOrders) {
+<span class="fc" id="L66">    return toSort(SortOrder.by(sortOrders));</span>
+  }
+
+  /**
+   * Transforms sort order into a {@code Sort} object.
+   *
+   * @param sortOrder the sort order
+   * @return the sort
+   */
+  @NonNull
+  default Sort toSort(@Nullable SortOrder sortOrder) {
+<span class="fc" id="L77">    List&lt;Sort.Order&gt; orderList = Stream.ofNullable(sortOrder)</span>
+<span class="fc" id="L78">        .map(SortOrder::getItems)</span>
+<span class="fc" id="L79">        .flatMap(Collection::stream)</span>
+<span class="fc" id="L80">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L81">        .map(this::toSortOrder)</span>
+<span class="fc" id="L82">        .toList();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    return orderList.isEmpty() ? Sort.unsorted() : Sort.by(orderList);</span>
+  }
+
+  /**
+   * Transforms the sort order into a {@code Sort.Order} object.
+   *
+   * @param sortOrderItem the sort order
+   * @return the sort object
+   */
+  @Nullable
+  default Sort.Order toSortOrder(@Nullable SortOrderItem sortOrderItem) {
+<span class="fc bfc" id="L94" title="All 4 branches covered.">    if (sortOrderItem == null || sortOrderItem.getField() == null) {</span>
+<span class="fc" id="L95">      return null;</span>
+    }
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    Direction direction = sortOrderItem.getDirection().isAscending()</span>
+<span class="fc" id="L98">        ? Direction.ASC</span>
+<span class="fc" id="L99">        : Direction.DESC;</span>
+<span class="fc bfc" id="L100" title="All 3 branches covered.">    NullHandling nullHandling = switch (sortOrderItem.getNullHandling()) {</span>
+<span class="fc" id="L101">      case NULLS_FIRST -&gt; NullHandling.NULLS_FIRST;</span>
+<span class="fc" id="L102">      case NULLS_LAST -&gt; NullHandling.NULLS_LAST;</span>
+<span class="fc" id="L103">      case NATIVE -&gt; NullHandling.NATIVE;</span>
+    };
+<span class="fc" id="L105">    Sort.Order order = new Sort.Order(direction, sortOrderItem.getField(), nullHandling);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    return sortOrderItem.getCaseHandling().isInsensitive()</span>
+<span class="fc" id="L107">        ? order.ignoreCase()</span>
+<span class="fc" id="L108">        : order;</span>
+  }
+
+
+  /**
+   * Transforms a {@code Sort} object into a sort order.
+   *
+   * @param sort the {@code Sort} object
+   * @return the sort order
+   */
+  @NonNull
+  default SortOrder fromSort(@Nullable Sort sort) {
+<span class="fc" id="L120">    List&lt;SortOrderItem&gt; items = Stream.ofNullable(sort)</span>
+<span class="fc" id="L121">        .flatMap(Sort::stream)</span>
+<span class="fc" id="L122">        .map(this::fromSortOrder)</span>
+<span class="fc" id="L123">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L124">        .toList();</span>
+<span class="fc" id="L125">    return new SortOrder(items);</span>
+  }
+
+  /**
+   * Transforms a {@code Sort.Order} object into a sort order.
+   *
+   * @param sortOrder the {@code Sort.Order} object
+   * @return the sort order
+   */
+  @Nullable
+  default SortOrderItem fromSortOrder(@Nullable Sort.Order sortOrder) {
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (sortOrder == null) {</span>
+<span class="fc" id="L137">      return null;</span>
+    }
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    SortOrderItem.Direction direction = sortOrder.getDirection().isAscending()</span>
+<span class="fc" id="L140">        ? SortOrderItem.Direction.ASC</span>
+<span class="fc" id="L141">        : SortOrderItem.Direction.DESC;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">    CaseHandling caseHandling = sortOrder.isIgnoreCase()</span>
+<span class="fc" id="L143">        ? CaseHandling.INSENSITIVE</span>
+<span class="fc" id="L144">        : CaseHandling.SENSITIVE;</span>
+<span class="fc bfc" id="L145" title="All 3 branches covered.">    SortOrderItem.NullHandling nullHandling = switch (sortOrder.getNullHandling()) {</span>
+<span class="fc" id="L146">      case NULLS_FIRST -&gt; SortOrderItem.NullHandling.NULLS_FIRST;</span>
+<span class="fc" id="L147">      case NULLS_LAST -&gt; SortOrderItem.NullHandling.NULLS_LAST;</span>
+<span class="fc" id="L148">      case NATIVE -&gt; SortOrderItem.NullHandling.NATIVE;</span>
+    };
+<span class="fc" id="L150">    return new SortOrderItem(</span>
+<span class="fc" id="L151">        sortOrder.getProperty(),</span>
+        direction,
+        caseHandling,
+        nullHandling);
+  }
+
+  /**
+   * Apply defaults to page request.
+   *
+   * @param source the source
+   * @param direction the direction
+   * @param ignoreCase the ignore case
+   * @param nullHandling the null handling
+   * @param properties the properties
+   * @return the pageable
+   */
+  @Nullable
+  default Pageable applyDefaults(
+      @Nullable Pageable source,
+      @Nullable Direction direction,
+      @Nullable Boolean ignoreCase,
+      @Nullable NullHandling nullHandling,
+      @Nullable String... properties) {
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">    return Objects.isNull(source) ? null : PageRequest.of(</span>
+<span class="fc" id="L176">        source.getPageNumber(),</span>
+<span class="fc" id="L177">        source.getPageSize(),</span>
+<span class="fc" id="L178">        applyDefaults(source.getSort(), direction, ignoreCase, nullHandling, properties));</span>
+  }
+
+  /**
+   * Apply defaults to sort.
+   *
+   * @param source the source
+   * @param direction the direction
+   * @param ignoreCase the ignore case
+   * @param nullHandling the null handling
+   * @param properties the properties
+   * @return the sort
+   */
+  @NonNull
+  default Sort applyDefaults(
+      @Nullable Sort source,
+      @Nullable Direction direction,
+      @Nullable Boolean ignoreCase,
+      @Nullable NullHandling nullHandling,
+      @Nullable String... properties) {
+
+<span class="fc bfc" id="L199" title="All 2 branches covered.">    if (isNull(source)) {</span>
+<span class="fc" id="L200">      return Sort.unsorted();</span>
+    }
+<span class="pc bpc" id="L202" title="1 of 6 branches missed.">    if (isNull(direction) &amp;&amp; isNull(ignoreCase) &amp;&amp; isNull(nullHandling)) {</span>
+<span class="fc" id="L203">      return source;</span>
+    }
+    Set&lt;String&gt; names;
+<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (isEmpty(properties)) {</span>
+<span class="fc" id="L207">      names = source.stream().map(Sort.Order::getProperty).collect(Collectors.toSet());</span>
+    } else {
+<span class="fc" id="L209">      names = Arrays.stream(properties).collect(Collectors.toSet());</span>
+    }
+<span class="fc" id="L211">    return Sort.by(source.stream()</span>
+<span class="fc" id="L212">        .map(sortOrder -&gt; {</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">          if (names.contains(sortOrder.getProperty())) {</span>
+<span class="fc" id="L214">            Sort.Order order = Sort.Order.by(sortOrder.getProperty())</span>
+<span class="fc" id="L215">                .with(newDirection(sortOrder.getDirection(), direction))</span>
+<span class="fc" id="L216">                .with(newNullHandling(sortOrder.getNullHandling(), nullHandling));</span>
+<span class="fc" id="L217">            return withNewCaseHandling(order, sortOrder.isIgnoreCase(), ignoreCase);</span>
+          }
+<span class="fc" id="L219">          return sortOrder;</span>
+        })
+<span class="fc" id="L221">        .toList());</span>
+  }
+
+  private Direction newDirection(Direction oldDirection, Direction newDirection) {
+<span class="fc" id="L225">    return Optional.ofNullable(newDirection)</span>
+<span class="fc" id="L226">        .orElse(oldDirection);</span>
+  }
+
+  private NullHandling newNullHandling(NullHandling oldNullHandling, NullHandling newNullHandling) {
+<span class="fc" id="L230">    return Optional.ofNullable(newNullHandling)</span>
+<span class="fc" id="L231">        .orElse(oldNullHandling);</span>
+  }
+
+  private Sort.Order withNewCaseHandling(
+      Sort.Order order,
+      boolean oldIgnoresCase,
+      Boolean newIgnoresCase) {
+    //noinspection ConstantConditions
+<span class="fc" id="L239">    return Optional.ofNullable(newIgnoresCase)</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">        .map(ignoreCase -&gt; ignoreCase ? order.ignoreCase() : order)</span>
+<span class="pc bnc" id="L241" title="All 2 branches missed.">        .orElseGet(() -&gt; oldIgnoresCase ? order.ignoreCase() : order);</span>
+  }
+
+  /**
+   * The type Default sort mapper.
+   */
+  class DefaultSortMapper implements SortMapper {
+
+<span class="fc" id="L249">    private static final SortMapper INSTANCE = new DefaultSortMapper();</span>
+
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static SortMapper getInstance() {
+<span class="fc" id="L257">      return INSTANCE;</span>
+    }
+
+    private DefaultSortMapper() {
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
