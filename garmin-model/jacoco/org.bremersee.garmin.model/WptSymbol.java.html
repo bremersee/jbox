@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WptSymbol.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Garmin Model</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.garmin.model</a> &gt; <span class="el_source">WptSymbol.java</span></div><h1>WptSymbol.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.garmin.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+/**
+ * The symbol.
+ *
+ * @author Christian Bremer
+ */
+<span class="fc" id="L27">@SuppressWarnings(&quot;unused&quot;)</span>
+public enum WptSymbol {
+
+  /**
+   * Flag blue symbol.
+   */
+<span class="fc" id="L33">  FLAG_BLUE(&quot;Flag, Blue&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Flag green symbol.
+   */
+<span class="fc" id="L38">  FLAG_GREEN(&quot;Flag, Green&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Flag red symbol.
+   */
+<span class="fc" id="L43">  FLAG_RED(&quot;Flag, Red&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Civil symbol.
+   */
+<span class="fc" id="L48">  CIVIL(&quot;Civil&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Pin blue symbol.
+   */
+<span class="fc" id="L53">  PIN_BLUE(&quot;Pin, Blue&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Pin green symbol.
+   */
+<span class="fc" id="L58">  PIN_GREEN(&quot;Pin, Green&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Pin red symbol.
+   */
+<span class="fc" id="L63">  PIN_RED(&quot;Pin, Red&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * The golf course symbol.
+   */
+<span class="fc" id="L68">  GOLF_COURSE(&quot;Golf Course&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Block blue symbol.
+   */
+<span class="fc" id="L73">  BLOCK_BLUE(&quot;Block, Blue&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Block green symbol.
+   */
+<span class="fc" id="L78">  BLOCK_GREEN(&quot;Block, Green&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Block red symbol.
+   */
+<span class="fc" id="L83">  BLOCK_RED(&quot;Block, Red&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Stadium symbol.
+   */
+<span class="fc" id="L88">  STADIUM(&quot;Stadium&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid blue symbol.
+   */
+<span class="fc" id="L93">  NAVAID_BLUE(&quot;Navaid, Blue&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid green symbol.
+   */
+<span class="fc" id="L98">  NAVAID_GREEN(&quot;Navaid, Green&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid red symbol.
+   */
+<span class="fc" id="L103">  NAVAID_RED(&quot;Navaid, Red&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid white symbol.
+   */
+<span class="fc" id="L108">  NAVAID_WHITE(&quot;Navaid, White&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid amber symbol.
+   */
+<span class="fc" id="L113">  NAVAID_AMBER(&quot;Navaid, Amber&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid black symbol.
+   */
+<span class="fc" id="L118">  NAVAID_BLACK(&quot;Navaid, Black&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid orange symbol.
+   */
+<span class="fc" id="L123">  NAVAID_ORANGE(&quot;Navaid, Orange&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Navaid violet symbol.
+   */
+<span class="fc" id="L128">  NAVAID_VIOLET(&quot;Navaid, Violet&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * City small symbol.
+   */
+<span class="fc" id="L133">  CITY_SMALL(&quot;City (Small)&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * City medium symbol.
+   */
+<span class="fc" id="L138">  CITY_MEDIUM(&quot;City (Medium)&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * City large symbol.
+   */
+<span class="fc" id="L143">  CITY_LARGE(&quot;City (Large)&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Crossing symbol.
+   */
+<span class="fc" id="L148">  CROSSING(&quot;Crossing&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Residence symbol.
+   */
+<span class="fc" id="L153">  RESIDENCE(&quot;Residence&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * The fishing hot spot facility symbol.
+   */
+<span class="fc" id="L158">  FISHING_HOT_SPOT_FACILITY(&quot;Fishing Hot Spot Facility&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Lodge symbol.
+   */
+<span class="fc" id="L163">  LODGE(&quot;Lodge&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Museum symbol.
+   */
+<span class="fc" id="L168">  MUSEUM(&quot;Museum&quot;, WptSymbolCategory.MARKERS),</span>
+
+  /**
+   * Campground symbol.
+   */
+<span class="fc" id="L173">  CAMPGROUND(&quot;Campground&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The trail head symbol.
+   */
+<span class="fc" id="L178">  TRAIL_HEAD(&quot;Trail Head&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Park symbol.
+   */
+<span class="fc" id="L183">  PARK(&quot;Park&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Forest symbol.
+   */
+<span class="fc" id="L188">  FOREST(&quot;Forest&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Summit symbol.
+   */
+<span class="fc" id="L193">  SUMMIT(&quot;Summit&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The fishing area symbol.
+   */
+<span class="fc" id="L198">  FISHING_AREA(&quot;Fishing Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Geocache symbol.
+   */
+<span class="fc" id="L203">  GEOCACHE(&quot;Geocache&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The geocache found symbol.
+   */
+<span class="fc" id="L208">  GEOCACHE_FOUND(&quot;Geocache Found&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The picnic area symbol.
+   */
+<span class="fc" id="L213">  PICNIC_AREA(&quot;Picnic Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Restroom symbol.
+   */
+<span class="fc" id="L218">  RESTROOM(&quot;Restroom&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Shower symbol.
+   */
+<span class="fc" id="L223">  SHOWER(&quot;Shower&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Beach symbol.
+   */
+<span class="fc" id="L228">  BEACH(&quot;Beach&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The RV park symbol.
+   */
+<span class="fc" id="L233">  RV_PARK(&quot;RV Park&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The scenic area symbol.
+   */
+<span class="fc" id="L238">  SCENIC_AREA(&quot;Scenic Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The ski resort symbol.
+   */
+<span class="fc" id="L243">  SKI_RESORT(&quot;Ski Resort&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The swimming area symbol.
+   */
+<span class="fc" id="L248">  SWIMMING_AREA(&quot;Swimming Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The skiing area symbol.
+   */
+<span class="fc" id="L253">  SKIING_AREA(&quot;Skiing Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The bike trail symbol.
+   */
+<span class="fc" id="L258">  BIKE_TRAIL(&quot;Bike Trail&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The drinking water symbol.
+   */
+<span class="fc" id="L263">  DRINKING_WATER(&quot;Drinking Water&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * Tunnel symbol.
+   */
+<span class="fc" id="L268">  TUNNEL(&quot;Tunnel&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The parachute area symbol.
+   */
+<span class="fc" id="L273">  PARACHUTE_AREA(&quot;Parachute Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The glider area symbol.
+   */
+<span class="fc" id="L278">  GLIDER_AREA(&quot;Glider Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The ultralight area symbol.
+   */
+<span class="fc" id="L283">  ULTRALIGHT_AREA(&quot;Ultralight Area&quot;, WptSymbolCategory.OUTDOORS),</span>
+
+  /**
+   * The upland game symbol.
+   */
+<span class="fc" id="L288">  UPLAND_GAME(&quot;Upland Game&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Waterfowl symbol.
+   */
+<span class="fc" id="L293">  WATERFOWL(&quot;Waterfowl&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Furbearer symbol.
+   */
+<span class="fc" id="L298">  FURBEARER(&quot;Furbearer&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The big game symbol.
+   */
+<span class="fc" id="L303">  BIG_GAME(&quot;Big Game&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The small game symbol.
+   */
+<span class="fc" id="L308">  SMALL_GAME(&quot;Small Game&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Covey symbol.
+   */
+<span class="fc" id="L313">  COVEY(&quot;Covey&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Cover symbol.
+   */
+<span class="fc" id="L318">  COVER(&quot;Cover&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The treed quarry symbol.
+   */
+<span class="fc" id="L323">  TREED_QUARRY(&quot;Treed Quarry&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The water source symbol.
+   */
+<span class="fc" id="L328">  WATER_SOURCE(&quot;Water Source&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The food source symbol.
+   */
+<span class="fc" id="L333">  FOOD_SOURCE(&quot;Food Source&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The animal tracks symbol.
+   */
+<span class="fc" id="L338">  ANIMAL_TRACKS(&quot;Animal Tracks&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The blood trail symbol.
+   */
+<span class="fc" id="L343">  BLOOD_TRAIL(&quot;Blood Trail&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Truck symbol.
+   */
+<span class="fc" id="L348">  TRUCK(&quot;Truck&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Atv symbol.
+   */
+<span class="fc" id="L353">  ATV(&quot;ATV&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Blind symbol.
+   */
+<span class="fc" id="L358">  BLIND(&quot;Blind&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * The tree stand symbol.
+   */
+<span class="fc" id="L363">  TREE_STAND(&quot;Tree Stand&quot;, WptSymbolCategory.HUNTING),</span>
+
+  /**
+   * Anchor symbol.
+   */
+<span class="fc" id="L368">  ANCHOR(&quot;Anchor&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The man overboard symbol.
+   */
+<span class="fc" id="L373">  MAN_OVERBOARD(&quot;Man Overboard&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The diver down flag 1 symbol.
+   */
+<span class="fc" id="L378">  DIVER_DOWN_FLAG_1(&quot;Diver Down Flag 1&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The diver down flag 2 symbol.
+   */
+<span class="fc" id="L383">  DIVER_DOWN_FLAG_2(&quot;Diver Down Flag 2&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The skull and crossbones symbol.
+   */
+<span class="fc" id="L388">  SKULL_AND_CROSSBONES(&quot;Skull and Crossbones&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Light symbol.
+   */
+<span class="fc" id="L393">  LIGHT(&quot;Light&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Buoy white symbol.
+   */
+<span class="fc" id="L398">  BUOY_WHITE(&quot;Buoy, White&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Shipwreck symbol.
+   */
+<span class="fc" id="L403">  SHIPWRECK(&quot;Shipwreck&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The radio beacon symbol.
+   */
+<span class="fc" id="L408">  RADIO_BEACON(&quot;Radio Beacon&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Horn symbol.
+   */
+<span class="fc" id="L413">  HORN(&quot;Horn&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The controlled area symbol.
+   */
+<span class="fc" id="L418">  CONTROLLED_AREA(&quot;Controlled Area&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The restricted area symbol.
+   */
+<span class="fc" id="L423">  RESTRICTED_AREA(&quot;Restricted Area&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The danger area symbol.
+   */
+<span class="fc" id="L428">  DANGER_AREA(&quot;Danger Area&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Restaurant symbol.
+   */
+<span class="fc" id="L433">  RESTAURANT(&quot;Restaurant&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Bridge symbol.
+   */
+<span class="fc" id="L438">  BRIDGE(&quot;Bridge&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Dam symbol.
+   */
+<span class="fc" id="L443">  DAM(&quot;Dam&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The boat ramp symbol.
+   */
+<span class="fc" id="L448">  BOAT_RAMP(&quot;Boat Ramp&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * The gas station symbol.
+   */
+<span class="fc" id="L453">  GAS_STATION(&quot;Gas Station&quot;, WptSymbolCategory.MARINE),</span>
+
+  /**
+   * Building symbol.
+   */
+<span class="fc" id="L458">  BUILDING(&quot;Building&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * Church symbol.
+   */
+<span class="fc" id="L463">  CHURCH(&quot;Church&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * Cemetery symbol.
+   */
+<span class="fc" id="L468">  CEMETERY(&quot;Cemetery&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * The tall tower symbol.
+   */
+<span class="fc" id="L473">  TALL_TOWER(&quot;Tall Tower&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * The short tower symbol.
+   */
+<span class="fc" id="L478">  SHORT_TOWER(&quot;Short Tower&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * The oil field symbol.
+   */
+<span class="fc" id="L483">  OIL_FIELD(&quot;Oil Field&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * Mine symbol.
+   */
+<span class="fc" id="L488">  MINE(&quot;Mine&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * School symbol.
+   */
+<span class="fc" id="L493">  SCHOOL(&quot;School&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * The police station symbol.
+   */
+<span class="fc" id="L498">  POLICE_STATION(&quot;Police Station&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * Bell symbol.
+   */
+<span class="fc" id="L503">  BELL(&quot;Bell&quot;, WptSymbolCategory.CIVIL),</span>
+
+  /**
+   * Car symbol.
+   */
+<span class="fc" id="L508">  CAR(&quot;Car&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * The car rental symbol.
+   */
+<span class="fc" id="L513">  CAR_RENTAL(&quot;Car Rental&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * The car repair symbol.
+   */
+<span class="fc" id="L518">  CAR_REPAIR(&quot;Car Repair&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * The convenience store symbol.
+   */
+<span class="fc" id="L523">  CONVENIENCE_STORE(&quot;Convenience Store&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * Scales symbol.
+   */
+<span class="fc" id="L528">  SCALES(&quot;Scales&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * Airport symbol.
+   */
+<span class="fc" id="L533">  AIRPORT(&quot;Airport&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * The truck stop symbol.
+   */
+<span class="fc" id="L538">  TRUCK_STOP(&quot;Truck Stop&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * Wrecker symbol.
+   */
+<span class="fc" id="L543">  WRECKER(&quot;Wrecker&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * The toll booth symbol.
+   */
+<span class="fc" id="L548">  TOLL_BOOTH(&quot;Toll Booth&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * Lodging symbol.
+   */
+<span class="fc" id="L553">  LODGING(&quot;Lodging&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * The parking area symbol.
+   */
+<span class="fc" id="L558">  PARKING_AREA(&quot;Parking Area&quot;, WptSymbolCategory.TRANSPORTATION),</span>
+
+  /**
+   * Navaid green white symbol.
+   */
+<span class="fc" id="L563">  NAVAID_GREEN_WHITE(&quot;Navaid, Green/White&quot;, WptSymbolCategory.NAVAIDS),</span>
+
+  /**
+   * Navaid green red symbol.
+   */
+<span class="fc" id="L568">  NAVAID_GREEN_RED(&quot;Navaid, Green/Red&quot;, WptSymbolCategory.NAVAIDS),</span>
+
+  /**
+   * Navaid red green symbol.
+   */
+<span class="fc" id="L573">  NAVAID_RED_GREEN(&quot;Navaid, Red/Green&quot;, WptSymbolCategory.NAVAIDS),</span>
+
+  /**
+   * Navaid red white symbol.
+   */
+<span class="fc" id="L578">  NAVAID_RED_WHITE(&quot;Navaid, Red/White&quot;, WptSymbolCategory.NAVAIDS),</span>
+
+  /**
+   * Navaid white green symbol.
+   */
+<span class="fc" id="L583">  NAVAID_WHITE_GREEN(&quot;Navaid, White/Green&quot;, WptSymbolCategory.NAVAIDS),</span>
+
+  /**
+   * Navaid white red symbol.
+   */
+<span class="fc" id="L588">  NAVAID_WHITE_RED(&quot;Navaid, White/Red&quot;, WptSymbolCategory.NAVAIDS),</span>
+
+  /**
+   * The shopping center symbol.
+   */
+<span class="fc" id="L593">  SHOPPING_CENTER(&quot;Shopping Center&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * Telephone symbol.
+   */
+<span class="fc" id="L598">  TELEPHONE(&quot;Telephone&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * Information symbol.
+   */
+<span class="fc" id="L603">  INFORMATION(&quot;Information&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * The fitness center symbol.
+   */
+<span class="fc" id="L608">  FITNESS_CENTER(&quot;Fitness Center&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * The ice skating symbol.
+   */
+<span class="fc" id="L613">  ICE_SKATING(&quot;Ice Skating&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * The medical facility symbol.
+   */
+<span class="fc" id="L618">  MEDICAL_FACILITY(&quot;Medical Facility&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * Pharmacy symbol.
+   */
+<span class="fc" id="L623">  PHARMACY(&quot;Pharmacy&quot;, WptSymbolCategory.SIGNS),</span>
+
+  /**
+   * Bank symbol.
+   */
+<span class="fc" id="L628">  BANK(&quot;Bank&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * Bar symbol.
+   */
+<span class="fc" id="L633">  BAR(&quot;Bar&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The department store symbol.
+   */
+<span class="fc" id="L638">  DEPARTMENT_STORE(&quot;Department Store&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The movie theater symbol.
+   */
+<span class="fc" id="L643">  MOVIE_THEATER(&quot;Movie Theater&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The fast food symbol.
+   */
+<span class="fc" id="L648">  FAST_FOOD(&quot;Fast Food&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * Pizza symbol.
+   */
+<span class="fc" id="L653">  PIZZA(&quot;Pizza&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The live theater symbol.
+   */
+<span class="fc" id="L658">  LIVE_THEATER(&quot;Live Theater&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The post office symbol.
+   */
+<span class="fc" id="L663">  POST_OFFICE(&quot;Post Office&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The ball park symbol.
+   */
+<span class="fc" id="L668">  BALL_PARK(&quot;Ball Park&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * Bowling symbol.
+   */
+<span class="fc" id="L673">  BOWLING(&quot;Bowling&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * The amusement park symbol.
+   */
+<span class="fc" id="L678">  AMUSEMENT_PARK(&quot;Amusement Park&quot;, WptSymbolCategory.POI),</span>
+
+  /**
+   * Zoo symbol.
+   */
+<span class="fc" id="L683">  ZOO(&quot;Zoo&quot;, WptSymbolCategory.POI);</span>
+
+  private final String value;
+
+  private final WptSymbolCategory category;
+
+<span class="fc" id="L689">  WptSymbol(String value, WptSymbolCategory category) {</span>
+<span class="fc" id="L690">    this.value = value;</span>
+<span class="fc" id="L691">    this.category = category;</span>
+<span class="fc" id="L692">  }</span>
+
+  /**
+   * Gets category.
+   *
+   * @return the category
+   */
+  public WptSymbolCategory getCategory() {
+<span class="fc" id="L700">    return category;</span>
+  }
+
+  @JsonValue
+  @Override
+  public String toString() {
+<span class="fc" id="L706">    return value;</span>
+  }
+
+  /**
+   * From value.
+   *
+   * @param value the value
+   * @return the wpt symbol
+   */
+  @JsonCreator
+  public static WptSymbol fromValue(String value) {
+<span class="fc bfc" id="L717" title="All 2 branches covered.">    for (WptSymbol e : WptSymbol.values()) {</span>
+<span class="pc bpc" id="L718" title="1 of 4 branches missed.">      if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {</span>
+<span class="fc" id="L719">        return e;</span>
+      }
+    }
+<span class="fc" id="L722">    return FLAG_BLUE;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

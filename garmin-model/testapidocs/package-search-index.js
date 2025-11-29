@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.bremersee.garmin"},{"l":"org.bremersee.garmin.model"},{"l":"org.bremersee.garmin.trip.v1.model.ext"}];updateSearchResults();

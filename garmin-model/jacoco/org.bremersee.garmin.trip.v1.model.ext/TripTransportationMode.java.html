@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TripTransportationMode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Garmin Model</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.garmin.trip.v1.model.ext</a> &gt; <span class="el_source">TripTransportationMode.java</span></div><h1>TripTransportationMode.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.garmin.trip.v1.model.ext;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+/**
+ * The trip transportation mode.
+ *
+ * @author Christian Bremer
+ */
+<span class="fc" id="L27">@SuppressWarnings(&quot;unused&quot;)</span>
+public enum TripTransportationMode {
+
+  /**
+   * Automotive transportation mode.
+   */
+<span class="fc" id="L33">  AUTOMOTIVE(&quot;Automotive&quot;),</span>
+
+  /**
+   * Motorcycling transportation mode.
+   */
+<span class="fc" id="L38">  MOTORCYCLING(&quot;Motorcycling&quot;),</span>
+
+  /**
+   * Walking transportation mode.
+   */
+<span class="fc" id="L43">  WALKING(&quot;Walking&quot;),</span>
+
+  /**
+   * Hiking transportation mode.
+   */
+<span class="fc" id="L48">  HIKING(&quot;Hiking&quot;),</span>
+
+  /**
+   * Mountaineering transportation mode.
+   */
+<span class="fc" id="L53">  MOUNTAINEERING(&quot;Mountaineering&quot;),</span>
+
+  /**
+   * Bicycling transportation mode.
+   */
+<span class="fc" id="L58">  BICYCLING(&quot;Bicycling&quot;),</span>
+
+  /**
+   * Tour cycling transportation mode.
+   */
+<span class="fc" id="L63">  TOUR_CYCLING(&quot;TourCycling&quot;), //</span>
+
+  /**
+   * Mountain biking transportation mode.
+   */
+<span class="fc" id="L68">  MOUNTAIN_BIKING(&quot;MountainBiking&quot;), // Mountain Bike</span>
+
+  /**
+   * Atv transportation mode.
+   */
+<span class="fc" id="L73">  ATV(&quot;ATV&quot;), // Geländefahrzeug</span>
+
+  /**
+   * Dirt biking transportation mode.
+   */
+<span class="fc" id="L78">  DIRT_BIKING(&quot;DirtBiking&quot;),</span>
+
+  /**
+   * Trucking transportation mode.
+   */
+<span class="fc" id="L83">  TRUCKING(&quot;Trucking&quot;),</span>
+
+  /**
+   * Rv transportation mode.
+   */
+<span class="fc" id="L88">  RV(&quot;RV&quot;), // Wohnmobil</span>
+
+  /**
+   * Offroad transportation mode.
+   */
+<span class="fc" id="L93">  OFFROAD(&quot;OffRoad&quot;);</span>
+
+  private final String value;
+
+<span class="fc" id="L97">  TripTransportationMode(String value) {</span>
+<span class="fc" id="L98">    this.value = value;</span>
+<span class="fc" id="L99">  }</span>
+
+  @JsonValue
+  @Override
+  public String toString() {
+<span class="fc" id="L104">    return value;</span>
+  }
+
+  /**
+   * From value.
+   *
+   * @param value the value
+   * @return the trip transportation mode
+   */
+  @JsonCreator
+  public static TripTransportationMode fromValue(String value) {
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    for (TripTransportationMode e : TripTransportationMode.values()) {</span>
+<span class="pc bpc" id="L116" title="1 of 4 branches missed.">      if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {</span>
+<span class="fc" id="L117">        return e;</span>
+      }
+    }
+<span class="fc" id="L120">    return AUTOMOTIVE;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

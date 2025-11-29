@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GarminJaxbContextDataProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Garmin Model</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.garmin</a> &gt; <span class="el_source">GarminJaxbContextDataProvider.java</span></div><h1>GarminJaxbContextDataProvider.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.garmin;
+
+import static org.bremersee.xml.JaxbContextMember.byPackage;
+
+import java.util.Collection;
+import java.util.List;
+import org.bremersee.xml.JaxbContextDataProvider;
+import org.bremersee.xml.JaxbContextMember;
+
+/**
+ * Garmin jaxb context data provider.
+ *
+ * @author Christian Bremer
+ */
+<span class="fc" id="L31">public class GarminJaxbContextDataProvider implements JaxbContextDataProvider {</span>
+
+  /**
+   * The constant GPX_NAMESPACES.
+   */
+  @SuppressWarnings(&quot;unused&quot;)
+<span class="fc" id="L37">  public static final String[] GPX_NAMESPACES = {</span>
+      &quot;http://www.topografix.com/GPX/1/1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/WaypointExtension/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/GpxExtensions/v3&quot;,
+      &quot;http://www.garmin.com/xmlschemas/TrackPointExtension/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/GpxExtensions/v3&quot;,
+      &quot;http://www.garmin.com/xmlschemas/TripExtensions/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/AdventuresExtensions/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/PressureExtension/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/TripMetaDataExtensions/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/ViaPointTransportationModeExtensions/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/CreationTimeExtension/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/AccelerationExtension/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/PowerExtension/v1&quot;,
+      &quot;http://www.garmin.com/xmlschemas/VideoExtension/v1&quot;
+  };
+
+  @Override
+  public Collection&lt;JaxbContextMember&gt; getJaxbContextData() {
+<span class="fc" id="L56">    return List.of(</span>
+<span class="fc" id="L57">        byPackage(org.bremersee.garmin.acceleration.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L58">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/AccelerationExtensionv1.xsd&quot;)
+<span class="fc" id="L60">            .build(),</span>
+<span class="fc" id="L61">        byPackage(org.bremersee.garmin.activeitem.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L62">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/ActiveItemExtensionv1.xsd&quot;)
+<span class="fc" id="L64">            .build(),</span>
+<span class="fc" id="L65">        byPackage(org.bremersee.garmin.activity.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L66">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/ActivityExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L67">            .build(),</span>
+<span class="fc" id="L68">        byPackage(org.bremersee.garmin.activity.v2.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L69">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/ActivityExtensionv2.xsd&quot;)</span>
+<span class="fc" id="L70">            .build(),</span>
+<span class="fc" id="L71">        byPackage(org.bremersee.garmin.activitygoals.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L72">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/ActivityGoalsExtensionv1.xsd&quot;)
+<span class="fc" id="L74">            .build(),</span>
+<span class="fc" id="L75">        byPackage(org.bremersee.garmin.adventures.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L76">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/AdventuresExtensionv1.xsd&quot;)
+<span class="fc" id="L78">            .build(),</span>
+<span class="fc" id="L79">        byPackage(org.bremersee.garmin.calorieburndata.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L80">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/CalorieBurnDataV1.xsd&quot;)</span>
+<span class="fc" id="L81">            .build(),</span>
+<span class="fc" id="L82">        byPackage(org.bremersee.garmin.clientprofile.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L83">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/clientprofilev1.xsd&quot;)</span>
+<span class="fc" id="L84">            .build(),</span>
+<span class="fc" id="L85">        byPackage(org.bremersee.garmin.converterplugin.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L86">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/ConverterPluginv1.xsd&quot;)</span>
+<span class="fc" id="L87">            .build(),</span>
+<span class="fc" id="L88">        byPackage(org.bremersee.garmin.course.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L89">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/CourseExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L90">            .build(),</span>
+<span class="fc" id="L91">        byPackage(org.bremersee.garmin.creationtime.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L92">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/CreationTimeExtensionv1.xsd&quot;)
+<span class="fc" id="L94">            .build(),</span>
+<span class="fc" id="L95">        byPackage(</span>
+<span class="fc" id="L96">            org.bremersee.garmin.datatypelocation.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L97">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/DataTypeLocationExtension1.xsd&quot;)
+<span class="fc" id="L99">            .build(),</span>
+<span class="fc" id="L100">        byPackage(org.bremersee.garmin.devicedownload.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L101">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/DeviceDownloadV1.xsd&quot;)</span>
+<span class="fc" id="L102">            .build(),</span>
+<span class="fc" id="L103">        byPackage(org.bremersee.garmin.directorylisting.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L104">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/DirectoryListingV1.xsd&quot;)</span>
+<span class="fc" id="L105">            .build(),</span>
+<span class="fc" id="L106">        byPackage(org.bremersee.garmin.eula.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L107">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/Eulav1.xsd&quot;)</span>
+<span class="fc" id="L108">            .build(),</span>
+<span class="fc" id="L109">        byPackage(org.bremersee.garmin.fatcalorie.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L110">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/fatcalorieextensionv1.xsd&quot;)
+<span class="fc" id="L112">            .build(),</span>
+<span class="fc" id="L113">        byPackage(</span>
+<span class="fc" id="L114">            org.bremersee.garmin.fitnessdevicelimits.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L115">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/FitnessDeviceLimitsv1.xsd&quot;)
+<span class="fc" id="L117">            .build(),</span>
+<span class="fc" id="L118">        byPackage(org.bremersee.garmin.flightplan.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L119">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/FlightPlanv1.xsd&quot;)</span>
+<span class="fc" id="L120">            .build(),</span>
+<span class="fc" id="L121">        byPackage(org.bremersee.garmin.forerunnerlogbook.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L122">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/ForerunnerLogbookv1.xsd&quot;)</span>
+<span class="fc" id="L123">            .build(),</span>
+<span class="fc" id="L124">        byPackage(org.bremersee.garmin.garmindevice.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L125">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/GarminDeviceExtensionv1.xsd&quot;)
+<span class="fc" id="L127">            .build(),</span>
+<span class="fc" id="L128">        byPackage(org.bremersee.garmin.garmindevice.v2.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L129">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/GarminDeviceExtensionv2.xsd&quot;)
+<span class="fc" id="L131">            .build(),</span>
+<span class="fc" id="L132">        byPackage(org.bremersee.garmin.garmindevice.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L133">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/GarminDevicev1.xsd&quot;)</span>
+<span class="fc" id="L134">            .build(),</span>
+<span class="fc" id="L135">        byPackage(org.bremersee.garmin.garmindevice.v2.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L136">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/GarminDevicev2.xsd&quot;)</span>
+<span class="fc" id="L137">            .build(),</span>
+<span class="fc" id="L138">        byPackage(</span>
+<span class="fc" id="L139">            org.bremersee.garmin.garminmobileapppath.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L140">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/GarminMobileAppPathExtensionv1.xsd&quot;)
+<span class="fc" id="L142">            .build(),</span>
+<span class="fc" id="L143">        byPackage(org.bremersee.garmin.garminoemdevice.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L144">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/GarminOEMDeviceExtensionv1.xsd&quot;)
+<span class="fc" id="L146">            .build(),</span>
+<span class="fc" id="L147">        byPackage(</span>
+<span class="fc" id="L148">            org.bremersee.garmin.garmintexttranslation.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L149">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/GarminTextTranslationv1.xsd&quot;)
+<span class="fc" id="L151">            .build(),</span>
+<span class="fc" id="L152">        byPackage(org.bremersee.garmin.ggz.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L153">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/ggz.xsd&quot;)</span>
+<span class="fc" id="L154">            .build(),</span>
+<span class="fc" id="L155">        byPackage(org.bremersee.garmin.gpx.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L156">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/GpxExtensionsv1.xsd&quot;)</span>
+<span class="fc" id="L157">            .build(),</span>
+<span class="fc" id="L158">        byPackage(org.bremersee.garmin.gpx.v2.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L159">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/GpxExtensionsv2.xsd&quot;)</span>
+<span class="fc" id="L160">            .build(),</span>
+<span class="fc" id="L161">        byPackage(org.bremersee.garmin.gpx.v3.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L162">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/GpxExtensionsv3.xsd&quot;)</span>
+<span class="fc" id="L163">            .build(),</span>
+<span class="fc" id="L164">        byPackage(</span>
+<span class="fc" id="L165">            org.bremersee.garmin.hardwareversion.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L166">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/HardwareVersionExtensionv1.xsd&quot;)
+<span class="fc" id="L168">            .build(),</span>
+<span class="fc" id="L169">        byPackage(org.bremersee.garmin.historydatabase.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L170">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/HistoryDatabasev1.xsd&quot;)</span>
+<span class="fc" id="L171">            .build(),</span>
+<span class="fc" id="L172">        byPackage(org.bremersee.garmin.ifix.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L173">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/iFixExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L174">            .build(),</span>
+<span class="fc" id="L175">        byPackage(org.bremersee.garmin.mobile.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L176">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/MobileExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L177">            .build(),</span>
+<span class="fc" id="L178">        byPackage(org.bremersee.garmin.power.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L179">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/PowerExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L180">            .build(),</span>
+<span class="fc" id="L181">        byPackage(org.bremersee.garmin.pressure.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L182">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/PressureExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L183">            .build(),</span>
+<span class="fc" id="L184">        byPackage(org.bremersee.garmin.trackpoint.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L185">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/TrackPointExtensionv1.xsd&quot;)
+<span class="fc" id="L187">            .build(),</span>
+<span class="fc" id="L188">        byPackage(org.bremersee.garmin.trackpoint.v2.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L189">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/TrackPointExtensionv2.xsd&quot;)
+<span class="fc" id="L191">            .build(),</span>
+<span class="fc" id="L192">        byPackage(org.bremersee.garmin.trackstats.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L193">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/TrackStatsExtension.xsd&quot;)</span>
+<span class="fc" id="L194">            .build(),</span>
+<span class="fc" id="L195">        byPackage(org.bremersee.garmin.trip.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L196">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/TripExtensionsv1.xsd&quot;)</span>
+<span class="fc" id="L197">            .build(),</span>
+<span class="fc" id="L198">        byPackage(org.bremersee.garmin.tripmetadata.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L199">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/TripMetaDataExtensionsv1.xsd&quot;)
+<span class="fc" id="L201">            .build(),</span>
+<span class="fc" id="L202">        byPackage(org.bremersee.garmin.useraccounts.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L203">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/UserAccountsExtensionv1.xsd&quot;)
+<span class="fc" id="L205">            .build(),</span>
+<span class="fc" id="L206">        byPackage(org.bremersee.garmin.userprofile.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L207">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/UserProfileExtensionv1.xsd&quot;)
+<span class="fc" id="L209">            .build(),</span>
+<span class="fc" id="L210">        byPackage(org.bremersee.garmin.userprofile.v2.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L211">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/UserProfileExtensionv2.xsd&quot;)
+<span class="fc" id="L213">            .build(),</span>
+<span class="fc" id="L214">        byPackage(</span>
+<span class="fc" id="L215">            org.bremersee.garmin.userprofilepower.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L216">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/UserProfilePowerExtensionv1.xsd&quot;)
+<span class="fc" id="L218">            .build(),</span>
+<span class="fc" id="L219">        byPackage(org.bremersee.garmin.viapointtransportationmode.v1.model.ext.ObjectFactory.class</span>
+<span class="fc" id="L220">            .getPackage())</span>
+<span class="fc" id="L221">            .schemaLocation(</span>
+                &quot;https://bremersee.github.io/xmlschemas/garmin/ViaPointTransportationModeExtensionsv1.xsd&quot;)
+<span class="fc" id="L223">            .build(),</span>
+<span class="fc" id="L224">        byPackage(org.bremersee.garmin.video.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L225">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/VideoExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L226">            .build(),</span>
+<span class="fc" id="L227">        byPackage(org.bremersee.garmin.waypoint.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L228">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/WaypointExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L229">            .build(),</span>
+<span class="fc" id="L230">        byPackage(org.bremersee.garmin.weblink.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L231">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/WebLinkExtensionsv1.xsd&quot;)</span>
+<span class="fc" id="L232">            .build(),</span>
+<span class="fc" id="L233">        byPackage(org.bremersee.garmin.workout.v1.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L234">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/WorkoutDatabasev1.xsd&quot;)</span>
+<span class="fc" id="L235">            .build(),</span>
+<span class="fc" id="L236">        byPackage(org.bremersee.garmin.workout.v1.model.ext.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L237">            .schemaLocation(&quot;https://bremersee.github.io/xmlschemas/garmin/WorkoutExtensionv1.xsd&quot;)</span>
+<span class="fc" id="L238">            .build()</span>
+    );
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
