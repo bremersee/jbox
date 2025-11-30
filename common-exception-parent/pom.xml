@@ -16,7 +16,7 @@
   <name>Common Exception Parent Module</name>
   <description>Common Exception Project</description>
   <inceptionYear>2022</inceptionYear>
-  <url>https://github.com/bremersee/common-exception-handling</url>
+  <url>https://bremersee.github.io/jbox/common-exception-parent/index.html</url>
 
   <modules>
     <module>common-exception</module>

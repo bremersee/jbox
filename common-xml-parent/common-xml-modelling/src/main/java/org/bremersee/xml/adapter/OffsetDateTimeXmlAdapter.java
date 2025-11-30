@@ -32,6 +32,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 public class OffsetDateTimeXmlAdapter extends XmlAdapter<String, OffsetDateTime> {
 
+  /**
+   * Instantiates a new offset date time xml adapter.
+   */
+  public OffsetDateTimeXmlAdapter() {
+  }
+
   @Override
   public OffsetDateTime unmarshal(String v) throws Exception {
     return v == null

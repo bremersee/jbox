@@ -13,7 +13,7 @@
   <artifactId>jbox-bundle</artifactId>
   <name>JBox Bundle</name>
   <description>Dependency management of bremersee's libraries</description>
-  <url>https://github.com/bremersee/lib-bundle</url>
+  <url>https://bremersee.github.io/jbox/jbox-bundle/index.html</url>
   <inceptionYear>2025</inceptionYear>
   <packaging>pom</packaging>
 

@@ -16,7 +16,7 @@
   <name>Common Xml Parent Module</name>
   <description>Common XML Processing Project</description>
   <inceptionYear>2020</inceptionYear>
-  <url>https://github.com/bremersee/common-xml</url>
+  <url>https://bremersee.github.io/jbox/common-xml-parent/index.html</url>
 
   <modules>
     <module>common-xml-modelling</module>

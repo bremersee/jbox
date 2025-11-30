@@ -13,8 +13,9 @@
   <artifactId>common-service-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>common-service-parent</name>
+  <name>Common Service Parent</name>
   <description>Common parent module of spring boot services.</description>
+  <url>https://bremersee.github.io/jbox/common-service-parent/index.html</url>
 
   <properties>
     <!-- Higher versions of dockerfile maven plugin cause errors (tested to version 1.4.10) -->
@@ -58,6 +59,18 @@
       <url>https://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.bremersee</groupId>
+        <artifactId>jbox-bundle</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <pluginManagement>

@@ -16,12 +16,6 @@
 
 package org.bremersee.xml;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEventHandler;
@@ -30,6 +24,12 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.attachment.AttachmentMarshaller;
 import jakarta.xml.bind.attachment.AttachmentUnmarshaller;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 import javax.xml.validation.Schema;
 
 /**
@@ -253,8 +253,8 @@ public interface JaxbContextBuilder {
   /**
    * Build unmarshaller for the given classes with the specified dependencies-resolver. If
    * dependency resolving is turned off, an unmarshaller of the default context (defined by the
-   * added meta-data) will be returned or one that is created with {@link
-   * jakarta.xml.bind.JAXBContext#newInstance(Class[])}*.
+   * added meta-data) will be returned or one that is created with
+   * {@link jakarta.xml.bind.JAXBContext#newInstance(Class[])}*.
    *
    * @param classes the classes that should be processed by the unmarshaller
    * @return the unmarshaller

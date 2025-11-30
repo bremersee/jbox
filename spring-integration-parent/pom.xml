@@ -17,7 +17,7 @@
     This project contains some spring integrations.
   </description>
   <inceptionYear>2015</inceptionYear>
-  <url>https://github.com/bremersee/spring-integration</url>
+  <url>https://bremersee.github.io/jbox/spring-integration-parent/index.html</url>
 
   <modules>
     <module>spring-integration-core</module>

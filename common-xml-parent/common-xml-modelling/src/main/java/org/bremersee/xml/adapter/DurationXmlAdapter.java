@@ -31,6 +31,12 @@ import javax.xml.datatype.DatatypeFactory;
  */
 public class DurationXmlAdapter extends XmlAdapter<String, Duration> {
 
+  /**
+   * Instantiates a new duration xml adapter.
+   */
+  public DurationXmlAdapter() {
+  }
+
   @Override
   public Duration unmarshal(String v) throws Exception {
     return v == null

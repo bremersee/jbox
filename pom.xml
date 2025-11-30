@@ -9,13 +9,12 @@
   <version>5.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>common-parent</name>
+  <name>Common Parent</name>
   <description>Common parent module of bremersee maven projects.</description>
-  <url>https://github.com/bremersee/common-parent</url>
+  <url>https://bremersee.github.io/jbox/index.html</url>
   <inceptionYear>2019</inceptionYear>
 
   <modules>
-    <module>common-service-parent</module>
     <module>common-xml-parent</module>
     <module>common-exception-parent</module>
     <module>comparator</module>
@@ -27,6 +26,7 @@
     <module>gpx-model</module>
     <module>kml-model</module>
     <module>jbox-bundle</module>
+    <module>common-service-parent</module>
   </modules>
 
   <properties>
@@ -48,7 +48,7 @@
     <java.version>17</java.version>
 
     <!-- see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
-    <argLine>-Dorg.bremersee.test.executor=BUILD_SYSTEM</argLine> <!-- NOT_SPECIFIED -->
+    <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine> <!-- BUILD_SYSTEM -->
 
     <product.vendor>bremersee.org</product.vendor>
 
@@ -151,7 +151,7 @@
   </licenses>
 
   <scm>
-    <url>https://github.com/bremersee/jbox</url>
+    <url>https://github.com/bremersee/jbox/tree/develop</url>
     <connection>scm:git:git://github.com/bremersee/jbox.git</connection>
     <developerConnection>scm:git:git@github.com:bremersee/jbox.git</developerConnection>
   </scm>
@@ -291,11 +291,6 @@
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
         <version>${mock-server.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.modelmapper</groupId>
-        <artifactId>modelmapper</artifactId>
-        <version>${modelmapper.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.maxschuster</groupId>
@@ -802,7 +797,6 @@
         <version>${maven-checkstyle-plugin.version}</version>
         <configuration>
           <configLocation>${check-style-location}</configLocation>
-          <encoding>UTF-8</encoding>
           <inputEncoding>UTF-8</inputEncoding>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <consoleOutput>true</consoleOutput>

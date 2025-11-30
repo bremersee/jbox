@@ -19,7 +19,7 @@
     This project contains modules for reading and writing GeoJSON.
   </description>
   <inceptionYear>2015</inceptionYear>
-  <url>https://github.com/bremersee/geojson</url>
+  <url>https://bremersee.github.io/jbox/geojson-parent/index.html</url>
 
   <modules>
     <module>geojson-model</module>

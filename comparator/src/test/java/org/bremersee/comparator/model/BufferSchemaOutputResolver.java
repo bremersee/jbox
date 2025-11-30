@@ -16,11 +16,11 @@
 
 package org.bremersee.comparator.model;
 
+import jakarta.xml.bind.SchemaOutputResolver;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import jakarta.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 

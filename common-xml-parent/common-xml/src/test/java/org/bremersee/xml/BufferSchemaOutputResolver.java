@@ -16,10 +16,10 @@
 
 package org.bremersee.xml;
 
+import jakarta.xml.bind.SchemaOutputResolver;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 

@@ -18,10 +18,10 @@ package org.bremersee.comparator;
 
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
+import jakarta.xml.bind.annotation.XmlSchema;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import jakarta.xml.bind.annotation.XmlSchema;
 import org.bremersee.comparator.model.ObjectFactory;
 import org.bremersee.xml.JaxbContextDataProvider;
 import org.bremersee.xml.JaxbContextMember;
