@@ -176,7 +176,7 @@
     <site>
       <id>bremersee-sites</id>
       <url>
-        dav:https://nexus.bremersee.org/repository/maven-sites/common-parent/
+        dav:https://nexus.bremersee.org/repository/maven-sites/common-parent/${project.version}
       </url>
     </site>
   </distributionManagement>
