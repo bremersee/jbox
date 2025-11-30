@@ -43,7 +43,7 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-web</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

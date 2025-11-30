@@ -47,7 +47,7 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-exception-spring-web</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
     <dependency>
       <groupId>io.github.openfeign</groupId>

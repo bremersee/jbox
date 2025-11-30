@@ -62,13 +62,13 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>geojson</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>geojson-spring-data-mongodb</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
 

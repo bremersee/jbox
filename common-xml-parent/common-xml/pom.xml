@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-xml-modelling</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
 
     <dependency>

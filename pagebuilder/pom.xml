@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>comparator</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-xml</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <scope>test</scope>
     </dependency>
 

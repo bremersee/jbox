@@ -56,12 +56,12 @@
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-data-mongodb</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-boot-autoconfigure</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

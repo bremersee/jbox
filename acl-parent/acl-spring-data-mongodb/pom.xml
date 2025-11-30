@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>acl</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>

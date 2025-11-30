@@ -48,216 +48,216 @@
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>acl</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>acl-model</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>acl-spring-data-mongodb</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-feign</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-model</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-spring-boot-autoconfigure</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-spring-boot-web-starter</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-spring-boot-webflux-starter</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-spring-web</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-spring-webflux</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception-spring-webmvc</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-modelling</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-spring-boot-autoconfigure</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-spring-boot-web-starter</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-spring-boot-webflux-starter</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-spring-web</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-xml-spring-webflux</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>comparator</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>garmin-model</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>geojson</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>geojson-model</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>geojson-spring-boot-autoconfigure</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>geojson-spring-data-mongodb</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>gpx-model</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>kml-model</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>pagebuilder</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-boot-autoconfigure</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-core</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-data-commons</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-data-mongodb</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-ldaptive</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-minio</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-security</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-security-ldaptive</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-test-api-comparator</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-thymeleaf</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-web</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-webflux</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
 
     </dependencies>

@@ -52,19 +52,19 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-exception-spring-webmvc</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-exception-spring-webflux</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-exception-feign</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
 

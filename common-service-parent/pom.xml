@@ -21,7 +21,7 @@
     <!-- Higher versions of dockerfile maven plugin cause errors (tested to version 1.4.10) -->
     <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version> <!-- TODO test 1.4.13 -->
     <dockerfile.skip>true</dockerfile.skip>
-    <dockerfile.tag>${project.version}</dockerfile.tag>
+    <dockerfile.tag></dockerfile.tag>
     <dockerfile.image>${project.artifactId}</dockerfile.image>
     <dockerfile.repository>docker.io/bremersee/${dockerfile.image}</dockerfile.repository>
 
@@ -65,7 +65,7 @@
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>jbox-bundle</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

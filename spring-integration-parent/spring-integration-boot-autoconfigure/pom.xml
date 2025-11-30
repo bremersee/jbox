@@ -68,61 +68,61 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-core</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-data-commons</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-data-mongodb</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-ldaptive</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-security</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-security-ldaptive</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-minio</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-thymeleaf</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-web</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-webflux</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>
 

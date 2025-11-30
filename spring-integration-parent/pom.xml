@@ -65,12 +65,12 @@
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>common-exception</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>comparator</artifactId>
-        <version>${project.version}</version>
+        <version>${jbox.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

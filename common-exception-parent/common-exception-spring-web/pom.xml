@@ -47,12 +47,12 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-exception</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>common-exception-model</artifactId>
-      <version>${project.version}</version>
+      <version>${jbox.version}</version>
     </dependency>
 
     <dependency>
