@@ -11,7 +11,7 @@ pipeline {
     DEPLOY_FEATURE = false
   }
   tools {
-    jdk 'jdk25'
+    jdk 'jdk21'
     maven 'm3'
   }
   options {
