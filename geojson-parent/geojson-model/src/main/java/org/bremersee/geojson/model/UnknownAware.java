@@ -101,6 +101,7 @@ public abstract class UnknownAware {
    * @param clazz the expected result class
    * @return an empty optional if the value was not found or can not be casted, otherwise the value
    */
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public <T> Optional<T> findUnknown(String jsonPath, Class<T> clazz) {
     if (!hasUnknown() || !isJsonPath(jsonPath) || clazz == null) {
       return Optional.empty();
@@ -116,7 +117,6 @@ public abstract class UnknownAware {
       }
       if (value instanceof Map && tokenizer.hasMoreTokens()) {
         try {
-          //noinspection unchecked,rawtypes
           tmpUnknown = (Map) value;
         } catch (Exception e) {
           return Optional.empty();
@@ -138,15 +138,15 @@ public abstract class UnknownAware {
    *
    * @param <E> the list element type
    * @param jsonPath the json path, e. g. {@code $.firstKey.secondKey.thirdKey}
-   * @param clazz he list element type
+   * @param clazz the list element type
    * @return an empty optional if the list was not found or can not be casted, otherwise the list
    */
+  @SuppressWarnings({"Convert2MethodRef", "unchecked"})
   public <E> Optional<List<E>> findUnknownList(String jsonPath, Class<E> clazz) {
     if (clazz == null) {
       return Optional.empty();
     }
     try {
-      //noinspection unchecked,Convert2MethodRef
       return findUnknown(jsonPath, List.class).map(
           list -> Collections.unmodifiableList(list));
 
@@ -159,7 +159,7 @@ public abstract class UnknownAware {
    * Find a map / json object from the unknown map.
    *
    * @param jsonPath the json path, e. g. {@code $.firstKey.secondKey.thirdKey}
-   * @return an empty optional if the map / json object was not found or can not be casted,
+   * @return an empty optional if the map / json object was not found or can not be cast,
    *     otherwise the map / json object
    */
   public Optional<Map<String, Object>> findUnknownMap(String jsonPath) {

@@ -221,16 +221,6 @@ public class MinioRepositoryImpl implements MinioRepository {
         });
   }
 
-  private static void delete(MultipartFile multipartFile) {
-    if (multipartFile != null && multipartFile.getResource().isFile()) {
-      try {
-        Files.delete(multipartFile.getResource().getFile().toPath());
-      } catch (Exception ignored) {
-        // ignored
-      }
-    }
-  }
-
   @Override
   public boolean exists(MinioObjectId id) {
     return minio.objectExists(StatObjectArgs.builder()
@@ -295,6 +285,16 @@ public class MinioRepositoryImpl implements MinioRepository {
         .object(id.getName())
         .versionId(id.getVersionId())
         .build());
+  }
+
+  private static void delete(MultipartFile multipartFile) {
+    if (multipartFile != null && multipartFile.getResource().isFile()) {
+      try {
+        Files.delete(multipartFile.getResource().getFile().toPath());
+      } catch (Exception ignored) {
+        // ignored
+      }
+    }
   }
 
   @Override

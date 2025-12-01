@@ -16,9 +16,9 @@
 
 package org.bremersee.xml.test.model.xml1;
 
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.util.Objects;
 
 /**
  * The person.

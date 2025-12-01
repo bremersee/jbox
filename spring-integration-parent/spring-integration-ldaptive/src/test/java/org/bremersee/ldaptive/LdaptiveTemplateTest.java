@@ -263,7 +263,8 @@ class LdaptiveTemplateTest {
     assertNotNull(initPasswd);
 
     String newPasswd = initPasswd + "Pass1234";
-    assertThrows(ServiceException.class, () -> ldaptiveTemplate.modifyUserPassword(dn, "wrong", newPasswd));
+    assertThrows(ServiceException.class, () -> ldaptiveTemplate
+        .modifyUserPassword(dn, "wrong", newPasswd));
   }
 
   /**

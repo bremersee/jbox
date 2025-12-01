@@ -204,7 +204,6 @@ public abstract class ConverterUtils {
     return OffsetDateTime.ofInstant(xmlCalendarToInstant(xmlGregorianCalendar), ZoneOffset.UTC);
   }
 
-
   /**
    * Calendar to xml calendar.
    *
@@ -306,7 +305,6 @@ public abstract class ConverterUtils {
     }
     return dateToXmlCalendar(new Date(millis), zone, locale);
   }
-
 
   /**
    * Instant to xml calendar.

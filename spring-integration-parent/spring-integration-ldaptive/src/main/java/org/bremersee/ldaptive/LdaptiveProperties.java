@@ -223,7 +223,6 @@ public class LdaptiveProperties {
     return new DefaultConnectionFactory(createConnectionConfig());
   }
 
-
   /**
    * The reconnection strategy.
    */

@@ -82,15 +82,16 @@ class Jaxb2HttpMessageCodecAutoConfigurationTest {
     verify(configurer, never()).customCodecs();
   }
 
+  @SuppressWarnings("unchecked")
   private static ObjectProvider<JaxbContextBuilder> jaxbContextBuilder(
       JaxbContextBuilder jaxbContextBuilder) {
 
-    //noinspection unchecked
     ObjectProvider<JaxbContextBuilder> provider = mock(ObjectProvider.class);
     when(provider.getIfAvailable()).thenReturn(jaxbContextBuilder);
     return provider;
   }
 
+  @SuppressWarnings("unchecked")
   private static ObjectProvider<JaxbReadWriteConfigurer> readWriteConfigurers() {
     List<JaxbReadWriteConfigurer> configurers = List.of(
         new JaxbReadWriteConfigurer() {
@@ -116,7 +117,6 @@ class Jaxb2HttpMessageCodecAutoConfigurationTest {
           }
         }
     );
-    //noinspection unchecked
     ObjectProvider<JaxbReadWriteConfigurer> provider = mock(ObjectProvider.class);
     when(provider.stream())
         .then((Answer<Stream<JaxbReadWriteConfigurer>>) invocationOnMock -> configurers.stream());

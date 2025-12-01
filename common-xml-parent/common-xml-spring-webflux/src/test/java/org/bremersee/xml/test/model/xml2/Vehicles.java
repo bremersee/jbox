@@ -16,9 +16,6 @@
 
 package org.bremersee.xml.test.model.xml2;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -26,6 +23,9 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * The vehicles.
@@ -48,7 +48,7 @@ public class Vehicles {
 
   @XmlElementWrapper(name = "list")
   @XmlElement(name = "vehicle")
-  private List<Vehicle> entries = new ArrayList<>();
+  private final List<Vehicle> entries = new ArrayList<>();
 
   /**
    * Gets series.

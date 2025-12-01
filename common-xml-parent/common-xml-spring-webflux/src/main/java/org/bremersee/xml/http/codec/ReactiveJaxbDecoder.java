@@ -84,7 +84,6 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
 
   private static final XMLInputFactory inputFactory = StaxUtils.createDefensiveInputFactory();
 
-
   private final XmlEventDecoder xmlEventDecoder = new XmlEventDecoder();
 
   private final JaxbContextBuilder jaxbContextBuilder;
@@ -143,7 +142,6 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
     return this.maxInMemorySize;
   }
 
-
   @Override
   public boolean canDecode(
       @NonNull ResolvableType elementType,
@@ -170,7 +168,7 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
         inputStream, ResolvableType.forClass(XMLEvent.class), mimeType, hints);
 
     Class<?> outputClass = elementType.toClass();
-    QName typeName = toQName(outputClass);
+    QName typeName = toQualifiedName(outputClass);
     Flux<List<XMLEvent>> splitEvents = split(xmlEventFlux, typeName);
 
     return splitEvents.map(events -> {
@@ -213,7 +211,6 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
       @Nullable MimeType mimeType,
       @Nullable Map<String, Object> hints) {
 
-    //noinspection NullableInLambdaInTransform
     return DataBufferUtils.join(input, this.maxInMemorySize)
         .map(dataBuffer -> decode(dataBuffer, elementType, mimeType, hints));
   }
@@ -242,7 +239,7 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
    * @param outputClass the output class
    * @return the q name
    */
-  QName toQName(Class<?> outputClass) {
+  QName toQualifiedName(Class<?> outputClass) {
     String localPart;
     String namespaceUri;
 

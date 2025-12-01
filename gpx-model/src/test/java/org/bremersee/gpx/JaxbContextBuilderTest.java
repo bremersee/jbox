@@ -18,7 +18,6 @@ package org.bremersee.gpx;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -91,6 +90,9 @@ class JaxbContextBuilderTest {
     address.setCountry("Italy");
     address.setCountry("Rom");
 
+    LinkType link = new LinkType();
+    link.setHref("http://localhost");
+
     WaypointExtension waypointExtension = new WaypointExtension();
     waypointExtension.setCategories(categories);
     waypointExtension.setAddress(address);
@@ -98,9 +100,6 @@ class JaxbContextBuilderTest {
     ExtensionsType extensionsType = ExtensionsTypeBuilder.newInstance()
         .addElement(waypointExtension, jaxbContextBuilder.buildMarshaller(waypointExtension))
         .build(true);
-
-    LinkType link = new LinkType();
-    link.setHref("http://localhost");
 
     WptType wpt = new WptType();
     wpt.setLat(new BigDecimal("52.4"));

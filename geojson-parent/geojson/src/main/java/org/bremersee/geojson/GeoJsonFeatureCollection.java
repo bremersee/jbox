@@ -178,7 +178,8 @@ public class GeoJsonFeatureCollection<G extends Geometry, P> extends UnknownAwar
   GeoJsonFeatureCollection(
       @JsonProperty(value = GeoJsonConstants.TYPE, required = true) String type,
       @JsonProperty(GeoJsonConstants.BBOX) double[] bbox,
-      @JsonProperty(GeoJsonConstants.FEATURES) Collection<? extends GeoJsonFeature<G, P>> features) {
+      @JsonProperty(GeoJsonConstants.FEATURES)
+      Collection<? extends GeoJsonFeature<G, P>> features) {
 
     this(bbox, features, null);
     if (!GeoJsonConstants.FEATURE_COLLECTION.equals(type)) {
@@ -278,8 +279,8 @@ public class GeoJsonFeatureCollection<G extends Geometry, P> extends UnknownAwar
         + '}';
   }
 
+  @SuppressWarnings("unchecked")
   private static List<Geometry> getGeometries(Collection<?> features) {
-    //noinspection unchecked
     return Optional.ofNullable(features)
         .stream()
         .flatMap(Collection::stream)

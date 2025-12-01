@@ -134,8 +134,8 @@ public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations, Clo
       AddOperation.builder()
           .factory(connectionFactory)
           .onResult(new FutureAwareResultHandler<>(future, NOT_SUCCESS, errorHandler, r -> r))
-          .onException(
-              ldapException -> future.completeExceptionally(errorHandler.map(ldapException)))
+          .onException(ldapException -> future
+              .completeExceptionally(errorHandler.map(ldapException)))
           .build()
           .send(addRequest);
 

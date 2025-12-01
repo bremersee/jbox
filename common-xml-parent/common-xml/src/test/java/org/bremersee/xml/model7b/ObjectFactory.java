@@ -27,22 +27,47 @@ import jakarta.xml.bind.annotation.XmlRegistry;
 @SuppressWarnings("unused")
 public class ObjectFactory {
 
+  /**
+   * Create mountain bike.
+   *
+   * @return the mountain bike
+   */
   public MountainBike createMountainBike() {
     return new MountainBike();
   }
 
+  /**
+   * Create racing bike.
+   *
+   * @return the racing bike
+   */
   public RacingBike createRacingBike() {
     return new RacingBike();
   }
 
+  /**
+   * Create sport bikes.
+   *
+   * @return the sport bikes
+   */
   public SportBikes createSportBikes() {
     return new SportBikes();
   }
 
+  /**
+   * Create racing reseller.
+   *
+   * @return the racing reseller
+   */
   public RacingReseller createRacingReseller() {
     return new RacingReseller();
   }
 
+  /**
+   * Create reseller dirt bike reseller.
+   *
+   * @return the dirt bike reseller
+   */
   public DirtBikeReseller createDirtBikeReseller() {
     return new DirtBikeReseller();
   }

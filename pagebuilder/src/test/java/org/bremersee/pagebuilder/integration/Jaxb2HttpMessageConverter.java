@@ -63,6 +63,7 @@ public class Jaxb2HttpMessageConverter extends AbstractXmlHttpMessageConverter<O
     return jaxbContextBuilder.canMarshal(clazz) && this.canWrite(mediaType);
   }
 
+  @Override
   protected boolean supports(@NonNull Class<?> clazz) {
     throw new UnsupportedOperationException();
   }
@@ -87,6 +88,7 @@ public class Jaxb2HttpMessageConverter extends AbstractXmlHttpMessageConverter<O
     }
   }
 
+  @Override
   protected void writeToResult(@NonNull Object o, HttpHeaders headers, @NonNull Result result)
       throws Exception {
     try {

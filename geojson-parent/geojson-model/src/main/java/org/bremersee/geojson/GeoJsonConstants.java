@@ -68,7 +68,6 @@ public abstract class GeoJsonConstants {
    */
   public static final String FEATURE_COLLECTION = "FeatureCollection";
 
-
   /**
    * The constant TYPE.
    */
@@ -108,7 +107,6 @@ public abstract class GeoJsonConstants {
    * The constant PROPERTIES.
    */
   public static final String PROPERTIES = "properties";
-
 
   private GeoJsonConstants() {
   }

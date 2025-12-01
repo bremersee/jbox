@@ -418,6 +418,7 @@ public class GeoJsonGeometryFactory extends GeometryFactory {
    * @param geometries the geometries
    * @return {@code null} if the bounding box can not be calculated, otherwise the bounding box
    */
+  @SuppressWarnings("ForLoopReplaceableByForEach")
   public static double[] getBoundingBox(Collection<? extends Geometry> geometries) {
     if (isNull(geometries) || geometries.isEmpty()) {
       return null;
@@ -431,7 +432,6 @@ public class GeoJsonGeometryFactory extends GeometryFactory {
     for (Geometry geometry : geometries) {
       if (geometry != null && geometry.getCoordinates() != null) {
         Coordinate[] coords = geometry.getCoordinates();
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < coords.length; i++) {
           if (Double.isNaN(minX)) {
             minX = coords[i].getX();

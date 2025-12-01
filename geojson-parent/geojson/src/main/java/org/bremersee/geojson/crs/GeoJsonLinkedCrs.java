@@ -45,7 +45,6 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    */
   public static final String TYPE_OGC_WKT = "ogcwkt";
 
-
   /**
    * The coordinate reference system (CRS) with type <code>esriwkt</code>.
    */

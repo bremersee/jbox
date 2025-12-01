@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -57,15 +56,7 @@ class SchemaBuilderTest {
   @Test
   void buildSchemaWithLocation(SoftAssertions softly) {
 
-    ClassLoader classLoader;
-    if (System.getSecurityManager() == null) {
-      classLoader = Thread.currentThread().getContextClassLoader();
-    } else {
-      //noinspection unchecked,rawtypes
-      classLoader = (ClassLoader) java.security.AccessController.doPrivileged(
-          (PrivilegedAction) () -> Thread.currentThread().getContextClassLoader());
-    }
-
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     SchemaBuilder builder = SchemaBuilder.newInstance()
         .withSchemaLanguage(XMLConstants.W3C_XML_SCHEMA_NS_URI)
         .withFactory(null)

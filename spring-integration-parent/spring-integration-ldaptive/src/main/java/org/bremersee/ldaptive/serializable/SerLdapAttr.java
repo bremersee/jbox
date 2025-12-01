@@ -142,7 +142,6 @@ public class SerLdapAttr implements Serializable {
     return attributeValues.isEmpty() ? null : attributeValues.iterator().next();
   }
 
-
   /**
    * Returns the values of this attribute as byte arrays. The return collection cannot be modified.
    *
@@ -161,7 +160,6 @@ public class SerLdapAttr implements Serializable {
   public boolean hasValue(final byte[] value) {
     return attributeValues.stream().anyMatch(bb -> Arrays.equals(bb, value));
   }
-
 
   /**
    * Returns whether the supplied value exists in this attribute.

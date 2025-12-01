@@ -16,7 +16,6 @@
 
 package org.bremersee.spring.data.convert;
 
-
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.Objects;

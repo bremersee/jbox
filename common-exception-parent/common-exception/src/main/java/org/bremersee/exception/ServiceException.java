@@ -186,7 +186,6 @@ public class ServiceException extends RuntimeException
         .build();
   }
 
-
   /**
    * Bad request service exception.
    *

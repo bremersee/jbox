@@ -53,7 +53,6 @@ public class LdaptiveException extends ServiceException implements HttpStatusAwa
     super(httpStatus, errorCode, reason, cause);
   }
 
-
   /**
    * Gets ldap exception (can be {@code null}).
    *

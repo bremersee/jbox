@@ -67,7 +67,7 @@ public interface ExtensionsTypeBuilder {
   ExtensionsTypeBuilder addElement(Object extensionElement, Marshaller marshaller);
 
   /**
-   * Build extensions
+   * Build extensions.
    *
    * @param returnNullIfEmpty the return null if empty
    * @return the extensions type

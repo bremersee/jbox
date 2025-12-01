@@ -196,7 +196,6 @@ class JaxbContextBuilderImpl implements JaxbContextBuilder {
         .orElse(this);
   }
 
-
   @Override
   public Unmarshaller buildUnmarshaller(Class<?>... classes) {
     if (!isEmpty(classes)) {

@@ -130,7 +130,8 @@ class DefaultMinioErrorHandlerTest {
     assertEquals(404, me.status());
 
     me = handler.map(new ErrorResponseException(
-        new ErrorResponse("BucketAlreadyExists", "message", "bucket", "object", "123", "456", "789"),
+        new ErrorResponse("BucketAlreadyExists", "message", "bucket", "object", "123", "456",
+            "789"),
         new Response.Builder()
             .protocol(Protocol.HTTP_1_1)
             .code(500)
@@ -143,7 +144,8 @@ class DefaultMinioErrorHandlerTest {
     assertEquals(409, me.status());
 
     me = handler.map(new ErrorResponseException(
-        new ErrorResponse(UUID.randomUUID().toString(), "message", "bucket", "object", "123", "456", "789"),
+        new ErrorResponse(UUID.randomUUID().toString(), "message", "bucket", "object", "123", "456",
+            "789"),
         new Response.Builder()
             .protocol(Protocol.HTTP_1_1)
             .code(500)

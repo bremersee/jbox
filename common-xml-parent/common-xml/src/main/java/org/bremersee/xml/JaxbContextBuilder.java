@@ -44,7 +44,6 @@ public interface JaxbContextBuilder {
    */
   JaxbDependenciesResolver DEFAULT_DEPENDENCIES_RESOLVER = new JaxbDependenciesResolverImpl();
 
-
   /**
    * Creates a new jaxb context builder.
    *
@@ -53,7 +52,6 @@ public interface JaxbContextBuilder {
   static JaxbContextBuilder newInstance() {
     return new JaxbContextBuilderImpl();
   }
-
 
   /**
    * Copy jaxb context builder.

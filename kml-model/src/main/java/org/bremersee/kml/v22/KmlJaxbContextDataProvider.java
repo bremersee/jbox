@@ -37,17 +37,17 @@ public class KmlJaxbContextDataProvider implements JaxbContextDataProvider {
   public static final String KML_NS = "http://www.opengis.net/kml/2.2";
 
   /**
-   * The name space of google's kml extension.
+   * The name space of googles kml extension.
    */
   public static final String KML_GX_NS = "http://www.google.com/kml/ext/2.2";
 
   /**
-   * Name space of xAL: eXtensible Address Language
+   * Name space of xAL (eXtensible Address Language).
    */
   public static final String XAL_NS = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0";
 
   /**
-   * Name space of w3.org Atom
+   * Name space of w3.org Atom.
    */
   public static final String ATOM_NS = "http://www.w3.org/2005/Atom";
 

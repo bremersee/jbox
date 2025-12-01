@@ -19,12 +19,12 @@ package org.bremersee.xml;
 import static java.util.Objects.isNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -75,7 +75,7 @@ class XmlDocumentBuilderImpl implements XmlDocumentBuilder {
       Boolean ignoringElementContentWhitespace,
       Boolean namespaceAware,
       Boolean validating,
-      Boolean xIncludeAware) {
+      Boolean xmlIncludeAware) {
 
     if (!isEmpty(coalescing)) {
       factory.setCoalescing(coalescing);
@@ -95,8 +95,8 @@ class XmlDocumentBuilderImpl implements XmlDocumentBuilder {
     if (!isEmpty(validating)) {
       factory.setValidating(validating);
     }
-    if (!isEmpty(xIncludeAware)) {
-      factory.setXIncludeAware(xIncludeAware);
+    if (!isEmpty(xmlIncludeAware)) {
+      factory.setXIncludeAware(xmlIncludeAware);
     }
     return this;
   }

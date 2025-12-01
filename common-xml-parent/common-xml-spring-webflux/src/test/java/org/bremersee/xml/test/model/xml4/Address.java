@@ -16,9 +16,9 @@
 
 package org.bremersee.xml.test.model.xml4;
 
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.util.Objects;
 
 /**
  * The address.

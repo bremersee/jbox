@@ -50,7 +50,8 @@ public interface LdaptiveRememberMeTokenProvider {
    */
   class InvalidRememberMeTokenProvider implements LdaptiveRememberMeTokenProvider {
 
-    private static final InvalidRememberMeTokenProvider INSTANCE = new InvalidRememberMeTokenProvider();
+    private static final InvalidRememberMeTokenProvider INSTANCE
+        = new InvalidRememberMeTokenProvider();
 
     /**
      * Gets instance.

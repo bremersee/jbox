@@ -53,6 +53,7 @@ class Jaxb2HttpMessageConverterAutoConfigurationTest {
    * Jaxb http message converter.
    */
   @Test
+  @SuppressWarnings("unchecked")
   void jaxb2HttpMessageConverter() {
     List<JaxbReadWriteConfigurer> configurers = List.of(
         new JaxbReadWriteConfigurer() {
@@ -78,7 +79,6 @@ class Jaxb2HttpMessageConverterAutoConfigurationTest {
           }
         }
     );
-    //noinspection unchecked
     ObjectProvider<JaxbReadWriteConfigurer> provider = mock(ObjectProvider.class);
     when(provider.stream())
         .then((Answer<Stream<JaxbReadWriteConfigurer>>) invocationOnMock -> configurers.stream());

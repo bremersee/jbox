@@ -14,6 +14,9 @@ import org.bremersee.pagebuilder.model.AbstractSliceDto;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
+/**
+ * The type Animal slice.
+ */
 @XmlRootElement(name = "animalSlice")
 @XmlType(name = "animalSliceType")
 @EqualsAndHashCode(callSuper = true)
@@ -21,23 +24,57 @@ import org.springframework.data.domain.Sort;
 @Schema(description = "An animal slice.")
 public class AnimalSlice extends AbstractSliceDto<Animal> {
 
+  /**
+   * Instantiates a new Animal slice.
+   */
   protected AnimalSlice() {
   }
 
+  /**
+   * Instantiates a new Animal slice.
+   *
+   * @param content the content
+   * @param number the number
+   * @param size the size
+   * @param hasNext the has next
+   */
   public AnimalSlice(List<? extends Animal> content, int number, int size, boolean hasNext) {
     super(content, number, size, hasNext);
   }
 
+  /**
+   * Instantiates a new Animal slice.
+   *
+   * @param content the content
+   * @param number the number
+   * @param size the size
+   * @param hasNext the has next
+   * @param sort the sort
+   */
   public AnimalSlice(List<? extends Animal> content, int number, int size, boolean hasNext,
       SortOrder sort) {
     super(content, number, size, hasNext, sort);
   }
 
+  /**
+   * Instantiates a new Animal slice.
+   *
+   * @param content the content
+   * @param number the number
+   * @param size the size
+   * @param hasNext the has next
+   * @param sort the sort
+   */
   public AnimalSlice(List<? extends Animal> content, int number, int size, boolean hasNext,
       Sort sort) {
     super(content, number, size, hasNext, sort);
   }
 
+  /**
+   * Instantiates a new Animal slice.
+   *
+   * @param slice the slice
+   */
   public AnimalSlice(Slice<? extends Animal> slice) {
     super(slice);
   }
