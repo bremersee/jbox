@@ -32,6 +32,9 @@ public class LdaptiveRememberMeAuthenticationToken
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The delegate.
+   */
   private final LdaptiveAuthentication delegate;
 
   /**

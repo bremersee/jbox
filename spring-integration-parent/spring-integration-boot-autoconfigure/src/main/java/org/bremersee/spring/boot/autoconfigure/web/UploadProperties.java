@@ -42,4 +42,9 @@ public class UploadProperties {
    */
   private File tmpDir = new File(System.getProperty("java.io.tmpdir"));
 
+  /**
+   * Instantiates new upload properties.
+   */
+  public UploadProperties() {
+  }
 }

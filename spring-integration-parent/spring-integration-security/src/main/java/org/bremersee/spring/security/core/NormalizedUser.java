@@ -32,12 +32,24 @@ public class NormalizedUser implements NormalizedPrincipal {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The username of the user.
+   */
   private final String name;
 
+  /**
+   * The first name of the user.
+   */
   private final String firstName;
 
+  /**
+   * The last name of the user.
+   */
   private final String lastName;
 
+  /**
+   * The email of the user.
+   */
   private final String email;
 
   /**

@@ -536,7 +536,6 @@ public interface Acl {
    *
    * @author Christian Bremer
    */
-  @SuppressWarnings("SameNameButDifferent")
   @Getter
   @ToString
   @EqualsAndHashCode

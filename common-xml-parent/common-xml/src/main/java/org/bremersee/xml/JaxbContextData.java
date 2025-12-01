@@ -32,7 +32,6 @@ import org.springframework.util.Assert;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @EqualsAndHashCode
 public final class JaxbContextData implements JaxbContextMember, Comparable<JaxbContextData> {
 

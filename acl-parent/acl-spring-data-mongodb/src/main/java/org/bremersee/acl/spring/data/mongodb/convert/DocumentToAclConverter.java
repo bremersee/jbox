@@ -36,6 +36,12 @@ public class DocumentToAclConverter implements Converter<Document, Acl> {
 
   private final DocumentToAceConverter aceConverter = new DocumentToAceConverter();
 
+  /**
+   * Instantiates a new document to acl converter.
+   */
+  public DocumentToAclConverter() {
+  }
+
   @Override
   public Acl convert(@NonNull Document source) {
     String owner = source.getString(Acl.OWNER);

@@ -27,6 +27,12 @@ import org.springframework.lang.NonNull;
  */
 public class GeometryToStringConverter implements Converter<Geometry, String> {
 
+  /**
+   * Instantiates a new geometry to string converter.
+   */
+  public GeometryToStringConverter() {
+  }
+
   @Override
   public String convert(@NonNull Geometry source) {
     return source.toText();

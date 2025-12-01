@@ -180,6 +180,11 @@ public class LdaptiveConnectionProperties {
      */
     private String authenticationKey;
 
+    /**
+     * Instantiates new ssl properties.
+     */
+    public SslProperties() {
+    }
   }
 
   /**
@@ -235,6 +240,12 @@ public class LdaptiveConnectionProperties {
     private SearchRequestProperties searchRequest = new SearchRequestProperties();
 
     /**
+     * Instantiates new connection validator properties.
+     */
+    public ConnectionValidatorProperties() {
+    }
+
+    /**
      * The search request properties.
      */
     @Data
@@ -266,6 +277,12 @@ public class LdaptiveConnectionProperties {
       private List<String> returnAttributes = new ArrayList<>();
 
       /**
+       * Instantiates new search request properties.
+       */
+      public SearchRequestProperties() {
+      }
+
+      /**
        * The search filter properties.
        */
       @Data
@@ -276,6 +293,11 @@ public class LdaptiveConnectionProperties {
          */
         private String filter;
 
+        /**
+         * Instantiates new search filter properties.
+         */
+        public SearchFilterProperties() {
+        }
       }
     }
   }

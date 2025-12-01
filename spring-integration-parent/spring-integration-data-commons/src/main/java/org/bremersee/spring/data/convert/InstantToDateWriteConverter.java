@@ -34,6 +34,12 @@ import org.springframework.lang.NonNull;
 @ToString
 public class InstantToDateWriteConverter implements Converter<Instant, Date> {
 
+  /**
+   * Instantiates a new instant to date write converter.
+   */
+  public InstantToDateWriteConverter() {
+  }
+
   @Override
   public Date convert(@NonNull Instant instant) {
     return Date.from(instant);

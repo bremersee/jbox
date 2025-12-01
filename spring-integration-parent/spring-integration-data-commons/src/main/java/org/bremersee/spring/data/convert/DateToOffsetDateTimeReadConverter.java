@@ -33,6 +33,12 @@ import org.springframework.data.convert.ReadingConverter;
 @ToString
 public class DateToOffsetDateTimeReadConverter implements Converter<Date, OffsetDateTime> {
 
+  /**
+   * Instantiates a new date to offset date time read converter.
+   */
+  public DateToOffsetDateTimeReadConverter() {
+  }
+
   @Override
   public OffsetDateTime convert(Date date) {
     return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);

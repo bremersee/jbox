@@ -34,6 +34,12 @@ import org.bremersee.xml.JaxbContextMember;
 public class ComparatorJaxbContextDataProvider implements JaxbContextDataProvider {
 
   /**
+   * Instantiates a new jaxb context data provider of comparator model.
+   */
+  public ComparatorJaxbContextDataProvider() {
+  }
+
+  /**
    * Gets namespace.
    *
    * @return the namespace

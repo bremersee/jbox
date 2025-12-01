@@ -69,7 +69,6 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
 
@@ -115,13 +114,10 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
       resolveClasses((Class<?>) value, scanResults);
       return true;
     }
-    if (value instanceof Collection) {
-      Collection<?> collection = (Collection<?>) value;
-      if (!collection.isEmpty()) {
-        for (Object v : collection) {
-          if (!resolveClasses(v, scanResults)) {
-            return true;
-          }
+    if ((value instanceof Collection<?> collection) && !collection.isEmpty()) {
+      for (Object v : collection) {
+        if (!resolveClasses(v, scanResults)) {
+          return true;
         }
       }
       return true;
@@ -317,6 +313,7 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
     return Arrays.stream(EXPLICIT_XML_ANNOTATIONS).anyMatch(element::isAnnotationPresent);
   }
 
+  @SuppressWarnings("ClassCanBeRecord")
   private static class XmlFieldFilter implements FieldFilter {
 
     private final XmlAccessType accessType;
@@ -344,18 +341,16 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
           || field.isAnnotationPresent(XmlTransient.class)) {
         return false;
       }
-      switch (accessType) {
-        case FIELD:
-          return true;
-        case PUBLIC_MEMBER:
-          return isPublic(modifiers) || anyXmlAnnotationPresent(field);
-        default: // PROPERTY, NONE
-          return anyXmlAnnotationPresent(field);
-      }
+      return switch (accessType) {
+        case FIELD -> true;
+        case PUBLIC_MEMBER -> isPublic(modifiers) || anyXmlAnnotationPresent(field);
+        default -> anyXmlAnnotationPresent(field); // PROPERTY, NONE
+      };
     }
 
   }
 
+  @SuppressWarnings("ClassCanBeRecord")
   private static class XmlMethodFilter implements MethodFilter {
 
     private final XmlAccessType accessType;
@@ -385,19 +380,16 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
           || method.isAnnotationPresent(XmlTransient.class)) {
         return false;
       }
-      switch (accessType) {
-        case PROPERTY:
-          return true;
-        case PUBLIC_MEMBER:
-          return isPublic(modifiers) || anyXmlAnnotationPresent(method);
-        default:
-          return anyXmlAnnotationPresent(method);
-      }
+      return switch (accessType) {
+        case PROPERTY -> true;
+        case PUBLIC_MEMBER -> isPublic(modifiers) || anyXmlAnnotationPresent(method);
+        default -> anyXmlAnnotationPresent(method);
+      };
     }
   }
 
-  @SuppressWarnings("SameNameButDifferent")
   @EqualsAndHashCode
+  @SuppressWarnings("ClassCanBeRecord")
   private static class ScanResult {
 
     private final Class<?> clazz;

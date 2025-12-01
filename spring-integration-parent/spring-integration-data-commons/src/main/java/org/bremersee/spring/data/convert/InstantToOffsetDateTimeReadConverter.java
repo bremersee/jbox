@@ -34,6 +34,12 @@ import org.springframework.lang.NonNull;
 @ToString
 public class InstantToOffsetDateTimeReadConverter implements Converter<Instant, OffsetDateTime> {
 
+  /**
+   * Instantiates a new instant to offset date time read converter.
+   */
+  public InstantToOffsetDateTimeReadConverter() {
+  }
+
   @Override
   public OffsetDateTime convert(@NonNull Instant source) {
     return OffsetDateTime.ofInstant(source, ZoneOffset.UTC);

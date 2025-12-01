@@ -21,7 +21,7 @@ package org.bremersee.geojson.crs;
  *
  * @author Christian Bremer
  */
-public class GeoJsonCrsConstants {
+public abstract class GeoJsonCrsConstants {
 
   /**
    * Maximum latitude for mercator projection.
@@ -70,4 +70,10 @@ public class GeoJsonCrsConstants {
    */
   public static final String MERCATOR_CRS_ALT =
       DEFAULT_SPATIAL_AUTHORITY + ":" + MERCATOR_SPATIAL_REFERENCE_ID_ALT;
+
+  /**
+   * Instantiates new geo json crs constants.
+   */
+  private GeoJsonCrsConstants() {
+  }
 }

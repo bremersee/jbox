@@ -28,6 +28,12 @@ import org.springframework.core.convert.converter.Converter;
 public abstract class GeometryConverters {
 
   /**
+   * Instantiates new geometry converters.
+   */
+  private GeometryConverters() {
+  }
+
+  /**
    * Gets converters to register.
    *
    * @param geometryFactory the geometry factory

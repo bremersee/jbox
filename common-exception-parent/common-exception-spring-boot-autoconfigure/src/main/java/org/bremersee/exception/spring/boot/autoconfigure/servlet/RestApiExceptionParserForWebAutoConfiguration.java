@@ -52,6 +52,12 @@ import org.springframework.util.ClassUtils;
 public class RestApiExceptionParserForWebAutoConfiguration {
 
   /**
+   * Instantiates a new rest api exception parser for web autoconfiguration.
+   */
+  public RestApiExceptionParserForWebAutoConfiguration() {
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

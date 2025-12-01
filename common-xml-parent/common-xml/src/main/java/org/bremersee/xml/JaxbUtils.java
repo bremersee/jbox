@@ -36,7 +36,6 @@ import org.springframework.util.Assert;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 abstract class JaxbUtils {
 

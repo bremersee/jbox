@@ -31,6 +31,12 @@ import org.springframework.data.convert.WritingConverter;
 @ToString
 public class LocaleWriteConverter implements Converter<Locale, String> {
 
+  /**
+   * Instantiates a new locale write converter.
+   */
+  public LocaleWriteConverter() {
+  }
+
   @Override
   public String convert(Locale source) {
     return source.toLanguageTag();

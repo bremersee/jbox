@@ -28,6 +28,12 @@ import org.springframework.lang.NonNull;
  */
 public class StringToTimeZoneConverter implements Converter<String, TimeZone> {
 
+  /**
+   * Instantiates a new string to time zone converter.
+   */
+  public StringToTimeZoneConverter() {
+  }
+
   @Override
   public TimeZone convert(@NonNull String source) {
     return TimeZone.getTimeZone(source);

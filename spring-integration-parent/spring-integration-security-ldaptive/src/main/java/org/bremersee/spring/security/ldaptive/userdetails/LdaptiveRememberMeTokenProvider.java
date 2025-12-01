@@ -17,8 +17,6 @@
 package org.bremersee.spring.security.ldaptive.userdetails;
 
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.ldaptive.LdapEntry;
 
 /**
@@ -50,7 +48,6 @@ public interface LdaptiveRememberMeTokenProvider {
    *
    * @author Christian Bremer
    */
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
   class InvalidRememberMeTokenProvider implements LdaptiveRememberMeTokenProvider {
 
     private static final InvalidRememberMeTokenProvider INSTANCE = new InvalidRememberMeTokenProvider();
@@ -62,6 +59,12 @@ public interface LdaptiveRememberMeTokenProvider {
      */
     static InvalidRememberMeTokenProvider getInstance() {
       return INSTANCE;
+    }
+
+    /**
+     * Instantiates a new invalid remember me token provider.
+     */
+    private InvalidRememberMeTokenProvider() {
     }
 
     @Override

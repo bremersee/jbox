@@ -48,6 +48,12 @@ import org.springframework.util.ClassUtils;
 public class RestApiExceptionParserForWebFluxAutoConfiguration {
 
   /**
+   * Instantiates a new rest api exception parser for web flux autoconfiguration.
+   */
+  public RestApiExceptionParserForWebFluxAutoConfiguration() {
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

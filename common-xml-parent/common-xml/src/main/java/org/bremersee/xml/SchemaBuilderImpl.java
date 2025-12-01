@@ -54,7 +54,6 @@ import org.xml.sax.SAXNotSupportedException;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @ToString
 class SchemaBuilderImpl implements SchemaBuilder {

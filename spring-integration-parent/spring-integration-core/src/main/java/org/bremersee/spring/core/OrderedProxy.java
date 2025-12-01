@@ -29,13 +29,19 @@ import org.springframework.core.Ordered;
 public abstract class OrderedProxy {
 
   /**
+   * Instantiates a new ordered proxy.
+   */
+  private OrderedProxy() {
+  }
+
+  /**
    * Create a proxy of the target object that implements {@link Ordered}.
    *
    * @param <T> the type of the proxy
    * @param target the target
    * @param orderedValue the ordered value
-   * @return the type of the proxy; if the target implements one or more interfaces, it must be one of these interfaces,
-   *     otherwise it must be {@link Ordered}
+   * @return the type of the proxy; if the target implements one or more interfaces, it must be one
+   *     of these interfaces,     otherwise it must be {@link Ordered}
    */
   public static <T> T create(Object target, int orderedValue) {
     if (target instanceof Ordered && ((Ordered) target).getOrder() == orderedValue) {

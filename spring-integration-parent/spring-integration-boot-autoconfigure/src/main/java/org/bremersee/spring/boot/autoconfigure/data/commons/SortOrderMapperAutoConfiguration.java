@@ -21,6 +21,12 @@ import org.springframework.util.ClassUtils;
 public class SortOrderMapperAutoConfiguration {
 
   /**
+   * Instantiates a new sort order mapper autoconfiguration.
+   */
+  public SortOrderMapperAutoConfiguration() {
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

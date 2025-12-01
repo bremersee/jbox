@@ -31,6 +31,12 @@ import org.springframework.lang.NonNull;
 @WritingConverter
 public class AceToDocumentConverter implements Converter<Ace, Document> {
 
+  /**
+   * Instantiates a new ace to document converter.
+   */
+  public AceToDocumentConverter() {
+  }
+
   @Override
   public Document convert(@NonNull Ace source) {
     Document target = new Document();

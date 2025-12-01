@@ -27,6 +27,12 @@ import jakarta.xml.bind.annotation.XmlRegistry;
 public class ObjectFactory {
 
   /**
+   * Instantiates a new object factory.
+   */
+  public ObjectFactory() {
+  }
+
+  /**
    * Create sort order.
    *
    * @return the sort order

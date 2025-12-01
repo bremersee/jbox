@@ -107,6 +107,12 @@ public class UserAccountControlValueTranscoder extends AbstractStringValueTransc
         : ((userAccountControlValue & ACCOUNT_DISABLED) != ACCOUNT_DISABLED);
   }
 
+  /**
+   * Instantiates a new user account control value transcoder.
+   */
+  public UserAccountControlValueTranscoder() {
+  }
+
   @Override
   public Integer decodeStringValue(String value) {
     return nonNull(value) && !value.isBlank()

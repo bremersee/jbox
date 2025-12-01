@@ -32,4 +32,9 @@ import org.springframework.data.convert.WritingConverter;
 public class TimeZoneWriteConverter extends TimeZoneToStringConverter
     implements Converter<TimeZone, String> {
 
+  /**
+   * Instantiates a new time zone write converter.
+   */
+  public TimeZoneWriteConverter() {
+  }
 }

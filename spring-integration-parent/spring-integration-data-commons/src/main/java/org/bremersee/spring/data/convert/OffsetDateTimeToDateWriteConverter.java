@@ -33,6 +33,12 @@ import org.springframework.data.convert.WritingConverter;
 @ToString
 public class OffsetDateTimeToDateWriteConverter implements Converter<OffsetDateTime, Date> {
 
+  /**
+   * Instantiates a new offset date time to date write converter.
+   */
+  public OffsetDateTimeToDateWriteConverter() {
+  }
+
   @Override
   public Date convert(OffsetDateTime offsetDateTime) {
     return Date.from(offsetDateTime.toInstant());

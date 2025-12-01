@@ -259,6 +259,12 @@ public interface ComparatorBuilder {
     @SuppressWarnings("rawtypes")
     private final List<Comparator> comparatorChain = new LinkedList<>();
 
+    /**
+     * Instantiates a new default comparator builder.
+     */
+    public DefaultComparatorBuilder() {
+    }
+
     @Override
     public ComparatorBuilder add(Comparator<?> comparator) {
       Optional.ofNullable(comparator)

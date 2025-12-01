@@ -32,4 +32,9 @@ import org.springframework.data.convert.ReadingConverter;
 public class TimeZoneReadConverter extends StringToTimeZoneConverter
     implements Converter<String, TimeZone> {
 
+  /**
+   * Instantiates a new time zone read converter.
+   */
+  public TimeZoneReadConverter() {
+  }
 }

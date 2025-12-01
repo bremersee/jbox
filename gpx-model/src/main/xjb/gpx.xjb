@@ -4,7 +4,7 @@
   xmlns="https://jakarta.ee/xml/ns/jaxb"
   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
+  xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
   extensionBindingPrefixes="xjc inheritance">
 
   <globalBindings>

@@ -17,24 +17,33 @@
 package org.bremersee.xml;
 
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.util.Assert;
 
 /**
  * The schema location.
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @EqualsAndHashCode(of = {"nameSpace"})
-@RequiredArgsConstructor
+@SuppressWarnings("ClassCanBeRecord")
 public final class SchemaLocation implements Comparable<SchemaLocation> {
 
-  @NonNull
   private final String nameSpace;
 
-  @NonNull
   private final String location;
+
+  /**
+   * Instantiates a new schema location.
+   *
+   * @param nameSpace the name space
+   * @param location the location
+   */
+  public SchemaLocation(String nameSpace, String location) {
+    Assert.notNull(nameSpace, "NameSpace must not be null.");
+    Assert.notNull(location, "Location must not be null.");
+    this.nameSpace = nameSpace;
+    this.location = location;
+  }
 
   @Override
   public String toString() {

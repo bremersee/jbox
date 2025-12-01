@@ -47,7 +47,6 @@ import org.springframework.util.Assert;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @EqualsAndHashCode(callSuper = false)
 @ToString(exclude = {"jaxbContext"})
 public class JaxbContextWrapper extends JAXBContext {

@@ -29,4 +29,9 @@ public class UserContainsGroupsTemplate extends WithDefaults {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new user contains groups template.
+   */
+  public UserContainsGroupsTemplate() {
+  }
 }

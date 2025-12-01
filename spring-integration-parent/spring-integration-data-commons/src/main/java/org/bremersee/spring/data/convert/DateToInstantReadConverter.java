@@ -32,6 +32,12 @@ import org.springframework.data.convert.ReadingConverter;
 @ToString
 public class DateToInstantReadConverter implements Converter<Date, Instant> {
 
+  /**
+   * Instantiates a new date to instant read converter.
+   */
+  public DateToInstantReadConverter() {
+  }
+
   @Override
   public Instant convert(Date date) {
     return date.toInstant();

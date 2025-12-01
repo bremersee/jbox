@@ -32,6 +32,12 @@ import org.springframework.lang.NonNull;
 @ReadingConverter
 public class DocumentToAceConverter implements Converter<Document, Ace> {
 
+  /**
+   * Instantiates a new document to ace converter.
+   */
+  public DocumentToAceConverter() {
+  }
+
   @Override
   public Ace convert(@NonNull Document source) {
     return Ace.builder()

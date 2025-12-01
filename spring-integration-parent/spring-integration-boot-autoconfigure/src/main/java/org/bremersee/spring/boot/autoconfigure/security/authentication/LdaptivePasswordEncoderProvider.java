@@ -17,8 +17,6 @@
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
 import java.util.function.Supplier;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,8 +41,13 @@ public interface LdaptivePasswordEncoderProvider extends Supplier<PasswordEncode
   /**
    * The default password encoder provider.
    */
-  @NoArgsConstructor(access = AccessLevel.PACKAGE)
   class DefaultLdaptivePasswordEncoderProvider implements LdaptivePasswordEncoderProvider {
+
+    /**
+     * Instantiates a new default ldaptive password encoder provider.
+     */
+    DefaultLdaptivePasswordEncoderProvider() {
+    }
 
     @Override
     public PasswordEncoder get() {

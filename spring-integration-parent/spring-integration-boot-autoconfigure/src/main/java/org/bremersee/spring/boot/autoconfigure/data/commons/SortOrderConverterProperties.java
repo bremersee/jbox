@@ -17,7 +17,6 @@
 package org.bremersee.spring.boot.autoconfigure.data.commons;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -27,7 +26,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "bremersee.comparator.converter")
 @Data
-@NoArgsConstructor
 public class SortOrderConverterProperties {
 
   /**
@@ -40,4 +38,9 @@ public class SortOrderConverterProperties {
    */
   private String chainSeparator = ",";
 
+  /**
+   * Instantiates new sort order converter properties.
+   */
+  public SortOrderConverterProperties() {
+  }
 }

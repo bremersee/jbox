@@ -18,10 +18,8 @@ package org.bremersee.xml;
 
 import static java.util.Objects.isNull;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -116,17 +114,24 @@ public interface JaxbContextMember {
   }
 
   /**
-   * The pakkage builder implementation.
+   * The package builder implementation.
    */
-  @SuppressWarnings("SameNameButDifferent")
   @EqualsAndHashCode
   @ToString
-  @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
   class PakkageBuilderImpl implements PakkageBuilder {
 
     private final Package pakkage;
 
     private String schemaLocation;
+
+    /**
+     * Instantiates a new package builder.
+     *
+     * @param pakkage the package
+     */
+    PakkageBuilderImpl(Package pakkage) {
+      this.pakkage = pakkage;
+    }
 
     @Override
     public PakkageBuilder schemaLocation(String schemaLocation) {
@@ -175,10 +180,8 @@ public interface JaxbContextMember {
   /**
    * The clazz builder implementation.
    */
-  @SuppressWarnings("SameNameButDifferent")
   @EqualsAndHashCode
   @ToString
-  @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
   class ClazzBuilderImpl implements ClazzBuilder {
 
     private final Class<?> clazz;
@@ -186,6 +189,15 @@ public interface JaxbContextMember {
     private String clazzElementSchemaLocation;
 
     private String clazzTypeSchemaLocation;
+
+    /**
+     * Instantiates a new clazz builder.
+     *
+     * @param clazz the clazz
+     */
+    ClazzBuilderImpl(Class<?> clazz) {
+      this.clazz = clazz;
+    }
 
     @Override
     public ClazzBuilder clazzElementSchemaLocation(String clazzElementSchemaLocation) {
@@ -214,10 +226,10 @@ public interface JaxbContextMember {
   /**
    * The jaxb context member implementation.
    */
-  @SuppressWarnings("SameNameButDifferent")
   @Getter
   @EqualsAndHashCode
   @ToString
+  @SuppressWarnings("ClassCanBeRecord")
   class JaxbContextMemberImpl implements JaxbContextMember {
 
     private final Class<?> clazz;

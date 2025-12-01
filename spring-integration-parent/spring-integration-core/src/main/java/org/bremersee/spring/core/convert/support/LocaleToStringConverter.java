@@ -28,6 +28,12 @@ import org.springframework.lang.NonNull;
  */
 public class LocaleToStringConverter implements Converter<Locale, String> {
 
+  /**
+   * Instantiates a new locale to string converter.
+   */
+  public LocaleToStringConverter() {
+  }
+
   @Override
   public String convert(@NonNull Locale source) {
     return source.toLanguageTag();

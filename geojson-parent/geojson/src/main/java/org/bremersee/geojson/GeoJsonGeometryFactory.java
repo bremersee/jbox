@@ -34,6 +34,7 @@ import org.bremersee.geojson.model.LatLonAware;
 import org.bremersee.geojson.model.LatitudeLongitude;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateFilter;
+import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -44,6 +45,7 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
@@ -93,6 +95,53 @@ public class GeoJsonGeometryFactory extends GeometryFactory {
       return null;
     }
     return createCoordinate(latLon.getLongitude(), latLon.getLatitude());
+  }
+
+  /**
+   * Instantiates a new geo json geometry factory.
+   *
+   * @param precisionModel the precision model
+   * @param srid the srid
+   * @param coordinateSequenceFactory the coordinate sequence factory
+   */
+  public GeoJsonGeometryFactory(PrecisionModel precisionModel, int srid,
+      CoordinateSequenceFactory coordinateSequenceFactory) {
+    super(precisionModel, srid, coordinateSequenceFactory);
+  }
+
+  /**
+   * Instantiates a new geo json geometry factory.
+   *
+   * @param coordinateSequenceFactory the coordinate sequence factory
+   */
+  public GeoJsonGeometryFactory(
+      CoordinateSequenceFactory coordinateSequenceFactory) {
+    super(coordinateSequenceFactory);
+  }
+
+  /**
+   * Instantiates a new geo json geometry factory.
+   *
+   * @param precisionModel the precision model
+   */
+  public GeoJsonGeometryFactory(PrecisionModel precisionModel) {
+    super(precisionModel);
+  }
+
+  /**
+   * Instantiates a new geo json geometry factory.
+   *
+   * @param precisionModel the precision model
+   * @param srid the srid
+   */
+  public GeoJsonGeometryFactory(PrecisionModel precisionModel, int srid) {
+    super(precisionModel, srid);
+  }
+
+  /**
+   * Instantiates a new geo json geometry factory.
+   */
+  public GeoJsonGeometryFactory() {
   }
 
   /**

@@ -261,7 +261,6 @@ public class LdaptiveProperties {
    * The ssl configuration.
    */
   @Data
-  @NoArgsConstructor
   public static class SslProperties {
 
     /**
@@ -278,6 +277,12 @@ public class LdaptiveProperties {
      * Path of the key to use for the SSL connection.
      */
     private String authenticationKey;
+
+    /**
+     * Instantiates new ssl properties.
+     */
+    public SslProperties() {
+    }
 
     /**
      * Create ssl config.
@@ -352,7 +357,6 @@ public class LdaptiveProperties {
    * The search validator properties.
    */
   @Data
-  @NoArgsConstructor
   public static class ConnectionValidatorProperties {
 
     /**
@@ -369,6 +373,12 @@ public class LdaptiveProperties {
      * The search request.
      */
     private SearchRequestProperties searchRequest = new SearchRequestProperties();
+
+    /**
+     * Instantiates new connection validator properties.
+     */
+    public ConnectionValidatorProperties() {
+    }
 
     /**
      * Create connection validator.
@@ -389,7 +399,6 @@ public class LdaptiveProperties {
      * The search request properties.
      */
     @Data
-    @NoArgsConstructor
     public static class SearchRequestProperties {
 
       /**
@@ -416,6 +425,12 @@ public class LdaptiveProperties {
        * The return attributes.
        */
       private List<String> returnAttributes = new ArrayList<>();
+
+      /**
+       * Instantiates new search request properties.
+       */
+      public SearchRequestProperties() {
+      }
 
       /**
        * Gets the return attributes as array.
@@ -457,7 +472,6 @@ public class LdaptiveProperties {
        * The search filter properties.
        */
       @Data
-      @NoArgsConstructor
       public static class SearchFilterProperties {
 
         /**
@@ -465,6 +479,11 @@ public class LdaptiveProperties {
          */
         private String filter;
 
+        /**
+         * Instantiates new search filter properties.
+         */
+        public SearchFilterProperties() {
+        }
       }
     }
   }
@@ -473,7 +492,6 @@ public class LdaptiveProperties {
    * The connection pool properties.
    */
   @Data
-  @NoArgsConstructor
   public static class ConnectionPoolProperties {
 
     /**
@@ -530,6 +548,13 @@ public class LdaptiveProperties {
      * Idle time.
      */
     private Duration idleTime = Duration.ofMinutes(10);
+
+    /**
+     * Instantiates new connection pool properties.
+     */
+    public ConnectionPoolProperties() {
+    }
+
   }
 
   /**

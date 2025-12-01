@@ -21,10 +21,16 @@ package org.bremersee.geojson.filter;
  *
  * @author Christian Bremer
  */
-public class FilterConstants {
+public abstract class FilterConstants {
 
   /**
    * The earth radius in meters.
    */
   public static final double EARTH_RADIUS_METERS = 6378137.;
+
+  /**
+   * Instantiates new filter constants.
+   */
+  private FilterConstants() {
+  }
 }

@@ -28,6 +28,12 @@ import org.springframework.core.convert.converter.Converter;
 public class AclConverters implements MongoCustomConversionsProvider {
 
   /**
+   * Instantiates a new acl converters.
+   */
+  public AclConverters() {
+  }
+
+  /**
    * Gets converters to register.
    *
    * @return the converters to register

@@ -41,7 +41,6 @@ import org.xml.sax.SAXException;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings("SameNameButDifferent")
 @ToString
 class XmlDocumentBuilderImpl implements XmlDocumentBuilder {
 

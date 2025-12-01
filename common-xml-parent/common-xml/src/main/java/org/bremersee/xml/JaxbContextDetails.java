@@ -22,8 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -147,11 +145,16 @@ public interface JaxbContextDetails {
   /**
    * The jaxb context details implementation.
    */
-  @SuppressWarnings("SameNameButDifferent")
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
   class JaxbContextDetailsImpl
       extends LinkedHashSet<JaxbContextData>
       implements JaxbContextDetails {
+
+    /**
+     * Instantiates a jaxb contexts details.
+     */
+    private JaxbContextDetailsImpl() {
+      super();
+    }
 
     @Override
     public String getSchemaLocation() {

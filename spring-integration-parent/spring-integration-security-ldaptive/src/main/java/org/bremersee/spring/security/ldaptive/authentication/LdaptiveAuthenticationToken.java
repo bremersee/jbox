@@ -32,6 +32,9 @@ public class LdaptiveAuthenticationToken
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The ldaptive user details.
+   */
   private final LdaptiveUserDetails userDetails;
 
   /**

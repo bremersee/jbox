@@ -65,8 +65,13 @@ public class AbstractGeoJsonCrs implements Serializable {
   }
 
   /**
-   * Set the properties the properties that store information about the coordinate reference system
-   * (CRS).
+   * Instantiates a new Abstract geo json crs.
+   */
+  public AbstractGeoJsonCrs() {
+  }
+
+  /**
+   * Set the properties that store information about the coordinate reference system (CRS).
    *
    * @param properties the properties that store information about the coordinate reference
    *     system

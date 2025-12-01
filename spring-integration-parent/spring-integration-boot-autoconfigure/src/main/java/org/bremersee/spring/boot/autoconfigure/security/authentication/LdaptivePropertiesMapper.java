@@ -17,8 +17,6 @@
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
 import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.LdaptiveAuthenticationAutoConfiguration.PropertiesMapper;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
 import org.bremersee.spring.security.ldaptive.authentication.provider.Template;
@@ -28,8 +26,13 @@ import org.bremersee.spring.security.ldaptive.authentication.provider.Template;
  *
  * @author Christian Bremer
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LdaptivePropertiesMapper {
+
+  /**
+   * Instantiates a new ldaptive properties mapper.
+   */
+  private LdaptivePropertiesMapper() {
+  }
 
   /**
    * Map ldaptive authentication properties.

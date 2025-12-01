@@ -34,6 +34,12 @@ import org.springframework.util.StringUtils;
 @ToString
 public class LocaleReadConverter implements Converter<String, Locale> {
 
+  /**
+   * Instantiates a new locale read converter.
+   */
+  public LocaleReadConverter() {
+  }
+
   @Override
   public Locale convert(@NonNull String source) {
     return Optional.ofNullable(StringUtils.parseLocale(source))

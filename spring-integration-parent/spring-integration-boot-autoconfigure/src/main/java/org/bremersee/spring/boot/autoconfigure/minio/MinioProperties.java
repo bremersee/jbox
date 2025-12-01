@@ -19,7 +19,6 @@ package org.bremersee.spring.boot.autoconfigure.minio;
 import java.time.Duration;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -34,7 +33,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ToString(exclude = {"accessKey", "secretKey"})
 @EqualsAndHashCode
-@NoArgsConstructor
 public class MinioProperties {
 
   /**
@@ -67,4 +65,9 @@ public class MinioProperties {
    */
   private Duration readTimeout = Duration.ofSeconds(10);
 
+  /**
+   * Instantiates new minio properties.
+   */
+  public MinioProperties() {
+  }
 }

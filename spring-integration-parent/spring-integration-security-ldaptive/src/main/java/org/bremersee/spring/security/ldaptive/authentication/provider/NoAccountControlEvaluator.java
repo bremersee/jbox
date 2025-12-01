@@ -26,6 +26,12 @@ import org.ldaptive.LdapEntry;
  */
 public class NoAccountControlEvaluator implements AccountControlEvaluator {
 
+  /**
+   * Instantiates a new no account control evaluator.
+   */
+  public NoAccountControlEvaluator() {
+  }
+
   @Override
   public boolean isAccountNonExpired(LdapEntry ldapEntry) {
     return true;

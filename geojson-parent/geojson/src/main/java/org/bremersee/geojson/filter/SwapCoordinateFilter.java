@@ -28,6 +28,12 @@ import org.locationtech.jts.geom.CoordinateFilter;
  */
 public class SwapCoordinateFilter implements CoordinateFilter {
 
+  /**
+   * Instantiates a new swap coordinate filter.
+   */
+  public SwapCoordinateFilter() {
+  }
+
   @Override
   public void filter(Coordinate coord) {
     if (nonNull(coord)) {

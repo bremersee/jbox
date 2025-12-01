@@ -284,7 +284,6 @@ public interface Ace {
    *
    * @author Christian Bremer
    */
-  @SuppressWarnings("SameNameButDifferent")
   @Getter
   @ToString
   @EqualsAndHashCode
