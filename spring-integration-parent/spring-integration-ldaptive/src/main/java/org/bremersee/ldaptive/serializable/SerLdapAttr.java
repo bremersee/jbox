@@ -87,7 +87,7 @@ public class SerLdapAttr implements Serializable {
     int hash = 10223;
     int index = 1;
     for (byte[] b : attributeValues) {
-      hash = (hash * 113 + Arrays.hashCode(b)) + index++;
+      hash = hash * 113 + Arrays.hashCode(b) + index++;
     }
     return hash * 113 + Objects.hash(attributeName, binary);
   }

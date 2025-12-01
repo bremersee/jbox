@@ -40,7 +40,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
 import org.slf4j.Logger;
@@ -100,7 +99,7 @@ public class RestApiComparator {
 
     SoftAssertions softly;
     boolean internalAssertAll;
-    if (Objects.nonNull(softAssertions)) {
+    if (nonNull(softAssertions)) {
       softly = softAssertions;
       internalAssertAll = assertAll;
     } else {

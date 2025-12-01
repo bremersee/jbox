@@ -107,7 +107,7 @@ public class JaxbContextWrapper extends JAXBContext {
     Assert.notNull(data, "Stream of jaxb context data must be present.");
     this.details = data.collect(JaxbContextDetails.contextDataCollector());
     Assert.isTrue(!details.isEmpty(), "There is no jaxb model.");
-    this.jaxbContext = JAXBContext.newInstance(this.details.getClasses(classLoaders));
+    this.jaxbContext = newInstance(this.details.getClasses(classLoaders));
   }
 
   /**

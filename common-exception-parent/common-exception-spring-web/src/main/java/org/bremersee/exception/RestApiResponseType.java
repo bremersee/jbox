@@ -16,7 +16,6 @@
 
 package org.bremersee.exception;
 
-import static java.util.Objects.nonNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -24,6 +23,7 @@ import static org.springframework.http.MediaType.TEXT_XML;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import org.springframework.http.MediaType;
@@ -99,7 +99,7 @@ public enum RestApiResponseType {
   }
 
   private static boolean isJson(MediaType contentType) {
-    return nonNull(contentType)
+    return Objects.nonNull(contentType)
         && (contentType.isCompatibleWith(APPLICATION_JSON)
         || contentType.isCompatibleWith(APPLICATION_PLUS_JSON));
   }
@@ -114,7 +114,7 @@ public enum RestApiResponseType {
   }
 
   private static boolean isXml(MediaType contentType) {
-    return nonNull(contentType)
+    return Objects.nonNull(contentType)
         && (contentType.isCompatibleWith(APPLICATION_XML)
         || contentType.isCompatibleWith(APPLICATION_PLUS_XML)
         || TEXT_XML.isCompatibleWith(contentType));

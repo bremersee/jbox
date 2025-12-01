@@ -714,7 +714,7 @@ public enum WptSymbol {
    */
   @JsonCreator
   public static WptSymbol fromValue(String value) {
-    for (WptSymbol e : WptSymbol.values()) {
+    for (WptSymbol e : values()) {
       if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {
         return e;
       }

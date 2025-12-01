@@ -45,7 +45,6 @@ import org.springframework.core.codec.CodecException;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.core.codec.Hints;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.log.LogFormatUtils;
 import org.springframework.http.MediaType;
@@ -124,9 +123,9 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
    * Set the max number of bytes that can be buffered by this decoder. This is either the size of
    * the entire input when decoding as a whole, or when using async parsing with Aalto XML, it is
    * the size of one top-level XML tree. When the limit is exceeded, {@link
-   * DataBufferLimitException}* is raised.
+   * org.springframework.core.io.buffer.DataBufferLimitException} is raised.
    *
-   * <p>By default this is set to 256K.
+   * <p>By default, this is set to 256K.
    *
    * @param byteCount the max number of bytes to buffer, or -1 for unlimited
    */

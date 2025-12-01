@@ -17,10 +17,8 @@
 package org.bremersee.exception.feign;
 
 import static feign.Util.RETRY_AFTER;
-import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 import feign.Request.HttpMethod;
 import feign.Response;
@@ -29,11 +27,13 @@ import feign.codec.ErrorDecoder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
@@ -150,11 +150,13 @@ public class FeignClientExceptionErrorDecoder implements ErrorDecoder {
       return Optional.ofNullable(retryAfter)
           .filter(retryAfterValue -> retryAfterValue.matches("^[0-9]+\\.?0*$"))
           .map(retryAfterValue -> retryAfterValue.replaceAll("\\.0*$", ""))
-          .map(retryAfterValue -> SECONDS.toMillis(Long.parseLong(retryAfterValue)))
+          .map(retryAfterValue -> TimeUnit.SECONDS.toMillis(Long.parseLong(retryAfterValue)))
           .map(deltaMillis -> currentTimeMillis() + deltaMillis)
           .or(() -> Optional.ofNullable(retryAfter)
               .map(retryAfterValue -> ZonedDateTime
-                  .parse(retryAfterValue, RFC_1123_DATE_TIME).toInstant().toEpochMilli()));
+                  .parse(retryAfterValue, DateTimeFormatter.RFC_1123_DATE_TIME)
+                  .toInstant()
+                  .toEpochMilli()));
     } catch (Exception e) {
       log.warn("Parsing retry after date for feigns RetryableException failed.", e);
       return Optional.empty();

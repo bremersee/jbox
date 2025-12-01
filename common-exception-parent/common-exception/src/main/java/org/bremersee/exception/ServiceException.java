@@ -178,7 +178,7 @@ public class ServiceException extends RuntimeException
       String reason,
       String errorCode,
       Throwable cause) {
-    return ServiceException.builder()
+    return builder()
         .httpStatus(500)
         .reason(reason)
         .errorCode(errorCode)
@@ -240,7 +240,7 @@ public class ServiceException extends RuntimeException
       String reason,
       String errorCode,
       Throwable cause) {
-    return ServiceException.builder()
+    return builder()
         .httpStatus(400)
         .reason(reason)
         .errorCode(errorCode)

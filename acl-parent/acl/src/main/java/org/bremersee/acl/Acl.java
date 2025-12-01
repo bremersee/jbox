@@ -110,7 +110,7 @@ public interface Acl {
     boolean hasPermission = AccessEvaluator.of(this)
         .hasPermissions(userContext, accessEvaluation, permissions);
     return hasPermission
-        ? Optional.of(Acl.builder().from(this).apply(mods).build())
+        ? Optional.of(builder().from(this).apply(mods).build())
         : Optional.empty();
   }
 
@@ -539,6 +539,7 @@ public interface Acl {
   @Getter
   @ToString
   @EqualsAndHashCode
+  @SuppressWarnings("ClassCanBeRecord")
   class AclImpl implements Acl {
 
     private final String owner;

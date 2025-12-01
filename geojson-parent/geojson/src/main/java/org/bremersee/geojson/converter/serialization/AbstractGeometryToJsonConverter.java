@@ -19,9 +19,6 @@ package org.bremersee.geojson.converter.serialization;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.COORDINATES;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -30,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.bremersee.geojson.GeoJsonConstants;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.locationtech.jts.geom.Geometry;
 
@@ -66,13 +64,13 @@ abstract class AbstractGeometryToJsonConverter<S extends Geometry> implements Se
       return null;
     }
     Map<String, Object> map = new LinkedHashMap<>();
-    map.put(TYPE, requireNonNull(getGeometryType()));
+    map.put(GeoJsonConstants.TYPE, requireNonNull(getGeometryType()));
     if (withBoundingBox) {
       Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))
           .map(bbox -> Arrays.stream(bbox).boxed().collect(Collectors.toList()))
-          .ifPresent(bbox -> map.put(BBOX, bbox));
+          .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
     }
-    map.put(COORDINATES, getGeometryJsonValue(source));
+    map.put(GeoJsonConstants.COORDINATES, getGeometryJsonValue(source));
     return unmodifiableMap(map);
   }
 

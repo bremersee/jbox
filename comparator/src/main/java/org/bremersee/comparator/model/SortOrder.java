@@ -244,7 +244,7 @@ public class SortOrder {
   public static SortOrder by(
       Collection<? extends SortOrder> sortOrders,
       String defaultSortOrder) {
-    return by(sortOrders, SortOrder.fromSortOrderText(defaultSortOrder));
+    return by(sortOrders, fromSortOrderText(defaultSortOrder));
   }
 
   /**

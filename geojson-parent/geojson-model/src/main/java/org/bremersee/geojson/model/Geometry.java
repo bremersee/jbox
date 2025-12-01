@@ -16,19 +16,6 @@
 
 package org.bremersee.geojson.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.COORDINATES;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRIES;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY_COLLECTION;
-import static org.bremersee.geojson.GeoJsonConstants.LINESTRING;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_LINESTRING;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_POINT;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_POLYGON;
-import static org.bremersee.geojson.GeoJsonConstants.POINT;
-import static org.bremersee.geojson.GeoJsonConstants.POLYGON;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -61,15 +48,16 @@ import org.bremersee.geojson.GeoJsonConstants;
  * @author Christian Bremer
  */
 @Schema(description = "GeoJSON Geometry.")
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = TYPE, visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = GeoJsonConstants.TYPE, visible = true)
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = GeometryCollection.class, name = GEOMETRY_COLLECTION),
-    @JsonSubTypes.Type(value = MultiPoint.class, name = MULTI_POINT),
-    @JsonSubTypes.Type(value = MultiLineString.class, name = MULTI_LINESTRING),
-    @JsonSubTypes.Type(value = LineString.class, name = LINESTRING),
-    @JsonSubTypes.Type(value = MultiPolygon.class, name = MULTI_POLYGON),
-    @JsonSubTypes.Type(value = Point.class, name = POINT),
-    @JsonSubTypes.Type(value = Polygon.class, name = POLYGON),
+    @JsonSubTypes.Type(value = GeometryCollection.class,
+        name = GeoJsonConstants.GEOMETRY_COLLECTION),
+    @JsonSubTypes.Type(value = MultiPoint.class, name = GeoJsonConstants.MULTI_POINT),
+    @JsonSubTypes.Type(value = MultiLineString.class, name = GeoJsonConstants.MULTI_LINESTRING),
+    @JsonSubTypes.Type(value = LineString.class, name = GeoJsonConstants.LINESTRING),
+    @JsonSubTypes.Type(value = MultiPolygon.class, name = GeoJsonConstants.MULTI_POLYGON),
+    @JsonSubTypes.Type(value = Point.class, name = GeoJsonConstants.POINT),
+    @JsonSubTypes.Type(value = Polygon.class, name = GeoJsonConstants.POLYGON),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -85,8 +73,11 @@ public abstract class Geometry implements Serializable {
    * The type.
    */
   @Setter(AccessLevel.PROTECTED)
-  @Schema(description = "The geometry type.", requiredMode = REQUIRED, example = LINESTRING)
-  @JsonProperty(value = TYPE, required = true)
+  @Schema(
+      description = "The geometry type.",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+      example = GeoJsonConstants.LINESTRING)
+  @JsonProperty(value = GeoJsonConstants.TYPE, required = true)
   TypeEnum type;
 
   /**
@@ -94,7 +85,7 @@ public abstract class Geometry implements Serializable {
    */
   @Setter
   @Schema(description = "The boundling box.")
-  @JsonProperty(BBOX)
+  @JsonProperty(GeoJsonConstants.BBOX)
   @JsonInclude(Include.NON_EMPTY)
   BoundingBox bbox;
 
@@ -114,11 +105,11 @@ public abstract class Geometry implements Serializable {
    */
   public Map<String, Object> toJson() {
     Map<String, Object> map = new LinkedHashMap<>();
-    map.put(TYPE, getType().getGeometryType());
+    map.put(GeoJsonConstants.TYPE, getType().getGeometryType());
     Optional.ofNullable(getBbox())
         .map(BoundingBox::toDoubleArray)
         .map(bb -> Arrays.stream(bb).boxed().collect(Collectors.toList()))
-        .ifPresent(bb -> map.put(BBOX, bb));
+        .ifPresent(bb -> map.put(GeoJsonConstants.BBOX, bb));
     map.put(getType().geometryJsonValueAttribute, getGeometryJsonValue());
     return Collections.unmodifiableMap(map);
   }
@@ -142,37 +133,37 @@ public abstract class Geometry implements Serializable {
     /**
      * Point type enum.
      */
-    POINT(GeoJsonConstants.POINT, COORDINATES),
+    POINT(GeoJsonConstants.POINT, GeoJsonConstants.COORDINATES),
 
     /**
      * Multipoint type enum.
      */
-    MULTIPOINT(MULTI_POINT, COORDINATES),
+    MULTIPOINT(GeoJsonConstants.MULTI_POINT, GeoJsonConstants.COORDINATES),
 
     /**
      * Linestring type enum.
      */
-    LINESTRING(GeoJsonConstants.LINESTRING, COORDINATES),
+    LINESTRING(GeoJsonConstants.LINESTRING, GeoJsonConstants.COORDINATES),
 
     /**
      * Multilinestring type enum.
      */
-    MULTILINESTRING(MULTI_LINESTRING, COORDINATES),
+    MULTILINESTRING(GeoJsonConstants.MULTI_LINESTRING, GeoJsonConstants.COORDINATES),
 
     /**
      * Polygon type enum.
      */
-    POLYGON(GeoJsonConstants.POLYGON, COORDINATES),
+    POLYGON(GeoJsonConstants.POLYGON, GeoJsonConstants.COORDINATES),
 
     /**
      * Multipolygon type enum.
      */
-    MULTIPOLYGON(MULTI_POLYGON, COORDINATES),
+    MULTIPOLYGON(GeoJsonConstants.MULTI_POLYGON, GeoJsonConstants.COORDINATES),
 
     /**
      * Geometrycollection type enum.
      */
-    GEOMETRYCOLLECTION(GEOMETRY_COLLECTION, GEOMETRIES);
+    GEOMETRYCOLLECTION(GeoJsonConstants.GEOMETRY_COLLECTION, GeoJsonConstants.GEOMETRIES);
 
     private final String geometryType;
 
@@ -197,7 +188,7 @@ public abstract class Geometry implements Serializable {
      */
     @JsonCreator
     public static TypeEnum fromGeometryType(String geometryType) {
-      for (TypeEnum b : TypeEnum.values()) {
+      for (TypeEnum b : values()) {
         if (String.valueOf(b.geometryType).equals(geometryType)) {
           return b;
         }

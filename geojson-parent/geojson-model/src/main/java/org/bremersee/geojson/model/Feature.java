@@ -16,13 +16,6 @@
 
 package org.bremersee.geojson.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.FEATURE;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY;
-import static org.bremersee.geojson.GeoJsonConstants.ID;
-import static org.bremersee.geojson.GeoJsonConstants.PROPERTIES;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -57,8 +50,10 @@ public class Feature implements Serializable {
   /**
    * The geo json type.
    */
-  @Schema(description = "The feature type, must be 'Feature'.", requiredMode = REQUIRED)
-  @JsonProperty(value = FEATURE, required = true)
+  @Schema(
+      description = "The feature type, must be 'Feature'.",
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty(value = GeoJsonConstants.FEATURE, required = true)
   private TypeEnum type = TypeEnum.FEATURE;
 
   /**
@@ -66,7 +61,7 @@ public class Feature implements Serializable {
    */
   @Setter
   @Schema(description = "The identifier of this feature.")
-  @JsonProperty(ID)
+  @JsonProperty(GeoJsonConstants.ID)
   private String id = null;
 
   /**
@@ -74,7 +69,7 @@ public class Feature implements Serializable {
    */
   @Setter
   @Schema(description = "The bounding box.")
-  @JsonProperty(BBOX)
+  @JsonProperty(GeoJsonConstants.BBOX)
   private BoundingBox bbox = null;
 
   /**
@@ -82,7 +77,7 @@ public class Feature implements Serializable {
    */
   @Setter
   @Schema(description = "The geometry.")
-  @JsonProperty(GEOMETRY)
+  @JsonProperty(GeoJsonConstants.GEOMETRY)
   private Geometry geometry = null;
 
   /**
@@ -90,7 +85,7 @@ public class Feature implements Serializable {
    */
   @Setter
   @Schema(description = "The feature properties.")
-  @JsonProperty(PROPERTIES)
+  @JsonProperty(GeoJsonConstants.PROPERTIES)
   private Object properties = null;
 
   /**

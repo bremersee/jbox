@@ -120,7 +120,7 @@ public class RestApiExceptionMapperForWeb implements RestApiExceptionMapper {
   @Nullable
   protected String getError(Throwable throwable, HttpStatusCode httpStatusCode) {
     if ((throwable instanceof ResponseStatusException rse)
-        && !(ObjectUtils.isEmpty(rse.getReason()))) {
+        && !ObjectUtils.isEmpty(rse.getReason())) {
       return rse.getReason();
     }
     if (httpStatusCode instanceof HttpStatus hs) {

@@ -52,7 +52,7 @@ public enum ViaPointElevationMode {
    */
   @JsonCreator
   public static ViaPointElevationMode fromValue(String value) {
-    for (ViaPointElevationMode e : ViaPointElevationMode.values()) {
+    for (ViaPointElevationMode e : values()) {
       if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {
         return e;
       }

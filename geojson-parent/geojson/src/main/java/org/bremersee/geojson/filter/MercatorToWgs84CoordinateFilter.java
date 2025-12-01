@@ -58,7 +58,9 @@ public class MercatorToWgs84CoordinateFilter implements CoordinateFilter {
 
     if (nonNull(coord)) {
       if (!Double.isNaN(coord.x)) {
-        coord.x = (coord.x * 180.) / (getEarthRadiusInMeters() * Math.PI);
+        double numerator = coord.x * 180.;
+        double denominator = getEarthRadiusInMeters() * Math.PI;
+        coord.x = numerator / denominator;
       }
       if (!Double.isNaN(coord.y)) {
         coord.y = Math

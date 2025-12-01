@@ -157,7 +157,7 @@ public enum MongoSearchLanguage {
       return NONE;
     }
     String source = text.substring(0, Math.min(text.length(), 2));
-    for (MongoSearchLanguage b : MongoSearchLanguage.values()) {
+    for (MongoSearchLanguage b : values()) {
       if (b.value.equalsIgnoreCase(source) || b.name().equalsIgnoreCase(source)) {
         return b;
       }

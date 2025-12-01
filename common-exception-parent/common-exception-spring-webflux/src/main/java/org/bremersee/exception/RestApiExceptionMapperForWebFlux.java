@@ -50,7 +50,7 @@ public class RestApiExceptionMapperForWebFlux extends RestApiExceptionMapperForW
   @Override
   protected String getError(Throwable exception, HttpStatusCode httpStatusCode) {
     if ((exception instanceof WebClientResponseException cre)
-        && !(ObjectUtils.isEmpty(cre.getStatusText()))) {
+        && !ObjectUtils.isEmpty(cre.getStatusText())) {
       return cre.getStatusText();
     }
     return super.getError(exception, httpStatusCode);

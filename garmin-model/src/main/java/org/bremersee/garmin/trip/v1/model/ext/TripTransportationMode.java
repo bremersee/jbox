@@ -112,7 +112,7 @@ public enum TripTransportationMode {
    */
   @JsonCreator
   public static TripTransportationMode fromValue(String value) {
-    for (TripTransportationMode e : TripTransportationMode.values()) {
+    for (TripTransportationMode e : values()) {
       if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {
         return e;
       }

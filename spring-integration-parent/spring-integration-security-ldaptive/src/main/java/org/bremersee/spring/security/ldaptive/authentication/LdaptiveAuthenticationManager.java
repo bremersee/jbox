@@ -367,7 +367,7 @@ public class LdaptiveAuthenticationManager
   }
 
   private boolean isInvalidCredentialsException(LdapException exception) {
-    if (Objects.isNull(exception)) {
+    if (isNull(exception)) {
       return false;
     }
     if (ResultCode.INVALID_CREDENTIALS.equals(exception.getResultCode())) {

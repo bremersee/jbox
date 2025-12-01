@@ -16,15 +16,8 @@
 
 package org.bremersee.geojson;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.FEATURE;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY;
-import static org.bremersee.geojson.GeoJsonConstants.ID;
-import static org.bremersee.geojson.GeoJsonConstants.PROPERTIES;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,18 +49,18 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
 
   @Schema(description = "The id of the GeoJSON feature.")
   @JsonInclude(Include.NON_NULL)
-  @JsonProperty(ID)
+  @JsonProperty(GeoJsonConstants.ID)
   private final String id;
 
   @Schema(description = "The bounding box of the GeoJSON feature.")
   @JsonInclude(Include.NON_EMPTY)
-  @JsonProperty(BBOX)
+  @JsonProperty(GeoJsonConstants.BBOX)
   private final double[] bbox;
 
   @Schema(description = "GeoJSON", implementation = org.bremersee.geojson.model.Geometry.class)
   @JsonSerialize(using = JacksonGeometrySerializer.class)
   @JsonInclude(Include.ALWAYS)
-  @JsonProperty(GEOMETRY)
+  @JsonProperty(GeoJsonConstants.GEOMETRY)
   private final G geometry;
 
   @JsonIgnore
@@ -84,16 +77,17 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
    */
   @JsonCreator
   GeoJsonFeature(
-      @JsonProperty(value = TYPE, required = true) String type,
-      @JsonProperty(ID) String id,
-      @JsonProperty(BBOX) double[] bbox,
-      @JsonProperty(GEOMETRY)
+      @JsonProperty(value = GeoJsonConstants.TYPE, required = true) String type,
+      @JsonProperty(GeoJsonConstants.ID) String id,
+      @JsonProperty(GeoJsonConstants.BBOX) double[] bbox,
+      @JsonProperty(GeoJsonConstants.GEOMETRY)
       @JsonDeserialize(using = JacksonGeometryDeserializer.class)
       G geometry,
-      @JsonProperty(PROPERTIES) P properties) {
+      @JsonProperty(GeoJsonConstants.PROPERTIES) P properties) {
 
-    if (!FEATURE.equals(type)) {
-      throw new IllegalArgumentException(String.format("Type must be '%s'.", FEATURE));
+    if (!GeoJsonConstants.FEATURE.equals(type)) {
+      throw new IllegalArgumentException(String
+          .format("Type must be '%s'.", GeoJsonConstants.FEATURE));
     }
 
     this.id = id;
@@ -120,7 +114,7 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
       double[] bbox,
       G geometry,
       P properties) {
-    this(FEATURE, id, bbox, geometry, properties);
+    this(GeoJsonConstants.FEATURE, id, bbox, geometry, properties);
   }
 
   /**
@@ -139,7 +133,7 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
       P properties) {
 
     this(
-        FEATURE,
+        GeoJsonConstants.FEATURE,
         id,
         calculateBounds ? GeoJsonGeometryFactory.getBoundingBox(geometry) : null,
         geometry,
@@ -151,10 +145,13 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
    *
    * @return the type
    */
-  @Schema(description = "The feature type.", requiredMode = REQUIRED, example = FEATURE)
-  @JsonProperty(value = TYPE, required = true)
+  @Schema(
+      description = "The feature type.",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+      example = GeoJsonConstants.FEATURE)
+  @JsonProperty(value = GeoJsonConstants.TYPE, required = true)
   public final String getType() {
-    return FEATURE;
+    return GeoJsonConstants.FEATURE;
   }
 
   /**
@@ -195,7 +192,7 @@ public class GeoJsonFeature<G extends Geometry, P> extends UnknownAware {
    */
   @Schema(description = "The properties of the GeoJSON feature.")
   @JsonInclude(Include.NON_EMPTY)
-  @JsonProperty(PROPERTIES)
+  @JsonProperty(GeoJsonConstants.PROPERTIES)
   public P getProperties() {
     return properties;
   }

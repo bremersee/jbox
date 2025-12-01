@@ -17,20 +17,12 @@
 package org.bremersee.geojson.converter.deserialization;
 
 import static java.util.Objects.isNull;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRIES;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY_COLLECTION;
-import static org.bremersee.geojson.GeoJsonConstants.LINESTRING;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_LINESTRING;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_POINT;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_POLYGON;
-import static org.bremersee.geojson.GeoJsonConstants.POINT;
-import static org.bremersee.geojson.GeoJsonConstants.POLYGON;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.bremersee.geojson.GeoJsonConstants;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
@@ -120,28 +112,28 @@ public class JsonToGeometryConverter extends AbstractJsonToGeometryConverter {
     if (isNull(source)) {
       return null;
     }
-    String type = String.valueOf(source.get(TYPE));
-    if (POINT.equals(type)) {
+    String type = String.valueOf(source.get(GeoJsonConstants.TYPE));
+    if (GeoJsonConstants.POINT.equals(type)) {
       return pointConverter.convert(source);
 
-    } else if (LINESTRING.equals(type)) {
+    } else if (GeoJsonConstants.LINESTRING.equals(type)) {
       return lineStringConverter.convert(source);
 
-    } else if (POLYGON.equals(type)) {
+    } else if (GeoJsonConstants.POLYGON.equals(type)) {
       return polygonConverter.convert(source);
 
-    } else if (MULTI_POINT.equals(type)) {
+    } else if (GeoJsonConstants.MULTI_POINT.equals(type)) {
       return multiPointConverter.convert(source);
 
-    } else if (MULTI_LINESTRING.equals(type)) {
+    } else if (GeoJsonConstants.MULTI_LINESTRING.equals(type)) {
       return multiLineStringConverter.convert(source);
 
-    } else if (MULTI_POLYGON.equals(type)) {
+    } else if (GeoJsonConstants.MULTI_POLYGON.equals(type)) {
       return multiPolygonConverter.convert(source);
 
-    } else if (GEOMETRY_COLLECTION.equals(type)) {
+    } else if (GeoJsonConstants.GEOMETRY_COLLECTION.equals(type)) {
       Geometry[] geometries;
-      Object value = source.get(GEOMETRIES);
+      Object value = source.get(GeoJsonConstants.GEOMETRIES);
       if (isNull(value)) {
         geometries = new Geometry[0];
       } else {

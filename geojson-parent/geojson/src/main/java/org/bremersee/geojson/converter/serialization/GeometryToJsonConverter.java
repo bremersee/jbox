@@ -19,10 +19,6 @@ package org.bremersee.geojson.converter.serialization;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRIES;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY_COLLECTION;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.bremersee.geojson.GeoJsonConstants;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -161,13 +158,13 @@ public class GeometryToJsonConverter implements Serializable {
         geometries.add(convert(source.getGeometryN(i)));
       }
       Map<String, Object> map = new LinkedHashMap<>();
-      map.put(TYPE, GEOMETRY_COLLECTION);
+      map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);
       if (withBoundingBox) {
         Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))
             .map(bbox -> Arrays.stream(bbox).boxed().collect(Collectors.toList()))
-            .ifPresent(bbox -> map.put(BBOX, bbox));
+            .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
       }
-      map.put(GEOMETRIES, unmodifiableList(geometries));
+      map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));
       return unmodifiableMap(map);
     }
 

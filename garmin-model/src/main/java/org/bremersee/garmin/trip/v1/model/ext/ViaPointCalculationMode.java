@@ -67,7 +67,7 @@ public enum ViaPointCalculationMode {
    */
   @JsonCreator
   public static ViaPointCalculationMode fromValue(String value) {
-    for (ViaPointCalculationMode e : ViaPointCalculationMode.values()) {
+    for (ViaPointCalculationMode e : values()) {
       if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {
         return e;
       }

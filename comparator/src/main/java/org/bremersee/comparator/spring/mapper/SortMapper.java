@@ -172,7 +172,7 @@ public interface SortMapper {
       @Nullable NullHandling nullHandling,
       @Nullable String... properties) {
 
-    return Objects.isNull(source) ? null : PageRequest.of(
+    return isNull(source) ? null : PageRequest.of(
         source.getPageNumber(),
         source.getPageSize(),
         applyDefaults(source.getSort(), direction, ignoreCase, nullHandling, properties));
