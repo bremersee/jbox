@@ -96,6 +96,9 @@ public class LdaptiveUser extends SerLdapEntry
    *
    * @param ldapEntry the ldap entry
    * @param username the username
+   * @param firstName the first name
+   * @param lastName the last name
+   * @param email the email
    * @param authorities the authorities
    * @param password the password
    * @param accountNonExpired the account non expired

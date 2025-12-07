@@ -10,6 +10,9 @@ import org.bremersee.ldaptive.converter.JacksonDnDeserializer;
 import org.bremersee.ldaptive.converter.JacksonDnSerializer;
 import org.ldaptive.dn.Dn;
 
+/**
+ * The ldaptive object mapper module.
+ */
 public class LdaptiveObjectMapperModule extends SimpleModule {
 
   @Serial
@@ -20,6 +23,9 @@ public class LdaptiveObjectMapperModule extends SimpleModule {
    */
   public static final String TYPE_ID = LdaptiveObjectMapperModule.class.getName();
 
+  /**
+   * Instantiates a new ldaptive object mapper module.
+   */
   public LdaptiveObjectMapperModule() {
     super(
         TYPE_ID,

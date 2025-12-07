@@ -98,6 +98,14 @@ class ValueTranscoderFactoryTest {
   }
 
   /**
+   * Gets file time to offset date time value transcoder.
+   */
+  @Test
+  void getFileTimeToOffsetDateTimeValueTranscoder() {
+    assertThat(ValueTranscoderFactory.getFileTimeToOffsetDateTimeValueTranscoder()).isNotNull();
+  }
+
+  /**
    * Gets float value transcoder.
    */
   @Test
@@ -119,6 +127,15 @@ class ValueTranscoderFactoryTest {
   @Test
   void getGeneralizedTimeValueTranscoder() {
     assertThat(ValueTranscoderFactory.getGeneralizedTimeValueTranscoder()).isNotNull();
+  }
+
+  /**
+   * Gets generalized time to offset date-time value transcoder.
+   */
+  @Test
+  void getGeneralizedTimeToOffsetDateTimeValueTranscoder() {
+    assertThat(ValueTranscoderFactory.getGeneralizedTimeToOffsetDateTimeValueTranscoder())
+        .isNotNull();
   }
 
   /**

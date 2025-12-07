@@ -16,11 +16,12 @@
 
 package org.bremersee.spring.security.ldaptive.authentication.provider;
 
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.getAttributeValue;
-
-import org.bremersee.ldaptive.transcoder.UserAccountControlValueTranscoder;
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import org.bremersee.ldaptive.transcoder.UserAccountControl;
 import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
+import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 
 /**
@@ -32,7 +33,13 @@ public class ActiveDirectoryAccountControlEvaluator implements AccountControlEva
 
   @Override
   public boolean isAccountNonExpired(LdapEntry ldapEntry) {
-    return true;
+    var valueTranscoder = ValueTranscoderFactory.getFileTimeToOffsetDateTimeValueTranscoder();
+    return Optional.ofNullable(ldapEntry)
+        .map(entry -> entry.getAttribute("accountExpires"))
+        .map(LdapAttribute::getStringValue)
+        .map(valueTranscoder::decodeStringValue)
+        .map(dateTime -> dateTime.isAfter(OffsetDateTime.now()))
+        .orElse(true);
   }
 
   @Override
@@ -47,11 +54,12 @@ public class ActiveDirectoryAccountControlEvaluator implements AccountControlEva
 
   @Override
   public boolean isEnabled(LdapEntry ldapEntry) {
-    Integer value = getAttributeValue(
-        ldapEntry,
-        UserAccountControlValueTranscoder.ATTRIBUTE_NAME,
-        ValueTranscoderFactory.getUserAccountControlValueTranscoder(),
-        null);
-    return UserAccountControlValueTranscoder.isUserAccountEnabled(value, true);
+    var valueTranscoder = ValueTranscoderFactory.getUserAccountControlValueTranscoder();
+    return Optional.ofNullable(ldapEntry)
+        .map(entry -> entry.getAttribute("userAccountControl"))
+        .map(LdapAttribute::getStringValue)
+        .map(valueTranscoder::decodeStringValue)
+        .map(UserAccountControl::isEnabled)
+        .orElse(true);
   }
 }

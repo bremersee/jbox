@@ -16,120 +16,35 @@
 
 package org.bremersee.ldaptive.transcoder;
 
-import static java.util.Objects.nonNull;
-
-import java.util.Optional;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 import org.ldaptive.transcode.AbstractStringValueTranscoder;
+import org.ldaptive.transcode.IntegerValueTranscoder;
 
 /**
  * The user account control value transcoder.
  *
  * @author Christian Bremer
  */
-@ToString
-@Slf4j
-public class UserAccountControlValueTranscoder extends AbstractStringValueTranscoder<Integer> {
+public class UserAccountControlValueTranscoder
+    extends AbstractStringValueTranscoder<UserAccountControl> {
 
-  /**
-   * The attribute name in an active directory controller.
-   */
-  public static final String ATTRIBUTE_NAME = "userAccountControl";
+  private final IntegerValueTranscoder intValueTranscoder = new IntegerValueTranscoder();
 
-  /**
-   * The bit map value of a disabled account.
-   */
-  public static final int ACCOUNT_DISABLED = 1 << 1;
-
-  /**
-   * The bit map value of a normal account.
-   */
-  public static final int NORMAL_ACCOUNT = 1 << 9;
-
-  /**
-   * The bit map value a password that doesn't expire.
-   */
-  public static final int DONT_EXPIRE_PASSWORD = 1 << 16;
-
-  /**
-   * Gets user account control value.
-   *
-   * @param enabled the enabled
-   * @param existingValue the existing value
-   * @return the user account control value
-   */
-  public static int getUserAccountControlValue(Boolean enabled, Integer existingValue) {
-    int value = Optional.ofNullable(existingValue).orElse(0);
-    if ((value & NORMAL_ACCOUNT) != NORMAL_ACCOUNT) {
-      value = value + NORMAL_ACCOUNT;
+  @Override
+  public UserAccountControl decodeStringValue(String value) {
+    try {
+      return new UserAccountControl(intValueTranscoder.decodeStringValue(value));
+    } catch (RuntimeException re) {
+      return new UserAccountControl();
     }
-    if ((value & DONT_EXPIRE_PASSWORD) != DONT_EXPIRE_PASSWORD) {
-      value = value + DONT_EXPIRE_PASSWORD;
-    }
-    if (Boolean.FALSE.equals(enabled)) {
-      if ((value & ACCOUNT_DISABLED) != ACCOUNT_DISABLED) {
-        value = value + ACCOUNT_DISABLED;
-      }
-    } else {
-      if ((value & ACCOUNT_DISABLED) == ACCOUNT_DISABLED) {
-        value = value - ACCOUNT_DISABLED;
-      }
-    }
-    return value;
-  }
-
-  /**
-   * Determines whether an account is enabled or not. If the user account control value is
-   * {@code null}*, {@code true} will be returned (account is enabled).
-   *
-   * @param userAccountControlValue the user account control value (can be {@code null})
-   * @return the boolean
-   */
-  public static boolean isUserAccountEnabled(Integer userAccountControlValue) {
-    return isUserAccountEnabled(userAccountControlValue, true);
-  }
-
-  /**
-   * Determines whether an account is enabled or not.
-   *
-   * @param userAccountControlValue the user account control value (can be {@code null})
-   * @param defaultValue the default value (will be returned, if user account control value is
-   *     {@code null})
-   * @return the boolean
-   */
-  public static boolean isUserAccountEnabled(
-      Integer userAccountControlValue,
-      boolean defaultValue) {
-
-    return userAccountControlValue == null
-        ? defaultValue
-        : ((userAccountControlValue & ACCOUNT_DISABLED) != ACCOUNT_DISABLED);
-  }
-
-  /**
-   * Instantiates a new user account control value transcoder.
-   */
-  public UserAccountControlValueTranscoder() {
-    super();
   }
 
   @Override
-  public Integer decodeStringValue(String value) {
-    return nonNull(value) && !value.isBlank()
-        ? Integer.parseInt(value)
-        : getUserAccountControlValue(true, 0);
+  public String encodeStringValue(UserAccountControl value) {
+    return intValueTranscoder.encodeStringValue(value.getValue());
   }
 
   @Override
-  public String encodeStringValue(Integer value) {
-    return Optional.ofNullable(value)
-        .map(String::valueOf)
-        .orElseGet(() -> String.valueOf(getUserAccountControlValue(true, 0)));
-  }
-
-  @Override
-  public Class<Integer> getType() {
-    return Integer.class;
+  public Class<UserAccountControl> getType() {
+    return UserAccountControl.class;
   }
 }

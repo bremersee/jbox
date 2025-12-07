@@ -45,11 +45,16 @@ public abstract class ValueTranscoderFactory {
 
   private static FileTimeValueTranscoder fileTimeValueTranscoder;
 
+  private static FileTimeToOffsetDateTimeValueTranscoder fileTimeToOffsetDateTimeValueTranscoder;
+
   private static FloatValueTranscoder floatValueTranscoder;
 
   private static FloatValueTranscoder floatPrimitiveValueTranscoder;
 
   private static GeneralizedTimeValueTranscoder generalizedTimeValueTranscoder;
+
+  private static GeneralizedTimeToOffsetDateTimeValueTranscoder
+      generalizedTimeToOffsetDateTimeValueTranscoder;
 
   private static IntegerValueTranscoder integerValueTranscoder;
 
@@ -215,6 +220,19 @@ public abstract class ValueTranscoderFactory {
   }
 
   /**
+   * Gets file time to offset date time value transcoder.
+   *
+   * @return the file time to offset date time value transcoder
+   */
+  public static FileTimeToOffsetDateTimeValueTranscoder
+  getFileTimeToOffsetDateTimeValueTranscoder() {
+    if (fileTimeToOffsetDateTimeValueTranscoder == null) {
+      fileTimeToOffsetDateTimeValueTranscoder = new FileTimeToOffsetDateTimeValueTranscoder();
+    }
+    return fileTimeToOffsetDateTimeValueTranscoder;
+  }
+
+  /**
    * Gets float value transcoder.
    *
    * @return the float value transcoder
@@ -248,6 +266,20 @@ public abstract class ValueTranscoderFactory {
       generalizedTimeValueTranscoder = new GeneralizedTimeValueTranscoder();
     }
     return generalizedTimeValueTranscoder;
+  }
+
+  /**
+   * Gets generalized time to offset date time value transcoder.
+   *
+   * @return the generalized time to offset date time value transcoder
+   */
+  public static GeneralizedTimeToOffsetDateTimeValueTranscoder
+  getGeneralizedTimeToOffsetDateTimeValueTranscoder() {
+    if (generalizedTimeToOffsetDateTimeValueTranscoder == null) {
+      generalizedTimeToOffsetDateTimeValueTranscoder
+          = new GeneralizedTimeToOffsetDateTimeValueTranscoder();
+    }
+    return generalizedTimeToOffsetDateTimeValueTranscoder;
   }
 
   /**

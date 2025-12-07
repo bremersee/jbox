@@ -18,93 +18,48 @@ package org.bremersee.ldaptive.transcoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * The type User account control value transcoder test.
+ * The user account control value transcoder test.
  *
  * @author Christian Bremer
  */
-@ExtendWith({SoftAssertionsExtension.class})
 class UserAccountControlValueTranscoderTest {
 
-  /**
-   * Gets user account control value.
-   *
-   * @param softly the softly
-   */
-  @Test
-  void getUserAccountControlValue(SoftAssertions softly) {
-    int enabled = UserAccountControlValueTranscoder.getUserAccountControlValue(true, null);
-    int disabled = UserAccountControlValueTranscoder.getUserAccountControlValue(false, null);
-    softly
-        .assertThat(enabled + UserAccountControlValueTranscoder.ACCOUNT_DISABLED)
-        .isEqualTo(disabled);
-
-    int newEnabled = UserAccountControlValueTranscoder.getUserAccountControlValue(true, disabled);
-    softly
-        .assertThat(newEnabled)
-        .isEqualTo(enabled);
-
-    int newDisabled = UserAccountControlValueTranscoder.getUserAccountControlValue(false, enabled);
-    softly
-        .assertThat(newDisabled)
-        .isEqualTo(disabled);
-  }
+  private UserAccountControlValueTranscoder target;
 
   /**
-   * Is user account enabled.
-   *
-   * @param softly the softly
+   * Sets up.
    */
-  @Test
-  void isUserAccountEnabled(SoftAssertions softly) {
-    softly
-        .assertThat(UserAccountControlValueTranscoder.isUserAccountEnabled(66048))
-        .isTrue();
-    softly
-        .assertThat(UserAccountControlValueTranscoder.isUserAccountEnabled(66050))
-        .isFalse();
-    //noinspection ConstantValue
-    softly
-        .assertThat(UserAccountControlValueTranscoder.isUserAccountEnabled(null, false))
-        .isFalse();
-    softly
-        .assertThat(UserAccountControlValueTranscoder
-            .isUserAccountEnabled(UserAccountControlValueTranscoder.ACCOUNT_DISABLED, true))
-        .isFalse();
+  @BeforeEach
+  void setUp() {
+    target = new UserAccountControlValueTranscoder();
   }
 
   /**
    * Decode string value.
-   *
-   * @param softly the softly
    */
   @Test
-  void decodeStringValue(SoftAssertions softly) {
-    assertThat(new UserAccountControlValueTranscoder().decodeStringValue("2"))
-        .isEqualTo(2);
-    softly
-        .assertThat(new UserAccountControlValueTranscoder().decodeStringValue(null))
-        .isEqualTo(66048);
+  void decodeStringValue() {
+    UserAccountControl expected = new UserAccountControl();
+    expected.setEnabled(true);
+    expected.setPasswordExpirationEnabled(true);
+    UserAccountControl actual = target.decodeStringValue(String.valueOf(expected.getValue()));
+    assertThat(actual).isEqualTo(expected);
   }
 
   /**
    * Encode string value.
-   *
-   * @param softly the softly
    */
   @Test
-  void encodeStringValue(SoftAssertions softly) {
-    softly
-        .assertThat(new UserAccountControlValueTranscoder().encodeStringValue(2))
-        .isEqualTo("2");
-    softly
-        .assertThat(new UserAccountControlValueTranscoder().encodeStringValue(null))
-        .isEqualTo("66048");
+  void encodeStringValue() {
+    UserAccountControl expected = new UserAccountControl();
+    expected.setEnabled(false);
+    expected.setPasswordExpirationEnabled(false);
+    String actual = target.encodeStringValue(expected);
+    assertThat(actual).isEqualTo(String.valueOf(expected.getValue()));
   }
 
   /**
@@ -112,16 +67,7 @@ class UserAccountControlValueTranscoderTest {
    */
   @Test
   void getType() {
-    assertThat(new UserAccountControlValueTranscoder().getType())
-        .isEqualTo(Integer.class);
+    assertThat(target.getType()).isEqualTo(UserAccountControl.class);
   }
 
-  /**
-   * Test to string.
-   */
-  @Test
-  void testToString() {
-    assertThat(new UserAccountControlValueTranscoder().toString())
-        .contains(UserAccountControlValueTranscoder.class.getSimpleName());
-  }
 }

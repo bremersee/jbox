@@ -2,6 +2,7 @@ package org.bremersee.spring.security.ldaptive.authentication.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.bremersee.ldaptive.transcoder.UserAccountControl;
 import org.bremersee.ldaptive.transcoder.UserAccountControlValueTranscoder;
 import org.junit.jupiter.api.Test;
 import org.ldaptive.LdapAttribute;
@@ -56,12 +57,14 @@ class ActiveDirectoryAccountControlEvaluatorTest {
    */
   @Test
   void isEnabled() {
+    var userAccountControl = new UserAccountControl();
+    userAccountControl.setEnabled(false);
+    var valueTranscoder = new UserAccountControlValueTranscoder();
     LdapEntry user = LdapEntry.builder()
         .dn("cn=junit,cn=users,dc=example,dc=org")
         .attributes(LdapAttribute.builder()
-            .name(UserAccountControlValueTranscoder.ATTRIBUTE_NAME)
-            .values(String.valueOf(UserAccountControlValueTranscoder
-                .getUserAccountControlValue(false, null)))
+            .name("userAccountControl")
+            .values(valueTranscoder.encodeStringValue(userAccountControl))
             .build())
         .build();
     assertThat(target.isEnabled(user))
