@@ -27,11 +27,10 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 import org.bremersee.acl.model.AccessControlListModifications;
 
@@ -187,7 +186,7 @@ public interface Acl {
       return this;
     }
 
-    private AclBuilder doWithAce(String permission, Function<Ace, Ace> aceFn) {
+    private AclBuilder doWithAce(String permission, UnaryOperator<Ace> aceFn) {
       if (nonNull(permission) && !permission.isBlank()) {
         Ace ace = this.permissionMap.getOrDefault(permission, Ace.empty());
         this.permissionMap.put(permission, aceFn.apply(ace));
@@ -536,18 +535,17 @@ public interface Acl {
    *
    * @author Christian Bremer
    */
-  @Getter
   @ToString
   @EqualsAndHashCode
   @SuppressWarnings("ClassCanBeRecord")
   class AclImpl implements Acl {
 
-    private final String owner;
+    private final String ownerName;
 
     private final SortedMap<String, Ace> permissionMap;
 
     private AclImpl(String owner, Map<String, Ace> permissionMap) {
-      this.owner = nonNull(owner) && !owner.isBlank() ? owner : ANONYMOUS;
+      this.ownerName = nonNull(owner) && !owner.isBlank() ? owner : ANONYMOUS;
       this.permissionMap = unmodifiableSortedMap(permissionMap.entrySet().stream()
           .filter(entry -> nonNull(entry.getKey()) && !entry.getKey().isBlank())
           .collect(Collectors.toMap(
@@ -556,6 +554,17 @@ public interface Acl {
               (a, b) -> a,
               () -> new TreeMap<>(String::compareToIgnoreCase))));
     }
+
+    @Override
+    public String getOwner() {
+      return ownerName;
+    }
+
+    @Override
+    public SortedMap<String, Ace> getPermissionMap() {
+      return permissionMap;
+    }
+
   }
 
 }

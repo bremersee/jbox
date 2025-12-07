@@ -111,6 +111,7 @@ public class UserAccountControlValueTranscoder extends AbstractStringValueTransc
    * Instantiates a new user account control value transcoder.
    */
   public UserAccountControlValueTranscoder() {
+    super();
   }
 
   @Override

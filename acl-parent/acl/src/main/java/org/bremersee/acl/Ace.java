@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -284,18 +283,17 @@ public interface Ace {
    *
    * @author Christian Bremer
    */
-  @Getter
   @ToString
   @EqualsAndHashCode
   class AceImpl implements Ace {
 
-    private final boolean guest;
+    private final boolean guestFlag;
 
-    private final SortedSet<String> users;
+    private final SortedSet<String> userSet;
 
-    private final SortedSet<String> roles;
+    private final SortedSet<String> roleSet;
 
-    private final SortedSet<String> groups;
+    private final SortedSet<String> groupSet;
 
     private AceImpl(
         boolean guest,
@@ -303,10 +301,30 @@ public interface Ace {
         SortedSet<String> roles,
         SortedSet<String> groups) {
 
-      this.guest = guest;
-      this.users = unmodifiableSortedSet(users);
-      this.roles = unmodifiableSortedSet(roles);
-      this.groups = unmodifiableSortedSet(groups);
+      this.guestFlag = guest;
+      this.userSet = unmodifiableSortedSet(users);
+      this.roleSet = unmodifiableSortedSet(roles);
+      this.groupSet = unmodifiableSortedSet(groups);
+    }
+
+    @Override
+    public boolean isGuest() {
+      return guestFlag;
+    }
+
+    @Override
+    public SortedSet<String> getUsers() {
+      return userSet;
+    }
+
+    @Override
+    public SortedSet<String> getRoles() {
+      return roleSet;
+    }
+
+    @Override
+    public SortedSet<String> getGroups() {
+      return groupSet;
     }
   }
 

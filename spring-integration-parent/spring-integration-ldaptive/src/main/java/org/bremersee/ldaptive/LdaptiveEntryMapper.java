@@ -24,7 +24,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.ldaptive.AttributeModification;
 import org.ldaptive.AttributeModification.Type;
@@ -118,6 +117,26 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
   }
 
   /**
+   * Gets attribute value.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param defaultValue the default value
+   * @return the attribute value
+   */
+  static <T> T getAttributeValue(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      T defaultValue) {
+    return getAttributeValue(
+        ldapEntry,
+        attribute.getName(),
+        attribute.getValueTranscoder(),
+        defaultValue);
+  }
+
+  /**
    * Gets attribute values.
    *
    * @param <T> the type parameter
@@ -133,6 +152,20 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
     LdapAttribute attr = ldapEntry == null ? null : ldapEntry.getAttribute(name);
     Collection<T> values = attr != null ? attr.getValues(valueTranscoder.decoder()) : null;
     return values != null ? values : new ArrayList<>();
+  }
+
+  /**
+   * Gets attribute values.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @return the attribute values
+   */
+  static <T> Collection<T> getAttributeValues(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute) {
+    return getAttributeValues(ldapEntry, attribute.getName(), attribute.getValueTranscoder());
   }
 
   /**
@@ -152,6 +185,20 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
   }
 
   /**
+   * Gets attribute values as set.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @return the attribute values as set
+   */
+  static <T> Set<T> getAttributeValuesAsSet(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute) {
+    return getAttributeValuesAsSet(ldapEntry, attribute.getName(), attribute.getValueTranscoder());
+  }
+
+  /**
    * Gets attribute values as list.
    *
    * @param <T> the type parameter
@@ -165,6 +212,20 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
       String name,
       ValueTranscoder<T> valueTranscoder) {
     return new ArrayList<>(getAttributeValues(ldapEntry, name, valueTranscoder));
+  }
+
+  /**
+   * Gets attribute values as list.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @return the attribute values as list
+   */
+  static <T> List<T> getAttributeValuesAsList(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute) {
+    return getAttributeValuesAsList(ldapEntry, attribute.getName(), attribute.getValueTranscoder());
   }
 
   /**
@@ -196,6 +257,30 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
   }
 
   /**
+   * Sets attribute.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param value the value
+   * @param modifications the modifications
+   */
+  static <T> void setAttribute(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      T value,
+      List<AttributeModification> modifications) {
+
+    setAttributes(
+        ldapEntry,
+        attribute.getName(),
+        value != null ? Collections.singleton(value) : null,
+        attribute.isBinary(),
+        attribute.getValueTranscoder(),
+        modifications);
+  }
+
+  /**
    * Replaces the values of the attribute with the specified values.
    *
    * @param <T> the type of the domain object
@@ -222,7 +307,7 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
           }
           return value != null;
         })
-        .collect(Collectors.toList());
+        .toList();
     LdapAttribute attr = ldapEntry.getAttribute(name);
     if (attr == null && !realValues.isEmpty()) {
       addAttributes(ldapEntry, name, realValues, isBinary, valueTranscoder, modifications);
@@ -247,6 +332,24 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
     }
   }
 
+  /**
+   * Sets attributes.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param values the values
+   * @param modifications the modifications
+   */
+  static <T> void setAttributes(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      Collection<T> values,
+      List<AttributeModification> modifications) {
+    setAttributes(ldapEntry, attribute.getName(), values, attribute.isBinary(),
+        attribute.getValueTranscoder(), modifications);
+  }
+
   private static boolean areNotEqual(Collection<?> newValues, Collection<?> existingValues) {
     if (newValues.size() != existingValues.size()) {
       return true;
@@ -256,8 +359,8 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
     for (int i = 0; i < newValueList.size(); i++) {
       Object newValue = newValueList.get(i);
       Object existingValue = existingValueList.get(i);
-      if (newValue instanceof byte[] && existingValue instanceof byte[]) {
-        if (!Arrays.equals((byte[]) newValue, (byte[]) existingValue)) {
+      if (newValue instanceof byte[] n && existingValue instanceof byte[] e) {
+        if (!Arrays.equals(n, e)) {
           return true;
         }
       } else if (!Objects.equals(newValue, existingValue)) {
@@ -295,6 +398,29 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
   }
 
   /**
+   * Add attribute.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param value the value
+   * @param modifications the modifications
+   */
+  static <T> void addAttribute(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      T value,
+      List<AttributeModification> modifications) {
+    addAttributes(
+        ldapEntry,
+        attribute.getName(),
+        value != null ? Collections.singleton(value) : null,
+        attribute.isBinary(),
+        attribute.getValueTranscoder(),
+        modifications);
+  }
+
+  /**
    * Adds the specified values to the attribute with the specified name.
    *
    * @param <T> the type of the domain object
@@ -320,7 +446,7 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
           }
           return value != null;
         })
-        .collect(Collectors.toList());
+        .toList();
     if (realValues.isEmpty()) {
       return;
     }
@@ -341,6 +467,24 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
       newValues.addAll(realValues);
       setAttributes(ldapEntry, name, newValues, attr.isBinary(), valueTranscoder, modifications);
     }
+  }
+
+  /**
+   * Add attributes.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param values the values
+   * @param modifications the modifications
+   */
+  static <T> void addAttributes(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      Collection<T> values,
+      List<AttributeModification> modifications) {
+    addAttributes(ldapEntry, attribute.getName(), values, attribute.isBinary(),
+        attribute.getValueTranscoder(), modifications);
   }
 
   /**
@@ -395,6 +539,24 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
   }
 
   /**
+   * Remove attribute.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param value the value
+   * @param modifications the modifications
+   */
+  static <T> void removeAttribute(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      T value,
+      List<AttributeModification> modifications) {
+    removeAttribute(ldapEntry, attribute.getName(), value, attribute.getValueTranscoder(),
+        modifications);
+  }
+
+  /**
    * Remove attributes with the specified values. If values are empty or {@code null}, no attributes
    * will be removed.
    *
@@ -419,6 +581,24 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
     List<T> newValues = new ArrayList<>(getAttributeValues(ldapEntry, name, valueTranscoder));
     newValues.removeAll(values);
     setAttributes(ldapEntry, name, newValues, attr.isBinary(), valueTranscoder, modifications);
+  }
+
+  /**
+   * Remove attributes.
+   *
+   * @param <T> the type parameter
+   * @param ldapEntry the ldap entry
+   * @param attribute the attribute
+   * @param values the values
+   * @param modifications the modifications
+   */
+  static <T> void removeAttributes(
+      LdapEntry ldapEntry,
+      LdaptiveAttribute<T> attribute,
+      Collection<T> values,
+      List<AttributeModification> modifications) {
+    removeAttributes(ldapEntry, attribute.getName(), values, attribute.getValueTranscoder(),
+        modifications);
   }
 
   /**

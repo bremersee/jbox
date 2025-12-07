@@ -19,6 +19,7 @@ package org.bremersee.spring.security.ldaptive.authentication.provider;
 import static org.bremersee.ldaptive.LdaptiveEntryMapper.getAttributeValue;
 
 import org.bremersee.ldaptive.transcoder.UserAccountControlValueTranscoder;
+import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.ldaptive.LdapEntry;
 
@@ -49,7 +50,7 @@ public class ActiveDirectoryAccountControlEvaluator implements AccountControlEva
     Integer value = getAttributeValue(
         ldapEntry,
         UserAccountControlValueTranscoder.ATTRIBUTE_NAME,
-        new UserAccountControlValueTranscoder(),
+        ValueTranscoderFactory.getUserAccountControlValueTranscoder(),
         null);
     return UserAccountControlValueTranscoder.isUserAccountEnabled(value, true);
   }
