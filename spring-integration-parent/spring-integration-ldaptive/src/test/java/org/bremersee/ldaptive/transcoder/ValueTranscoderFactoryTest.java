@@ -58,6 +58,22 @@ class ValueTranscoderFactoryTest {
   }
 
   /**
+   * Gets dn value transcoder.
+   */
+  @Test
+  void getDnValueTranscoder() {
+    assertThat(ValueTranscoderFactory.getDnValueTranscoder()).isNotNull();
+  }
+
+  /**
+   * Gets dn value transcoder case sensitive.
+   */
+  @Test
+  void getDnValueTranscoderCaseSensitive() {
+    assertThat(ValueTranscoderFactory.getDnValueTranscoderCaseSensitive()).isNotNull();
+  }
+
+  /**
    * Gets double value transcoder.
    */
   @Test

@@ -3,6 +3,8 @@ package org.bremersee.ldaptive.transcoder;
 import org.ldaptive.ad.transcode.DeltaTimeValueTranscoder;
 import org.ldaptive.ad.transcode.FileTimeValueTranscoder;
 import org.ldaptive.ad.transcode.UnicodePwdValueTranscoder;
+import org.ldaptive.dn.DefaultAttributeValueEscaper;
+import org.ldaptive.dn.DefaultRDnNormalizer;
 import org.ldaptive.schema.transcode.AttributeTypeValueTranscoder;
 import org.ldaptive.transcode.BigIntegerValueTranscoder;
 import org.ldaptive.transcode.BooleanValueTranscoder;
@@ -32,6 +34,10 @@ public abstract class ValueTranscoderFactory {
   private static ByteArrayValueTranscoder byteArrayValueTranscoder;
 
   private static DeltaTimeValueTranscoder deltaTimeValueTranscoder;
+
+  private static DnValueTranscoder dnValueTranscoder;
+
+  private static DnValueTranscoder dnValueTranscoderCaseSensitive;
 
   private static DoubleValueTranscoder doubleValueTranscoder;
 
@@ -142,6 +148,34 @@ public abstract class ValueTranscoderFactory {
       deltaTimeValueTranscoder = new DeltaTimeValueTranscoder();
     }
     return deltaTimeValueTranscoder;
+  }
+
+  /**
+   * Gets dn value transcoder.
+   *
+   * @return the dn value transcoder
+   */
+  public static DnValueTranscoder getDnValueTranscoder() {
+    if (dnValueTranscoder == null) {
+      dnValueTranscoder = new DnValueTranscoder();
+    }
+    return dnValueTranscoder;
+  }
+
+  /**
+   * Gets dn value transcoder case sensitive.
+   *
+   * @return the dn value transcoder case-sensitive
+   */
+  public static DnValueTranscoder getDnValueTranscoderCaseSensitive() {
+    if (dnValueTranscoderCaseSensitive == null) {
+      dnValueTranscoderCaseSensitive = new DnValueTranscoder(
+          new DefaultRDnNormalizer(
+              new DefaultAttributeValueEscaper(),
+              name -> name,
+              value -> value));
+    }
+    return dnValueTranscoderCaseSensitive;
   }
 
   /**

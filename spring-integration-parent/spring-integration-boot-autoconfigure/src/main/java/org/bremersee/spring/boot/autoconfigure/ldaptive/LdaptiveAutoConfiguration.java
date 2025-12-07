@@ -22,12 +22,15 @@ import org.bremersee.ldaptive.LdaptiveOperations;
 import org.bremersee.ldaptive.LdaptiveProperties;
 import org.bremersee.ldaptive.LdaptiveProperties.ConnectionPoolProperties;
 import org.bremersee.ldaptive.LdaptiveTemplate;
+import org.bremersee.ldaptive.converter.DnToStringConverter;
+import org.bremersee.ldaptive.converter.StringToDnConverter;
 import org.bremersee.ldaptive.reactive.ReactiveLdaptiveOperations;
 import org.bremersee.ldaptive.reactive.ReactiveLdaptiveTemplate;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.DefaultConnectionFactory;
 import org.ldaptive.PooledConnectionFactory;
+import org.ldaptive.dn.Dn;
 import org.ldaptive.pool.IdlePruneStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -40,6 +43,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -82,7 +86,7 @@ public class LdaptiveAutoConfiguration {
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
     log.info("""
-
+            
             *********************************************************************************
             * {}
             * properties = {}
@@ -113,20 +117,20 @@ public class LdaptiveAutoConfiguration {
   public ConnectionFactory connectionFactory(ConnectionConfig connectionConfig) {
 
     if (properties.isPooled()) {
-      ConnectionPoolProperties properties = this.properties.getConnectionPool();
+      ConnectionPoolProperties props = this.properties.getConnectionPool();
       PooledConnectionFactory factory = PooledConnectionFactory.builder()
           .config(connectionConfig)
-          .blockWaitTime(properties.getBlockWaitTime())
-          .connectOnCreate(properties.isConnectOnCreate())
-          .failFastInitialize(properties.isFailFastInitialize())
-          .max(properties.getMaxPoolSize())
-          .min(properties.getMinPoolSize())
+          .blockWaitTime(props.getBlockWaitTime())
+          .connectOnCreate(props.isConnectOnCreate())
+          .failFastInitialize(props.isFailFastInitialize())
+          .max(props.getMaxPoolSize())
+          .min(props.getMinPoolSize())
           .pruneStrategy(
-              new IdlePruneStrategy(properties.getPrunePeriod(), properties.getIdleTime()))
-          .validateOnCheckIn(properties.isValidateOnCheckIn())
-          .validateOnCheckOut(properties.isValidateOnCheckOut())
-          .validatePeriodically(properties.isValidatePeriodically())
-          .validator(properties.getValidator().createConnectionValidator())
+              new IdlePruneStrategy(props.getPrunePeriod(), props.getIdleTime()))
+          .validateOnCheckIn(props.isValidateOnCheckIn())
+          .validateOnCheckOut(props.isValidateOnCheckOut())
+          .validatePeriodically(props.isValidatePeriodically())
+          .validator(props.getValidator().createConnectionValidator())
           .build();
       factory.initialize();
       return factory;
@@ -165,6 +169,28 @@ public class LdaptiveAutoConfiguration {
   @Bean
   public ReactiveLdaptiveTemplate reactiveLdaptiveTemplate(ConnectionFactory connectionFactory) {
     return new ReactiveLdaptiveTemplate(connectionFactory);
+  }
+
+  /**
+   * String to dn converter.
+   *
+   * @return the converter
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public Converter<String, Dn> stringToDnConverter() {
+    return new StringToDnConverter();
+  }
+
+  /**
+   * Dn to string converter.
+   *
+   * @return the converter
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public Converter<Dn, String> dnToStringConverter() {
+    return new DnToStringConverter();
   }
 
   /**
