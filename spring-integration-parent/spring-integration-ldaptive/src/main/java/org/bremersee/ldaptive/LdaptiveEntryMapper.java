@@ -52,6 +52,15 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
    */
   String[] getObjectClasses();
 
+  /**
+   * Get mapped attribute names.
+   *
+   * @return the mapped attribute names
+   */
+  default String[] getMappedAttributeNames() {
+    return new String[0];
+  }
+
   @Override
   String mapDn(T domainObject);
 
