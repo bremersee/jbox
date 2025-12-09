@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.ldaptive.AttributeModification;
@@ -108,10 +109,13 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
    * @param destination the destination (ldap entry); required
    * @return the modify request
    */
-  default ModifyRequest mapAndComputeModifyRequest(
+  default Optional<ModifyRequest> mapAndComputeModifyRequest(
       T source,
       LdapEntry destination) {
-    return new ModifyRequest(destination.getDn(), mapAndComputeModifications(source, destination));
+
+    return Optional.ofNullable(mapAndComputeModifications(source, destination))
+        .filter(mods -> mods.length > 0)
+        .map(mods -> new ModifyRequest(destination.getDn(), mods));
   }
 
   /**

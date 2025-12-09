@@ -335,7 +335,8 @@ class LdaptiveTemplateTest {
 
     person.setSn("Surname");
     ModifyRequest modifyRequest = personMapper
-        .mapAndComputeModifyRequest(person, destination);
+        .mapAndComputeModifyRequest(person, destination)
+        .orElseThrow();
     ldaptiveTemplate.modify(modifyRequest);
 
     person = ldaptiveTemplate.findOne(SearchRequest.objectScopeSearchRequest(dn), personMapper)
@@ -344,7 +345,8 @@ class LdaptiveTemplateTest {
 
     person.setSn("");
     modifyRequest = personMapper
-        .mapAndComputeModifyRequest(person, destination);
+        .mapAndComputeModifyRequest(person, destination)
+        .orElseThrow();
     ldaptiveTemplate.modify(modifyRequest);
 
     person = ldaptiveTemplate.findOne(SearchRequest.objectScopeSearchRequest(dn), personMapper)

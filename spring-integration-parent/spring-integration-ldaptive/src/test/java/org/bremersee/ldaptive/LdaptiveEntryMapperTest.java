@@ -552,7 +552,7 @@ class LdaptiveEntryMapperTest {
     entry.addAttributes(new LdapAttribute(
         "mail",
         "hans.castorp@example.org"));
-    ModifyRequest request = mapper.mapAndComputeModifyRequest(person, entry);
+    ModifyRequest request = mapper.mapAndComputeModifyRequest(person, entry).orElse(null);
     assertNotNull(request);
     assertEquals(2, request.getModifications().length);
     assertEquals("hans", entry.getAttribute("name").getStringValue());

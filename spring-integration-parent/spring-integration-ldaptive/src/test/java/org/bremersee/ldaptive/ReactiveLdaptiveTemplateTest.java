@@ -342,7 +342,8 @@ class ReactiveLdaptiveTemplateTest {
 
     person.setSn("Surname");
     ModifyRequest modifyRequest = personMapper
-        .mapAndComputeModifyRequest(person, destination);
+        .mapAndComputeModifyRequest(person, destination)
+        .orElseThrow();
     StepVerifier.create(ldaptiveTemplate.modify(modifyRequest))
         .assertNext(result -> assertTrue(result.isSuccess()))
         .verifyComplete();
@@ -353,7 +354,7 @@ class ReactiveLdaptiveTemplateTest {
         .verifyComplete();
 
     person.setSn("");
-    modifyRequest = personMapper.mapAndComputeModifyRequest(person, destination);
+    modifyRequest = personMapper.mapAndComputeModifyRequest(person, destination).orElseThrow();
     StepVerifier.create(ldaptiveTemplate.modify(modifyRequest))
         .assertNext(result -> assertTrue(result.isSuccess()))
         .verifyComplete();

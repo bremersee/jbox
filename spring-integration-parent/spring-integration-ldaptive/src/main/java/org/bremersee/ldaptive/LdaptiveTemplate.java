@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.ServiceException;
 import org.ldaptive.AddOperation;
 import org.ldaptive.AddRequest;
-import org.ldaptive.AttributeModification;
 import org.ldaptive.BindOperation;
 import org.ldaptive.BindRequest;
 import org.ldaptive.BindResponse;
@@ -245,13 +244,13 @@ public class LdaptiveTemplate implements LdaptiveOperations, Cloneable {
         SearchRequest.objectScopeSearchRequest(dn));
     return Optional.ofNullable(searchResponse)
         .map(SearchResponse::getEntry)
-        .map(entry -> {
-          AttributeModification[] modifications = entryMapper.mapAndComputeModifications(
-              domainObject, entry);
-          modify(new ModifyRequest(dn, modifications));
-          return entryMapper.map(entry);
-        })
-        .orElseGet(() -> {
+        .map(entry -> entryMapper.mapAndComputeModifyRequest(domainObject, entry)
+            .map(modReq -> {
+              modify(modReq);
+              return entryMapper.map(entry);
+            })
+            .orElse(domainObject))  // domain object exists, but nothing to modify
+        .orElseGet(() -> {          // otherwise, save new ldap entry
           String[] objectClasses = entryMapper.getObjectClasses();
           if (objectClasses == null || objectClasses.length == 0) {
             final ServiceException se = ServiceException.internalServerError(
