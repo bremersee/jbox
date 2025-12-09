@@ -61,6 +61,15 @@ public interface LdaptiveEntryMapper<T> extends LdapEntryMapper<T> {
     return new String[0];
   }
 
+  /**
+   * Get binary attribute names.
+   *
+   * @return the binary attribute names
+   */
+  default String[] getBinaryAttributeNames() {
+    return new String[0];
+  }
+
   @Override
   String mapDn(T domainObject);
 

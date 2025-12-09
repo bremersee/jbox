@@ -1,5 +1,7 @@
 package org.bremersee.ldaptive;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
+import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.transcode.ValueTranscoder;
 import org.springframework.util.Assert;
@@ -77,6 +80,16 @@ public interface LdaptiveAttribute<T> {
         .map(attr -> attr.getValues(getValueTranscoder().decoder()))
         .orElseGet(Collections::emptyList);
     return new ValuesWrapper<>(values);
+  }
+
+  @SuppressWarnings("unchecked")
+  default LdapAttribute createAttribute(T... values) {
+    LdapAttribute attribute = new LdapAttribute(getName());
+    attribute.setBinary(isBinary());
+    if (!isEmpty(values)) {
+      attribute.addValues(getValueTranscoder().encoder(), values);
+    }
+    return attribute;
   }
 
   /**
@@ -158,9 +171,11 @@ public interface LdaptiveAttribute<T> {
      * @param consumer the consumer
      */
     default void consumeNonNull(Consumer<? super T> consumer) {
-      Optional.ofNullable(get())
-          .ifPresent(consumer);
+      if (!isEmpty(get())) {
+        consumer.accept(get());
+      }
     }
+
   }
 
   /**
