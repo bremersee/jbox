@@ -2,14 +2,18 @@ package org.bremersee.ldaptive;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
+import org.ldaptive.AttributeModification;
+import org.ldaptive.AttributeModification.Type;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.transcode.ValueTranscoder;
@@ -82,8 +86,108 @@ public interface LdaptiveAttribute<T> {
     return new ValuesWrapper<>(values);
   }
 
-  @SuppressWarnings("unchecked")
-  default LdapAttribute createAttribute(T... values) {
+  /**
+   * Sets value.
+   *
+   * @param entry the entry
+   * @param value the value
+   * @return the value
+   */
+  default Optional<AttributeModification> setValue(LdapEntry entry, T value) {
+    return setValues(entry, List.of(value));
+  }
+
+  /**
+   * Sets values.
+   *
+   * @param entry the entry
+   * @param values the values
+   * @return the values
+   */
+  default Optional<AttributeModification> setValues(LdapEntry entry, Collection<T> values) {
+    if (isEmpty(entry)) {
+      return Optional.empty();
+    }
+    if (isEmpty(values)) {
+      return remove(entry);
+    }
+    if (isEmpty(entry.getAttribute(getName()))) {
+      return addValues(entry, values);
+    }
+    List<byte[]> newByteList = values.stream().map(v -> getValueTranscoder().encodeBinaryValue(v))
+        .toList();
+    Collection<byte[]> existingBytes = entry.getAttribute(getName()).getBinaryValues();
+    if (equals(existingBytes, newByteList)) {
+      return Optional.empty();
+    }
+    LdapAttribute attribute = createAttribute(values);
+    entry.addAttributes(attribute);
+    return Optional.of(new AttributeModification(Type.REPLACE, attribute));
+  }
+
+  private boolean equals(Collection<byte[]> c1, Collection<byte[]> c2) {
+    if (c1.size() != c2.size()) {
+      return false;
+    }
+    Iterator<byte[]> iter1 = c1.iterator();
+    Iterator<byte[]> iter2 = c2.iterator();
+    while (iter1.hasNext() && iter2.hasNext()) {
+      if (!Arrays.equals(iter1.next(), iter2.next())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private Optional<AttributeModification> addValues(LdapEntry entry, Collection<T> values) {
+    LdapAttribute attribute = createAttribute(values);
+    entry.addAttributes(attribute);
+    return Optional.of(new AttributeModification(Type.ADD, attribute));
+  }
+
+  private Optional<AttributeModification> remove(LdapEntry entry) {
+    if (isEmpty(entry.getAttribute(getName()))) {
+      return Optional.empty();
+    }
+    entry.removeAttribute(getName());
+    return Optional.of(new AttributeModification(Type.DELETE, createAttribute()));
+  }
+
+
+  /**
+   * Create attribute ldap attribute.
+   *
+   * @return the ldap attribute
+   */
+  default LdapAttribute createAttribute() {
+    LdapAttribute attribute = new LdapAttribute(getName());
+    attribute.setBinary(isBinary());
+    return attribute;
+  }
+
+  /**
+   * Create attribute ldap attribute.
+   *
+   * @param value the value
+   * @return the ldap attribute
+   */
+  default LdapAttribute createAttribute(T value) {
+    if (isEmpty(value)) {
+      return createAttribute();
+    }
+    return createAttribute(List.of(value));
+  }
+
+  /**
+   * Create attribute ldap attribute.
+   *
+   * @param values the values
+   * @return the ldap attribute
+   */
+  default LdapAttribute createAttribute(Collection<T> values) {
+    if (isEmpty(values)) {
+      return createAttribute();
+    }
     LdapAttribute attribute = new LdapAttribute(getName());
     attribute.setBinary(isBinary());
     if (!isEmpty(values)) {
