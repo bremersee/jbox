@@ -4,12 +4,11 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.BiPredicate;
+import java.util.stream.Stream;
 import lombok.Getter;
 import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
 import org.ldaptive.AttributeModification;
@@ -53,7 +52,7 @@ public interface LdaptiveAttribute<T> {
    * @param entry the entry
    * @return the value
    */
-  default Value<T> getValue(LdapEntry entry) {
+  default Optional<T> getValue(LdapEntry entry) {
     return getValue(entry, null);
   }
 
@@ -64,12 +63,11 @@ public interface LdaptiveAttribute<T> {
    * @param defaultValue the default value
    * @return the value
    */
-  default Value<T> getValue(LdapEntry entry, T defaultValue) {
-    T value = Optional.ofNullable(entry)
+  default Optional<T> getValue(LdapEntry entry, T defaultValue) {
+    return Optional.ofNullable(entry)
         .map(e -> e.getAttribute(getName()))
         .map(attr -> attr.getValue(getValueTranscoder().decoder()))
-        .orElse(defaultValue);
-    return new ValueWrapper<>(value);
+        .or(() -> Optional.ofNullable(defaultValue));
   }
 
   /**
@@ -78,12 +76,11 @@ public interface LdaptiveAttribute<T> {
    * @param entry the entry
    * @return the values
    */
-  default Values<T> getValues(LdapEntry entry) {
-    Collection<T> values = Optional.ofNullable(entry)
+  default Stream<T> getValues(LdapEntry entry) {
+    return Stream.ofNullable(entry)
         .map(e -> e.getAttribute(getName()))
         .map(attr -> attr.getValues(getValueTranscoder().decoder()))
-        .orElseGet(Collections::emptyList);
-    return new ValuesWrapper<>(values);
+        .flatMap(Collection::stream);
   }
 
   /**
@@ -94,7 +91,17 @@ public interface LdaptiveAttribute<T> {
    * @return the value
    */
   default Optional<AttributeModification> setValue(LdapEntry entry, T value) {
-    return setValues(entry, List.of(value));
+    return setValues(entry, isEmpty(value) ? List.of() : List.of(value));
+  }
+
+  default Optional<AttributeModification> setValue(
+      LdapEntry entry,
+      T value,
+      BiPredicate<T, T> condition) {
+    if (isEmpty(condition) || condition.test(getValue(entry).orElse(null), value)) {
+      return setValues(entry, isEmpty(value) ? List.of() : List.of(value));
+    }
+    return Optional.empty();
   }
 
   /**
@@ -111,16 +118,18 @@ public interface LdaptiveAttribute<T> {
     if (isEmpty(values)) {
       return remove(entry);
     }
+    List<T> newValues = values.stream().filter(v -> !isEmpty(v)).toList();
     if (isEmpty(entry.getAttribute(getName()))) {
-      return addValues(entry, values);
+      return addValues(entry, newValues);
     }
-    List<byte[]> newByteList = values.stream().map(v -> getValueTranscoder().encodeBinaryValue(v))
+    List<byte[]> newByteList = newValues.stream()
+        .map(v -> getValueTranscoder().encodeBinaryValue(v))
         .toList();
     Collection<byte[]> existingBytes = entry.getAttribute(getName()).getBinaryValues();
     if (equals(existingBytes, newByteList)) {
       return Optional.empty();
     }
-    LdapAttribute attribute = createAttribute(values);
+    LdapAttribute attribute = createAttribute(newValues);
     entry.addAttributes(attribute);
     return Optional.of(new AttributeModification(Type.REPLACE, attribute));
   }
@@ -252,125 +261,6 @@ public interface LdaptiveAttribute<T> {
       this.name = name;
       this.binary = binary;
       this.valueTranscoder = valueTranscoder;
-    }
-  }
-
-  /**
-   * The interface Value.
-   *
-   * @param <T> the type parameter
-   */
-  interface Value<T> extends Supplier<T> {
-
-    /**
-     * Consume.
-     *
-     * @param consumer the consumer
-     */
-    void consume(Consumer<? super T> consumer);
-
-    /**
-     * Consume non null.
-     *
-     * @param consumer the consumer
-     */
-    default void consumeNonNull(Consumer<? super T> consumer) {
-      if (!isEmpty(get())) {
-        consumer.accept(get());
-      }
-    }
-
-  }
-
-  /**
-   * The type Value wrapper.
-   *
-   * @param <T> the type parameter
-   */
-  @SuppressWarnings("ClassCanBeRecord")
-  class ValueWrapper<T> implements Value<T> {
-
-    /**
-     * The Attribute value.
-     */
-    final T attributeValue;
-
-    /**
-     * Instantiates a new Value wrapper.
-     *
-     * @param attributeValue the attribute value
-     */
-    ValueWrapper(T attributeValue) {
-      this.attributeValue = attributeValue;
-    }
-
-    @Override
-    public T get() {
-      return attributeValue;
-    }
-
-    @Override
-    public void consume(Consumer<? super T> consumer) {
-      consumer.accept(attributeValue);
-    }
-  }
-
-  /**
-   * The interface Values.
-   *
-   * @param <T> the type parameter
-   */
-  interface Values<T> extends Supplier<List<T>> {
-
-    /**
-     * Consume.
-     *
-     * @param consumer the consumer
-     */
-    void consume(Consumer<? super List<T>> consumer);
-
-    /**
-     * Consume non empty.
-     *
-     * @param consumer the consumer
-     */
-    default void consumeNonEmpty(Consumer<? super List<T>> consumer) {
-      if (!get().isEmpty()) {
-        consumer.accept(get());
-      }
-    }
-  }
-
-  /**
-   * The type Values wrapper.
-   *
-   * @param <T> the type parameter
-   */
-  @SuppressWarnings("ClassCanBeRecord")
-  class ValuesWrapper<T> implements Values<T> {
-
-    /**
-     * The Attribute values.
-     */
-    final List<T> attributeValues;
-
-    /**
-     * Instantiates a new Values wrapper.
-     *
-     * @param attributeValues the attribute values
-     */
-    ValuesWrapper(Collection<T> attributeValues) {
-      this.attributeValues = List.copyOf(attributeValues);
-    }
-
-    @Override
-    public List<T> get() {
-      return attributeValues;
-    }
-
-    @Override
-    public void consume(Consumer<? super List<T>> consumer) {
-      consumer.accept(attributeValues);
     }
   }
 
