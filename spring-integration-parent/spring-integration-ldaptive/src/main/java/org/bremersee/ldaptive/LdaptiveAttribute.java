@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -79,7 +80,9 @@ public interface LdaptiveAttribute<T> {
   default Stream<T> getValues(LdapEntry entry) {
     return Stream.ofNullable(entry)
         .map(e -> e.getAttribute(getName()))
+        .filter(Objects::nonNull)
         .map(attr -> attr.getValues(getValueTranscoder().decoder()))
+        .filter(Objects::nonNull)
         .flatMap(Collection::stream);
   }
 
