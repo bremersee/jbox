@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import org.bremersee.comparator.model.SortOrder;
 import org.bremersee.comparator.model.SortOrderItem;
 import org.bremersee.comparator.model.SortOrderItem.CaseHandling;
+import org.bremersee.comparator.spring.converter.SortOrderConverter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,7 +53,17 @@ public interface SortMapper {
    * @return the sort mapper
    */
   static SortMapper defaultSortMapper() {
-    return DefaultSortMapper.getInstance();
+    return new DefaultSortMapper();
+  }
+
+  /**
+   * Default sort mapper sort mapper.
+   *
+   * @param sortOrderConverter the sort order converter
+   * @return the sort mapper
+   */
+  static SortMapper defaultSortMapper(SortOrderConverter sortOrderConverter) {
+    return new DefaultSortMapper(sortOrderConverter);
   }
 
   /**
@@ -64,6 +75,31 @@ public interface SortMapper {
   @NonNull
   default Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders) {
     return toSort(SortOrder.by(sortOrders));
+  }
+
+  /**
+   * Transforms sort orders into a {@code Sort} object.
+   *
+   * @param sortOrders the sort orders
+   * @param defaultSortOrder the default sort order
+   * @return the sort
+   */
+  Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
+      @Nullable String defaultSortOrder);
+
+  /**
+   * Transforms sort orders into a {@code Sort} object.
+   *
+   * @param sortOrders the sort orders
+   * @param defaultSortOrder the default sort order
+   * @return the sort
+   */
+  default Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
+      @Nullable SortOrder defaultSortOrder) {
+    if (isEmpty(sortOrders)) {
+      return toSort(defaultSortOrder);
+    }
+    return toSort(sortOrders);
   }
 
   /**
@@ -244,20 +280,33 @@ public interface SortMapper {
   /**
    * The type Default sort mapper.
    */
+  @SuppressWarnings("ClassCanBeRecord")
   class DefaultSortMapper implements SortMapper {
 
-    private static final SortMapper INSTANCE = new DefaultSortMapper();
+    private final SortOrderConverter converter;
 
     /**
-     * Gets instance.
-     *
-     * @return the instance
+     * Instantiates a new Default sort mapper.
      */
-    public static SortMapper getInstance() {
-      return INSTANCE;
+    DefaultSortMapper() {
+      this(null);
     }
 
-    private DefaultSortMapper() {
+    /**
+     * Instantiates a new Default sort mapper.
+     *
+     * @param converter the converter
+     */
+    DefaultSortMapper(SortOrderConverter converter) {
+      this.converter = Objects.requireNonNullElseGet(converter, SortOrderConverter::new);
+    }
+
+    @Override
+    public Sort toSort(Collection<? extends SortOrder> sortOrders, String defaultSortOrder) {
+      if (isEmpty(sortOrders) && !isEmpty(defaultSortOrder)) {
+        return toSort(converter.convert(defaultSortOrder));
+      }
+      return toSort(sortOrders);
     }
   }
 

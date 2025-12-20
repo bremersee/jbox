@@ -27,6 +27,7 @@ import org.springframework.lang.NonNull;
  *
  * @author Christian Bremer
  */
+@SuppressWarnings("ClassCanBeRecord")
 public class SortOrderItemConverter implements Converter<String, SortOrderItem> {
 
   private final SortOrderTextSeparators separators;
