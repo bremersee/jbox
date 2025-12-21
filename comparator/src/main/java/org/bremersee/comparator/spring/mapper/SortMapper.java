@@ -31,6 +31,7 @@ import org.bremersee.comparator.model.SortOrder;
 import org.bremersee.comparator.model.SortOrderItem;
 import org.bremersee.comparator.model.SortOrderItem.CaseHandling;
 import org.bremersee.comparator.spring.converter.SortOrderConverter;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -62,7 +63,7 @@ public interface SortMapper {
    * @param sortOrderConverter the sort order converter
    * @return the sort mapper
    */
-  static SortMapper defaultSortMapper(SortOrderConverter sortOrderConverter) {
+  static SortMapper defaultSortMapper(Converter<String, SortOrder> sortOrderConverter) {
     return new DefaultSortMapper(sortOrderConverter);
   }
 
@@ -84,8 +85,13 @@ public interface SortMapper {
    * @param defaultSortOrder the default sort order
    * @return the sort
    */
-  Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
-      @Nullable String defaultSortOrder);
+  default Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
+      @Nullable SortOrder defaultSortOrder) {
+    if (isEmpty(sortOrders)) {
+      return toSort(defaultSortOrder);
+    }
+    return toSort(SortOrder.by(sortOrders), defaultSortOrder);
+  }
 
   /**
    * Transforms sort orders into a {@code Sort} object.
@@ -94,13 +100,8 @@ public interface SortMapper {
    * @param defaultSortOrder the default sort order
    * @return the sort
    */
-  default Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
-      @Nullable SortOrder defaultSortOrder) {
-    if (isEmpty(sortOrders)) {
-      return toSort(defaultSortOrder);
-    }
-    return toSort(sortOrders);
-  }
+  Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
+      @Nullable String defaultSortOrder);
 
   /**
    * Transforms sort order into a {@code Sort} object.
@@ -118,6 +119,33 @@ public interface SortMapper {
         .toList();
     return orderList.isEmpty() ? Sort.unsorted() : Sort.by(orderList);
   }
+
+  /**
+   * Transforms sort order into a {@code Sort} object.
+   *
+   * @param sortOrder the sort order
+   * @param defaultSortOrder the default sort order
+   * @return the sort
+   */
+  @NonNull
+  default Sort toSort(@Nullable SortOrder sortOrder, @Nullable SortOrder defaultSortOrder) {
+    List<Sort.Order> orderList = Stream.ofNullable(sortOrder)
+        .map(SortOrder::getItems)
+        .flatMap(Collection::stream)
+        .filter(Objects::nonNull)
+        .map(this::toSortOrder)
+        .toList();
+    return orderList.isEmpty() ? toSort(defaultSortOrder) : Sort.by(orderList);
+  }
+
+  /**
+   * To sort sort.
+   *
+   * @param sortOrder the sort order
+   * @param defaultSortOrder the default sort order
+   * @return the sort
+   */
+  Sort toSort(@Nullable SortOrder sortOrder, @Nullable String defaultSortOrder);
 
   /**
    * Transforms the sort order into a {@code Sort.Order} object.
@@ -278,12 +306,12 @@ public interface SortMapper {
   }
 
   /**
-   * The type Default sort mapper.
+   * The default sort mapper.
    */
   @SuppressWarnings("ClassCanBeRecord")
   class DefaultSortMapper implements SortMapper {
 
-    private final SortOrderConverter converter;
+    private final Converter<String, SortOrder> converter;
 
     /**
      * Instantiates a new Default sort mapper.
@@ -297,7 +325,7 @@ public interface SortMapper {
      *
      * @param converter the converter
      */
-    DefaultSortMapper(SortOrderConverter converter) {
+    DefaultSortMapper(Converter<String, SortOrder> converter) {
       this.converter = Objects.requireNonNullElseGet(converter, SortOrderConverter::new);
     }
 
@@ -307,6 +335,14 @@ public interface SortMapper {
         return toSort(converter.convert(defaultSortOrder));
       }
       return toSort(sortOrders);
+    }
+
+    @Override
+    public Sort toSort(SortOrder sortOrder, String defaultSortOrder) {
+      if (isEmpty(defaultSortOrder)) {
+        return toSort(sortOrder);
+      }
+      return toSort(sortOrder, converter.convert(defaultSortOrder));
     }
   }
 

@@ -17,6 +17,7 @@
 package org.bremersee.comparator.spring.converter;
 
 import java.util.Optional;
+import lombok.Getter;
 import org.bremersee.comparator.model.SortOrder;
 import org.bremersee.comparator.model.SortOrderTextSeparators;
 import org.springframework.core.convert.converter.Converter;
@@ -30,6 +31,7 @@ import org.springframework.lang.NonNull;
 @SuppressWarnings("ClassCanBeRecord")
 public class SortOrderConverter implements Converter<String, SortOrder> {
 
+  @Getter
   private final SortOrderTextSeparators separators;
 
   /**
