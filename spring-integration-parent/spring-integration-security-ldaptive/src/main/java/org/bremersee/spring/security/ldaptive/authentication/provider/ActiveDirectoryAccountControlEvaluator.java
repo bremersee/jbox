@@ -25,7 +25,8 @@ import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 
 /**
- * Evaluator of the ldap attribute {@code userAccountControl} of an Active Directory.
+ * Evaluator of the ldap attributes {@code userAccountControl} and {@code accountExpires} of an
+ * Active Directory.
  *
  * @author Christian Bremer
  */
