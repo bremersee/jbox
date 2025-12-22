@@ -55,4 +55,11 @@ public class SortOrderConverter implements Converter<String, SortOrder> {
   public SortOrder convert(@NonNull String source) {
     return SortOrder.fromSortOrderText(source, separators);
   }
+
+  public String convert(SortOrder sortOrder, String defaultSortOderText) {
+    return Optional.ofNullable(sortOrder)
+        .map(so -> so.getSortOrderText(separators))
+        .filter(text -> !text.isBlank())
+        .orElse(defaultSortOderText);
+  }
 }

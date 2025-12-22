@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 import org.bremersee.comparator.model.SortOrder;
 import org.bremersee.comparator.model.SortOrderItem;
 import org.bremersee.comparator.model.SortOrderItem.CaseHandling;
+import org.bremersee.comparator.model.SortOrderTextSeparators;
 import org.bremersee.comparator.spring.converter.SortOrderConverter;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -60,12 +60,55 @@ public interface SortMapper {
   /**
    * Default sort mapper sort mapper.
    *
+   * @param sortOrderTextSeparators the sort order text separators
+   * @return the sort mapper
+   */
+  static SortMapper defaultSortMapper(SortOrderTextSeparators sortOrderTextSeparators) {
+    return defaultSortMapper(new SortOrderConverter(sortOrderTextSeparators));
+  }
+
+  /**
+   * Default sort mapper sort mapper.
+   *
    * @param sortOrderConverter the sort order converter
    * @return the sort mapper
    */
-  static SortMapper defaultSortMapper(Converter<String, SortOrder> sortOrderConverter) {
+  static SortMapper defaultSortMapper(SortOrderConverter sortOrderConverter) {
     return new DefaultSortMapper(sortOrderConverter);
   }
+
+  /**
+   * Gets sort order text.
+   *
+   * @param sortOrders the sort orders
+   * @param defaultSortOrderText the default sort order text
+   * @return the sort order text
+   */
+  default String getSortOrderText(
+      @Nullable Collection<? extends SortOrder> sortOrders,
+      @Nullable String defaultSortOrderText) {
+    return Optional.ofNullable(sortOrders)
+        .map(SortOrder::by)
+        .map(so -> getSortOrderText(so, defaultSortOrderText))
+        .orElse(defaultSortOrderText);
+  }
+
+  /**
+   * Gets sort order text.
+   *
+   * @param sortOrder the sort order
+   * @param defaultSortOrderText the default sort order text
+   * @return the sort order text
+   */
+  String getSortOrderText(@Nullable SortOrder sortOrder, @Nullable String defaultSortOrderText);
+
+  /**
+   * Gets sort order text nof items.
+   *
+   * @param sortOrder the sort order
+   * @return the sort order item text
+   */
+  List<String> getSortOrderItemText(@Nullable SortOrder sortOrder);
 
   /**
    * Transforms sort orders into a {@code Sort} object.
@@ -311,7 +354,7 @@ public interface SortMapper {
   @SuppressWarnings("ClassCanBeRecord")
   class DefaultSortMapper implements SortMapper {
 
-    private final Converter<String, SortOrder> converter;
+    private final SortOrderConverter converter;
 
     /**
      * Instantiates a new Default sort mapper.
@@ -325,8 +368,24 @@ public interface SortMapper {
      *
      * @param converter the converter
      */
-    DefaultSortMapper(Converter<String, SortOrder> converter) {
+    DefaultSortMapper(SortOrderConverter converter) {
       this.converter = Objects.requireNonNullElseGet(converter, SortOrderConverter::new);
+    }
+
+    @Override
+    public String getSortOrderText(SortOrder sortOrder, String defaultSortOrderText) {
+      return converter.convert(sortOrder, defaultSortOrderText);
+    }
+
+    @Override
+    public List<String> getSortOrderItemText(SortOrder sortOrder) {
+      return Stream.ofNullable(sortOrder)
+          .map(SortOrder::getItems)
+          .filter(Objects::nonNull)
+          .flatMap(Collection::stream)
+          .map(item -> item.getSortOrderText(converter.getSeparators()))
+          .filter(Objects::nonNull)
+          .toList();
     }
 
     @Override
