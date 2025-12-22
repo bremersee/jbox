@@ -56,7 +56,7 @@ public class RegexFlags implements Serializable {
    * @param canonEq the canon eq flag
    * @param unicodeCharacterClass the unicode-character class flag
    */
-  @Builder
+  @Builder(toBuilder = true)
   RegexFlags(boolean unixLines, boolean caseInsensitive, boolean comments, boolean multiLine,
       boolean literal, boolean dotAll, boolean unicodeCase, boolean canonEq,
       boolean unicodeCharacterClass) {

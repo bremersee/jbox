@@ -38,12 +38,17 @@ class RegexFlagsTest {
     softly.assertThat(none.toRegexFlags()).isEmpty();
     softly.assertThat(none.toString()).doesNotContain("true");
 
-    RegexFlags some = RegexFlags.builder()
+    RegexFlags one = new RegexFlags();
+    one.setUnixLines(true);
+    softly.assertThat(one.toRegexFlags()).isPresent();
+    softly.assertThat(one.toString()).contains("true");
+
+    RegexFlags some = one.toBuilder()
         .caseInsensitive(true)
         .unicodeCase(true)
         .build();
     softly.assertThat(some.toRegexFlags())
-        .hasValue(Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        .hasValue(Pattern.UNIX_LINES | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     softly.assertThat(some.toString()).contains("true");
 
     RegexFlags all = new RegexFlags(
@@ -66,6 +71,7 @@ class RegexFlagsTest {
             | Pattern.UNICODE_CASE
             | Pattern.CANON_EQ
             | Pattern.UNICODE_CHARACTER_CLASS);
+    softly.assertThat(all.toString()).doesNotContain("false");
   }
 
   /**
