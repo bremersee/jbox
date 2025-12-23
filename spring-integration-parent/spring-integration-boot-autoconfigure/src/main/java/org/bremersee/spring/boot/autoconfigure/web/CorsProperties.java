@@ -34,6 +34,8 @@ import org.springframework.web.cors.CorsConfiguration;
 @Data
 public class CorsProperties {
 
+  private boolean enabled;
+
   private List<UrlBasedCorsConfiguration> configurations = new ArrayList<>();
 
   /**
@@ -53,7 +55,7 @@ public class CorsProperties {
   }
 
   /**
-   * Theurl based cors configuration.
+   * The url based cors configuration.
    */
   @Data
   public static class UrlBasedCorsConfiguration {
