@@ -141,6 +141,14 @@ public interface LdaptiveOperations {
    */
   default Optional<LdapEntry> findOne(SearchRequest request) {
     return Optional.ofNullable(search(request))
+        .map(response -> {
+          if (response.getEntries().size() > 1) {
+            throw LdaptiveException.builder()
+                .reason("No single result.")
+                .build();
+          }
+          return response;
+        })
         .map(SearchResponse::getEntry);
   }
 
@@ -155,8 +163,7 @@ public interface LdaptiveOperations {
   default <T> Optional<T> findOne(
       SearchRequest request,
       LdaptiveEntryMapper<T> entryMapper) {
-    return Optional.ofNullable(search(request))
-        .map(SearchResponse::getEntry)
+    return findOne(request)
         .map(entryMapper::map);
   }
 
