@@ -14,7 +14,7 @@ import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapUtils;
 
 /**
- * The type Ser ldap attr test.
+ * The serializable ldap attribute test.
  */
 class SerLdapAttrTest {
 
@@ -125,8 +125,8 @@ class SerLdapAttrTest {
   @ValueSource(booleans = {false, true})
   void testHashCode(boolean binary) {
     SerLdapAttr ldapAttr = createSerLdapAttr(binary);
-    assertThat(ldapAttr.hashCode())
-        .isEqualTo(createSerLdapAttr(binary).hashCode());
+    assertThat(ldapAttr)
+        .hasSameHashCodeAs(createSerLdapAttr(binary));
   }
 
   /**

@@ -19,17 +19,13 @@ package org.bremersee.ldaptive.serializable;
 import static java.util.Objects.nonNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -58,8 +54,8 @@ public class SerLdapEntry implements Serializable {
   /**
    * The attributes.
    */
-  @JsonIgnore
-  private final Map<String, SerLdapAttr> attributes;
+  @JsonProperty(value = "attributes")
+  private final Collection<SerLdapAttr> attributes;
 
   /**
    * Instantiates a new serializable ldap entry.
@@ -73,9 +69,9 @@ public class SerLdapEntry implements Serializable {
     this.attributes = Stream.ofNullable(ldapEntry)
         .map(LdapEntry::getAttributes)
         .flatMap(Collection::stream)
+        .filter(Objects::nonNull)
         .map(SerLdapAttr::new)
-        .collect(Collectors
-            .toUnmodifiableMap(SerLdapAttr::getAttributeName, Function.identity()));
+        .toList();
   }
 
   /**
@@ -89,20 +85,7 @@ public class SerLdapEntry implements Serializable {
       @JsonProperty(value = "dn") String dn,
       @JsonProperty(value = "attributes") List<SerLdapAttr> attributes) {
     this.dn = dn;
-    this.attributes = Stream.ofNullable(attributes)
-        .flatMap(Collection::stream)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toMap(SerLdapAttr::getAttributeName, Function.identity()));
-  }
-
-  /**
-   * Gets attribute list.
-   *
-   * @return the attribute list
-   */
-  @JsonProperty(value = "attributes")
-  public Collection<SerLdapAttr> getAttributeList() {
-    return attributes.values();
+    this.attributes = attributes;
   }
 
   /**
@@ -116,12 +99,27 @@ public class SerLdapEntry implements Serializable {
       ldapEntry.setDn(dn);
     }
     if (nonNull(attributes) && !attributes.isEmpty()) {
-      ldapEntry.addAttributes(attributes.values()
+      ldapEntry.addAttributes(attributes
           .stream()
           .map(SerLdapAttr::toLdapAttribute)
           .toList());
     }
     return ldapEntry;
+  }
+
+  /**
+   * Find attribute.
+   *
+   * @param attributeName the attribute name
+   * @return the optional attribute
+   */
+  public Optional<SerLdapAttr> findAttribute(String attributeName) {
+    return Optional.ofNullable(attributeName)
+        .flatMap(name -> Stream.ofNullable(attributes)
+            .flatMap(Collection::stream)
+            .filter(Objects::nonNull)
+            .filter(attr -> name.equalsIgnoreCase(attr.getAttributeName()))
+            .findFirst());
   }
 
 }

@@ -3,7 +3,6 @@ package org.bremersee.ldaptive.serializable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.ldaptive.LdaptiveObjectMapperModule;
@@ -89,7 +88,11 @@ class SerLdapEntryTest {
     e0 = new SerLdapEntry(le0);
     softly
         .assertThat(e0.getAttributes())
-        .containsAllEntriesOf(Map.of("say", new SerLdapAttr(la0)));
+        .containsExactly((new SerLdapAttr(la0)));
+
+    softly
+        .assertThat(e0.findAttribute("SAY"))
+        .hasValue((new SerLdapAttr(la0)));
 
     LdapEntry le1 = e0.toLdapEntry();
     softly
