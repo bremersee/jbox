@@ -102,23 +102,12 @@ public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations {
     }
   }
 
-  /**
-   * Returns a new instance of this ldaptive template with the same connection factory and error
-   * handler.
-   *
-   * @return a new instance of this ldaptive template
-   */
+  @Override
   public ReactiveLdaptiveTemplate copy() {
     return copy(null);
   }
 
-  /**
-   * Returns a new instance of this ldaptive template with the same connection factory and the given
-   * error handler.
-   *
-   * @param errorHandler the new error handler
-   * @return the new instance of the ldaptive template
-   */
+  @Override
   public ReactiveLdaptiveTemplate copy(final LdaptiveErrorHandler errorHandler) {
     final ReactiveLdaptiveTemplate template = new ReactiveLdaptiveTemplate(connectionFactory);
     template.setErrorHandler(errorHandler);

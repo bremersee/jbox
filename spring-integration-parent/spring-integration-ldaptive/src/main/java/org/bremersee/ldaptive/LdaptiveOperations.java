@@ -51,6 +51,24 @@ public interface LdaptiveOperations {
   ConnectionFactory getConnectionFactory();
 
   /**
+   * Returns a new instance of this ldap operations with the same connection factory and error
+   * handler.
+   *
+   * @return a new instance of this ldap operations
+   */
+  LdaptiveOperations copy();
+
+  /**
+   * Returns a new instance of this ldap operations with the same connection factory and the given
+   * error handler.
+   *
+   * @param errorHandler the new error handler
+   * @return the new instance of this ldap operations
+   */
+  LdaptiveOperations copy(LdaptiveErrorHandler errorHandler);
+
+
+  /**
    * Executes add operation.
    *
    * @param addRequest the add request

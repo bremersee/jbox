@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import org.bremersee.ldaptive.LdaptiveEntryMapper;
+import org.bremersee.ldaptive.LdaptiveErrorHandler;
 import org.ldaptive.AddRequest;
 import org.ldaptive.BindRequest;
 import org.ldaptive.CompareRequest;
@@ -44,6 +45,24 @@ import reactor.core.publisher.Mono;
  * @author Christian Bremer
  */
 public interface ReactiveLdaptiveOperations {
+
+  /**
+   * Returns a new instance of this ldap operations with the same connection factory and error
+   * handler.
+   *
+   * @return a new instance of this ldap operations
+   */
+  ReactiveLdaptiveOperations copy();
+
+  /**
+   * Returns a new instance of this ldap operations with the same connection factory and the given
+   * error handler.
+   *
+   * @param errorHandler the new error handler
+   * @return the new instance of this ldap operations
+   */
+  ReactiveLdaptiveOperations copy(LdaptiveErrorHandler errorHandler);
+
 
   /**
    * Gets connection factory.

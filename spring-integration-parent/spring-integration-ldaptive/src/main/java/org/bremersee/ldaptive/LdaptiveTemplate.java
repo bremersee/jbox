@@ -99,24 +99,13 @@ public class LdaptiveTemplate implements LdaptiveOperations {
     }
   }
 
-  /**
-   * Returns a new instance of this ldaptive template with the same connection factory and error
-   * handler.
-   *
-   * @return a new instance of this ldaptive template
-   */
+  @Override
   public LdaptiveTemplate copy() {
     return copy(null);
   }
 
-  /**
-   * Returns a new instance of this ldaptive template with the same connection factory and the given
-   * error handler.
-   *
-   * @param errorHandler the new error handler
-   * @return the new instance of the ldaptive template
-   */
-  public LdaptiveTemplate copy(final LdaptiveErrorHandler errorHandler) {
+  @Override
+  public LdaptiveTemplate copy(LdaptiveErrorHandler errorHandler) {
     final LdaptiveTemplate template = new LdaptiveTemplate(connectionFactory);
     template.setErrorHandler(errorHandler);
     return template;
