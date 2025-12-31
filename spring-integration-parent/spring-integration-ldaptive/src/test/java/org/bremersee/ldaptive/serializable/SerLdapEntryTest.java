@@ -21,6 +21,9 @@ class SerLdapEntryTest {
 
   private static ObjectMapper objectMapper;
 
+  /**
+   * Init object mapper.
+   */
   @BeforeAll
   static void initObjectMapper() {
     objectMapper = new ObjectMapper();
@@ -94,6 +97,12 @@ class SerLdapEntryTest {
         .isEqualTo(le0);
   }
 
+  /**
+   * Json.
+   *
+   * @param softly the softly
+   * @throws JsonProcessingException the json processing exception
+   */
   @Test
   void json(SoftAssertions softly) throws JsonProcessingException {
     LdapAttribute la0 = new LdapAttribute("say", "Hello world!", "How are you?");
