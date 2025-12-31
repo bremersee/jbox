@@ -163,6 +163,23 @@ class LdaptiveTemplateTest {
   }
 
   /**
+   * Find one existing person.
+   */
+  @Test
+  void findOneAndExpectSizeLimitExceeded() {
+    SearchRequest searchRequest = SearchRequest.builder()
+        .dn("ou=people," + baseDn)
+        .filter(FilterTemplate.builder()
+            .filter("(objectclass=inetOrgPerson)")
+            .build())
+        .scope(SearchScope.ONELEVEL)
+        .sizeLimit(1)
+        .build();
+
+    assertThrows(LdaptiveException.class, () -> ldaptiveTemplate.findOne(searchRequest));
+  }
+
+  /**
    * Find existing person.
    */
   @Test
@@ -174,6 +191,7 @@ class LdaptiveTemplateTest {
             .parameters("anna")
             .build())
         .scope(SearchScope.ONELEVEL)
+        .sizeLimit(1)
         .build();
 
     Optional<LdapEntry> entry = ldaptiveTemplate.findOne(searchRequest);
@@ -306,11 +324,12 @@ class LdaptiveTemplateTest {
         .build()));
 
     group.setCn("notexists");
-    assertThrows(ServiceException.class, () -> ldaptiveTemplate.compare(CompareRequest.builder()
+    CompareRequest cr = CompareRequest.builder()
         .dn(groupMapper.mapDn(group))
         .name("ou")
         .value("developer")
-        .build()));
+        .build();
+    assertThrows(ServiceException.class, () -> ldaptiveTemplate.compare(cr));
   }
 
   /**

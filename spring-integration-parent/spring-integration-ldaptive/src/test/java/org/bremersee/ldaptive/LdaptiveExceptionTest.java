@@ -19,7 +19,6 @@ package org.bremersee.ldaptive;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.ldaptive.LdapException;
@@ -92,11 +91,4 @@ class LdaptiveExceptionTest {
     assertEquals("Something went wrong.", ldaptiveException.getMessage());
   }
 
-  /**
-   * Is no single result.
-   */
-  @Test
-  void isNoSingleResult() {
-    assertTrue(LdaptiveException.isNoSingleResult(LdaptiveException.noSingleResult()));
-  }
 }
