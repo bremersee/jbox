@@ -31,6 +31,7 @@ import org.ldaptive.ModifyDnRequest;
 import org.ldaptive.ModifyRequest;
 import org.ldaptive.SearchRequest;
 import org.ldaptive.SearchResponse;
+import org.ldaptive.SearchScope;
 import org.ldaptive.extended.ExtendedRequest;
 import org.ldaptive.extended.ExtendedResponse;
 import org.ldaptive.extended.PasswordModifyRequest;
@@ -140,12 +141,16 @@ public interface LdaptiveOperations {
    * @return the optional ldap entry
    */
   default Optional<LdapEntry> findOne(SearchRequest request) {
-    return Optional.ofNullable(search(request))
+    return Optional.ofNullable(request)
+        .filter(sr -> !SearchScope.OBJECT.equals(sr.getSearchScope()))
+        .map(sr -> SearchRequest.builder(sr)
+            .sizeLimit(2)
+            .build())
+        .or(() -> Optional.ofNullable(request))
+        .map(this::search)
         .map(response -> {
           if (response.getEntries().size() > 1) {
-            throw LdaptiveException.builder()
-                .reason("No single result.")
-                .build();
+            throw LdaptiveException.noSingleResult();
           }
           return response;
         })

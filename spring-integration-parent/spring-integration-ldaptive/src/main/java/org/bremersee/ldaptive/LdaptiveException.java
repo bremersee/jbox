@@ -17,6 +17,7 @@
 package org.bremersee.ldaptive;
 
 import java.io.Serial;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import org.bremersee.exception.AbstractServiceExceptionBuilder;
 import org.bremersee.exception.ErrorCodeAware;
@@ -36,6 +37,11 @@ public class LdaptiveException extends ServiceException implements HttpStatusAwa
 
   @Serial
   private static final long serialVersionUID = 1L;
+
+  /**
+   * The constant NO_SINGLE_RESULT_ERROR_CODE.
+   */
+  public static final String NO_SINGLE_RESULT_ERROR_CODE = "NoSingleLdapResult";
 
   /**
    * Instantiates a new ldaptive exception.
@@ -59,7 +65,10 @@ public class LdaptiveException extends ServiceException implements HttpStatusAwa
    * @return the ldap exception
    */
   public LdapException getLdapException() {
-    return getCause() instanceof LdapException ? (LdapException) getCause() : null;
+    if (getCause() instanceof LdapException le) {
+      return le;
+    }
+    return null;
   }
 
   /**
@@ -73,11 +82,35 @@ public class LdaptiveException extends ServiceException implements HttpStatusAwa
   }
 
   /**
+   * No single result ldaptive exception.
+   *
+   * @return the ldaptive exception
+   */
+  public static LdaptiveException noSingleResult() {
+    return builder()
+        .reason("No single ldap result")
+        .errorCode(NO_SINGLE_RESULT_ERROR_CODE)
+        .build();
+  }
+
+  /**
+   * Determines whether the given ldaptive exception is caused by no single result or not.
+   *
+   * @param ldaptiveException the ldaptive exception
+   * @return {@code true} if the ldaptive exception is caused by no single, otherwise {@code false}
+   */
+  public static boolean isNoSingleResult(LdaptiveException ldaptiveException) {
+    return Optional.ofNullable(ldaptiveException)
+        .map(le -> NO_SINGLE_RESULT_ERROR_CODE.equals(le.getErrorCode()))
+        .orElse(false);
+  }
+
+  /**
    * Creates a new service exception builder.
    *
    * @return the service exception builder
    */
-  public static ServiceExceptionBuilder<? extends LdaptiveException> builder() {
+  public static ServiceExceptionBuilder<LdaptiveException> builder() {
 
     return new AbstractServiceExceptionBuilder<>() {
 

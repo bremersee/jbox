@@ -281,6 +281,7 @@ public class LdaptiveProperties {
      * Instantiates new ssl properties.
      */
     public SslProperties() {
+      super();
     }
 
     /**
