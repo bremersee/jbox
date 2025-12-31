@@ -62,7 +62,7 @@ import reactor.core.publisher.Mono;
  * @author Christian Bremer
  */
 @Slf4j
-public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations, Cloneable {
+public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations {
 
   private static final ResultPredicate NOT_COMPARE_RESULT = result -> !result.isSuccess()
       && result.getResultCode() != ResultCode.COMPARE_TRUE
@@ -108,10 +108,8 @@ public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations, Clo
    *
    * @return a new instance of this ldaptive template
    */
-  @SuppressWarnings("MethodDoesntCallSuperMethod")
-  @Override
-  public ReactiveLdaptiveTemplate clone() {
-    return clone(null);
+  public ReactiveLdaptiveTemplate copy() {
+    return copy(null);
   }
 
   /**
@@ -121,7 +119,7 @@ public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations, Clo
    * @param errorHandler the new error handler
    * @return the new instance of the ldaptive template
    */
-  public ReactiveLdaptiveTemplate clone(final LdaptiveErrorHandler errorHandler) {
+  public ReactiveLdaptiveTemplate copy(final LdaptiveErrorHandler errorHandler) {
     final ReactiveLdaptiveTemplate template = new ReactiveLdaptiveTemplate(connectionFactory);
     template.setErrorHandler(errorHandler);
     return template;

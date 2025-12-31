@@ -41,8 +41,8 @@ class LdaptiveSambaTemplateTest {
    * Clone template.
    */
   @Test
-  void cloneTemplate() {
-    assertThat(target.clone())
+  void copyTemplate() {
+    assertThat(target.copy())
         .isNotNull();
   }
 
@@ -84,7 +84,7 @@ class LdaptiveSambaTemplateTest {
     doAnswer(invocation -> {
       cloned.setErrorHandler(invocation.getArgument(0));
       return cloned;
-    }).when(target).clone(any(LdaptiveErrorHandler.class));
+    }).when(target).copy(any(LdaptiveErrorHandler.class));
   }
 
 }

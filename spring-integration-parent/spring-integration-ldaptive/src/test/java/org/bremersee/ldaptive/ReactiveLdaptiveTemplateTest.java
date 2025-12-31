@@ -519,10 +519,10 @@ class ReactiveLdaptiveTemplateTest {
    * Test clone.
    */
   @Test
-  void testClone() {
-    ReactiveLdaptiveTemplate clone = ldaptiveTemplate.clone();
+  void testCopy() {
+    ReactiveLdaptiveTemplate clone = ldaptiveTemplate.copy();
     assertNotNull(clone);
-    clone = ldaptiveTemplate.clone(new DefaultLdaptiveErrorHandler());
+    clone = ldaptiveTemplate.copy(new DefaultLdaptiveErrorHandler());
     assertNotNull(clone);
   }
 

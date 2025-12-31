@@ -502,8 +502,8 @@ class LdaptiveTemplateTest {
    * Test clone.
    */
   @Test
-  void testClone() {
-    LdaptiveTemplate clone = ldaptiveTemplate.clone();
+  void testCopy() {
+    LdaptiveTemplate clone = ldaptiveTemplate.copy();
     clone.setErrorHandler(new DefaultLdaptiveErrorHandler());
     Group group = new Group();
     group.setCn("developers");

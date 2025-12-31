@@ -63,7 +63,7 @@ public class LdaptiveSambaTemplate extends LdaptiveTemplate {
   }
 
   @Override
-  public LdaptiveSambaTemplate clone(LdaptiveErrorHandler errorHandler) {
+  public LdaptiveSambaTemplate copy(LdaptiveErrorHandler errorHandler) {
     LdaptiveSambaTemplate template = new LdaptiveSambaTemplate(getConnectionFactory());
     template.setErrorHandler(errorHandler);
     return template;
@@ -94,7 +94,7 @@ public class LdaptiveSambaTemplate extends LdaptiveTemplate {
         .dn(dn)
         .modifications(attributeModification)
         .build();
-    this.clone(new AbstractLdaptiveErrorHandler() {
+    this.copy(new AbstractLdaptiveErrorHandler() {
           @Override
           public LdaptiveException map(LdapException ldapException) {
             int httpStatus;

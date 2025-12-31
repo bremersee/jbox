@@ -56,7 +56,7 @@ import org.ldaptive.handler.ResultPredicate;
  * @author Christian Bremer
  */
 @Slf4j
-public class LdaptiveTemplate implements LdaptiveOperations, Cloneable {
+public class LdaptiveTemplate implements LdaptiveOperations {
 
   private static final ResultPredicate NOT_COMPARE_RESULT = result -> !result.isSuccess()
       && result.getResultCode() != ResultCode.COMPARE_TRUE
@@ -105,10 +105,8 @@ public class LdaptiveTemplate implements LdaptiveOperations, Cloneable {
    *
    * @return a new instance of this ldaptive template
    */
-  @SuppressWarnings("MethodDoesntCallSuperMethod")
-  @Override
-  public LdaptiveTemplate clone() {
-    return clone(null);
+  public LdaptiveTemplate copy() {
+    return copy(null);
   }
 
   /**
@@ -118,7 +116,7 @@ public class LdaptiveTemplate implements LdaptiveOperations, Cloneable {
    * @param errorHandler the new error handler
    * @return the new instance of the ldaptive template
    */
-  public LdaptiveTemplate clone(final LdaptiveErrorHandler errorHandler) {
+  public LdaptiveTemplate copy(final LdaptiveErrorHandler errorHandler) {
     final LdaptiveTemplate template = new LdaptiveTemplate(connectionFactory);
     template.setErrorHandler(errorHandler);
     return template;
