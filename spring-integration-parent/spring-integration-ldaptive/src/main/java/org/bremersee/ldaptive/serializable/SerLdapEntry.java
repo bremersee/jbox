@@ -16,10 +16,17 @@
 
 package org.bremersee.ldaptive.serializable;
 
+import static java.util.Objects.nonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,11 +52,13 @@ public class SerLdapEntry implements Serializable {
   /**
    * The distinguished name.
    */
+  @JsonProperty(value = "dn")
   private final String dn;
 
   /**
    * The attributes.
    */
+  @JsonIgnore
   private final Map<String, SerLdapAttr> attributes;
 
   /**
@@ -67,6 +76,52 @@ public class SerLdapEntry implements Serializable {
         .map(SerLdapAttr::new)
         .collect(Collectors
             .toUnmodifiableMap(SerLdapAttr::getAttributeName, Function.identity()));
+  }
+
+  /**
+   * Instantiates a new Ser ldap entry.
+   *
+   * @param dn the dn
+   * @param attributes the attributes
+   */
+  @JsonCreator
+  public SerLdapEntry(
+      @JsonProperty(value = "dn") String dn,
+      @JsonProperty(value = "attributes") List<SerLdapAttr> attributes) {
+    this.dn = dn;
+    this.attributes = Stream.ofNullable(attributes)
+        .flatMap(Collection::stream)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toMap(SerLdapAttr::getAttributeName, Function.identity()));
+  }
+
+  /**
+   * Gets attribute list.
+   *
+   * @return the attribute list
+   */
+  @JsonProperty(value = "attributes")
+  public Collection<SerLdapAttr> getAttributeList() {
+    return attributes.values();
+  }
+
+  /**
+   * To ldap entry.
+   *
+   * @return the ldap entry
+   */
+  public LdapEntry toLdapEntry() {
+    LdapEntry ldapEntry = new LdapEntry();
+    if (nonNull(dn)) {
+      ldapEntry.setDn(dn);
+    }
+    if (nonNull(attributes) && !attributes.isEmpty()) {
+      ldapEntry.addAttributes(attributes.values()
+          .stream()
+          .map(SerLdapAttr::toLdapAttribute)
+          .toList());
+    }
+    return ldapEntry;
   }
 
 }

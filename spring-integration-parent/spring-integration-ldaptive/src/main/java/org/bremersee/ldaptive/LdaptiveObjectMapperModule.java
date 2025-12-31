@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import org.bremersee.ldaptive.converter.JacksonDnDeserializer;
 import org.bremersee.ldaptive.converter.JacksonDnSerializer;
+import org.bremersee.ldaptive.converter.JacksonLdapEntryDeserializer;
+import org.bremersee.ldaptive.converter.JacksonLdapEntrySerializer;
+import org.ldaptive.LdapEntry;
 import org.ldaptive.dn.Dn;
 
 /**
@@ -30,8 +33,10 @@ public class LdaptiveObjectMapperModule extends SimpleModule {
     super(
         TYPE_ID,
         getVersion(),
-        Map.of(Dn.class, new JacksonDnDeserializer()),
-        List.of(new JacksonDnSerializer()));
+        Map.of(
+            Dn.class, new JacksonDnDeserializer(),
+            LdapEntry.class, new JacksonLdapEntryDeserializer()),
+        List.of(new JacksonDnSerializer(), new JacksonLdapEntrySerializer()));
   }
 
   private static Version getVersion() {

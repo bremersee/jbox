@@ -16,11 +16,18 @@
 
 package org.bremersee.ldaptive.serializable;
 
+import static java.util.Objects.nonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.ToString;
 import org.ldaptive.LdapAttribute;
@@ -40,6 +47,7 @@ public class SerLdapAttr implements Serializable {
   /**
    * Attribute name.
    */
+  @JsonProperty(value = "name", required = true)
   @ToString.Include
   @Getter
   private final String attributeName;
@@ -47,11 +55,13 @@ public class SerLdapAttr implements Serializable {
   /**
    * Attribute values.
    */
+  @JsonIgnore
   private final Collection<byte[]> attributeValues;
 
   /**
    * Whether this attribute is binary and string representations should be base64 encoded.
    */
+  @JsonProperty(value = "binary", required = true)
   @ToString.Include
   @Getter
   private final boolean binary;
@@ -65,6 +75,28 @@ public class SerLdapAttr implements Serializable {
     this.attributeName = ldapAttribute.getName();
     this.attributeValues = ldapAttribute.getBinaryValues();
     this.binary = ldapAttribute.isBinary();
+  }
+
+  /**
+   * Instantiates a new Ser ldap attr.
+   *
+   * @param name the name
+   * @param binary the binary
+   * @param values the values
+   */
+  @JsonCreator
+  public SerLdapAttr(
+      @JsonProperty(value = "name", required = true) String name,
+      @JsonProperty(value = "binary", required = true) boolean binary,
+      @JsonProperty(value = "values") List<String> values) {
+    this.attributeName = name;
+    this.binary = binary;
+    this.attributeValues = Stream.ofNullable(values)
+        .flatMap(Collection::stream)
+        .filter(Objects::nonNull)
+        .map(this::toByteArray)
+        .filter(bytes -> bytes.length > 0)
+        .toList();
   }
 
   @Override
@@ -106,6 +138,7 @@ public class SerLdapAttr implements Serializable {
    *
    * @return single string attribute value or null if this attribute is empty
    */
+  @JsonIgnore
   public String getStringValue() {
     if (attributeValues.isEmpty()) {
       return null;
@@ -121,6 +154,7 @@ public class SerLdapAttr implements Serializable {
    *
    * @return collection of string attribute values
    */
+  @JsonProperty(value = "values")
   @ToString.Include
   public Collection<String> getStringValues() {
     return attributeValues.stream()
@@ -138,6 +172,7 @@ public class SerLdapAttr implements Serializable {
    *
    * @return single byte array attribute value or null if this attribute is empty
    */
+  @JsonIgnore
   public byte[] getBinaryValue() {
     return attributeValues.isEmpty() ? null : attributeValues.iterator().next();
   }
@@ -147,6 +182,7 @@ public class SerLdapAttr implements Serializable {
    *
    * @return collection of string attribute values
    */
+  @JsonIgnore
   public Collection<byte[]> getBinaryValues() {
     return attributeValues.stream().toList();
   }
@@ -157,8 +193,9 @@ public class SerLdapAttr implements Serializable {
    * @param value to find
    * @return whether value exists
    */
-  public boolean hasValue(final byte[] value) {
-    return attributeValues.stream().anyMatch(bb -> Arrays.equals(bb, value));
+  public boolean hasValue(byte[] value) {
+    return attributeValues.stream()
+        .anyMatch(attrValueBytes -> Arrays.equals(attrValueBytes, value));
   }
 
   /**
@@ -168,7 +205,28 @@ public class SerLdapAttr implements Serializable {
    * @return whether value exists
    */
   public boolean hasValue(String value) {
-    return attributeValues.stream().anyMatch(bb -> Arrays.equals(bb, toByteArray(value)));
+    return attributeValues.stream()
+        .anyMatch(attrValueBytes -> {
+          byte[] valueBytes = toByteArray(value);
+          return valueBytes.length > 0 && Arrays.equals(valueBytes, attrValueBytes);
+        });
+  }
+
+  /**
+   * To ldap attribute.
+   *
+   * @return the ldap attribute
+   */
+  public LdapAttribute toLdapAttribute() {
+    LdapAttribute ldapAttribute = new LdapAttribute();
+    if (nonNull(attributeName)) {
+      ldapAttribute.setName(attributeName);
+    }
+    ldapAttribute.setBinary(binary);
+    if (nonNull(attributeValues) && !attributeValues.isEmpty()) {
+      ldapAttribute.addBinaryValues(attributeValues);
+    }
+    return ldapAttribute;
   }
 
   private byte[] toByteArray(String value) {
@@ -176,7 +234,7 @@ public class SerLdapAttr implements Serializable {
       try {
         return LdapUtils.base64Decode(value);
       } catch (IllegalArgumentException e) {
-        return null;
+        return new byte[0];
       }
     }
     return LdapUtils.utf8Encode(value, false);

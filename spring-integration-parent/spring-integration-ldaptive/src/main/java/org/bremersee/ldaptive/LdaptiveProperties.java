@@ -341,15 +341,15 @@ public class LdaptiveProperties {
      */
     DNS(new DnsSrvConnectionStrategy());
 
-    private final org.ldaptive.ConnectionStrategy connectionStrategy;
+    private final org.ldaptive.ConnectionStrategy strategy;
 
-    ConnectionStrategy(org.ldaptive.ConnectionStrategy connectionStrategy) {
-      this.connectionStrategy = connectionStrategy;
+    ConnectionStrategy(org.ldaptive.ConnectionStrategy strategy) {
+      this.strategy = strategy;
     }
 
     @Override
     public org.ldaptive.ConnectionStrategy get() {
-      return connectionStrategy;
+      return strategy;
     }
   }
 
@@ -378,6 +378,7 @@ public class LdaptiveProperties {
      * Instantiates new connection validator properties.
      */
     public ConnectionValidatorProperties() {
+      super();
     }
 
     /**
@@ -430,6 +431,7 @@ public class LdaptiveProperties {
        * Instantiates new search request properties.
        */
       public SearchRequestProperties() {
+        super();
       }
 
       /**
@@ -450,10 +452,10 @@ public class LdaptiveProperties {
        * @return the search request
        */
       public SearchRequest createSearchRequest() {
-        String baseDn = Objects.requireNonNullElse(getBaseDn(), "");
+        String nonNullBaseDn = Objects.requireNonNullElse(getBaseDn(), "");
         SearchRequest searchRequest;
         if (Objects.nonNull(getSearchFilter()) && hasText(getSearchFilter().getFilter())) {
-          searchRequest = new SearchRequest(baseDn);
+          searchRequest = new SearchRequest(nonNullBaseDn);
           searchRequest.setFilter(getSearchFilter().getFilter());
           searchRequest.setReturnAttributes(returnAttributesAsArray());
           if (getSearchScope() != null) {
@@ -463,7 +465,8 @@ public class LdaptiveProperties {
             searchRequest.setSizeLimit(getSizeLimit());
           }
         } else {
-          searchRequest = SearchRequest.objectScopeSearchRequest(baseDn, returnAttributesAsArray());
+          searchRequest = SearchRequest
+              .objectScopeSearchRequest(nonNullBaseDn, returnAttributesAsArray());
         }
         return searchRequest;
       }
@@ -483,6 +486,7 @@ public class LdaptiveProperties {
          * Instantiates new search filter properties.
          */
         public SearchFilterProperties() {
+          super();
         }
       }
     }
@@ -553,6 +557,7 @@ public class LdaptiveProperties {
      * Instantiates new connection pool properties.
      */
     public ConnectionPoolProperties() {
+      super();
     }
 
   }
