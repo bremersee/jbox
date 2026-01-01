@@ -48,6 +48,16 @@ public interface LdaptiveAttribute<T> {
   ValueTranscoder<T> getValueTranscoder();
 
   /**
+   * Determines whether the attribute exists in the given ldap entry or not.
+   *
+   * @param entry the entry
+   * @return {@code true} if the attribute exists, otherwise {@code false}
+   */
+  default boolean exists(LdapEntry entry) {
+    return !isEmpty(entry) && !isEmpty(entry.getAttribute(getName()));
+  }
+
+  /**
    * Gets value.
    *
    * @param entry the entry
