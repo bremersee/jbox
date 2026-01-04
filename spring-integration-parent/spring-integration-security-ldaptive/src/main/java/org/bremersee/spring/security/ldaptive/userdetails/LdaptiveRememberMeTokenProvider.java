@@ -40,7 +40,7 @@ public interface LdaptiveRememberMeTokenProvider {
    * @return the ldaptive remember-me token provider
    */
   static LdaptiveRememberMeTokenProvider invalid() {
-    return InvalidRememberMeTokenProvider.getInstance();
+    return new InvalidRememberMeTokenProvider();
   }
 
   /**
@@ -50,22 +50,11 @@ public interface LdaptiveRememberMeTokenProvider {
    */
   class InvalidRememberMeTokenProvider implements LdaptiveRememberMeTokenProvider {
 
-    private static final InvalidRememberMeTokenProvider INSTANCE
-        = new InvalidRememberMeTokenProvider();
-
-    /**
-     * Gets instance.
-     *
-     * @return the instance
-     */
-    static InvalidRememberMeTokenProvider getInstance() {
-      return INSTANCE;
-    }
-
     /**
      * Instantiates a new invalid remember me token provider.
      */
-    private InvalidRememberMeTokenProvider() {
+    InvalidRememberMeTokenProvider() {
+      super();
     }
 
     @Override

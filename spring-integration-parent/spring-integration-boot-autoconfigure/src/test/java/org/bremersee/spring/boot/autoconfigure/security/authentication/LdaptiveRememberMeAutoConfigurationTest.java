@@ -9,7 +9,6 @@ import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticat
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 
@@ -37,15 +36,6 @@ class LdaptiveRememberMeAutoConfigurationTest {
     properties.getLdaptive().setTemplate(Template.ACTIVE_DIRECTORY);
     target = new LdaptiveRememberMeAutoConfiguration(properties);
     target.init();
-  }
-
-  /**
-   * Remember me authentication provider.
-   */
-  @Test
-  void rememberMeAuthenticationProvider() {
-    RememberMeAuthenticationProvider actual = target.rememberMeAuthenticationProvider();
-    assertThat(actual).isNotNull();
   }
 
   /**

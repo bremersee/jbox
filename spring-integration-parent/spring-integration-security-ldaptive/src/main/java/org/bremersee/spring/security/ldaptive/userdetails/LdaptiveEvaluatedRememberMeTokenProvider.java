@@ -16,7 +16,8 @@
 
 package org.bremersee.spring.security.ldaptive.userdetails;
 
-import java.util.Objects;
+import static java.util.Objects.nonNull;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
@@ -59,7 +60,7 @@ public class LdaptiveEvaluatedRememberMeTokenProvider implements LdaptiveRemembe
    * @param accountControlEvaluator the account control evaluator
    */
   public void setAccountControlEvaluator(AccountControlEvaluator accountControlEvaluator) {
-    if (Objects.nonNull(accountControlEvaluator)) {
+    if (nonNull(accountControlEvaluator)) {
       this.accountControlEvaluator = accountControlEvaluator;
     }
   }

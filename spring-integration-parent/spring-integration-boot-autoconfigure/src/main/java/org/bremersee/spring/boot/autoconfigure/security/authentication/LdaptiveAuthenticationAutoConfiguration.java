@@ -77,6 +77,8 @@ public class LdaptiveAuthenticationAutoConfiguration {
 
   private final LdaptiveAuthenticationProperties properties;
 
+  private final String rememberMeKey;
+
   /**
    * Instantiates a new ldaptive authentication autoconfiguration.
    *
@@ -84,6 +86,7 @@ public class LdaptiveAuthenticationAutoConfiguration {
    */
   public LdaptiveAuthenticationAutoConfiguration(AuthenticationProperties properties) {
     this.properties = LdaptivePropertiesMapper.map(properties);
+    this.rememberMeKey = properties.getRememberMe().getKey();
   }
 
   /**
@@ -163,7 +166,8 @@ public class LdaptiveAuthenticationAutoConfiguration {
 
     LdaptiveAuthenticationManager manager = new LdaptiveAuthenticationManager(
         getLdaptiveTemplate(connectionConfig, connectionFactoryProvider, ldaptiveTemplateProvider),
-        properties);
+        properties,
+        rememberMeKey);
     manager.setPasswordEncoder(ldaptivePasswordEncoderProvider.get());
     manager.setPasswordProvider(ldaptiveRememberMeTokenProvider);
     emailToUsernameResolver.ifAvailable(manager::setEmailToUsernameResolver);

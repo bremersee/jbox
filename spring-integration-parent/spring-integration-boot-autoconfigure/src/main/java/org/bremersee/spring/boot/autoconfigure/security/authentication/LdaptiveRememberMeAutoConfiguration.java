@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationProperties.RememberMeProperties;
@@ -33,11 +35,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
 
 /**
  * The ldaptive remember-me autoconfiguration.
@@ -74,7 +74,7 @@ public class LdaptiveRememberMeAutoConfiguration {
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
     String message;
-    if (ObjectUtils.isEmpty(properties.getPasswordLastSetAttribute())) {
+    if (isEmpty(properties.getPasswordLastSetAttribute())) {
       message = """
           WARNING: There is no password-last-set attribute configured.
           * Remembered users can login as long as they exist and have been correctly evaluated.
@@ -95,17 +95,6 @@ public class LdaptiveRememberMeAutoConfiguration {
         ClassUtils.getUserClass(getClass()).getSimpleName(),
         rememberMeProperties,
         message);
-  }
-
-  /**
-   * Creates remember me authentication provider.
-   *
-   * @return the remember me authentication provider
-   */
-  @ConditionalOnMissingBean
-  @Bean
-  public RememberMeAuthenticationProvider rememberMeAuthenticationProvider() {
-    return new RememberMeAuthenticationProvider(rememberMeProperties.getKey());
   }
 
   /**

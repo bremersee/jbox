@@ -118,7 +118,8 @@ public class TestConfiguration {
       EmailToUsernameResolver emailToUsernameResolver) {
     LdaptiveAuthenticationManager authenticationManager = new LdaptiveAuthenticationManager(
         connectionFactory.getConnectionConfig(),
-        authenticationProperties);
+        authenticationProperties,
+        null);
     authenticationManager.setEmailToUsernameResolver(emailToUsernameResolver);
     return authenticationManager;
   }

@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.ldaptive.DefaultLdaptiveErrorHandler;
@@ -43,7 +44,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,7 +57,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class LdaptiveAuthenticationManagerTest {
 
   private static final String USER_BASE_DN = "ou=people,dc=bremersee,dc=org";
+
   private static final String USER_DN = "uid=junit,ou=people,dc=bremersee,dc=org";
+
+  private static final String REMEMBER_ME_KEY = "bremersee";
 
   /**
    * Init.
@@ -68,7 +71,8 @@ class LdaptiveAuthenticationManagerTest {
     properties.setPasswordAttribute("userPassword");
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
         new ConnectionConfig("ldap://localhost:389"),
-        properties);
+        properties,
+        REMEMBER_ME_KEY);
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(target::init);
 
@@ -86,7 +90,8 @@ class LdaptiveAuthenticationManagerTest {
   void supports() {
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
         mock(ConnectionFactory.class),
-        new OpenLdapTemplate());
+        new OpenLdapTemplate(),
+        REMEMBER_ME_KEY);
     target.init();
     boolean actual = target.supports(UsernamePasswordAuthenticationToken.class);
     assertThat(actual)
@@ -105,7 +110,8 @@ class LdaptiveAuthenticationManagerTest {
     LdaptiveTemplate ldaptiveTemplate = new LdaptiveTemplate(connectionFactory);
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
         ldaptiveTemplate,
-        new ActiveDirectoryTemplate());
+        new ActiveDirectoryTemplate(),
+        REMEMBER_ME_KEY);
     target.setUsernameToBindDnConverter(username -> username);
     target.init();
     softly
@@ -123,7 +129,8 @@ class LdaptiveAuthenticationManagerTest {
   void getUserDetailsService() {
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
         mock(ConnectionFactory.class),
-        new OpenLdapTemplate());
+        new OpenLdapTemplate(),
+        REMEMBER_ME_KEY);
     assertThat(target.getUserDetailsService())
         .isNotNull();
   }
@@ -143,7 +150,8 @@ class LdaptiveAuthenticationManagerTest {
     properties.setPasswordAttribute("userPassword");
     properties.setAccountControlEvaluator(null);
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties));
+        ldaptiveTemplate, properties,
+        REMEMBER_ME_KEY));
     target.setTokenConverter(LdaptiveAuthenticationToken::new);
 
     PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
@@ -186,7 +194,8 @@ class LdaptiveAuthenticationManagerTest {
     properties.setUserBaseDn(USER_BASE_DN);
     properties.setPasswordAttribute("userPassword");
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties);
+        ldaptiveTemplate, properties,
+        REMEMBER_ME_KEY);
 
     PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
     doAnswer(invocationOnMock -> invocationOnMock.getArgument(0))
@@ -204,9 +213,9 @@ class LdaptiveAuthenticationManagerTest {
         .when(ldaptiveTemplate)
         .compare(any());
 
+    var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(BadCredentialsException.class)
-        .isThrownBy(() -> target
-            .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret")));
+        .isThrownBy(() -> target.authenticate(token));
   }
 
   /**
@@ -222,7 +231,7 @@ class LdaptiveAuthenticationManagerTest {
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties));
+        ldaptiveTemplate, properties, REMEMBER_ME_KEY));
 
     target.init();
 
@@ -254,7 +263,7 @@ class LdaptiveAuthenticationManagerTest {
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties));
+        ldaptiveTemplate, properties, REMEMBER_ME_KEY));
 
     target.init();
 
@@ -269,9 +278,9 @@ class LdaptiveAuthenticationManagerTest {
         .when(target)
         .getUserDetailsService(any());
 
+    var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(UsernameNotFoundException.class)
-        .isThrownBy(() -> target
-            .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret")));
+        .isThrownBy(() -> target.authenticate(token));
   }
 
   /**
@@ -285,7 +294,7 @@ class LdaptiveAuthenticationManagerTest {
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties));
+        ldaptiveTemplate, properties, REMEMBER_ME_KEY));
 
     target.init();
 
@@ -298,9 +307,9 @@ class LdaptiveAuthenticationManagerTest {
         .when(ldaptiveTemplate)
         .findOne(any());
 
+    var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(BadCredentialsException.class)
-        .isThrownBy(() -> target
-            .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret")));
+        .isThrownBy(() -> target.authenticate(token));
   }
 
   /**
@@ -314,7 +323,7 @@ class LdaptiveAuthenticationManagerTest {
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties));
+        ldaptiveTemplate, properties, REMEMBER_ME_KEY));
 
     target.init();
 
@@ -328,9 +337,9 @@ class LdaptiveAuthenticationManagerTest {
         .when(ldaptiveTemplate)
         .findOne(any());
 
+    var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(BadCredentialsException.class)
-        .isThrownBy(() -> target
-            .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret")));
+        .isThrownBy(() -> target.authenticate(token));
   }
 
   /**
@@ -346,7 +355,7 @@ class LdaptiveAuthenticationManagerTest {
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties);
+        ldaptiveTemplate, properties, REMEMBER_ME_KEY);
 
     LdapEntry user = createUser();
 
@@ -435,30 +444,22 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
-   * Is remember me authentication token.
-   *
-   * @param softly the softly
+   * Remember me authentication throws bad credentials exception with invalid key.
    */
   @Test
-  void isRememberMeAuthenticationToken(SoftAssertions softly) {
+  void rememberMeAuthenticationThrowsBadCredentialsExceptionWithInvalidKey() {
     LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
         mock(ConnectionFactory.class),
-        new OpenLdapTemplate());
+        new OpenLdapTemplate(),
+        REMEMBER_ME_KEY);
 
-    Authentication token = mock(RememberMeAuthenticationToken.class);
-    softly
-        .assertThat(target.isRememberMeAuthenticationToken(token))
-        .isFalse();
+    RememberMeAuthenticationToken token = mock(RememberMeAuthenticationToken.class);
+    doReturn(0)
+        .when(token)
+        .getKeyHash();
 
-    token = mock(LdaptiveRememberMeAuthenticationToken.class);
-    softly
-        .assertThat(target.isRememberMeAuthenticationToken(token))
-        .isFalse();
-
-    doReturn(mock(LdaptiveUserDetails.class)).when(token).getPrincipal();
-    softly
-        .assertThat(target.isRememberMeAuthenticationToken(token))
-        .isTrue();
+    Assertions.assertThatExceptionOfType(BadCredentialsException.class)
+        .isThrownBy(() -> target.authenticate(token));
   }
 
   private LdapEntry createUser() {

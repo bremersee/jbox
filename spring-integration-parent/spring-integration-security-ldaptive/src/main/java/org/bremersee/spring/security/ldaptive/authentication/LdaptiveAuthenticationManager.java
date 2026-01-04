@@ -19,8 +19,8 @@ package org.bremersee.spring.security.ldaptive.authentication;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNullElseGet;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
-import java.util.Objects;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,7 +41,11 @@ import org.ldaptive.ConnectionFactory;
 import org.ldaptive.DefaultConnectionFactory;
 import org.ldaptive.LdapException;
 import org.ldaptive.ResultCode;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -53,6 +57,7 @@ import org.springframework.security.authentication.RememberMeAuthenticationToken
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
@@ -63,7 +68,7 @@ import org.springframework.util.Assert;
  * @author Christian Bremer
  */
 public class LdaptiveAuthenticationManager
-    implements AuthenticationManager, AuthenticationProvider { // message source aware
+    implements AuthenticationManager, AuthenticationProvider, MessageSourceAware {
 
   /**
    * The Logger.
@@ -75,6 +80,9 @@ public class LdaptiveAuthenticationManager
    */
   @Getter(AccessLevel.PROTECTED)
   private final LdaptiveAuthenticationProperties authenticationProperties;
+
+  @Getter(AccessLevel.PROTECTED)
+  private final String rememberMeKey;
 
   /**
    * The application ldaptive template.
@@ -128,16 +136,21 @@ public class LdaptiveAuthenticationManager
   @Setter
   private Converter<LdaptiveUserDetails, LdaptiveAuthentication> tokenConverter;
 
+  @Getter(AccessLevel.PROTECTED)
+  private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+
   /**
    * Instantiates a new ldaptive authentication manager.
    *
    * @param connectionConfig the connection config
    * @param authenticationProperties the authentication properties
+   * @param rememberMeKey the remember me key
    */
   public LdaptiveAuthenticationManager(
       ConnectionConfig connectionConfig,
-      LdaptiveAuthenticationProperties authenticationProperties) {
-    this(new DefaultConnectionFactory(connectionConfig), authenticationProperties);
+      LdaptiveAuthenticationProperties authenticationProperties,
+      String rememberMeKey) {
+    this(new DefaultConnectionFactory(connectionConfig), authenticationProperties, rememberMeKey);
   }
 
   /**
@@ -145,11 +158,13 @@ public class LdaptiveAuthenticationManager
    *
    * @param connectionFactory the connection factory
    * @param authenticationProperties the authentication properties
+   * @param rememberMeKey the remember me key
    */
   public LdaptiveAuthenticationManager(
       ConnectionFactory connectionFactory,
-      LdaptiveAuthenticationProperties authenticationProperties) {
-    this(new LdaptiveTemplate(connectionFactory), authenticationProperties);
+      LdaptiveAuthenticationProperties authenticationProperties,
+      String rememberMeKey) {
+    this(new LdaptiveTemplate(connectionFactory), authenticationProperties, rememberMeKey);
   }
 
   /**
@@ -157,15 +172,18 @@ public class LdaptiveAuthenticationManager
    *
    * @param applicationLdaptiveTemplate the application ldaptive template
    * @param authenticationProperties the authentication properties
+   * @param rememberMeKey the remember me key
    */
   public LdaptiveAuthenticationManager(
       LdaptiveTemplate applicationLdaptiveTemplate,
-      LdaptiveAuthenticationProperties authenticationProperties) {
+      LdaptiveAuthenticationProperties authenticationProperties,
+      String rememberMeKey) {
 
     this.applicationLdaptiveTemplate = applicationLdaptiveTemplate;
     Assert.notNull(getApplicationLdaptiveTemplate(), "Application ldaptive template is required.");
     this.authenticationProperties = authenticationProperties;
     Assert.notNull(getAuthenticationProperties(), "Authentication properties are required.");
+    this.rememberMeKey = rememberMeKey;
 
     // emailToUsernameResolver
     setEmailToUsernameResolver(new EmailToUsernameResolverByLdapAttribute(
@@ -234,24 +252,46 @@ public class LdaptiveAuthenticationManager
   }
 
   @Override
+  public void setMessageSource(@NonNull MessageSource messageSource) {
+    this.messages = new MessageSourceAccessor(messageSource);
+  }
+
+  @Override
   public boolean supports(Class<?> authentication) {
-    return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+    return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication)
+        || isRememberMeAuthentication(authentication);
+  }
+
+  private boolean isRememberMeAuthentication(Class<?> authentication) {
+    return !isEmpty(getRememberMeKey())
+        && RememberMeAuthenticationToken.class.isAssignableFrom(authentication);
   }
 
   /**
-   * Determines whether the given authentication is a remember-me authentication.
+   * Remember me key matches given authentication.
    *
    * @param authentication the authentication
    * @return the boolean
    */
-  protected boolean isRememberMeAuthenticationToken(Authentication authentication) {
-    return authentication instanceof RememberMeAuthenticationToken
-        && authentication.getPrincipal() instanceof LdaptiveUserDetails;
+  protected boolean rememberMeKeyMatches(RememberMeAuthenticationToken authentication) {
+    return Optional.ofNullable(getRememberMeKey())
+        .filter(key -> key.hashCode() == authentication.getKeyHash())
+        .isPresent();
   }
 
   @Override
   public LdaptiveAuthentication authenticate(Authentication authentication)
       throws AuthenticationException {
+    if (!supports(authentication.getClass())) {
+      logger.debug(String.format("Authentication [%s] is not supported.",
+          authentication.getClass().getName()));
+      return null;
+    }
+    if (authentication instanceof RememberMeAuthenticationToken rma && !rememberMeKeyMatches(rma)) {
+      throw new BadCredentialsException(getMessages().getMessage(
+          "RememberMeAuthenticationProvider.incorrectKey",
+          "The presented RememberMeAuthenticationToken does not contain the expected key"));
+    }
     String name = getName(authentication);
     logger.debug("Authenticating user '" + name + "' ...");
     String username = getEmailToUsernameResolver()
