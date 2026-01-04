@@ -18,9 +18,7 @@ package org.bremersee.spring.security.ldaptive.authentication;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.logging.Log;
@@ -101,11 +99,9 @@ public class EmailToUsernameResolverByLdapAttribute implements EmailToUsernameRe
               .parameters(email)
               .build())
           .scope(getProperties().getUserFindOneSearchScope())
+          .sizeLimit(1)
           .build();
-      return Stream.ofNullable(getLdaptiveTemplate().findAll(searchRequest))
-          .filter(collection -> collection.size() == 1)
-          .flatMap(Collection::stream)
-          .findFirst()
+      return getLdaptiveTemplate().findOne(searchRequest)
           .map(ldapEntry -> ldapEntry.getAttribute(getProperties().getUsernameAttribute()))
           .map(LdapAttribute::getStringValue);
 

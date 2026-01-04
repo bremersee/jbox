@@ -239,6 +239,11 @@ public class LdaptiveAuthenticationManager
     }
   }
 
+  @Override
+  public void setMessageSource(@NonNull MessageSource messageSource) {
+    this.messages = new MessageSourceAccessor(messageSource);
+  }
+
   /**
    * Init.
    */
@@ -249,11 +254,6 @@ public class LdaptiveAuthenticationManager
               + "bind to authenticate or set a password encoder.",
           getAuthenticationProperties().getPasswordAttribute()));
     }
-  }
-
-  @Override
-  public void setMessageSource(@NonNull MessageSource messageSource) {
-    this.messages = new MessageSourceAccessor(messageSource);
   }
 
   @Override

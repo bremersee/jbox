@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
-import java.util.List;
 import java.util.Optional;
 import org.bremersee.ldaptive.LdaptiveException;
 import org.bremersee.ldaptive.LdaptiveTemplate;
@@ -54,7 +53,7 @@ class EmailToUsernameResolverByLdapAttributeTest {
     doReturn("uid").when(properties).getUsernameAttribute();
 
     LdapEntry user = createUser();
-    doReturn(List.of(user)).when(ldaptiveTemplate).findAll(any());
+    doReturn(Optional.of(user)).when(ldaptiveTemplate).findOne(any());
 
     Optional<String> actual = target.getUsernameByEmail("junit@example.com");
 
@@ -75,7 +74,7 @@ class EmailToUsernameResolverByLdapAttributeTest {
 
     doThrow(LdaptiveException.builder().reason("test").build())
         .when(ldaptiveTemplate)
-        .findAll(any());
+        .findOne(any());
 
     Optional<String> actual = target.getUsernameByEmail("junit@example.com");
 

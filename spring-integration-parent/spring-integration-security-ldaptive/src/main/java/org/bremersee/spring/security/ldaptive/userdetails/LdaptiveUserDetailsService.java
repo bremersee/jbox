@@ -39,6 +39,7 @@ import org.ldaptive.FilterTemplate;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.SearchRequest;
+import org.ldaptive.dn.Dn;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -193,10 +194,16 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the boolean
    */
   protected boolean isDn(String username) {
-    return Optional.ofNullable(username)
-        .map(String::toLowerCase)
-        .filter(name -> name.endsWith(getAuthenticationProperties().getUserBaseDn().toLowerCase()))
-        .isPresent();
+    try {
+      Dn baseDn = new Dn(getAuthenticationProperties().getUserBaseDn());
+      return Optional.ofNullable(username)
+          .map(Dn::new)
+          .filter(baseDn::isAncestor)
+          .isPresent();
+
+    } catch (RuntimeException e) {
+      return false;
+    }
   }
 
   /**
