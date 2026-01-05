@@ -18,6 +18,7 @@ package org.bremersee.pagebuilder.model;
 
 import static java.util.Objects.isNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * @param hasNext the has next
    * @param sort the sort
    */
-  public JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
+  protected JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
       SortOrder sort) {
     super(content, number, size, hasNext, sort);
   }
@@ -83,7 +84,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * @param hasNext the has next
    * @param sort the sort
    */
-  public JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
+  protected JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
       Sort sort) {
     super(content, number, size, hasNext, sort);
   }
@@ -93,10 +94,12 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    *
    * @param slice the slice
    */
-  public JsonSliceDto(Slice<? extends T> slice) {
+  protected JsonSliceDto(Slice<? extends T> slice) {
     super(slice);
   }
 
+  @Schema(name = "content", description = "The content of the slice.")
+  @JsonProperty(value = "content")
   @Override
   public List<T> getContent() {
     if (isNull(content)) {

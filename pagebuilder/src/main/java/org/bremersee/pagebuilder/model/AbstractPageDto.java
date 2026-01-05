@@ -72,7 +72,7 @@ public abstract class AbstractPageDto<T> extends AbstractSliceDto<T> {
    * @param size the size
    * @param totalElements the total elements
    */
-  public AbstractPageDto(
+  protected AbstractPageDto(
       List<? extends T> content,
       int number,
       int size,
@@ -89,7 +89,7 @@ public abstract class AbstractPageDto<T> extends AbstractSliceDto<T> {
    * @param totalElements the total elements (the size of available elements)
    * @param sort the sort oder
    */
-  public AbstractPageDto(
+  protected AbstractPageDto(
       List<? extends T> content,
       int number,
       int size,
@@ -109,7 +109,7 @@ public abstract class AbstractPageDto<T> extends AbstractSliceDto<T> {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  public AbstractPageDto(
+  protected AbstractPageDto(
       List<? extends T> content,
       int number,
       int size,
@@ -128,7 +128,7 @@ public abstract class AbstractPageDto<T> extends AbstractSliceDto<T> {
    *
    * @param page the page
    */
-  public AbstractPageDto(Page<? extends T> page) {
+  protected AbstractPageDto(Page<? extends T> page) {
     this(
         page.getContent(),
         page.getNumber(),

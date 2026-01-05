@@ -18,6 +18,7 @@ package org.bremersee.pagebuilder.model;
 
 import static java.util.Objects.isNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -97,6 +98,8 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
     super(page);
   }
 
+  @Schema(name = "content", description = "The content of the page.")
+  @JsonProperty(value = "content")
   @Override
   public List<T> getContent() {
     if (isNull(content)) {

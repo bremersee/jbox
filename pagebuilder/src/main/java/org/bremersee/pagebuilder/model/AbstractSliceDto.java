@@ -78,7 +78,7 @@ public abstract class AbstractSliceDto<T> extends AbstractChunkDto<T> {
    * @param size the size
    * @param hasNext the has next
    */
-  public AbstractSliceDto(
+  protected AbstractSliceDto(
       List<? extends T> content,
       int number,
       int size,
@@ -95,7 +95,7 @@ public abstract class AbstractSliceDto<T> extends AbstractChunkDto<T> {
    * @param hasNext the has next
    * @param sort the sort oder
    */
-  public AbstractSliceDto(
+  protected AbstractSliceDto(
       List<? extends T> content,
       int number,
       int size,
@@ -116,7 +116,7 @@ public abstract class AbstractSliceDto<T> extends AbstractChunkDto<T> {
    * @param hasNext the has next
    * @param sort the sort
    */
-  public AbstractSliceDto(
+  protected AbstractSliceDto(
       List<? extends T> content,
       int number,
       int size,
@@ -135,7 +135,7 @@ public abstract class AbstractSliceDto<T> extends AbstractChunkDto<T> {
    *
    * @param slice the slice
    */
-  public AbstractSliceDto(Slice<? extends T> slice) {
+  protected AbstractSliceDto(Slice<? extends T> slice) {
     this(
         slice.getContent(),
         slice.getNumber(),

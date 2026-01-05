@@ -83,7 +83,7 @@ public abstract class AbstractChunkDto<T> implements Serializable {
    *
    * @param content the content
    */
-  public AbstractChunkDto(List<? extends T> content) {
+  protected AbstractChunkDto(List<? extends T> content) {
     this(content, null);
   }
 
@@ -93,7 +93,7 @@ public abstract class AbstractChunkDto<T> implements Serializable {
    * @param content the content
    * @param sort the sort
    */
-  public AbstractChunkDto(List<? extends T> content, SortOrder sort) {
+  protected AbstractChunkDto(List<? extends T> content, SortOrder sort) {
     this.content = new ArrayList<>(nonNull(content) ? content : List.of());
     this.sort = sort;
   }
@@ -103,8 +103,8 @@ public abstract class AbstractChunkDto<T> implements Serializable {
    *
    * @return the content
    */
-  @Schema(description = "The content of the page or slice.")
-  @XmlTransient
+  @Schema(name = "content", description = "The content of the page or slice.")
+  @JsonProperty(value = "content")
   public abstract List<T> getContent();
 
   /**
