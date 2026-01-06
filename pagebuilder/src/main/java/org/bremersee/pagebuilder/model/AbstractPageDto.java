@@ -40,7 +40,6 @@ import org.springframework.data.domain.Sort;
  * @param <T> the type of the content
  * @author Christian Bremer
  */
-@SuppressWarnings("unused")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = "abstractPageType")
 @Setter(AccessLevel.PROTECTED)
@@ -167,6 +166,7 @@ public abstract class AbstractPageDto<T> extends AbstractSliceDto<T> {
    *
    * @param totalPages the total pages
    */
+  @SuppressWarnings("unused")
   protected void setTotalPages(int totalPages) {
   }
 

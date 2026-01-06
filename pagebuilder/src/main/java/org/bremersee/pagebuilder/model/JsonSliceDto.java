@@ -57,7 +57,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * @param size the size
    * @param hasNext the has next
    */
-  public JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext) {
+  protected JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext) {
     super(content, number, size, hasNext);
   }
 

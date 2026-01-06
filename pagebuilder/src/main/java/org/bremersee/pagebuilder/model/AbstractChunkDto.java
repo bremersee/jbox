@@ -56,7 +56,7 @@ import org.springframework.data.domain.SliceImpl;
 @EqualsAndHashCode
 @ToString
 @Schema(description = "The chunk.")
-public abstract class AbstractChunkDto<T> implements Serializable {
+abstract class AbstractChunkDto<T> implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 1;

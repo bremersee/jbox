@@ -57,7 +57,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * @param size the size
    * @param totalElements the total elements
    */
-  public JsonPageDto(List<? extends T> content, int number, int size, long totalElements) {
+  protected JsonPageDto(List<? extends T> content, int number, int size, long totalElements) {
     super(content, number, size, totalElements);
   }
 
@@ -70,7 +70,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  public JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
+  protected JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
       SortOrder sort) {
     super(content, number, size, totalElements, sort);
   }
@@ -84,7 +84,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  public JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
+  protected JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
       Sort sort) {
     super(content, number, size, totalElements, sort);
   }
@@ -94,7 +94,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    *
    * @param page the page
    */
-  public JsonPageDto(Page<? extends T> page) {
+  protected JsonPageDto(Page<? extends T> page) {
     super(page);
   }
 
