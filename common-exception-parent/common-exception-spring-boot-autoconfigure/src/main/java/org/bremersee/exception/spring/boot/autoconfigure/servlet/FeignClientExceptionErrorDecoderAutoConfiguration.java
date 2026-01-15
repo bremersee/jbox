@@ -50,6 +50,13 @@ import org.springframework.util.ClassUtils;
 public class FeignClientExceptionErrorDecoderAutoConfiguration {
 
   /**
+   * Instantiates a new feign client exception error decoder auto configuration.
+   */
+  public FeignClientExceptionErrorDecoderAutoConfiguration() {
+    super();
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

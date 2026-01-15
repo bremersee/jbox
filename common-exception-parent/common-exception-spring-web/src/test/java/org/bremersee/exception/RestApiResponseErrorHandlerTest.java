@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -35,6 +36,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 
@@ -107,17 +109,20 @@ class RestApiResponseErrorHandlerTest {
         .build();
     when(restApiExceptionParser.parseException(any(InputStream.class), any(), any()))
         .thenReturn(restApiException);
-    ClientHttpResponse response = mock(ClientHttpResponse.class);
-    when(response.getBody())
-        .thenReturn(new ByteArrayInputStream(new byte[0]));
-    when(response.getStatusCode())
-        .thenReturn(HttpStatus.FORBIDDEN);
-    when(response.getHeaders())
-        .thenReturn(new HttpHeaders());
-    assertThatThrownBy(() -> target.handleError(response))
-        .isInstanceOf(RestApiResponseException.class)
-        .asInstanceOf(InstanceOfAssertFactories.type(RestApiResponseException.class))
-        .extracting(RestApiResponseException::getRestApiException)
-        .isEqualTo(restApiException);
+    try (ClientHttpResponse response = mock(ClientHttpResponse.class)) {
+      when(response.getBody())
+          .thenReturn(new ByteArrayInputStream(new byte[0]));
+      when(response.getStatusCode())
+          .thenReturn(HttpStatus.FORBIDDEN);
+      when(response.getHeaders())
+          .thenReturn(new HttpHeaders());
+      URI uri = URI.create("https://example.org");
+      HttpMethod httpMethod = HttpMethod.GET;
+      assertThatThrownBy(() -> target.handleError(uri, httpMethod, response))
+          .isInstanceOf(RestApiResponseException.class)
+          .asInstanceOf(InstanceOfAssertFactories.type(RestApiResponseException.class))
+          .extracting(RestApiResponseException::getRestApiException)
+          .isEqualTo(restApiException);
+    }
   }
 }

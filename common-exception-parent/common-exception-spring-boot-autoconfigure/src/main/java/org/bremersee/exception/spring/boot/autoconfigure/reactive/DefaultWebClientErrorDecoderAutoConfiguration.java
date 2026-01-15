@@ -49,6 +49,13 @@ import org.springframework.util.ClassUtils;
 public class DefaultWebClientErrorDecoderAutoConfiguration {
 
   /**
+   * Instantiates a new default web client error decoder auto configuration.
+   */
+  public DefaultWebClientErrorDecoderAutoConfiguration() {
+    super();
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

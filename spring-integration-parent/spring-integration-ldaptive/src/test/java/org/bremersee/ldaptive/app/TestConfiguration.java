@@ -24,7 +24,6 @@ import org.ldaptive.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -54,7 +53,6 @@ public class TestConfiguration {
    */
   @Bean
   public ConnectionFactory connectionFactory() {
-    EmbeddedLdapAutoConfiguration a;
     LdaptiveProperties properties = new LdaptiveProperties();
     properties.setLdapUrl("ldap://localhost:" + port);
     properties.setBindDn(username);

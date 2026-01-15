@@ -17,9 +17,11 @@
 package org.bremersee.exception;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.model.RestApiException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -57,7 +59,11 @@ public class RestApiResponseErrorHandler implements ResponseErrorHandler {
   }
 
   @Override
-  public void handleError(@NonNull ClientHttpResponse response) throws IOException {
+  public void handleError(
+      @NonNull URI url,
+      @NonNull HttpMethod method,
+      @NonNull ClientHttpResponse response) throws IOException {
+
     RestApiException restApiException = restApiExceptionParser.parseException(
         response.getBody(),
         response.getStatusCode(),

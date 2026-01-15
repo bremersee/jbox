@@ -262,6 +262,7 @@ public class RestApiExceptionMapperBootProperties {
      *
      * @return the status
      */
+    @Override
     public int getStatus() {
       if (HttpStatus.resolve(status) == null) {
         return HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -275,8 +276,6 @@ public class RestApiExceptionMapperBootProperties {
    * The exception mapping config.
    */
   @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
   public static class ExceptionMappingConfigImpl implements ExceptionMappingConfig {
 
     private String exceptionClassName;
@@ -296,6 +295,13 @@ public class RestApiExceptionMapperBootProperties {
     private Boolean includeCause = false;
 
     private Boolean evaluateAnnotationFirst = false;
+
+    /**
+     * Instantiates a new exception mapping config.
+     */
+    public ExceptionMappingConfigImpl() {
+      super();
+    }
 
   }
 

@@ -181,9 +181,32 @@ public class LdaptiveConnectionProperties {
     private String authenticationKey;
 
     /**
+     * The hostname verifier.
+     */
+    private HostnameVerifier hostnameVerifier = HostnameVerifier.DEFAULT;
+
+    /**
      * Instantiates new ssl properties.
      */
     public SslProperties() {
+      super();
+    }
+
+    /**
+     * The hostname verifier.
+     */
+    public enum HostnameVerifier {
+
+      /**
+       * The default hostname verifier.
+       */
+      DEFAULT,
+
+      /**
+       * Hostname verifier that returns true for any hostname. Use with caution.
+       */
+      ALLOW_ANY
+
     }
   }
 
@@ -243,6 +266,7 @@ public class LdaptiveConnectionProperties {
      * Instantiates new connection validator properties.
      */
     public ConnectionValidatorProperties() {
+      super();
     }
 
     /**
@@ -280,6 +304,7 @@ public class LdaptiveConnectionProperties {
        * Instantiates new search request properties.
        */
       public SearchRequestProperties() {
+        super();
       }
 
       /**
@@ -297,6 +322,7 @@ public class LdaptiveConnectionProperties {
          * Instantiates new search filter properties.
          */
         public SearchFilterProperties() {
+          super();
         }
       }
     }

@@ -194,7 +194,7 @@ public class LdaptiveAutoConfiguration {
   }
 
   /**
-   * The interface Properties mapper.
+   * The properties-mapper.
    */
   @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
   interface PropertiesMapper {

@@ -50,6 +50,13 @@ import org.springframework.util.ClassUtils;
 public class Jaxb2HttpMessageConverterAutoConfiguration {
 
   /**
+   * Instantiates a new jaxb 2 http message converter auto configuration.
+   */
+  public Jaxb2HttpMessageConverterAutoConfiguration() {
+    super();
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

@@ -16,6 +16,7 @@
 
 package org.bremersee.exception.model;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -58,12 +59,12 @@ import org.springframework.web.client.RestTemplate;
     })
 @TestInstance(Lifecycle.PER_CLASS) // allows us to use @BeforeAll with a non-static method
 @ExtendWith(SoftAssertionsExtension.class)
-public class RestApiExceptionIntegrationTest {
+class RestApiExceptionIntegrationTest {
 
   /**
    * The rest template builder.
    */
-  @Autowired
+  @Autowired(required = false)
   RestTemplateBuilder restTemplateBuilder;
 
   /**
@@ -166,8 +167,11 @@ public class RestApiExceptionIntegrationTest {
     }
 
     @Override
-    public void handleError(@NonNull ClientHttpResponse response) {
-
+    public void handleError(
+        @NonNull URI url,
+        @NonNull HttpMethod method,
+        @NonNull ClientHttpResponse response) {
+      // ignored
     }
   }
 

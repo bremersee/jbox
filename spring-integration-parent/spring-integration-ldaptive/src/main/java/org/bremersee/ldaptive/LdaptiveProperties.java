@@ -46,6 +46,9 @@ import org.ldaptive.SearchRequest;
 import org.ldaptive.SearchScope;
 import org.ldaptive.ad.extended.FastBindConnectionInitializer;
 import org.ldaptive.pool.IdlePruneStrategy;
+import org.ldaptive.ssl.AllowAnyHostnameVerifier;
+import org.ldaptive.ssl.CertificateHostnameVerifier;
+import org.ldaptive.ssl.DefaultHostnameVerifier;
 import org.ldaptive.ssl.SslConfig;
 import org.ldaptive.ssl.X509CredentialConfig;
 
@@ -278,6 +281,11 @@ public class LdaptiveProperties {
     private String authenticationKey;
 
     /**
+     * The hostname verifier.
+     */
+    private HostnameVerifier hostnameVerifier = HostnameVerifier.DEFAULT;
+
+    /**
      * Instantiates new ssl properties.
      */
     public SslProperties() {
@@ -306,9 +314,37 @@ public class LdaptiveProperties {
         }
         SslConfig sc = new SslConfig();
         sc.setCredentialConfig(x509);
+        sc.setHostnameVerifier(getHostnameVerifier().get());
         return sc;
       }
       return null;
+    }
+
+    /**
+     * The hostname verifier.
+     */
+    public enum HostnameVerifier implements Supplier<CertificateHostnameVerifier> {
+
+      /**
+       * The default hostname verifier.
+       */
+      DEFAULT(new DefaultHostnameVerifier()),
+
+      /**
+       * Hostname verifier that returns true for any hostname. Use with caution.
+       */
+      ALLOW_ANY(new AllowAnyHostnameVerifier());
+
+      private final CertificateHostnameVerifier verifier;
+
+      HostnameVerifier(CertificateHostnameVerifier verifier) {
+        this.verifier = verifier;
+      }
+
+      @Override
+      public CertificateHostnameVerifier get() {
+        return verifier;
+      }
     }
   }
 

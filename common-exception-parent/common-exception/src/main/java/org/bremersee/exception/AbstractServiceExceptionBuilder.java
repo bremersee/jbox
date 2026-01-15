@@ -53,6 +53,13 @@ public abstract class AbstractServiceExceptionBuilder<T extends ServiceException
    */
   protected Throwable cause;
 
+  /**
+   * Instantiates a new abstract service exception builder.
+   */
+  protected AbstractServiceExceptionBuilder() {
+    super();
+  }
+
   @Override
   public ServiceExceptionBuilder<T> httpStatus(int httpStatus) {
     this.httpStatus = httpStatus;
