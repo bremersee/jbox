@@ -67,7 +67,7 @@ class MultiPointTest {
   @Test
   void getType() {
     MultiPoint model = new MultiPoint();
-    assertThat(model.getType().toString()).isEqualTo("MultiPoint");
+    assertThat(model.getType()).hasToString("MultiPoint");
   }
 
   /**

@@ -64,7 +64,7 @@ class PointTest {
   @Test
   void getType() {
     Point model = new Point();
-    assertThat(model.getType().toString()).isEqualTo("Point");
+    assertThat(model.getType()).hasToString("Point");
   }
 
   /**

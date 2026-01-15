@@ -67,7 +67,7 @@ class LineStringTest {
   @Test
   void getType() {
     LineString model = new LineString();
-    assertThat(model.getType().toString()).isEqualTo("LineString");
+    assertThat(model.getType()).hasToString("LineString");
   }
 
   /**

@@ -168,18 +168,18 @@ class UnknownAwareTest {
    */
   @Test
   void findBadListFromRoot() {
+    List<String> expected = List.of("one", "two");
+
+    ConcreteUnknown unknown = new ConcreteUnknown();
+    unknown.unknown("test", expected);
+
+    Runnable runnable = () -> unknown.findUnknownList("$.test", Integer.class)
+        .stream()
+        .flatMap(Collection::stream)
+        .forEach(System.out::println);
+
     assertThatExceptionOfType(ClassCastException.class)
-        .isThrownBy(() -> {
-          List<String> expected = List.of("one", "two");
-
-          ConcreteUnknown unknown = new ConcreteUnknown();
-          unknown.unknown("test", expected);
-
-          unknown.findUnknownList("$.test", Integer.class)
-              .stream()
-              .flatMap(Collection::stream)
-              .forEach(System.out::println);
-        });
+        .isThrownBy(runnable::run);
   }
 
   private static class ConcreteUnknown extends UnknownAware {

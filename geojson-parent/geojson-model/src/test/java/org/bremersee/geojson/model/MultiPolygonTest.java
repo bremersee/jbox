@@ -73,7 +73,7 @@ class MultiPolygonTest {
   @Test
   void getType() {
     MultiPolygon model = new MultiPolygon();
-    assertThat(model.getType().toString()).isEqualTo("MultiPolygon");
+    assertThat(model.getType()).hasToString("MultiPolygon");
   }
 
   /**

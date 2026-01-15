@@ -19,7 +19,6 @@ package org.bremersee.geojson.model;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
@@ -60,7 +59,7 @@ class BoundingBoxTest {
     double[] values = new double[]{0., 0., 1., 1.};
     model = new BoundingBox(Arrays.stream(values)
         .mapToObj(BigDecimal::valueOf)
-        .collect(Collectors.toList()));
+        .toList());
     softly.assertThat(model.toDoubleArray()).containsExactly(values);
   }
 

@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ class GeometryCollectionTest {
     model.setGeometries(value);
     softly.assertThat(model.getGeometries()).isEqualTo(value);
     softly.assertThat(model.getGeometryJsonValue())
-        .isEqualTo(value.stream().map(Geometry::toJson).collect(Collectors.toList()));
+        .isEqualTo(value.stream().map(Geometry::toJson).toList());
 
     model = GeometryCollection.builder().geometries(value).build();
     softly.assertThat(model.getGeometries()).isEqualTo(value);
@@ -69,7 +68,7 @@ class GeometryCollectionTest {
   @Test
   void getType() {
     GeometryCollection model = new GeometryCollection();
-    assertThat(model.getType().toString()).isEqualTo("GeometryCollection");
+    assertThat(model.getType()).hasToString("GeometryCollection");
   }
 
   /**

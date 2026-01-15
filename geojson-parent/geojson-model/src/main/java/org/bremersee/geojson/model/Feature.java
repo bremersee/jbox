@@ -16,6 +16,8 @@
 
 package org.bremersee.geojson.model;
 
+import static org.bremersee.geojson.GeoJsonConstants.TYPE;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -53,7 +55,7 @@ public class Feature implements Serializable {
   @Schema(
       description = "The feature type, must be 'Feature'.",
       requiredMode = Schema.RequiredMode.REQUIRED)
-  @JsonProperty(value = GeoJsonConstants.FEATURE, required = true)
+  @JsonProperty(value = TYPE, required = true)
   private TypeEnum type = TypeEnum.FEATURE;
 
   /**

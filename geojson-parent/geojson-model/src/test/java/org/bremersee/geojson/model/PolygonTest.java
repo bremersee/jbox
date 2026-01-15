@@ -71,7 +71,7 @@ class PolygonTest {
   @Test
   void getType() {
     Polygon model = new Polygon();
-    assertThat(model.getType().toString()).isEqualTo("Polygon");
+    assertThat(model.getType()).hasToString("Polygon");
   }
 
   /**

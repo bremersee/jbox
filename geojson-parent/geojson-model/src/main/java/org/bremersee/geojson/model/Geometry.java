@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serial;
 import java.io.Serializable;
@@ -73,18 +74,15 @@ public abstract class Geometry implements Serializable {
    * The type.
    */
   @Setter(AccessLevel.PROTECTED)
-  @Schema(
-      description = "The geometry type.",
-      requiredMode = Schema.RequiredMode.REQUIRED,
-      example = GeoJsonConstants.LINESTRING)
-  @JsonProperty(value = GeoJsonConstants.TYPE, required = true)
+  @Hidden
+  @JsonIgnore
   TypeEnum type;
 
   /**
    * The bounding box.
    */
   @Setter
-  @Schema(description = "The boundling box.")
+  @Schema(description = "The bounding box.")
   @JsonProperty(GeoJsonConstants.BBOX)
   @JsonInclude(Include.NON_EMPTY)
   BoundingBox bbox;
@@ -94,7 +92,7 @@ public abstract class Geometry implements Serializable {
    *
    * @param bbox the bbox
    */
-  public Geometry(BoundingBox bbox) {
+  protected Geometry(BoundingBox bbox) {
     this.bbox = bbox;
   }
 

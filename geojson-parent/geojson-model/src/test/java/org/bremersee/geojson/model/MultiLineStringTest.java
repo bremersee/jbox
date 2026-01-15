@@ -71,7 +71,7 @@ class MultiLineStringTest {
   @Test
   void getType() {
     MultiLineString model = new MultiLineString();
-    assertThat(model.getType().toString()).isEqualTo("MultiLineString");
+    assertThat(model.getType()).hasToString("MultiLineString");
   }
 
   /**
