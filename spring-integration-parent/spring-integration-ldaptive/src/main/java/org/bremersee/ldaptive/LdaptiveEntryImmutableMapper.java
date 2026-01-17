@@ -11,6 +11,13 @@ import org.ldaptive.SearchRequest;
 public abstract class LdaptiveEntryImmutableMapper<T> implements LdaptiveEntryMapper<T> {
 
   /**
+   * Instantiates a new ldaptive entry immutable mapper.
+   */
+  protected LdaptiveEntryImmutableMapper() {
+    super();
+  }
+
+  /**
    * This method is in this context illegal. It always throws an
    * {@link UnsupportedOperationException}. We need the method to keep this mapper backwards
    * compatible with {@link LdaptiveEntryMapper} that is used in

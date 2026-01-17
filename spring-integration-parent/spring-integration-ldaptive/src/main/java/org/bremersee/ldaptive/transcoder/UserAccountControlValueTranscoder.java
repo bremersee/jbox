@@ -29,6 +29,13 @@ public class UserAccountControlValueTranscoder
 
   private final IntegerValueTranscoder intValueTranscoder = new IntegerValueTranscoder();
 
+  /**
+   * Instantiates a new user account control value transcoder.
+   */
+  public UserAccountControlValueTranscoder() {
+    super();
+  }
+
   @Override
   public UserAccountControl decodeStringValue(String value) {
     try {

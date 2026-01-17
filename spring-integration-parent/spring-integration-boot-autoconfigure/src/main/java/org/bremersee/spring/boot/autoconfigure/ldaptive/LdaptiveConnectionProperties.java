@@ -22,7 +22,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -37,7 +36,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ToString(exclude = {"bindCredentials"})
 @EqualsAndHashCode(exclude = {"bindCredentials"})
-@NoArgsConstructor
 public class LdaptiveConnectionProperties {
 
   /**
@@ -136,6 +134,13 @@ public class LdaptiveConnectionProperties {
    * The connection pool configuration.
    */
   private ConnectionPoolProperties connectionPool = new ConnectionPoolProperties();
+
+  /**
+   * Instantiates new ldaptive connection properties.
+   */
+  public LdaptiveConnectionProperties() {
+    super();
+  }
 
   /**
    * The reconnection strategy.
@@ -388,6 +393,13 @@ public class LdaptiveConnectionProperties {
      * Idle time.
      */
     private Duration idleTime = Duration.ofMinutes(10);
+
+    /**
+     * Instantiates new connection pool properties.
+     */
+    public ConnectionPoolProperties() {
+      super();
+    }
   }
 
   /**

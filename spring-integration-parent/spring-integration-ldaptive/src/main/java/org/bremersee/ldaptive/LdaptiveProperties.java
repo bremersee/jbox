@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.ldaptive.ActivePassiveConnectionStrategy;
@@ -61,7 +60,6 @@ import org.ldaptive.ssl.X509CredentialConfig;
 @Setter
 @ToString(exclude = {"bindCredentials"})
 @EqualsAndHashCode(exclude = {"bindCredentials"})
-@NoArgsConstructor
 public class LdaptiveProperties {
 
   /**
@@ -155,6 +153,13 @@ public class LdaptiveProperties {
    * The connection pool configuration.
    */
   private ConnectionPoolProperties connectionPool = new ConnectionPoolProperties();
+
+  /**
+   * Instantiates new ldaptive properties.
+   */
+  public LdaptiveProperties() {
+    super();
+  }
 
   /**
    * Creates the connection config.

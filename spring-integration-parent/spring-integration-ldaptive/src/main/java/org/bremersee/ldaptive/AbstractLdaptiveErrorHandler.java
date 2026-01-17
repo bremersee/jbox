@@ -28,17 +28,24 @@ import org.ldaptive.LdapException;
 @Slf4j
 public abstract class AbstractLdaptiveErrorHandler implements LdaptiveErrorHandler {
 
+  /**
+   * Instantiates a new abstract ldaptive error handler.
+   */
+  protected AbstractLdaptiveErrorHandler() {
+    super();
+  }
+
   @Override
   public void handleError(Throwable t) {
     final LdaptiveException ldaptiveException;
-    if (t instanceof LdaptiveException) {
-      ldaptiveException = (LdaptiveException) t;
-    } else if (t instanceof LdapException) {
-      ldaptiveException = map((LdapException) t);
+    if (t instanceof LdaptiveException le) {
+      ldaptiveException = le;
+    } else if (t instanceof LdapException le) {
+      ldaptiveException = map(le);
     } else {
       ldaptiveException = LdaptiveException.builder()
           .reason(Optional.ofNullable(t)
-              .filter(throwable -> throwable instanceof Exception)
+              .filter(Exception.class::isInstance)
               .map(Throwable::getMessage)
               .orElse("Unknown"))
           .cause(t)

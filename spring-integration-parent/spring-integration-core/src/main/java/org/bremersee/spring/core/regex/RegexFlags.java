@@ -18,22 +18,49 @@ public class RegexFlags implements Serializable {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Flag unix lines.
+   */
   private boolean unixLines;
 
+  /**
+   * Flag case-insensitive.
+   */
   private boolean caseInsensitive;
 
+  /**
+   * Flag comments.
+   */
   private boolean comments;
 
+  /**
+   * Flag multi-line.
+   */
   private boolean multiLine;
 
+  /**
+   * Flag literal.
+   */
   private boolean literal;
 
+  /**
+   * Flag dot-all.
+   */
   private boolean dotAll;
 
+  /**
+   * Flag unicode-case.
+   */
   private boolean unicodeCase;
 
+  /**
+   * Flag canon-eq.
+   */
   private boolean canonEq;
 
+  /**
+   * Flag unicode-character class
+   */
   private boolean unicodeCharacterClass;
 
   /**

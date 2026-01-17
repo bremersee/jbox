@@ -41,6 +41,13 @@ public class DefaultMinioErrorHandler extends AbstractMinioErrorHandler {
    */
   static final String ERROR_CODE_PREFIX = "MINIO_";
 
+  /**
+   * Instantiates a new default minio error handler.
+   */
+  public DefaultMinioErrorHandler() {
+    super();
+  }
+
   @Override
   public MinioException map(Throwable t) {
     if (t instanceof IllegalArgumentException) {
@@ -57,8 +64,8 @@ public class DefaultMinioErrorHandler extends AbstractMinioErrorHandler {
           StringUtils.hasText(t.getMessage()) ? t.getMessage() : "IO operation failed.",
           t);
     }
-    if (t instanceof io.minio.errors.MinioException) {
-      return mapMinioException((io.minio.errors.MinioException) t);
+    if (t instanceof io.minio.errors.MinioException me) {
+      return mapMinioException(me);
     }
     return new MinioException(
         500,

@@ -308,7 +308,6 @@ public class LdaptiveAuthenticationProperties implements Serializable {
    * The string replacement.
    */
   @Data
-  @NoArgsConstructor
   @AllArgsConstructor
   public static class StringReplacement implements Serializable {
 
@@ -325,13 +324,19 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      * The string to be substituted for each match.
      */
     private String replacement;
+
+    /**
+     * Instantiates a new string replacement.
+     */
+    public StringReplacement() {
+      super();
+    }
   }
 
   /**
    * The role mapping.
    */
   @Data
-  @NoArgsConstructor
   @AllArgsConstructor
   public static class RoleMapping implements Serializable {
 
@@ -347,6 +352,13 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      * The value in the spring security context (like 'ROLE_DEVELOPER').
      */
     private String target;
+
+    /**
+     * Instantiates a new role mapping.
+     */
+    public RoleMapping() {
+      super();
+    }
   }
 
 }

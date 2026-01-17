@@ -51,6 +51,13 @@ public class AuthenticationProperties {
   private LdaptiveProperties ldaptive = new LdaptiveProperties();
 
   /**
+   * Instantiates new authentication properties.
+   */
+  public AuthenticationProperties() {
+    super();
+  }
+
+  /**
    * The remember-me properties.
    *
    * @author Christian Bremer
@@ -92,6 +99,13 @@ public class AuthenticationProperties {
      * The token validity in seconds (default two weeks).
      */
     private Integer tokenValiditySeconds;
+
+    /**
+     * Instantiates new remember-me properties.
+     */
+    public RememberMeProperties() {
+      super();
+    }
   }
 
   /**
@@ -160,6 +174,13 @@ public class AuthenticationProperties {
      * The string replacements for roles.
      */
     private List<StringReplacement> roleStringReplacements;
+
+    /**
+     * Instantiates new jwt converter properties.
+     */
+    public JwtConverterProperties() {
+      super();
+    }
 
     /**
      * To role mappings map.
@@ -350,6 +371,13 @@ public class AuthenticationProperties {
     private List<StringReplacement> roleStringReplacements;
 
     /**
+     * Instantiates new ldaptive properties.
+     */
+    public LdaptiveProperties() {
+      super();
+    }
+
+    /**
      * The search scope.
      */
     public enum SearchScope {
@@ -466,6 +494,13 @@ public class AuthenticationProperties {
     private String source;
 
     private String target;
+
+    /**
+     * Instantiates a new role mapping.
+     */
+    public RoleMapping() {
+      super();
+    }
   }
 
   /**
@@ -505,6 +540,13 @@ public class AuthenticationProperties {
      * The string to be substituted for each match.
      */
     private String replacement;
+
+    /**
+     * Instantiates a new string replacement.
+     */
+    public StringReplacement() {
+      super();
+    }
   }
 
 }

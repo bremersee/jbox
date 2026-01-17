@@ -107,6 +107,14 @@ public interface LdaptiveAttribute<T> {
     return setValues(entry, isEmpty(value) ? List.of() : List.of(value));
   }
 
+  /**
+   * Sets value.
+   *
+   * @param entry the entry
+   * @param value the value
+   * @param condition the condition
+   * @return the value
+   */
   default Optional<AttributeModification> setValue(
       LdapEntry entry,
       T value,

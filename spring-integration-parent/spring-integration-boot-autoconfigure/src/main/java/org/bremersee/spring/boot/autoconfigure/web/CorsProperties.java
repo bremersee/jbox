@@ -39,6 +39,13 @@ public class CorsProperties {
   private List<UrlBasedCorsConfiguration> configurations = new ArrayList<>();
 
   /**
+   * Instantiates a new cors properties.
+   */
+  public CorsProperties() {
+    super();
+  }
+
+  /**
    * To cors configurations map.
    *
    * @return the map
@@ -70,6 +77,13 @@ public class CorsProperties {
      */
     @NestedConfigurationProperty
     private CorsConfiguration configuration = new CorsConfiguration();
+
+    /**
+     * Instantiates a new url based cors configuration.
+     */
+    public UrlBasedCorsConfiguration() {
+      super();
+    }
   }
 
 }
