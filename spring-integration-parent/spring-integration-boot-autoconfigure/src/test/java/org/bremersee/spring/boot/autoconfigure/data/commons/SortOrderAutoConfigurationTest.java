@@ -4,22 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.bremersee.comparator.spring.converter.SortOrderConverter;
 import org.bremersee.comparator.spring.converter.SortOrderItemConverter;
+import org.bremersee.comparator.spring.mapper.SortMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * The sort order converter autoconfiguration test.
+ * The sort order autoconfiguration test.
+ *
+ * @author Christian Bremer
  */
-class SortOrderConverterAutoConfigurationTest {
+class SortOrderAutoConfigurationTest {
 
-  private static SortOrderConverterAutoConfiguration target;
+  private static SortOrderAutoConfiguration target;
 
   /**
    * Init.
    */
   @BeforeAll
   static void init() {
-    target = new SortOrderConverterAutoConfiguration(new SortOrderConverterProperties());
+    target = new SortOrderAutoConfiguration(new SortOrderConverterProperties());
     target.init();
   }
 
@@ -33,11 +36,20 @@ class SortOrderConverterAutoConfigurationTest {
   }
 
   /**
-   * Sort order iten converter.
+   * Sort order item converter.
    */
   @Test
   void sortOrderItemConverter() {
     SortOrderItemConverter actual = target.sortOrderItemConverter();
+    assertThat(actual).isNotNull();
+  }
+
+  /**
+   * Default sort mapper.
+   */
+  @Test
+  void defaultSortMapper() {
+    SortMapper actual = target.defaultSortMapper(new SortOrderConverter());
     assertThat(actual).isNotNull();
   }
 }

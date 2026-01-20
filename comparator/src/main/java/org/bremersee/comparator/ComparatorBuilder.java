@@ -263,6 +263,7 @@ public interface ComparatorBuilder {
      * Instantiates a new default comparator builder.
      */
     public DefaultComparatorBuilder() {
+      super();
     }
 
     @Override

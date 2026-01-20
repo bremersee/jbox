@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 the original author or authors.
+ * Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,45 +14,49 @@
  * limitations under the License.
  */
 
-package org.bremersee.spring.boot.autoconfigure.data.commons;
+package org.bremersee.spring.boot.autoconfigure.data.web;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.comparator.model.SortOrderTextSeparators;
-import org.bremersee.comparator.spring.converter.SortOrderConverter;
-import org.bremersee.comparator.spring.converter.SortOrderItemConverter;
+import org.bremersee.comparator.spring.web.SortOrderHandlerMethodArgumentResolver;
+import org.bremersee.spring.boot.autoconfigure.data.commons.SortOrderConverterProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * The sort order converter autoconfiguration.
+ * The sort order autoconfiguration for webmvc.
  *
  * @author Christian Bremer
  */
+@ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(name = {
-    "org.bremersee.comparator.spring.converter.SortOrderConverter",
-    "org.bremersee.comparator.spring.converter.SortOrderItemConverter"
+    "org.bremersee.comparator.model.SortOrderTextSeparators",
+    "org.bremersee.comparator.spring.web.SortOrderHandlerMethodArgumentResolver"
 })
 @AutoConfiguration
 @EnableConfigurationProperties(SortOrderConverterProperties.class)
 @Slf4j
-public class SortOrderConverterAutoConfiguration {
+public class SortOrderWebAutoConfiguration implements WebMvcConfigurer {
 
   private final SortOrderTextSeparators separators;
 
   /**
-   * Instantiates a new sort order converter autoconfiguration.
+   * Instantiates a new sort order autoconfiguration for webmvc.
    *
    * @param properties the properties
    */
-  public SortOrderConverterAutoConfiguration(SortOrderConverterProperties properties) {
+  public SortOrderWebAutoConfiguration(SortOrderConverterProperties properties) {
     SortOrderTextSeparators defaults = SortOrderTextSeparators.defaults();
     this.separators = SortOrderTextSeparators.builder()
         .argumentSeparator(Optional.ofNullable(properties.getArgumentSeparator())
@@ -77,26 +81,11 @@ public class SortOrderConverterAutoConfiguration {
         ClassUtils.getUserClass(getClass()).getSimpleName());
   }
 
-  /**
-   * Creates sort order converter.
-   *
-   * @return the sort order converter
-   */
-  @ConditionalOnMissingBean
-  @Bean
-  public SortOrderConverter sortOrderConverter() {
-    return new SortOrderConverter(separators);
-  }
-
-  /**
-   * Creates sort order item converter.
-   *
-   * @return the sort order item converter
-   */
-  @ConditionalOnMissingBean
-  @Bean
-  public SortOrderItemConverter sortOrderItemConverter() {
-    return new SortOrderItemConverter(separators);
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    var resolver = new SortOrderHandlerMethodArgumentResolver();
+    resolver.setTextSeparators(separators);
+    resolvers.add(resolver);
   }
 
 }

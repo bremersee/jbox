@@ -34,15 +34,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 
 /**
- * The list of sort orders.
+ * The sort order is a list of sort order items.
  *
  * @author Christian Bremer
  */
@@ -55,9 +53,9 @@ import lombok.EqualsAndHashCode;
 public class SortOrder {
 
   /**
-   * The constant SEPARATOR.
+   * The constant DEFAULT_SEPARATOR.
    */
-  public static final String SEPARATOR = ",";
+  public static final String DEFAULT_SEPARATOR = ";";
 
   @Schema(description = "The sort order items.")
   @XmlElementRef
@@ -76,7 +74,7 @@ public class SortOrder {
    */
   @JsonCreator
   public SortOrder(@JsonProperty("items") Collection<? extends SortOrderItem> sortOrderItems) {
-    if (sortOrderItems != null) {
+    if (!isNull(sortOrderItems)) {
       this.items.addAll(sortOrderItems);
     }
   }
@@ -132,12 +130,12 @@ public class SortOrder {
    *
    * <p>The syntax of the ordering description is
    * <pre>
-   * fieldNameOrPath0;direction;case-handling;null-handling,fieldNameOrPath1;direction;case-handling;null-handling
+   * fieldNameOrPath0,direction,case-handling,null-handling;fieldNameOrPath1,direction,case-handling,null-handling
    * </pre>
    *
    * <p>For example
    * <pre>
-   * created;desc,person.lastName;asc,person.firstName;asc
+   * created,desc;person.lastName,asc;person.firstName,asc
    * </pre>
    *
    * @return the sort order text
@@ -153,12 +151,12 @@ public class SortOrder {
    *
    * <p>The syntax of the ordering description is
    * <pre>
-   * fieldNameOrPath0;direction;case-handling;null-handling,fieldNameOrPath1;direction;case-handling;null-handling
+   * fieldNameOrPath0,direction,case-handling,null-handling;fieldNameOrPath1,direction,case-handling,null-handling
    * </pre>
    *
    * <p>For example
    * <pre>
-   * created;desc,person.lastName;asc,person.firstName;asc
+   * created,desc;person.lastName,asc;person.firstName,asc
    * </pre>
    *
    * @param separators the separators
@@ -196,16 +194,22 @@ public class SortOrder {
    * @return the sort order
    */
   public static SortOrder fromSortOrderText(String source, SortOrderTextSeparators separators) {
+    if (isNull(source)) {
+      return unsorted();
+    }
     String separator = Optional.ofNullable(separators)
         .orElseGet(SortOrderTextSeparators::defaults)
         .getChainSeparator();
-    return Optional.ofNullable(source)
+    return Optional.of(source.trim())
         .map(text -> {
           List<SortOrderItem> sortOrderItems = new ArrayList<>();
           StringTokenizer tokenizer = new StringTokenizer(text, separator);
           while (tokenizer.hasMoreTokens()) {
             sortOrderItems.add(SortOrderItem
                 .fromSortOrderText(tokenizer.nextToken(), separators));
+          }
+          if (sortOrderItems.isEmpty()) {
+            sortOrderItems.add(new SortOrderItem());
           }
           return new SortOrder(sortOrderItems);
         })
@@ -224,51 +228,8 @@ public class SortOrder {
         .orElseGet(SortOrder::new);
   }
 
-  /**
-   * Combines the given sort orders.
-   *
-   * @param sortOrders the sort orders
-   * @return the combined sort order
-   */
-  public static SortOrder by(Collection<? extends SortOrder> sortOrders) {
-    return by(sortOrders, new SortOrder());
-  }
-
-  /**
-   * Combines the given sort orders. If they are empty, the default sort order will be used.
-   *
-   * @param sortOrders the sort orders
-   * @param defaultSortOrder the default sort order
-   * @return the combined sort order
-   */
-  public static SortOrder by(
-      Collection<? extends SortOrder> sortOrders,
-      String defaultSortOrder) {
-    return by(sortOrders, fromSortOrderText(defaultSortOrder));
-  }
-
-  /**
-   * Combines the given sort orders. If they are empty, the default sort order will be used.
-   *
-   * @param sortOrders the sort orders
-   * @param defaultSortOrder the default sort order
-   * @return the combined sort order
-   */
-  public static SortOrder by(
-      Collection<? extends SortOrder> sortOrders,
-      SortOrder defaultSortOrder) {
-
-    if (isNull(sortOrders) || sortOrders.isEmpty()) {
-      return Objects.requireNonNullElseGet(defaultSortOrder, SortOrder::new);
-    }
-    List<SortOrderItem> items = Stream.of(sortOrders)
-        .flatMap(Collection::stream)
-        .filter(Objects::nonNull)
-        .map(SortOrder::getItems)
-        .flatMap(Collection::stream)
-        .filter(Objects::nonNull)
-        .toList();
-    return new SortOrder(items);
+  public static SortOrder unsorted() {
+    return new SortOrder();
   }
 
 }

@@ -56,15 +56,15 @@ import lombok.Getter;
  *  ---------------------------------------------------------------------------------------------
  * </pre>
  *
- * <p>These values have a 'sort oder text' representation. The values are concatenated with
- * semicolon (;):
+ * <p>These values have a 'sort order text' representation. The values are concatenated with
+ * comma ',' (default):
  * <pre>
- * fieldNameOrPath;direction;caseHandling;nullHandling
+ * fieldNameOrPath,direction,caseHandling,nullHandling
  * </pre>
  *
  * <p>For example:
  * <pre>
- * properties.customSettings.priority;asc;insensitive;nulls-first
+ * properties.customSettings.priority,asc,insensitive,nulls-first
  * </pre>
  *
  * <p>Defaults can be omitted. This is the same:
@@ -72,9 +72,9 @@ import lombok.Getter;
  * properties.customSettings.priority
  * </pre>
  *
- * <p>The building of a chain is done by concatenate the fields with a comma (,):
+ * <p>The building of a chain is done by concatenate the fields with a semicolon ';' (default):
  * <pre>
- * field0;desc,field1;desc
+ * field0,desc;field1,desc
  * </pre>
  *
  * @author Christian Bremer
@@ -100,9 +100,9 @@ import lombok.Getter;
 public class SortOrderItem {
 
   /**
-   * The constant SEPARATOR.
+   * The constant DEFAULT_SEPARATOR.
    */
-  public static final String SEPARATOR = ";";
+  public static final String DEFAULT_SEPARATOR = ",";
 
   /**
    * The constant DEFAULT_DIRECTION.
@@ -315,7 +315,10 @@ public class SortOrderItem {
    * @return the sort order
    */
   public static SortOrderItem fromSortOrderText(String source, SortOrderTextSeparators separators) {
-    return Optional.ofNullable(source)
+    if (isNull(source)) {
+      return null;
+    }
+    return Optional.of(source.trim())
         .map(text -> {
           String separator = Optional.ofNullable(separators)
               .orElseGet(SortOrderTextSeparators::defaults)
@@ -478,7 +481,7 @@ public class SortOrderItem {
 
     @Override
     public String toString() {
-      return name().replaceAll("_", "-").toLowerCase();
+      return name().replace("_", "-").toLowerCase();
     }
 
     /**

@@ -24,7 +24,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
@@ -63,10 +62,12 @@ class ComparatorChainTest {
    */
   @Test
   void testNotComparableObjectsAndExpectComparatorException() {
+    ComparatorChain comparator = new ComparatorChain(List.of());
+    Object o1 = new Object();
+    Object o2 = new Object();
     assertThatExceptionOfType(ComparatorException.class).isThrownBy(() -> {
-      //noinspection EqualsWithItself,ResultOfMethodCallIgnored
-      new ComparatorChain(Collections.emptyList())
-          .compare(new Object(), new Object());
+      //noinspection ResultOfMethodCallIgnored
+      comparator.compare(o1, o2);
     });
   }
 
@@ -75,10 +76,10 @@ class ComparatorChainTest {
    */
   @Test
   void testNullObjectsAndExpectComparatorException() {
+    ComparatorChain comparator = new ComparatorChain(List.of());
     assertThatExceptionOfType(ComparatorException.class).isThrownBy(() -> {
       //noinspection ResultOfMethodCallIgnored,EqualsWithItself
-      new ComparatorChain(Collections.emptyList())
-          .compare(null, null);
+      comparator.compare(null, null);
     });
   }
 

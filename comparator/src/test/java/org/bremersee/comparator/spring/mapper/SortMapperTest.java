@@ -18,9 +18,10 @@ package org.bremersee.comparator.spring.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.BOOLEAN;
+import static org.assertj.core.api.InstanceOfAssertFactories.list;
 
-import java.util.Collections;
 import java.util.List;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.comparator.model.SortOrder;
@@ -46,6 +47,93 @@ class SortMapperTest {
   private static final SortMapper target = SortMapper.defaultSortMapper();
 
   /**
+   * Gets sort order with null and expect unsorted.
+   */
+  @Test
+  void getSortOrderWithNullAndExpectUnsorted() {
+    SortOrder actual = target.getSortOrder(null);
+    assertThat(actual)
+        .extracting(SortOrder::isUnsorted, InstanceOfAssertFactories.BOOLEAN)
+        .isTrue();
+  }
+
+  /**
+   * Gets sort order with no text.
+   */
+  @Test
+  void getSortOrderWithNoText() {
+    SortOrder actual = target.getSortOrder("");
+    SortOrderItem expectedItem = new SortOrderItem(
+        null,
+        SortOrderItem.Direction.ASC,
+        CaseHandling.INSENSITIVE,
+        SortOrderItem.NullHandling.NATIVE);
+    assertThat(actual)
+        .extracting(SortOrder::getItems, list(SortOrderItem.class))
+        .containsExactly(expectedItem);
+  }
+
+  /**
+   * Gets sort order text with null.
+   */
+  @Test
+  void getSortOrderTextWithNull() {
+    String actual = target.getSortOrderText(null);
+    assertThat(actual)
+        .isNull();
+  }
+
+  /**
+   * Gets sort order text with empty.
+   */
+  @Test
+  void getSortOrderTextWithEmpty() {
+    String actual = target.getSortOrderText(new SortOrder(List.of()));
+    assertThat(actual)
+        .isEmpty();
+  }
+
+  /**
+   * Gets sort order text.
+   */
+  @Test
+  void getSortOrderText() {
+    String actual = target.getSortOrderText(new SortOrder(List.of(SortOrderItem.by("f0"))));
+    assertThat(actual)
+        .isEqualTo("f0");
+  }
+
+  /**
+   * Gets sort order item text with null.
+   */
+  @Test
+  void getSortOrderItemTextWithNull() {
+    List<String> actual = target.getSortOrderItemText(null);
+    assertThat(actual)
+        .isEmpty();
+  }
+
+  /**
+   * Gets sort order item text with unsorted.
+   */
+  @Test
+  void getSortOrderItemTextWithUnsorted() {
+    List<String> actual = target.getSortOrderItemText(SortOrder.unsorted());
+    assertThat(actual)
+        .isEmpty();
+  }
+
+  /**
+   * Gets sort order item text.
+   */
+  @Test
+  void getSortOrderItemText() {
+    List<String> actual = target.getSortOrderItemText(SortOrder.by(SortOrderItem.by("f0")));
+    assertThat(actual)
+        .contains("f0");
+  }
+
+  /**
    * Test to sort.
    *
    * @param softly the soft assertions
@@ -62,10 +150,9 @@ class SortMapperTest {
         "f2", SortOrderItem.Direction.DESC, CaseHandling.SENSITIVE,
         SortOrderItem.NullHandling.NATIVE);
 
-    SortOrder sortOrder0 = new SortOrder(List.of(sortOrderItem0, sortOrderItem1));
-    SortOrder sortOrder1 = new SortOrder(List.of(sortOrderItem2));
+    SortOrder sortOrderSource = SortOrder.by(sortOrderItem0, sortOrderItem1, sortOrderItem2);
 
-    Sort sort = target.toSort(SortOrder.by(List.of(sortOrder0, sortOrder1)));
+    Sort sort = target.toSort(sortOrderSource);
 
     softly.assertThat(sort)
         .isNotNull();
@@ -114,20 +201,11 @@ class SortMapperTest {
   }
 
   /**
-   * To sort with empty list.
-   */
-  @Test
-  void toSortWithEmptyList() {
-    Sort sort = target.toSort(Collections.emptyList());
-    assertThat(sort.isUnsorted()).isTrue();
-  }
-
-  /**
    * To sort with empty sort order.
    */
   @Test
   void toSortWithEmptySortOrder() {
-    Sort sort = target.toSort(new SortOrder(List.of()));
+    Sort sort = target.toSort(SortOrder.unsorted());
     assertThat(sort.isUnsorted()).isTrue();
   }
 
@@ -136,7 +214,7 @@ class SortMapperTest {
    */
   @Test
   void toSortWithNull() {
-    Sort sort = target.toSort((SortOrder) null);
+    Sort sort = target.toSort(null);
     assertThat(sort.isUnsorted()).isTrue();
   }
 

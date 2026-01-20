@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Collection;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.comparator.model.SortOrder;
@@ -63,7 +64,11 @@ public class TestRestController {
       @RequestParam(name = "sort", required = false) List<SortOrder> sort) {
 
     log.info("Received sort orders {}", sort);
-    return ResponseEntity.ok(SortOrder.by(sort).getSortOrderText());
+    SortOrder sortOrder = new SortOrder(sort.stream()
+        .map(SortOrder::getItems)
+        .flatMap(Collection::stream)
+        .toList());
+    return ResponseEntity.ok(sortOrder.getSortOrderText());
   }
 
   /**

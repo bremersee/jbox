@@ -80,7 +80,6 @@ class SortOrderTest {
     marshaller.marshal(sortOrder, sw);
 
     String xmlStr = sw.toString();
-    //System.out.println(xmlStr);
 
     SortOrder readFields = (SortOrder) jaxbContext.createUnmarshaller()
         .unmarshal(new StringReader(xmlStr));
@@ -109,7 +108,6 @@ class SortOrderTest {
     ObjectMapper om = new ObjectMapper();
 
     String jsonStr = om.writerWithDefaultPrettyPrinter().writeValueAsString(sortOrder);
-    //System.out.println(jsonStr);
 
     SortOrder readFields = om.readValue(jsonStr, SortOrder.class);
 
@@ -170,14 +168,14 @@ class SortOrderTest {
         "i1", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NULLS_LAST);
     SortOrderItem sortOrderItem2 = new SortOrderItem(
         "i2", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NATIVE);
-    SortOrder sortOrder0 = new SortOrder(List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2));
-    String actual = sortOrder0.getSortOrderText();
+    SortOrder sortOrder = new SortOrder(List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2));
+    String actual = sortOrder.getSortOrderText();
     softly.assertThat(actual)
-        .as("Create sort orders text of %s", sortOrder0)
-        .isEqualTo("i0;asc;sensitive;nulls-first,i1;desc;insensitive;nulls-last,i2;desc");
-    softly.assertThat(sortOrder0.toString())
+        .as("Create sort orders text of %s", sortOrder)
+        .isEqualTo("i0,asc,sensitive,nulls-first;i1,desc,insensitive,nulls-last;i2,desc");
+    softly.assertThat(sortOrder)
         .as("toString is equal to sort orders text")
-        .isEqualTo(actual);
+        .hasToString(actual);
   }
 
   /**
@@ -193,7 +191,7 @@ class SortOrderTest {
         .isEmpty();
 
     actual = SortOrder.fromSortOrderText(
-        "i0;asc;sensitive;nulls-first,i1;desc;insensitive;nulls-last,i2;desc");
+        "i0,asc,sensitive,nulls-first;i1,desc,insensitive,nulls-last;i2,desc");
     SortOrderItem sortOrderItem0 = new SortOrderItem(
         "i0", Direction.ASC, CaseHandling.SENSITIVE, NullHandling.NULLS_FIRST);
     SortOrderItem sortOrderItem1 = new SortOrderItem(
@@ -207,10 +205,33 @@ class SortOrderTest {
         .containsExactlyElementsOf(expected);
 
     actual = SortOrder.fromSortOrderText(
-        "i0;asc;sensitive;nulls-first,i1;desc;insensitive;nulls-last,i2;desc");
+        "i0,asc,sensitive,nulls-first;i1,desc,insensitive,nulls-last;i2,desc");
     softly.assertThat(actual)
         .extracting(SortOrder::getItems, list(SortOrderItem.class))
         .containsExactlyElementsOf(expected);
+  }
+
+  /**
+   * Test from sort order text with no text.
+   */
+  @Test
+  void testFromSortOrderTextWithNoText() {
+    SortOrder actual = SortOrder.fromSortOrderText("");
+    SortOrderItem expectedItem = new SortOrderItem();
+    assertThat(actual)
+        .extracting(SortOrder::getItems, list(SortOrderItem.class))
+        .containsExactly(expectedItem);
+  }
+
+  /**
+   * Test from sort order text with null.
+   */
+  @Test
+  void testFromSortOrderTextWithNull() {
+    SortOrder actual = SortOrder.fromSortOrderText(null);
+    assertThat(actual)
+        .extracting(SortOrder::isUnsorted, InstanceOfAssertFactories.BOOLEAN)
+        .isTrue();
   }
 
   /**
@@ -241,64 +262,6 @@ class SortOrderTest {
     assertThat(SortOrder.by(SortOrderItem.by("home")))
         .extracting(SortOrder::isSorted, InstanceOfAssertFactories.BOOLEAN)
         .isTrue();
-  }
-
-  /**
-   * By sort orders.
-   */
-  @Test
-  void bySortOrders() {
-    SortOrderItem sortOrderItem0 = new SortOrderItem(
-        "i0", Direction.ASC, CaseHandling.SENSITIVE, NullHandling.NULLS_FIRST);
-    SortOrderItem sortOrderItem1 = new SortOrderItem(
-        "i1", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NULLS_LAST);
-    SortOrderItem sortOrderItem2 = new SortOrderItem(
-        "i2", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NATIVE);
-    SortOrder sortOrder0 = new SortOrder(List.of(sortOrderItem0, sortOrderItem1));
-    SortOrder sortOrder1 = new SortOrder(List.of(sortOrderItem2));
-    SortOrder actual = SortOrder.by(List.of(sortOrder0, sortOrder1));
-    List<SortOrderItem> expected = List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2);
-    assertThat(actual)
-        .extracting(SortOrder::getItems, list(SortOrderItem.class))
-        .containsExactlyElementsOf(expected);
-  }
-
-  /**
-   * By sort orders with default.
-   */
-  @Test
-  void bySortOrdersWithDefault() {
-    SortOrderItem sortOrderItem0 = new SortOrderItem(
-        "i0", Direction.ASC, CaseHandling.SENSITIVE, NullHandling.NULLS_FIRST);
-    SortOrderItem sortOrderItem1 = new SortOrderItem(
-        "i1", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NULLS_LAST);
-    SortOrderItem sortOrderItem2 = new SortOrderItem(
-        "i2", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NATIVE);
-    SortOrder actual = SortOrder.by(List.of(),
-        new SortOrder(List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2)));
-    List<SortOrderItem> expected = List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2);
-    assertThat(actual)
-        .extracting(SortOrder::getItems, list(SortOrderItem.class))
-        .containsExactlyElementsOf(expected);
-  }
-
-  /**
-   * By sort orders with default as text.
-   */
-  @Test
-  void bySortOrdersWithDefaultAsText() {
-    SortOrderItem sortOrderItem0 = new SortOrderItem(
-        "i0", Direction.ASC, CaseHandling.SENSITIVE, NullHandling.NULLS_FIRST);
-    SortOrderItem sortOrderItem1 = new SortOrderItem(
-        "i1", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NULLS_LAST);
-    SortOrderItem sortOrderItem2 = new SortOrderItem(
-        "i2", Direction.DESC, CaseHandling.INSENSITIVE, NullHandling.NATIVE);
-    SortOrder actual = SortOrder.by(null,
-        "i0;asc;sensitive;nulls-first,i1;desc;insensitive;nulls-last,i2;desc;insensitive;native");
-    List<SortOrderItem> expected = List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2);
-    assertThat(actual)
-        .extracting(SortOrder::getItems, list(SortOrderItem.class))
-        .containsExactlyElementsOf(expected);
   }
 
 }

@@ -54,11 +54,11 @@ public interface SortMapper {
    * @return the sort mapper
    */
   static SortMapper defaultSortMapper() {
-    return new DefaultSortMapper();
+    return defaultSortMapper(SortOrderTextSeparators.defaults());
   }
 
   /**
-   * Default sort mapper sort mapper.
+   * Returns default sort mapper.
    *
    * @param sortOrderTextSeparators the sort order text separators
    * @return the sort mapper
@@ -68,7 +68,7 @@ public interface SortMapper {
   }
 
   /**
-   * Default sort mapper sort mapper.
+   * Returns default sort mapper.
    *
    * @param sortOrderConverter the sort order converter
    * @return the sort mapper
@@ -78,73 +78,28 @@ public interface SortMapper {
   }
 
   /**
-   * Gets sort order text.
+   * Gets sort order from text.
    *
-   * @param sortOrders the sort orders
-   * @param defaultSortOrderText the default sort order text
-   * @return the sort order text
+   * @param sortOrderText the sort order text
+   * @return the sort order
    */
-  default String getSortOrderText(
-      @Nullable Collection<? extends SortOrder> sortOrders,
-      @Nullable String defaultSortOrderText) {
-    return Optional.ofNullable(sortOrders)
-        .map(SortOrder::by)
-        .map(so -> getSortOrderText(so, defaultSortOrderText))
-        .orElse(defaultSortOrderText);
-  }
+  SortOrder getSortOrder(@Nullable String sortOrderText);
 
   /**
    * Gets sort order text.
    *
    * @param sortOrder the sort order
-   * @param defaultSortOrderText the default sort order text
    * @return the sort order text
    */
-  String getSortOrderText(@Nullable SortOrder sortOrder, @Nullable String defaultSortOrderText);
+  String getSortOrderText(@Nullable SortOrder sortOrder);
 
   /**
-   * Gets sort order text nof items.
+   * Gets sort order text of items.
    *
    * @param sortOrder the sort order
    * @return the sort order item text
    */
   List<String> getSortOrderItemText(@Nullable SortOrder sortOrder);
-
-  /**
-   * Transforms sort orders into a {@code Sort} object.
-   *
-   * @param sortOrders the sort orders
-   * @return the sort
-   */
-  @NonNull
-  default Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders) {
-    return toSort(SortOrder.by(sortOrders));
-  }
-
-  /**
-   * Transforms sort orders into a {@code Sort} object.
-   *
-   * @param sortOrders the sort orders
-   * @param defaultSortOrder the default sort order
-   * @return the sort
-   */
-  default Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
-      @Nullable SortOrder defaultSortOrder) {
-    if (isEmpty(sortOrders)) {
-      return toSort(defaultSortOrder);
-    }
-    return toSort(SortOrder.by(sortOrders), defaultSortOrder);
-  }
-
-  /**
-   * Transforms sort orders into a {@code Sort} object.
-   *
-   * @param sortOrders the sort orders
-   * @param defaultSortOrder the default sort order
-   * @return the sort
-   */
-  Sort toSort(@Nullable Collection<? extends SortOrder> sortOrders,
-      @Nullable String defaultSortOrder);
 
   /**
    * Transforms sort order into a {@code Sort} object.
@@ -162,33 +117,6 @@ public interface SortMapper {
         .toList();
     return orderList.isEmpty() ? Sort.unsorted() : Sort.by(orderList);
   }
-
-  /**
-   * Transforms sort order into a {@code Sort} object.
-   *
-   * @param sortOrder the sort order
-   * @param defaultSortOrder the default sort order
-   * @return the sort
-   */
-  @NonNull
-  default Sort toSort(@Nullable SortOrder sortOrder, @Nullable SortOrder defaultSortOrder) {
-    List<Sort.Order> orderList = Stream.ofNullable(sortOrder)
-        .map(SortOrder::getItems)
-        .flatMap(Collection::stream)
-        .filter(Objects::nonNull)
-        .map(this::toSortOrder)
-        .toList();
-    return orderList.isEmpty() ? toSort(defaultSortOrder) : Sort.by(orderList);
-  }
-
-  /**
-   * To sort sort.
-   *
-   * @param sortOrder the sort order
-   * @param defaultSortOrder the default sort order
-   * @return the sort
-   */
-  Sort toSort(@Nullable SortOrder sortOrder, @Nullable String defaultSortOrder);
 
   /**
    * Transforms the sort order into a {@code Sort.Order} object.
@@ -240,7 +168,7 @@ public interface SortMapper {
    */
   @Nullable
   default SortOrderItem fromSortOrder(@Nullable Sort.Order sortOrder) {
-    if (sortOrder == null) {
+    if (isNull(sortOrder)) {
       return null;
     }
     SortOrderItem.Direction direction = sortOrder.getDirection().isAscending()
@@ -357,14 +285,7 @@ public interface SortMapper {
     private final SortOrderConverter converter;
 
     /**
-     * Instantiates a new Default sort mapper.
-     */
-    DefaultSortMapper() {
-      this(null);
-    }
-
-    /**
-     * Instantiates a new Default sort mapper.
+     * Instantiates a new default sort mapper.
      *
      * @param converter the converter
      */
@@ -373,8 +294,22 @@ public interface SortMapper {
     }
 
     @Override
-    public String getSortOrderText(SortOrder sortOrder, String defaultSortOrderText) {
-      return converter.convert(sortOrder, defaultSortOrderText);
+    public SortOrder getSortOrder(@Nullable String sortOrderText) {
+      if (isNull(sortOrderText)) {
+        return SortOrder.unsorted();
+      }
+      return converter.convert(sortOrderText);
+    }
+
+    @Override
+    public String getSortOrderText(@Nullable SortOrder sortOrder) {
+      if (isNull(sortOrder)) {
+        return null;
+      }
+      if (sortOrder.isEmpty()) {
+        return "";
+      }
+      return sortOrder.getSortOrderText(converter.getSeparators());
     }
 
     @Override
@@ -388,21 +323,6 @@ public interface SortMapper {
           .toList();
     }
 
-    @Override
-    public Sort toSort(Collection<? extends SortOrder> sortOrders, String defaultSortOrder) {
-      if (isEmpty(sortOrders) && !isEmpty(defaultSortOrder)) {
-        return toSort(converter.convert(defaultSortOrder));
-      }
-      return toSort(sortOrders);
-    }
-
-    @Override
-    public Sort toSort(SortOrder sortOrder, String defaultSortOrder) {
-      if (isEmpty(defaultSortOrder)) {
-        return toSort(sortOrder);
-      }
-      return toSort(sortOrder, converter.convert(defaultSortOrder));
-    }
   }
 
 }

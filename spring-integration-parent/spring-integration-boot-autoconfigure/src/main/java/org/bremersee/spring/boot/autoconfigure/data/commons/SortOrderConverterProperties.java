@@ -42,5 +42,6 @@ public class SortOrderConverterProperties {
    * Instantiates new sort order converter properties.
    */
   public SortOrderConverterProperties() {
+    super();
   }
 }

@@ -33,7 +33,7 @@ public interface SortOrderTextSeparators {
    */
   @Value.Default
   default String getArgumentSeparator() {
-    return SortOrderItem.SEPARATOR;
+    return SortOrderItem.DEFAULT_SEPARATOR;
   }
 
   /**
@@ -43,22 +43,22 @@ public interface SortOrderTextSeparators {
    */
   @Value.Default
   default String getChainSeparator() {
-    return SortOrder.SEPARATOR;
+    return SortOrder.DEFAULT_SEPARATOR;
   }
 
   /**
-   * Defaults sort order text separators.
+   * Default text separators.
    *
-   * @return the sort order text separators
+   * @return the default text separators
    */
   static SortOrderTextSeparators defaults() {
     return builder().build();
   }
 
   /**
-   * Builder immutable sort order text separators . builder.
+   * The immutable builder.
    *
-   * @return the immutable sort order text separators . builder
+   * @return the immutable builder
    */
   static ImmutableSortOrderTextSeparators.Builder builder() {
     return ImmutableSortOrderTextSeparators.builder();
