@@ -124,6 +124,9 @@ public class SortOrderItem implements Serializable {
    */
   protected static final NullHandling DEFAULT_NULL_HANDLING = NullHandling.NATIVE;
 
+  /**
+   * The field name or path. If it is {@code null}, the whole object will be compared.
+   */
   @Schema(description = "The field name or path.")
   @XmlElement(name = "field")
   @JsonProperty("field")
