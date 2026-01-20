@@ -47,7 +47,7 @@ public interface ValueExtractor {
    * @param name the field name
    * @return the field
    */
-  default Optional<Field> findField(final Class<?> clazz, final String name) {
+  default Optional<Field> findField(Class<?> clazz, String name) {
     return findField(clazz, name, null);
   }
 
@@ -59,8 +59,8 @@ public interface ValueExtractor {
    * @param type the type of the field
    * @return the field
    */
-  default Optional<Field> findField(final Class<?> clazz, final String name,
-      @SuppressWarnings("SameParameterValue") final Class<?> type) {
+  default Optional<Field> findField(Class<?> clazz, String name,
+      @SuppressWarnings("SameParameterValue") Class<?> type) {
     Class<?> searchType = clazz;
     while (!Object.class.equals(searchType) && searchType != null) {
       Field[] fields = searchType.getDeclaredFields();
@@ -80,16 +80,16 @@ public interface ValueExtractor {
    * name, it's getter for an object and a primitive boolean.
    *
    * <p>If '{@code firstName}' is given for example, '{@code firstName}', '{@code getFirstName}'
-   * and  '{@code isFirstName}' will be returned.
+   * and '{@code isFirstName}' will be returned.
    *
    * @param name the field name
    * @return the possible method names
    */
-  default String[] getPossibleMethodNames(final String name) {
+  default String[] getPossibleMethodNames(String name) {
     if (name == null || name.isEmpty()) {
       return new String[0];
     }
-    final String baseName;
+    String baseName;
     if (name.length() == 1) {
       baseName = name.toUpperCase();
     } else {
@@ -109,7 +109,7 @@ public interface ValueExtractor {
    * @param name the method name
    * @return the method
    */
-  default Optional<Method> findMethod(final Class<?> clazz, final String name) {
+  default Optional<Method> findMethod(Class<?> clazz, String name) {
 
     return Arrays.stream(getPossibleMethodNames(name))
         .map(methodName -> findMethod(clazz, methodName, new Class[0]).orElse(null))
@@ -126,9 +126,9 @@ public interface ValueExtractor {
    * @return the method
    */
   default Optional<Method> findMethod(
-      final Class<?> clazz,
-      final String name,
-      final Class<?>... paramTypes) {
+      Class<?> clazz,
+      String name,
+      Class<?>... paramTypes) {
 
     Class<?> searchType = clazz;
     while (searchType != null) {
@@ -155,7 +155,7 @@ public interface ValueExtractor {
    * @throws ValueExtractorException if a {@link IllegalAccessException} or a {@link
    *     InvocationTargetException} occurs
    */
-  default Object invoke(final Method method, final Object obj) {
+  default Object invoke(Method method, Object obj) {
     try {
       if (!method.canAccess(obj)) {
         method.setAccessible(true);
@@ -175,7 +175,7 @@ public interface ValueExtractor {
    * @return the value of the field
    * @throws ValueExtractorException if a {@link IllegalAccessException} occurs
    */
-  default Object invoke(final Field field, final Object obj) {
+  default Object invoke(Field field, Object obj) {
     if (!field.canAccess(obj)) {
       field.setAccessible(true);
     }

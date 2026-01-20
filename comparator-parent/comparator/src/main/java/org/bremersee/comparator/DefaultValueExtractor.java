@@ -90,9 +90,10 @@ public class DefaultValueExtractor implements ValueExtractor {
     if (field == null) {
       return null;
     }
-    String tmp = field
-        .replace("..", ".")
-        .trim();
+    String tmp = field.trim();
+    while (tmp.contains("..")) {
+      tmp = tmp.replace("..", ".").trim();
+    }
     while (tmp.startsWith(".")) {
       tmp = tmp.substring(1).trim();
     }
