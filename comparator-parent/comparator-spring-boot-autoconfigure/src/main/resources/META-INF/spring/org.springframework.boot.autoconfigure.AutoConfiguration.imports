@@ -1,0 +1,3 @@
+org.bremersee.comparator.spring.boot.SortOrderAutoConfiguration
+org.bremersee.comparator.spring.boot.SortOrderWebAutoConfiguration
+org.bremersee.comparator.spring.boot.SortOrderWebFluxAutoConfiguration

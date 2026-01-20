@@ -1,7 +1,4 @@
-org.bremersee.spring.boot.autoconfigure.data.commons.SortOrderAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.data.mongo.MongoCustomConversionsAutoConfiguration
-org.bremersee.spring.boot.autoconfigure.data.web.SortOrderWebAutoConfiguration
-org.bremersee.spring.boot.autoconfigure.data.web.SortOrderWebFluxAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveJackson2ObjectMapperBuilderCustomizer
 org.bremersee.spring.boot.autoconfigure.minio.MinioAutoConfiguration

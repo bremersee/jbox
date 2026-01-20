@@ -153,6 +153,26 @@
         <artifactId>comparator</artifactId>
         <version>${jbox.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
+        <artifactId>comparator-spring-integration</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
+        <artifactId>comparator-spring-boot-autoconfigure</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
+        <artifactId>comparator-spring-boot-web-starter</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
+        <artifactId>comparator-spring-boot-webflux-starter</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.bremersee</groupId>

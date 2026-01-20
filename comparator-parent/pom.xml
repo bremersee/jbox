@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.bremersee</groupId>
+    <artifactId>common-parent</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>comparator-parent</artifactId>
+  <packaging>pom</packaging>
+  
+  <name>Comparator Parent Module</name>
+  <description>A general object comparator (parent module)</description>
+  <inceptionYear>2019</inceptionYear>
+  <url>https://bremersee.github.io/jbox/comparator/index.html</url>
+
+  <modules>
+    <module>comparator</module>
+    <module>comparator-spring-integration</module>
+    <module>comparator-spring-boot-autoconfigure</module>
+    <module>comparator-spring-boot-web-starter</module>
+    <module>comparator-spring-boot-webflux-starter</module>
+  </modules>
+
+  <developers>
+    <developer>
+      <id>bremersee</id>
+      <name>Christian Bremer</name>
+      <organization>bremersee.org</organization>
+      <organizationUrl>https://bremersee.org</organizationUrl>
+      <email>christian@bremersee.org</email>
+      <timezone>Europe/Berlin</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <organization>
+    <name>bremersee.org</name>
+    <url>https://bremersee.org</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+</project>
