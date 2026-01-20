@@ -29,6 +29,8 @@ import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,7 +52,10 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "The sort order.")
 @EqualsAndHashCode
-public class SortOrder {
+public class SortOrder implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1;
 
   /**
    * The constant DEFAULT_SEPARATOR.
@@ -65,6 +70,7 @@ public class SortOrder {
    * Instantiates an empty sort order.
    */
   protected SortOrder() {
+    super();
   }
 
   /**

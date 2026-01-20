@@ -31,6 +31,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -97,7 +99,10 @@ import lombok.Getter;
 @Schema(description = "A sort order defines how a field of an object is sorted.")
 @Getter
 @EqualsAndHashCode
-public class SortOrderItem {
+public class SortOrderItem implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1;
 
   /**
    * The constant DEFAULT_SEPARATOR.

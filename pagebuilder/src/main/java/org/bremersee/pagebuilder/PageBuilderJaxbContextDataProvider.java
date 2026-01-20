@@ -37,6 +37,7 @@ public class PageBuilderJaxbContextDataProvider implements JaxbContextDataProvid
    * Instantiates a new page builder jaxb context data provider.
    */
   public PageBuilderJaxbContextDataProvider() {
+    super();
   }
 
   /**

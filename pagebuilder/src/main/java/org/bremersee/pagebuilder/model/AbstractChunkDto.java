@@ -48,6 +48,7 @@ import org.springframework.data.domain.SliceImpl;
  * The abstract chunk dto.
  *
  * @param <T> the type of the content
+ * @author Christian Bremer
  */
 @SuppressWarnings("unused")
 @XmlAccessorType(XmlAccessType.NONE)
