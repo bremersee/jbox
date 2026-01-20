@@ -18,6 +18,7 @@ package org.bremersee.comparator;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.ToString;
 import org.bremersee.comparator.model.SortOrderItem;
 
@@ -58,52 +59,62 @@ public class ValueComparator implements Comparator<Object> {
     this.valueExtractor = valueExtractor != null ? valueExtractor : new DefaultValueExtractor();
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public int compare(Object o1, Object o2) {
     final Object v1 = valueExtractor.findValue(o1, sortOrder.getField());
     final Object v2 = valueExtractor.findValue(o2, sortOrder.getField());
 
+    return compareNullSafe(v1, v2)
+        .or(() -> compareNonNull(v1, v2))
+        .orElseThrow(() -> new ComparatorException(
+            "Comparison of field '" + sortOrder.getField() + "' is not possible."));
+  }
+
+  private Optional<Integer> compareNullSafe(Object v1, Object v2) {
     if (v1 == null && v2 == null) {
-      return 0;
+      return Optional.of(0);
     }
     if (v1 == null) {
-      if (sortOrder.getDirection().isAscending()) {
-        return sortOrder.getNullHandling().isNullFirst() ? -1 : 1;
-      } else {
-        return sortOrder.getNullHandling().isNullFirst() ? 1 : -1;
-      }
+      return Optional.of(firstIsNull());
     }
     if (v2 == null) {
-      if (sortOrder.getDirection().isAscending()) {
-        return sortOrder.getNullHandling().isNullFirst() ? 1 : -1;
-      } else {
-        return sortOrder.getNullHandling().isNullFirst() ? -1 : 1;
-      }
+      return Optional.of(-1 * firstIsNull());
     }
+    return Optional.empty();
+  }
 
+  private int firstIsNull() {
+    int r;
+    if (sortOrder.getDirection().isAscending()) {
+      r = sortOrder.getNullHandling().isNullFirst() ? -1 : 1;
+    } else {
+      r = sortOrder.getNullHandling().isNullFirst() ? 1 : -1;
+    }
+    return r;
+  }
+
+  @SuppressWarnings("rawtypes")
+  private Optional<Integer> compareNonNull(Object v1, Object v2) {
     if (sortOrder.getDirection().isAscending() && v1 instanceof Comparable c1) {
       if (sortOrder.getCaseHandling().isInsensitive()
           && v1 instanceof String s1 && v2 instanceof String s2) {
-        return s1.compareToIgnoreCase(s2);
+        return Optional.of(s1.compareToIgnoreCase(s2));
       } else {
         //noinspection unchecked
-        return c1.compareTo(v2);
+        return Optional.of(c1.compareTo(v2));
       }
 
     } else if (!sortOrder.getDirection().isAscending() && v2 instanceof Comparable c2) {
 
       if (sortOrder.getCaseHandling().isInsensitive()
           && v1 instanceof String s1 && v2 instanceof String s2) {
-        return s2.compareToIgnoreCase(s1);
+        return Optional.of(s2.compareToIgnoreCase(s1));
       } else {
         //noinspection unchecked
-        return c2.compareTo(v1);
+        return Optional.of(c2.compareTo(v1));
       }
     }
-
-    throw new ComparatorException(
-        "Comparison of field '" + sortOrder.getField() + "' is not possible.");
+    return Optional.empty();
   }
 
 }
