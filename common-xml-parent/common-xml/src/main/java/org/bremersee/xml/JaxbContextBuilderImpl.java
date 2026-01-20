@@ -282,9 +282,9 @@ class JaxbContextBuilderImpl implements JaxbContextBuilder {
       return buildDetails(new Class<?>[]{(Class<?>) value});
     }
     Class<?>[] classes;
-    if (value instanceof Class<?>[]) {
+    if (value instanceof Class<?>[] clsArray) {
       classes = isEmpty(dependenciesResolver)
-          ? (Class<?>[]) value
+          ? clsArray
           : dependenciesResolver.resolveClasses(value);
     } else {
       classes = isEmpty(dependenciesResolver)

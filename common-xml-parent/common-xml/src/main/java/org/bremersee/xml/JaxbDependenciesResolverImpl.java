@@ -92,8 +92,8 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
   @Override
   public Class<?>[] resolveClasses(Object value) {
     Set<ScanResult> scanResults = new HashSet<>();
-    if (value instanceof Class<?>[]) {
-      for (Class<?> clazz : (Class<?>[]) value) {
+    if (value instanceof Class<?>[] clsArray) {
+      for (Class<?> clazz : clsArray) {
         resolveClasses(clazz, scanResults);
       }
     } else {
