@@ -55,6 +55,11 @@ public class LdaptiveAuthenticationProperties implements Serializable {
   protected String userBaseDn;
 
   /**
+   * A list with refused usernames.
+   */
+  protected List<String> refusedUsernames;
+
+  /**
    * The object class of the user (like 'inetOrgPerson'). The selected template contains a default.
    */
   protected String userObjectClass;
@@ -230,6 +235,8 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      * Instantiates a new ldaptive authentication properties with defaults.
      */
     public WithDefaults() {
+      refusedUsernames = new ArrayList<>();
+
       usernameToBindDnConverter = UsernameToBindDnConverterProperty.BY_USER_RDN_ATTRIBUTE;
 
       userObjectClass = "inetOrgPerson";

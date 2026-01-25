@@ -236,6 +236,11 @@ public class AuthenticationProperties {
     private String userBaseDn;
 
     /**
+     * A list with refused usernames.
+     */
+    private List<String> refusedUsernames;
+
+    /**
      * The object class of the user (like 'inetOrgPerson'). The selected template contains a
      * default.
      */

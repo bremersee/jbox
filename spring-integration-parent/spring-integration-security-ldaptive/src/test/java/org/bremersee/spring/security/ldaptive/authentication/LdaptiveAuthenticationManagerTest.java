@@ -99,6 +99,26 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
+   * Is refused username.
+   *
+   * @param softly the softly
+   */
+  @Test
+  void isRefusedUsername(SoftAssertions softly) {
+    OpenLdapTemplate properties = new OpenLdapTemplate();
+    properties.setRefusedUsernames(List.of("junit"));
+    LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
+        mock(ConnectionFactory.class),
+        properties,
+        REMEMBER_ME_KEY);
+    target.init();
+    boolean actual = target.isRefusedUsername("junit");
+    softly.assertThat(actual).isTrue();
+    actual = target.isRefusedUsername("not-refused");
+    softly.assertThat(actual).isFalse();
+  }
+
+  /**
    * Gets ldaptive template.
    *
    * @param softly the softly

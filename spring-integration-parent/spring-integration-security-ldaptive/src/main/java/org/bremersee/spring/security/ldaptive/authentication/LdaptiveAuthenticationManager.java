@@ -21,7 +21,9 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -297,6 +299,10 @@ public class LdaptiveAuthenticationManager
     String username = getEmailToUsernameResolver()
         .getUsernameByEmail(name)
         .orElse(name);
+    if (isRefusedUsername(username)) {
+      throw new DisabledException(String
+          .format("Username '%s' is refused by configuration.", username));
+    }
     String password = Optional.ofNullable(authentication.getCredentials())
         .map(String::valueOf)
         .orElse(null);
@@ -308,6 +314,22 @@ public class LdaptiveAuthenticationManager
       return getTokenConverter().convert(userDetails);
     }
     return new LdaptiveAuthenticationToken(userDetails);
+  }
+
+  /**
+   * Determines whether the username is refused by configuration.
+   *
+   * @param username the username
+   * @return {@code true} if the username is refused, otherwise {@code false}
+   */
+  protected boolean isRefusedUsername(String username) {
+    if (isEmpty(username)) {
+      return true;
+    }
+    return Stream.ofNullable(getAuthenticationProperties().getRefusedUsernames())
+        .flatMap(Collection::stream)
+        .filter(refusedUsername -> !isEmpty(refusedUsername))
+        .anyMatch(refusedUsername -> refusedUsername.equalsIgnoreCase(username));
   }
 
   /**
