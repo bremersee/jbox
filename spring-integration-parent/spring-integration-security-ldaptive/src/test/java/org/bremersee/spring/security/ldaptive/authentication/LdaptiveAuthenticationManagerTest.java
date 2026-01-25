@@ -113,6 +113,7 @@ class LdaptiveAuthenticationManagerTest {
         REMEMBER_ME_KEY);
     target.init();
     boolean actual = target.isRefusedUsername("junit");
+    softly.assertThat(actual).isTrue();actual = target.isRefusedUsername("");
     softly.assertThat(actual).isTrue();
     actual = target.isRefusedUsername("not-refused");
     softly.assertThat(actual).isFalse();
@@ -359,6 +360,27 @@ class LdaptiveAuthenticationManagerTest {
 
     var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(BadCredentialsException.class)
+        .isThrownBy(() -> target.authenticate(token));
+  }
+
+  /**
+   * Authenticate with user ldaptive template and refused username.
+   */
+  @Test
+  void authenticateWithUserLdaptiveTemplateAndRefusedUsername() {
+    ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
+    ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
+    LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
+    ActiveDirectoryTemplate properties = new ActiveDirectoryTemplate();
+    properties.setUserBaseDn(USER_BASE_DN);
+    properties.setRefusedUsernames(List.of("refused"));
+    LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
+        ldaptiveTemplate, properties, REMEMBER_ME_KEY));
+
+    target.init();
+
+    var token = new UsernamePasswordAuthenticationToken("refused", "secret");
+    assertThatExceptionOfType(DisabledException.class)
         .isThrownBy(() -> target.authenticate(token));
   }
 
