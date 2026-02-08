@@ -28,6 +28,8 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +38,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -43,9 +46,14 @@ import org.springframework.util.ClassUtils;
  *
  * @author Christian Bremer
  */
-@AutoConfiguration
+@AutoConfiguration(
+    before = {
+        SecurityAutoConfiguration.class,
+        ReactiveSecurityAutoConfiguration.class
+    })
 @ConditionalOnClass(name = {
-    "org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter"
+    "org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter",
+    "org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter"
 })
 @ConditionalOnProperty(
     prefix = "spring.security.oauth2.resourceserver.jwt",
@@ -86,10 +94,12 @@ public class JwtConverterAutoConfiguration {
    * @param mapper the mapper
    * @return the converter
    */
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingBean({JwtAuthenticationConverter.class})
   @Bean
   public Converter<Jwt, AbstractAuthenticationToken> jwtConverter(
       ObjectProvider<GrantedAuthoritiesMapper> mapper) {
+
+    log.info("Creating new jwt authentication converter.");
 
     GrantedAuthoritiesMapper grantedAuthoritiesMapper = mapper
         .getIfAvailable(() -> new NormalizedGrantedAuthoritiesMapper(
