@@ -18,6 +18,7 @@ package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +59,8 @@ class ApiExceptionResolverAutoConfigurationTest {
 
     //noinspection unchecked
     ObjectProvider<Jackson2ObjectMapperBuilder> objectMapperBuilder = mock(ObjectProvider.class);
-    when(objectMapperBuilder.getIfAvailable()).thenReturn(new Jackson2ObjectMapperBuilder());
+    when(objectMapperBuilder.getIfAvailable(any()))
+        .thenReturn(new Jackson2ObjectMapperBuilder());
 
     //noinspection unchecked
     ObjectProvider<HttpServletRequestIdProvider> restApiIdProvider = mock(ObjectProvider.class);

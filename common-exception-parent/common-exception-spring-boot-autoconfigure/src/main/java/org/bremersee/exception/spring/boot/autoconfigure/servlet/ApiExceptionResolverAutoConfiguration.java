@@ -25,7 +25,6 @@ import org.bremersee.exception.spring.boot.autoconfigure.RestApiExceptionMapperB
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
@@ -43,12 +42,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(name = {
-    "com.fasterxml.jackson.databind.ObjectMapper",
+    "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
     "org.bremersee.exception.RestApiExceptionMapperProperties",
     "org.bremersee.exception.servlet.ApiExceptionResolver"
-})
-@ConditionalOnBean({
-    Jackson2ObjectMapperBuilder.class
 })
 @AutoConfigureAfter({
     RestApiExceptionMapperForWebAutoConfiguration.class
@@ -77,7 +73,8 @@ public class ApiExceptionResolverAutoConfiguration implements WebMvcConfigurer {
       ObjectProvider<HttpServletRequestIdProvider> restApiIdProvider) {
 
     RestApiExceptionMapper mapper = apiExceptionMapper.getIfAvailable();
-    Jackson2ObjectMapperBuilder omBuilder = objectMapperBuilder.getIfAvailable();
+    Jackson2ObjectMapperBuilder omBuilder = objectMapperBuilder
+        .getIfAvailable(Jackson2ObjectMapperBuilder::new);
     Assert.notNull(mapper, "Api exception resolver must be present.");
     Assert.notNull(omBuilder, "Object mapper builder must be present.");
     this.properties = properties;
@@ -94,7 +91,7 @@ public class ApiExceptionResolverAutoConfiguration implements WebMvcConfigurer {
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
     log.info("""
-
+            
             *********************************************************************************
             * {}
             *********************************************************************************
