@@ -51,6 +51,24 @@ public interface LdaptiveOperations {
   ConnectionFactory getConnectionFactory();
 
   /**
+   * Returns a new instance of this ldap operations with the same connection factory and error
+   * handler.
+   *
+   * @return a new instance of this ldap operations
+   */
+  LdaptiveOperations copy();
+
+  /**
+   * Returns a new instance of this ldap operations with the same connection factory and the given
+   * error handler.
+   *
+   * @param errorHandler the new error handler
+   * @return the new instance of this ldap operations
+   */
+  LdaptiveOperations copy(LdaptiveErrorHandler errorHandler);
+
+
+  /**
    * Executes add operation.
    *
    * @param addRequest the add request
@@ -95,8 +113,8 @@ public interface LdaptiveOperations {
    * @return the generated user password
    */
   default String generateUserPassword(String dn) {
-<span class="fc" id="L98">    ExtendedResponse response = executeExtension(new PasswordModifyRequest(dn));</span>
-<span class="fc" id="L99">    return PasswordModifyResponseParser.parse(response);</span>
+<span class="fc" id="L116">    ExtendedResponse response = executeExtension(new PasswordModifyRequest(dn));</span>
+<span class="fc" id="L117">    return PasswordModifyResponseParser.parse(response);</span>
   }
 
   /**
@@ -122,8 +140,8 @@ public interface LdaptiveOperations {
    */
   default void modifyUserPassword(String dn, String oldPass,
       String newPass) {
-<span class="fc" id="L125">    executeExtension(new PasswordModifyRequest(dn, oldPass, newPass));</span>
-<span class="fc" id="L126">  }</span>
+<span class="fc" id="L143">    executeExtension(new PasswordModifyRequest(dn, oldPass, newPass));</span>
+<span class="fc" id="L144">  }</span>
 
   /**
    * Executes search operation.
@@ -140,8 +158,8 @@ public interface LdaptiveOperations {
    * @return the optional ldap entry
    */
   default Optional&lt;LdapEntry&gt; findOne(SearchRequest request) {
-<span class="fc" id="L143">    return Optional.ofNullable(search(request))</span>
-<span class="fc" id="L144">        .map(SearchResponse::getEntry);</span>
+<span class="fc" id="L161">    return Optional.ofNullable(search(request))</span>
+<span class="fc" id="L162">        .map(SearchResponse::getEntry);</span>
   }
 
   /**
@@ -155,9 +173,8 @@ public interface LdaptiveOperations {
   default &lt;T&gt; Optional&lt;T&gt; findOne(
       SearchRequest request,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L158">    return Optional.ofNullable(search(request))</span>
-<span class="fc" id="L159">        .map(SearchResponse::getEntry)</span>
-<span class="fc" id="L160">        .map(entryMapper::map);</span>
+<span class="fc" id="L176">    return findOne(request)</span>
+<span class="fc" id="L177">        .map(entryMapper::map);</span>
   }
 
   /**
@@ -167,9 +184,9 @@ public interface LdaptiveOperations {
    * @return the collection
    */
   default Collection&lt;LdapEntry&gt; findAll(SearchRequest request) {
-<span class="fc" id="L170">    return Optional.ofNullable(search(request))</span>
-<span class="fc" id="L171">        .map(SearchResponse::getEntries)</span>
-<span class="fc" id="L172">        .orElseGet(Collections::emptyList);</span>
+<span class="fc" id="L187">    return Optional.ofNullable(search(request))</span>
+<span class="fc" id="L188">        .map(SearchResponse::getEntries)</span>
+<span class="fc" id="L189">        .orElseGet(Collections::emptyList);</span>
   }
 
   /**
@@ -183,11 +200,11 @@ public interface LdaptiveOperations {
   default &lt;T&gt; Stream&lt;T&gt; findAll(
       SearchRequest request,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L186">    return Optional.ofNullable(search(request))</span>
-<span class="fc" id="L187">        .map(SearchResponse::getEntries)</span>
-<span class="fc" id="L188">        .orElseGet(Collections::emptyList)</span>
-<span class="fc" id="L189">        .stream()</span>
-<span class="fc" id="L190">        .map(entryMapper::map);</span>
+<span class="fc" id="L203">    return Optional.ofNullable(search(request))</span>
+<span class="fc" id="L204">        .map(SearchResponse::getEntries)</span>
+<span class="fc" id="L205">        .orElseGet(Collections::emptyList)</span>
+<span class="fc" id="L206">        .stream()</span>
+<span class="fc" id="L207">        .map(entryMapper::map);</span>
   }
 
   /**
@@ -207,7 +224,7 @@ public interface LdaptiveOperations {
    * @return the boolean
    */
   default &lt;T&gt; boolean exists(T domainObject, LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L210">    return exists(entryMapper.mapDn(domainObject));</span>
+<span class="fc" id="L227">    return exists(entryMapper.mapDn(domainObject));</span>
   }
 
   /**
@@ -232,10 +249,10 @@ public interface LdaptiveOperations {
       Collection&lt;T&gt; domainObjects,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
 
-<span class="fc" id="L235">    return Stream.ofNullable(domainObjects)</span>
-<span class="fc" id="L236">        .flatMap(Collection::stream)</span>
-<span class="fc" id="L237">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L238">        .map(domainObject -&gt; save(domainObject, entryMapper));</span>
+<span class="fc" id="L252">    return Stream.ofNullable(domainObjects)</span>
+<span class="fc" id="L253">        .flatMap(Collection::stream)</span>
+<span class="fc" id="L254">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L255">        .map(domainObject -&gt; save(domainObject, entryMapper));</span>
   }
 
   /**
@@ -248,8 +265,8 @@ public interface LdaptiveOperations {
   default &lt;T&gt; void remove(
       T domainObject,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L251">    delete(DeleteRequest.builder().dn(entryMapper.mapDn(domainObject)).build());</span>
-<span class="fc" id="L252">  }</span>
+<span class="fc" id="L268">    delete(DeleteRequest.builder().dn(entryMapper.mapDn(domainObject)).build());</span>
+<span class="fc" id="L269">  }</span>
 
   /**
    * Remove all.
@@ -261,9 +278,9 @@ public interface LdaptiveOperations {
   default &lt;T&gt; void removeAll(
       Collection&lt;T&gt; domainObjects,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L264">    Optional.ofNullable(domainObjects)</span>
-<span class="fc" id="L265">        .ifPresent(col -&gt; col.forEach(domainObject -&gt; remove(domainObject, entryMapper)));</span>
-<span class="fc" id="L266">  }</span>
+<span class="fc" id="L281">    Optional.ofNullable(domainObjects)</span>
+<span class="fc" id="L282">        .ifPresent(col -&gt; col.forEach(domainObject -&gt; remove(domainObject, entryMapper)));</span>
+<span class="fc" id="L283">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

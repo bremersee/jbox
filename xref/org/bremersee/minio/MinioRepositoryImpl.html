@@ -229,80 +229,80 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>         });
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>   }
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> 
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> delete(MultipartFile multipartFile) {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>     <strong class="jxr_keyword">if</strong> (multipartFile != <strong class="jxr_keyword">null</strong> &amp;&amp; multipartFile.getResource().isFile()) {
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>         Files.delete(multipartFile.getResource().getFile().toPath());
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>       } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>         <em class="jxr_comment">// ignored</em>
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>       }
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>     }
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>   @Override
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> exists(<a name="MinioObjectId" href="../../../org/bremersee/minio/MinioObjectId.html#MinioObjectId">MinioObjectId</a> id) {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">return</strong> minio.objectExists(StatObjectArgs.builder()
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>         .region(region)
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         .bucket(bucket)
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         .object(id.getName())
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>         .versionId(id.getVersionId())
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         .build());
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>   }
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> 
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>   @Override
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> exists(<a name="MinioObjectId" href="../../../org/bremersee/minio/MinioObjectId.html#MinioObjectId">MinioObjectId</a> id) {
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">return</strong> minio.objectExists(StatObjectArgs.builder()
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>         .region(region)
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>         .bucket(bucket)
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>         .object(id.getName())
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>         .versionId(id.getVersionId())
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>         .build());
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>   }
-<a class="jxr_linenumber" name="L243" href="#L243">243</a> 
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>   @Override
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>   <strong class="jxr_keyword">public</strong> Optional&lt;MinioMultipartFile&gt; findOne(<a name="MinioObjectId" href="../../../org/bremersee/minio/MinioObjectId.html#MinioObjectId">MinioObjectId</a> id) {
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>       StatObjectResponse objectStat = minio.statObject(StatObjectArgs.builder()
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>           .region(region)
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>           .bucket(bucket)
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>           .object(id.getName())
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>           .versionId(id.getVersionId())
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>           .build());
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>       <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> MinioMultipartFileImpl(minio, region, objectStat));
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>     } <strong class="jxr_keyword">catch</strong> (<a name="MinioException" href="../../../org/bremersee/minio/MinioException.html#MinioException">MinioException</a> e) {
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>       <strong class="jxr_keyword">if</strong> (404 == e.status()) {
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>         <strong class="jxr_keyword">return</strong> Optional.empty();
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>       }
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>       <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>     }
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>   }
-<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>   @Override
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>   <strong class="jxr_keyword">public</strong> List&lt;MinioMultipartFile&gt; findAll(String prefix) {
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>     Iterable&lt;Result&lt;Item&gt;&gt; results = minio.listObjects(ListObjectsArgs.builder()
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         .region(region)
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         .bucket(bucket)
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>         .includeVersions(enableVersioning)
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>         .recursive(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         .prefix(prefix)
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>         .build());
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>     List&lt;MinioMultipartFile&gt; fileList = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>     <strong class="jxr_keyword">for</strong> (Result&lt;Item&gt; result : results) {
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         Item item = result.get();
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         <strong class="jxr_keyword">if</strong> (!item.isDir() &amp;&amp; !item.isDeleteMarker()) {
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>           fileList.add(<strong class="jxr_keyword">new</strong> MinioMultipartFileImpl(
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>               getMinioOperations(),
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>               region,
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>               bucket,
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>               item));
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>         }
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>       } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <em class="jxr_comment">// ignored</em>
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>       }
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>     }
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>     <strong class="jxr_keyword">return</strong> fileList;
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>   <strong class="jxr_keyword">public</strong> Optional&lt;MinioMultipartFile&gt; findOne(<a name="MinioObjectId" href="../../../org/bremersee/minio/MinioObjectId.html#MinioObjectId">MinioObjectId</a> id) {
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>       StatObjectResponse objectStat = minio.statObject(StatObjectArgs.builder()
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>           .region(region)
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>           .bucket(bucket)
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>           .object(id.getName())
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>           .versionId(id.getVersionId())
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>           .build());
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>       <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> MinioMultipartFileImpl(minio, region, objectStat));
+<a class="jxr_linenumber" name="L244" href="#L244">244</a> 
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>     } <strong class="jxr_keyword">catch</strong> (<a name="MinioException" href="../../../org/bremersee/minio/MinioException.html#MinioException">MinioException</a> e) {
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>       <strong class="jxr_keyword">if</strong> (404 == e.status()) {
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>         <strong class="jxr_keyword">return</strong> Optional.empty();
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>       }
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>       <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>     }
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>   }
+<a class="jxr_linenumber" name="L252" href="#L252">252</a> 
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>   @Override
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>   <strong class="jxr_keyword">public</strong> List&lt;MinioMultipartFile&gt; findAll(String prefix) {
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>     Iterable&lt;Result&lt;Item&gt;&gt; results = minio.listObjects(ListObjectsArgs.builder()
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         .region(region)
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         .bucket(bucket)
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         .includeVersions(enableVersioning)
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         .recursive(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         .prefix(prefix)
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         .build());
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     List&lt;MinioMultipartFile&gt; fileList = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     <strong class="jxr_keyword">for</strong> (Result&lt;Item&gt; result : results) {
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         Item item = result.get();
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         <strong class="jxr_keyword">if</strong> (!item.isDir() &amp;&amp; !item.isDeleteMarker()) {
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>           fileList.add(<strong class="jxr_keyword">new</strong> MinioMultipartFileImpl(
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>               getMinioOperations(),
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>               region,
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>               bucket,
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>               item));
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>         }
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>         <em class="jxr_comment">// ignored</em>
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       }
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     }
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>     <strong class="jxr_keyword">return</strong> fileList;
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>   }
+<a class="jxr_linenumber" name="L279" href="#L279">279</a> 
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>   @Override
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> delete(<a name="MinioObjectId" href="../../../org/bremersee/minio/MinioObjectId.html#MinioObjectId">MinioObjectId</a> id) {
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>     minio.removeObject(RemoveObjectArgs.builder()
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>         .region(region)
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         .bucket(bucket)
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         .object(id.getName())
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         .versionId(id.getVersionId())
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>         .build());
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>   }
 <a class="jxr_linenumber" name="L289" href="#L289">289</a> 
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>   @Override
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> delete(<a name="MinioObjectId" href="../../../org/bremersee/minio/MinioObjectId.html#MinioObjectId">MinioObjectId</a> id) {
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     minio.removeObject(RemoveObjectArgs.builder()
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         .region(region)
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         .bucket(bucket)
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         .object(id.getName())
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         .versionId(id.getVersionId())
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         .build());
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> delete(MultipartFile multipartFile) {
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>     <strong class="jxr_keyword">if</strong> (multipartFile != <strong class="jxr_keyword">null</strong> &amp;&amp; multipartFile.getResource().isFile()) {
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         Files.delete(multipartFile.getResource().getFile().toPath());
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>       } <strong class="jxr_keyword">catch</strong> (Exception ignored) {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         <em class="jxr_comment">// ignored</em>
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>       }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>     }
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>   }
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> 
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>   @Override
@@ -345,6 +345,6 @@
 <a class="jxr_linenumber" name="L337" href="#L337">337</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

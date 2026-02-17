@@ -50,7 +50,7 @@ public class RestApiExceptionMapperForWebFlux extends RestApiExceptionMapperForW
   @Override
   protected String getError(Throwable exception, HttpStatusCode httpStatusCode) {
 <span class="pc bpc" id="L52" title="1 of 2 branches missed.">    if ((exception instanceof WebClientResponseException cre)</span>
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        &amp;&amp; !(ObjectUtils.isEmpty(cre.getStatusText()))) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        &amp;&amp; !ObjectUtils.isEmpty(cre.getStatusText())) {</span>
 <span class="nc" id="L54">      return cre.getStatusText();</span>
     }
 <span class="fc" id="L56">    return super.getError(exception, httpStatusCode);</span>

@@ -19,9 +19,6 @@ package org.bremersee.geojson.converter.serialization;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.COORDINATES;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -30,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.bremersee.geojson.GeoJsonConstants;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.locationtech.jts.geom.Geometry;
 
@@ -51,9 +49,9 @@ abstract class AbstractGeometryToJsonConverter&lt;S extends Geometry&gt; impleme
    *
    * @param withBoundingBox the with bounding box
    */
-<span class="fc" id="L54">  AbstractGeometryToJsonConverter(boolean withBoundingBox) {</span>
-<span class="fc" id="L55">    this.withBoundingBox = withBoundingBox;</span>
-<span class="fc" id="L56">  }</span>
+<span class="fc" id="L52">  AbstractGeometryToJsonConverter(boolean withBoundingBox) {</span>
+<span class="fc" id="L53">    this.withBoundingBox = withBoundingBox;</span>
+<span class="fc" id="L54">  }</span>
 
   /**
    * Convert map.
@@ -62,18 +60,18 @@ abstract class AbstractGeometryToJsonConverter&lt;S extends Geometry&gt; impleme
    * @return the map
    */
   Map&lt;String, Object&gt; convert(S source) {
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">    if (isNull(source)) {</span>
-<span class="nc" id="L66">      return null;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">    if (isNull(source)) {</span>
+<span class="nc" id="L64">      return null;</span>
     }
-<span class="fc" id="L68">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc" id="L69">    map.put(TYPE, requireNonNull(getGeometryType()));</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (withBoundingBox) {</span>
-<span class="fc" id="L71">      Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))</span>
-<span class="fc" id="L72">          .map(bbox -&gt; Arrays.stream(bbox).boxed().collect(Collectors.toList()))</span>
-<span class="fc" id="L73">          .ifPresent(bbox -&gt; map.put(BBOX, bbox));</span>
+<span class="fc" id="L66">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L67">    map.put(GeoJsonConstants.TYPE, requireNonNull(getGeometryType()));</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    if (withBoundingBox) {</span>
+<span class="fc" id="L69">      Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))</span>
+<span class="fc" id="L70">          .map(bbox -&gt; Arrays.stream(bbox).boxed().collect(Collectors.toList()))</span>
+<span class="fc" id="L71">          .ifPresent(bbox -&gt; map.put(GeoJsonConstants.BBOX, bbox));</span>
     }
-<span class="fc" id="L75">    map.put(COORDINATES, getGeometryJsonValue(source));</span>
-<span class="fc" id="L76">    return unmodifiableMap(map);</span>
+<span class="fc" id="L73">    map.put(GeoJsonConstants.COORDINATES, getGeometryJsonValue(source));</span>
+<span class="fc" id="L74">    return unmodifiableMap(map);</span>
   }
 
   /**

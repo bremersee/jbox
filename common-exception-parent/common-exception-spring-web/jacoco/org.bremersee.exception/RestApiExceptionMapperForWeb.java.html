@@ -120,7 +120,7 @@ public class RestApiExceptionMapperForWeb implements RestApiExceptionMapper {
   @Nullable
   protected String getError(Throwable throwable, HttpStatusCode httpStatusCode) {
 <span class="fc bfc" id="L122" title="All 2 branches covered.">    if ((throwable instanceof ResponseStatusException rse)</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        &amp;&amp; !(ObjectUtils.isEmpty(rse.getReason()))) {</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        &amp;&amp; !ObjectUtils.isEmpty(rse.getReason())) {</span>
 <span class="fc" id="L124">      return rse.getReason();</span>
     }
 <span class="fc bfc" id="L126" title="All 2 branches covered.">    if (httpStatusCode instanceof HttpStatus hs) {</span>

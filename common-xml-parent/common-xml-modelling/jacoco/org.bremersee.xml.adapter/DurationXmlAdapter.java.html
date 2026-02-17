@@ -29,20 +29,26 @@ import javax.xml.datatype.DatatypeFactory;
  *
  * @author Christian Bremer
  */
-<span class="fc" id="L32">public class DurationXmlAdapter extends XmlAdapter&lt;String, Duration&gt; {</span>
+public class DurationXmlAdapter extends XmlAdapter&lt;String, Duration&gt; {
+
+  /**
+   * Instantiates a new duration xml adapter.
+   */
+<span class="fc" id="L37">  public DurationXmlAdapter() {</span>
+<span class="fc" id="L38">  }</span>
 
   @Override
   public Duration unmarshal(String v) throws Exception {
-<span class="fc bfc" id="L36" title="All 2 branches covered.">    return v == null</span>
-<span class="fc" id="L37">        ? null</span>
-<span class="fc" id="L38">        : xmlDurationToDuration(DatatypeFactory.newInstance().newDuration(v));</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">    return v == null</span>
+<span class="fc" id="L43">        ? null</span>
+<span class="fc" id="L44">        : xmlDurationToDuration(DatatypeFactory.newInstance().newDuration(v));</span>
   }
 
   @Override
   public String marshal(Duration v) {
-<span class="fc" id="L43">    return Optional.ofNullable(durationToXmlDuration(v))</span>
-<span class="fc" id="L44">        .map(javax.xml.datatype.Duration::toString)</span>
-<span class="fc" id="L45">        .orElse(null);</span>
+<span class="fc" id="L49">    return Optional.ofNullable(durationToXmlDuration(v))</span>
+<span class="fc" id="L50">        .map(javax.xml.datatype.Duration::toString)</span>
+<span class="fc" id="L51">        .orElse(null);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -52,7 +52,7 @@ public enum ViaPointElevationMode {
    */
   @JsonCreator
   public static ViaPointElevationMode fromValue(String value) {
-<span class="fc bfc" id="L55" title="All 2 branches covered.">    for (ViaPointElevationMode e : ViaPointElevationMode.values()) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">    for (ViaPointElevationMode e : values()) {</span>
 <span class="pc bpc" id="L56" title="1 of 4 branches missed.">      if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {</span>
 <span class="fc" id="L57">        return e;</span>
       }

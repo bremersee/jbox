@@ -6,9 +6,10 @@ org.bremersee.acl.spring.data.mongodb
 org.bremersee.acl.spring.data.mongodb.convert
 org.bremersee.comparator
 org.bremersee.comparator.model
-org.bremersee.comparator.spring
+org.bremersee.comparator.spring.boot
 org.bremersee.comparator.spring.converter
 org.bremersee.comparator.spring.mapper
+org.bremersee.comparator.spring.web
 org.bremersee.exception
 org.bremersee.exception.annotation
 org.bremersee.exception.feign
@@ -88,6 +89,7 @@ org.bremersee.gpx
 org.bremersee.gpx.model
 org.bremersee.kml.v22
 org.bremersee.ldaptive
+org.bremersee.ldaptive.converter
 org.bremersee.ldaptive.reactive
 org.bremersee.ldaptive.serializable
 org.bremersee.ldaptive.transcoder
@@ -98,7 +100,6 @@ org.bremersee.pagebuilder
 org.bremersee.pagebuilder.model
 org.bremersee.spring.boot.autoconfigure
 org.bremersee.spring.boot.autoconfigure.data
-org.bremersee.spring.boot.autoconfigure.data.commons
 org.bremersee.spring.boot.autoconfigure.data.mongo
 org.bremersee.spring.boot.autoconfigure.ldaptive
 org.bremersee.spring.boot.autoconfigure.minio
@@ -109,6 +110,7 @@ org.bremersee.spring.boot.autoconfigure.web
 org.bremersee.spring.boot.autoconfigure.web.reactive
 org.bremersee.spring.core
 org.bremersee.spring.core.convert.support
+org.bremersee.spring.core.regex
 org.bremersee.spring.data.convert
 org.bremersee.spring.data.mongodb.core
 org.bremersee.spring.data.mongodb.core.convert

@@ -55,6 +55,11 @@ public class LdaptiveAuthenticationProperties implements Serializable {
   protected String userBaseDn;
 
   /**
+   * A list with refused usernames.
+   */
+  protected List&lt;String&gt; refusedUsernames;
+
+  /**
    * The object class of the user (like 'inetOrgPerson'). The selected template contains a default.
    */
   protected String userObjectClass;
@@ -194,12 +199,12 @@ public class LdaptiveAuthenticationProperties implements Serializable {
    * @return the map
    */
   public Map&lt;String, String&gt; toRoleMappings() {
-<span class="nc" id="L197">    return Stream.ofNullable(getRoleMapping())</span>
-<span class="nc" id="L198">        .flatMap(Collection::stream)</span>
-<span class="nc" id="L199">        .collect(Collectors.toMap(</span>
+<span class="nc" id="L202">    return Stream.ofNullable(getRoleMapping())</span>
+<span class="nc" id="L203">        .flatMap(Collection::stream)</span>
+<span class="nc" id="L204">        .collect(Collectors.toMap(</span>
             RoleMapping::getSource,
             RoleMapping::getTarget,
-<span class="nc" id="L202">            (first, second) -&gt; first,</span>
+<span class="nc" id="L207">            (first, second) -&gt; first,</span>
             LinkedHashMap::new));
   }
 
@@ -209,12 +214,12 @@ public class LdaptiveAuthenticationProperties implements Serializable {
    * @return the map
    */
   public Map&lt;String, String&gt; toRoleStringReplacements() {
-<span class="nc" id="L212">    return Stream.ofNullable(getRoleStringReplacements())</span>
-<span class="nc" id="L213">        .flatMap(Collection::stream)</span>
-<span class="nc" id="L214">        .collect(Collectors.toMap(</span>
+<span class="nc" id="L217">    return Stream.ofNullable(getRoleStringReplacements())</span>
+<span class="nc" id="L218">        .flatMap(Collection::stream)</span>
+<span class="nc" id="L219">        .collect(Collectors.toMap(</span>
             StringReplacement::getRegex,
             StringReplacement::getReplacement,
-<span class="nc" id="L217">            (first, second) -&gt; first,</span>
+<span class="nc" id="L222">            (first, second) -&gt; first,</span>
             LinkedHashMap::new));
   }
 
@@ -229,28 +234,30 @@ public class LdaptiveAuthenticationProperties implements Serializable {
     /**
      * Instantiates a new ldaptive authentication properties with defaults.
      */
-<span class="fc" id="L232">    public WithDefaults() {</span>
-<span class="fc" id="L233">      usernameToBindDnConverter = UsernameToBindDnConverterProperty.BY_USER_RDN_ATTRIBUTE;</span>
+<span class="fc" id="L237">    public WithDefaults() {</span>
+<span class="fc" id="L238">      refusedUsernames = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L235">      userObjectClass = &quot;inetOrgPerson&quot;;</span>
-<span class="fc" id="L236">      usernameAttribute = &quot;uid&quot;;</span>
+<span class="fc" id="L240">      usernameToBindDnConverter = UsernameToBindDnConverterProperty.BY_USER_RDN_ATTRIBUTE;</span>
 
-<span class="fc" id="L238">      userFindOneSearchScope = SearchScope.ONELEVEL;</span>
-<span class="fc" id="L239">      firstNameAttribute = &quot;givenName&quot;;</span>
-<span class="fc" id="L240">      lastNameAttribute = &quot;sn&quot;;</span>
-<span class="fc" id="L241">      emailAttribute = &quot;mail&quot;;</span>
-<span class="fc" id="L242">      memberAttribute = &quot;memberOf&quot;;</span>
-<span class="fc" id="L243">      accountControlEvaluator = AccountControlEvaluatorProperty.NONE;</span>
+<span class="fc" id="L242">      userObjectClass = &quot;inetOrgPerson&quot;;</span>
+<span class="fc" id="L243">      usernameAttribute = &quot;uid&quot;;</span>
 
-<span class="fc" id="L245">      groupFetchStrategy = GroupFetchStrategy.USER_CONTAINS_GROUPS;</span>
-<span class="fc" id="L246">      groupObjectClass = &quot;groupOfUniqueNames&quot;;</span>
-<span class="fc" id="L247">      groupMemberAttribute = &quot;uniqueMember&quot;;</span>
-<span class="fc" id="L248">      groupSearchScope = SearchScope.ONELEVEL;</span>
-<span class="fc" id="L249">      roleMapping = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L250">      defaultRoles = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L251">      roleStringReplacements = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L252">      roleCaseTransformation = CaseTransformation.NONE;</span>
-<span class="fc" id="L253">    }</span>
+<span class="fc" id="L245">      userFindOneSearchScope = SearchScope.ONELEVEL;</span>
+<span class="fc" id="L246">      firstNameAttribute = &quot;givenName&quot;;</span>
+<span class="fc" id="L247">      lastNameAttribute = &quot;sn&quot;;</span>
+<span class="fc" id="L248">      emailAttribute = &quot;mail&quot;;</span>
+<span class="fc" id="L249">      memberAttribute = &quot;memberOf&quot;;</span>
+<span class="fc" id="L250">      accountControlEvaluator = AccountControlEvaluatorProperty.NONE;</span>
+
+<span class="fc" id="L252">      groupFetchStrategy = GroupFetchStrategy.USER_CONTAINS_GROUPS;</span>
+<span class="fc" id="L253">      groupObjectClass = &quot;groupOfUniqueNames&quot;;</span>
+<span class="fc" id="L254">      groupMemberAttribute = &quot;uniqueMember&quot;;</span>
+<span class="fc" id="L255">      groupSearchScope = SearchScope.ONELEVEL;</span>
+<span class="fc" id="L256">      roleMapping = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L257">      defaultRoles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L258">      roleStringReplacements = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L259">      roleCaseTransformation = CaseTransformation.NONE;</span>
+<span class="fc" id="L260">    }</span>
 
     /**
      * Get user rdn attribute.
@@ -259,10 +266,10 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      */
     @Override
     public String getUserRdnAttribute() {
-<span class="fc bfc" id="L262" title="All 2 branches covered.">      if (ObjectUtils.isEmpty(userRdnAttribute)) {</span>
-<span class="fc" id="L263">        return usernameAttribute;</span>
+<span class="fc bfc" id="L269" title="All 2 branches covered.">      if (ObjectUtils.isEmpty(userRdnAttribute)) {</span>
+<span class="fc" id="L270">        return usernameAttribute;</span>
       }
-<span class="fc" id="L265">      return userRdnAttribute;</span>
+<span class="fc" id="L272">      return userRdnAttribute;</span>
     }
 
     /**
@@ -272,13 +279,13 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      */
     @Override
     public String getUserFindOneFilter() {
-<span class="pc bpc" id="L275" title="1 of 2 branches missed.">      if (ObjectUtils.isEmpty(userFindOneFilter)</span>
-<span class="pc bpc" id="L276" title="1 of 2 branches missed.">          &amp;&amp; !ObjectUtils.isEmpty(getUserObjectClass())</span>
-<span class="pc bpc" id="L277" title="1 of 2 branches missed.">          &amp;&amp; !ObjectUtils.isEmpty(getUsernameAttribute())) {</span>
-<span class="fc" id="L278">        return String</span>
-<span class="fc" id="L279">            .format(&quot;(&amp;(objectClass=%s)(%s={0}))&quot;, getUserObjectClass(), getUsernameAttribute());</span>
+<span class="pc bpc" id="L282" title="1 of 2 branches missed.">      if (ObjectUtils.isEmpty(userFindOneFilter)</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">          &amp;&amp; !ObjectUtils.isEmpty(getUserObjectClass())</span>
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">          &amp;&amp; !ObjectUtils.isEmpty(getUsernameAttribute())) {</span>
+<span class="fc" id="L285">        return String</span>
+<span class="fc" id="L286">            .format(&quot;(&amp;(objectClass=%s)(%s={0}))&quot;, getUserObjectClass(), getUsernameAttribute());</span>
       }
-<span class="nc" id="L281">      return userFindOneFilter;</span>
+<span class="nc" id="L288">      return userFindOneFilter;</span>
     }
 
   }
@@ -286,29 +293,28 @@ public class LdaptiveAuthenticationProperties implements Serializable {
   /**
    * The group fetch strategy.
    */
-<span class="fc" id="L289">  public enum GroupFetchStrategy {</span>
+<span class="fc" id="L296">  public enum GroupFetchStrategy {</span>
 
     /**
      * Groups will not be fetched.
      */
-<span class="fc" id="L294">    NONE,</span>
+<span class="fc" id="L301">    NONE,</span>
 
     /**
      * User contains groups group-fetch strategy.
      */
-<span class="fc" id="L299">    USER_CONTAINS_GROUPS,</span>
+<span class="fc" id="L306">    USER_CONTAINS_GROUPS,</span>
 
     /**
      * Group contains users group-fetch strategy.
      */
-<span class="fc" id="L304">    GROUP_CONTAINS_USERS</span>
+<span class="fc" id="L311">    GROUP_CONTAINS_USERS</span>
   }
 
   /**
    * The string replacement.
    */
   @Data
-  @NoArgsConstructor
   @AllArgsConstructor
   public static class StringReplacement implements Serializable {
 
@@ -325,13 +331,19 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      * The string to be substituted for each match.
      */
     private String replacement;
+
+    /**
+     * Instantiates a new string replacement.
+     */
+    public StringReplacement() {
+<span class="nc" id="L339">      super();</span>
+<span class="nc" id="L340">    }</span>
   }
 
   /**
    * The role mapping.
    */
   @Data
-  @NoArgsConstructor
   @AllArgsConstructor
   public static class RoleMapping implements Serializable {
 
@@ -347,6 +359,13 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      * The value in the spring security context (like 'ROLE_DEVELOPER').
      */
     private String target;
+
+    /**
+     * Instantiates a new role mapping.
+     */
+    public RoleMapping() {
+<span class="nc" id="L367">      super();</span>
+<span class="nc" id="L368">    }</span>
   }
 
 }

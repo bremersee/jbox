@@ -17,9 +17,11 @@
 package org.bremersee.exception;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.model.RestApiException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -29,7 +31,7 @@ import org.springframework.web.client.ResponseErrorHandler;
  *
  * @author Christian Bremer
  */
-<span class="fc" id="L32">@Slf4j</span>
+<span class="fc" id="L34">@Slf4j</span>
 public class RestApiResponseErrorHandler implements ResponseErrorHandler {
 
   private final RestApiExceptionParser restApiExceptionParser;
@@ -38,34 +40,38 @@ public class RestApiResponseErrorHandler implements ResponseErrorHandler {
    * Instantiates a new rest api response error handler.
    */
   public RestApiResponseErrorHandler() {
-<span class="fc" id="L41">    this(null);</span>
-<span class="fc" id="L42">  }</span>
+<span class="fc" id="L43">    this(null);</span>
+<span class="fc" id="L44">  }</span>
 
   /**
    * Instantiates a new rest api response error handler.
    *
    * @param restApiExceptionParser the rest api exception parser
    */
-<span class="fc" id="L49">  public RestApiResponseErrorHandler(RestApiExceptionParser restApiExceptionParser) {</span>
-<span class="fc" id="L50">    this.restApiExceptionParser = Optional.ofNullable(restApiExceptionParser)</span>
-<span class="fc" id="L51">        .orElseGet(RestApiExceptionParserImpl::new);</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc" id="L51">  public RestApiResponseErrorHandler(RestApiExceptionParser restApiExceptionParser) {</span>
+<span class="fc" id="L52">    this.restApiExceptionParser = Optional.ofNullable(restApiExceptionParser)</span>
+<span class="fc" id="L53">        .orElseGet(RestApiExceptionParserImpl::new);</span>
+<span class="fc" id="L54">  }</span>
 
   @Override
   public boolean hasError(@NonNull ClientHttpResponse response) throws IOException {
-<span class="fc" id="L56">    return response.getStatusCode().isError();</span>
+<span class="fc" id="L58">    return response.getStatusCode().isError();</span>
   }
 
   @Override
-  public void handleError(@NonNull ClientHttpResponse response) throws IOException {
-<span class="fc" id="L61">    RestApiException restApiException = restApiExceptionParser.parseException(</span>
-<span class="fc" id="L62">        response.getBody(),</span>
-<span class="fc" id="L63">        response.getStatusCode(),</span>
-<span class="fc" id="L64">        response.getHeaders());</span>
-<span class="fc" id="L65">    RestApiResponseException exception = new RestApiResponseException(</span>
-<span class="fc" id="L66">        response.getStatusCode(), restApiException);</span>
-<span class="fc" id="L67">    log.error(&quot;A rest api exception occurred: {}&quot;, restApiException, exception);</span>
-<span class="fc" id="L68">    throw exception;</span>
+  public void handleError(
+      @NonNull URI url,
+      @NonNull HttpMethod method,
+      @NonNull ClientHttpResponse response) throws IOException {
+
+<span class="fc" id="L67">    RestApiException restApiException = restApiExceptionParser.parseException(</span>
+<span class="fc" id="L68">        response.getBody(),</span>
+<span class="fc" id="L69">        response.getStatusCode(),</span>
+<span class="fc" id="L70">        response.getHeaders());</span>
+<span class="fc" id="L71">    RestApiResponseException exception = new RestApiResponseException(</span>
+<span class="fc" id="L72">        response.getStatusCode(), restApiException);</span>
+<span class="fc" id="L73">    log.error(&quot;A rest api exception occurred: {}&quot;, restApiException, exception);</span>
+<span class="fc" id="L74">    throw exception;</span>
   }
 
 }

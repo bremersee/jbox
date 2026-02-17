@@ -22,7 +22,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -37,7 +36,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ToString(exclude = {&quot;bindCredentials&quot;})
 @EqualsAndHashCode(exclude = {&quot;bindCredentials&quot;})
-@NoArgsConstructor
 public class LdaptiveConnectionProperties {
 
   /**
@@ -59,43 +57,43 @@ public class LdaptiveConnectionProperties {
   /**
    * Duration of time that connects will block.
    */
-  private Duration connectTimeout = Duration.ofMinutes(1);
+<span class="fc" id="L60">  private Duration connectTimeout = Duration.ofMinutes(1);</span>
 
   /**
    * Duration of time to wait for startTLS responses.
    */
-  private Duration startTlsTimeout = Duration.ofMinutes(1);
+<span class="fc" id="L65">  private Duration startTlsTimeout = Duration.ofMinutes(1);</span>
 
   /**
    * Duration of time to wait for responses.
    */
-  private Duration responseTimeout = Duration.ofMinutes(1);
+<span class="fc" id="L70">  private Duration responseTimeout = Duration.ofMinutes(1);</span>
 
   /**
    * Duration of time that operations will block on reconnects, should generally be longer than
    * connect timeout.
    */
-  private Duration reconnectTimeout = Duration.ofMinutes(2);
+<span class="fc" id="L76">  private Duration reconnectTimeout = Duration.ofMinutes(2);</span>
 
   /**
    * Whether to automatically reconnect to the server when a connection is lost. Default is true.
    */
-  private boolean autoReconnect = true;
+<span class="fc" id="L81">  private boolean autoReconnect = true;</span>
 
   /**
    * The reconnect strategy.
    */
-  private ReconnectStrategy reconnectStrategy = ReconnectStrategy.ONE_RECONNECT_ATTEMPT;
+<span class="fc" id="L86">  private ReconnectStrategy reconnectStrategy = ReconnectStrategy.ONE_RECONNECT_ATTEMPT;</span>
 
   /**
    * Whether pending operations should be replayed after a reconnect. Default is true.
    */
-  private boolean autoReplay = true;
+<span class="fc" id="L91">  private boolean autoReplay = true;</span>
 
   /**
    * The ssl configuration.
    */
-  private SslProperties sslConfig = new SslProperties();
+<span class="fc" id="L96">  private SslProperties sslConfig = new SslProperties();</span>
 
   /**
    * Connect to LDAP using startTLS.
@@ -115,47 +113,54 @@ public class LdaptiveConnectionProperties {
   /**
    * Perform a fast bind, if no credentials are present.
    */
-  private boolean fastBind = false;
+<span class="fc" id="L116">  private boolean fastBind = false;</span>
 
   /**
    * The connection strategy.
    */
-  private ConnectionStrategy connectionStrategy = ConnectionStrategy.ACTIVE_PASSIVE;
+<span class="fc" id="L121">  private ConnectionStrategy connectionStrategy = ConnectionStrategy.ACTIVE_PASSIVE;</span>
 
   /**
    * The connection validator.
    */
-  private ConnectionValidatorProperties connectionValidator = new ConnectionValidatorProperties();
+<span class="fc" id="L126">  private ConnectionValidatorProperties connectionValidator = new ConnectionValidatorProperties();</span>
 
   /**
    * Specifies whether the connection should be pooled or not. Default is {@code false}.
    */
-  private boolean pooled = false;
+<span class="fc" id="L131">  private boolean pooled = false;</span>
 
   /**
    * The connection pool configuration.
    */
-  private ConnectionPoolProperties connectionPool = new ConnectionPoolProperties();
+<span class="fc" id="L136">  private ConnectionPoolProperties connectionPool = new ConnectionPoolProperties();</span>
+
+  /**
+   * Instantiates new ldaptive connection properties.
+   */
+  public LdaptiveConnectionProperties() {
+<span class="fc" id="L142">    super();</span>
+<span class="fc" id="L143">  }</span>
 
   /**
    * The reconnection strategy.
    */
-<span class="fc" id="L143">  public enum ReconnectStrategy {</span>
+<span class="fc" id="L148">  public enum ReconnectStrategy {</span>
 
     /**
      * One reconnect attempt strategy.
      */
-<span class="fc" id="L148">    ONE_RECONNECT_ATTEMPT,</span>
+<span class="fc" id="L153">    ONE_RECONNECT_ATTEMPT,</span>
 
     /**
      * Infinite reconnect attempts strategy.
      */
-<span class="fc" id="L153">    INFINITE_RECONNECT_ATTEMPTS,</span>
+<span class="fc" id="L158">    INFINITE_RECONNECT_ATTEMPTS,</span>
 
     /**
      * Infinite reconnect attempts with backoff strategy.
      */
-<span class="fc" id="L158">    INFINITE_RECONNECT_ATTEMPTS_WITH_BACKOFF</span>
+<span class="fc" id="L163">    INFINITE_RECONNECT_ATTEMPTS_WITH_BACKOFF</span>
 
   }
 
@@ -180,36 +185,64 @@ public class LdaptiveConnectionProperties {
      */
     private String authenticationKey;
 
+    /**
+     * The hostname verifier.
+     */
+<span class="fc" id="L191">    private HostnameVerifier hostnameVerifier = HostnameVerifier.DEFAULT;</span>
+
+    /**
+     * Instantiates new ssl properties.
+     */
+    public SslProperties() {
+<span class="fc" id="L197">      super();</span>
+<span class="fc" id="L198">    }</span>
+
+    /**
+     * The hostname verifier.
+     */
+<span class="fc" id="L203">    public enum HostnameVerifier {</span>
+
+      /**
+       * The default hostname verifier.
+       */
+<span class="fc" id="L208">      DEFAULT,</span>
+
+      /**
+       * Hostname verifier that returns true for any hostname. Use with caution.
+       */
+<span class="fc" id="L213">      ALLOW_ANY</span>
+
+    }
   }
 
   /**
    * The connection strategy.
    */
-<span class="fc" id="L188">  public enum ConnectionStrategy {</span>
+<span class="fc" id="L221">  public enum ConnectionStrategy {</span>
 
     /**
      * Attempt each URL in the order provided for each connection. The URLs are always tried in the
      * order in which they were provided.
      */
-<span class="fc" id="L194">    ACTIVE_PASSIVE,</span>
+<span class="fc" id="L227">    ACTIVE_PASSIVE,</span>
 
     /**
      * Attempt a random URL from a list of URLs.
      */
-<span class="fc" id="L199">    RANDOM,</span>
+<span class="fc" id="L232">    RANDOM,</span>
 
     /**
      * Attempt the next URL in the order provided for each connection. URLs are rotated regardless
      * of connection success or failure.
      */
-<span class="fc" id="L205">    ROUND_ROBIN,</span>
+<span class="fc" id="L238">    ROUND_ROBIN,</span>
 
     /**
      * Queries a DNS server for SRV records and uses those records to construct a list of URLs. When
      * configuring this strategy you must use your DNS server for {@code setLdapUrl(String)} in the
      * form {@code dns://my.server.com}.
      */
-<span class="fc" id="L212">    DNS</span>
+<span class="fc" id="L245">    DNS</span>
 
   }
 
@@ -222,17 +255,24 @@ public class LdaptiveConnectionProperties {
     /**
      * Validation period.
      */
-    private Duration validatePeriod = Duration.ofMinutes(30);
+<span class="fc" id="L258">    private Duration validatePeriod = Duration.ofMinutes(30);</span>
 
     /**
      * Maximum length of time a connection validation should block.
      */
-    private Duration validateTimeout = Duration.ofSeconds(5);
+<span class="fc" id="L263">    private Duration validateTimeout = Duration.ofSeconds(5);</span>
 
     /**
      * The search request.
      */
-    private SearchRequestProperties searchRequest = new SearchRequestProperties();
+<span class="fc" id="L268">    private SearchRequestProperties searchRequest = new SearchRequestProperties();</span>
+
+    /**
+     * Instantiates new connection validator properties.
+     */
+    public ConnectionValidatorProperties() {
+<span class="fc" id="L274">      super();</span>
+<span class="fc" id="L275">    }</span>
 
     /**
      * The search request properties.
@@ -248,7 +288,7 @@ public class LdaptiveConnectionProperties {
       /**
        * The search filter.
        */
-      private SearchFilterProperties searchFilter = new SearchFilterProperties();
+<span class="fc" id="L291">      private SearchFilterProperties searchFilter = new SearchFilterProperties();</span>
 
       /**
        * The size limit.
@@ -263,7 +303,14 @@ public class LdaptiveConnectionProperties {
       /**
        * The return attributes.
        */
-      private List&lt;String&gt; returnAttributes = new ArrayList&lt;&gt;();
+<span class="fc" id="L306">      private List&lt;String&gt; returnAttributes = new ArrayList&lt;&gt;();</span>
+
+      /**
+       * Instantiates new search request properties.
+       */
+      public SearchRequestProperties() {
+<span class="fc" id="L312">        super();</span>
+<span class="fc" id="L313">      }</span>
 
       /**
        * The search filter properties.
@@ -276,6 +323,12 @@ public class LdaptiveConnectionProperties {
          */
         private String filter;
 
+        /**
+         * Instantiates new search filter properties.
+         */
+        public SearchFilterProperties() {
+<span class="fc" id="L330">          super();</span>
+<span class="fc" id="L331">        }</span>
       }
     }
   }
@@ -289,83 +342,90 @@ public class LdaptiveConnectionProperties {
     /**
      * Duration to wait for an available connection.
      */
-    private Duration blockWaitTime = Duration.ofMinutes(1);
+<span class="fc" id="L345">    private Duration blockWaitTime = Duration.ofMinutes(1);</span>
 
     /**
      * Minimum pool size.
      */
-    private int minPoolSize = 3;
+<span class="fc" id="L350">    private int minPoolSize = 3;</span>
 
     /**
      * Maximum pool size.
      */
-    private int maxPoolSize = 10;
+<span class="fc" id="L355">    private int maxPoolSize = 10;</span>
 
     /**
      * Whether to connect to the ldap on connection creation.
      */
-    private boolean connectOnCreate = true;
+<span class="fc" id="L360">    private boolean connectOnCreate = true;</span>
 
     /**
      * Whether initialize should throw if pooling configuration requirements are not met.
      */
-    private boolean failFastInitialize = true;
+<span class="fc" id="L365">    private boolean failFastInitialize = true;</span>
 
     /**
      * Whether the ldap object should be validated when returned to the pool.
      */
-    private boolean validateOnCheckIn = false;
+<span class="fc" id="L370">    private boolean validateOnCheckIn = false;</span>
 
     /**
      * Whether the ldap object should be validated when given from the pool.
      */
-    private boolean validateOnCheckOut = false;
+<span class="fc" id="L375">    private boolean validateOnCheckOut = false;</span>
 
     /**
      * Whether the pool should be validated periodically.
      */
-    private boolean validatePeriodically = false;
+<span class="fc" id="L380">    private boolean validatePeriodically = false;</span>
 
     /**
      * The validator for the connections in the pool.
      */
-    private ConnectionValidatorProperties validator = new ConnectionValidatorProperties();
+<span class="fc" id="L385">    private ConnectionValidatorProperties validator = new ConnectionValidatorProperties();</span>
 
     /**
      * Prune period.
      */
-    private Duration prunePeriod = Duration.ofMinutes(5);
+<span class="fc" id="L390">    private Duration prunePeriod = Duration.ofMinutes(5);</span>
 
     /**
      * Idle time.
      */
-    private Duration idleTime = Duration.ofMinutes(10);
+<span class="fc" id="L395">    private Duration idleTime = Duration.ofMinutes(10);</span>
+
+    /**
+     * Instantiates new connection pool properties.
+     */
+    public ConnectionPoolProperties() {
+<span class="fc" id="L401">      super();</span>
+<span class="fc" id="L402">    }</span>
   }
 
   /**
    * The enum Search scope.
    */
-<span class="fc" id="L348">  public enum SearchScope {</span>
+<span class="fc" id="L408">  public enum SearchScope {</span>
 
     /**
      * Base object search.
      */
-<span class="fc" id="L353">    OBJECT,</span>
+<span class="fc" id="L413">    OBJECT,</span>
 
     /**
      * Single level search.
      */
-<span class="fc" id="L358">    ONELEVEL,</span>
+<span class="fc" id="L418">    ONELEVEL,</span>
 
     /**
      * Whole subtree search.
      */
-<span class="fc" id="L363">    SUBTREE,</span>
+<span class="fc" id="L423">    SUBTREE,</span>
 
     /**
      * Subordinate subtree search. See draft-sermersheim-ldap-subordinate-scope.
      */
-<span class="fc" id="L368">    SUBORDINATE</span>
+<span class="fc" id="L428">    SUBORDINATE</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

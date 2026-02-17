@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import org.bremersee.ldaptive.LdaptiveEntryMapper;
+import org.bremersee.ldaptive.LdaptiveErrorHandler;
 import org.ldaptive.AddRequest;
 import org.ldaptive.BindRequest;
 import org.ldaptive.CompareRequest;
@@ -44,6 +45,24 @@ import reactor.core.publisher.Mono;
  * @author Christian Bremer
  */
 public interface ReactiveLdaptiveOperations {
+
+  /**
+   * Returns a new instance of this ldap operations with the same connection factory and error
+   * handler.
+   *
+   * @return a new instance of this ldap operations
+   */
+  ReactiveLdaptiveOperations copy();
+
+  /**
+   * Returns a new instance of this ldap operations with the same connection factory and the given
+   * error handler.
+   *
+   * @param errorHandler the new error handler
+   * @return the new instance of this ldap operations
+   */
+  ReactiveLdaptiveOperations copy(LdaptiveErrorHandler errorHandler);
+
 
   /**
    * Gets connection factory.
@@ -99,8 +118,8 @@ public interface ReactiveLdaptiveOperations {
    * @return the mono
    */
   default Mono&lt;String&gt; generateUserPassword(String dn) {
-<span class="fc" id="L102">    return executeExtension(new PasswordModifyRequest(dn))</span>
-<span class="fc" id="L103">        .map(PasswordModifyResponseParser::parse);</span>
+<span class="fc" id="L121">    return executeExtension(new PasswordModifyRequest(dn))</span>
+<span class="fc" id="L122">        .map(PasswordModifyResponseParser::parse);</span>
   }
 
   /**
@@ -131,7 +150,7 @@ public interface ReactiveLdaptiveOperations {
       String dn,
       String oldPass,
       String newPass) {
-<span class="fc" id="L134">    return executeExtension(new PasswordModifyRequest(dn, oldPass, newPass));</span>
+<span class="fc" id="L153">    return executeExtension(new PasswordModifyRequest(dn, oldPass, newPass));</span>
   }
 
   /**
@@ -152,8 +171,8 @@ public interface ReactiveLdaptiveOperations {
    */
   default &lt;T&gt; Mono&lt;T&gt; findOne(SearchRequest searchRequest,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L155">    return findOne(searchRequest)</span>
-<span class="fc" id="L156">        .map(ldapEntry -&gt; Objects.requireNonNull(entryMapper.map(ldapEntry)));</span>
+<span class="fc" id="L174">    return findOne(searchRequest)</span>
+<span class="fc" id="L175">        .map(ldapEntry -&gt; Objects.requireNonNull(entryMapper.map(ldapEntry)));</span>
   }
 
   /**
@@ -174,8 +193,8 @@ public interface ReactiveLdaptiveOperations {
    */
   default &lt;T&gt; Flux&lt;T&gt; findAll(SearchRequest searchRequest,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L177">    return findAll(searchRequest)</span>
-<span class="fc" id="L178">        .map(ldapEntry -&gt; Objects.requireNonNull(entryMapper.map(ldapEntry)));</span>
+<span class="fc" id="L196">    return findAll(searchRequest)</span>
+<span class="fc" id="L197">        .map(ldapEntry -&gt; Objects.requireNonNull(entryMapper.map(ldapEntry)));</span>
   }
 
   /**
@@ -185,14 +204,14 @@ public interface ReactiveLdaptiveOperations {
    * @return the mono
    */
   default Mono&lt;Boolean&gt; exists(String dn) {
-<span class="fc" id="L188">    int index = dn.indexOf('=');</span>
-<span class="pc bpc" id="L189" title="1 of 2 branches missed.">    if (index &gt; 0) {</span>
-<span class="fc" id="L190">      String attr = dn.substring(0, index).trim();</span>
-<span class="fc" id="L191">      return findOne(SearchRequest.objectScopeSearchRequest(dn, new String[]{attr}))</span>
-<span class="fc" id="L192">          .map(ldapEntry -&gt; true)</span>
-<span class="fc" id="L193">          .defaultIfEmpty(false);</span>
+<span class="fc" id="L207">    int index = dn.indexOf('=');</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">    if (index &gt; 0) {</span>
+<span class="fc" id="L209">      String attr = dn.substring(0, index).trim();</span>
+<span class="fc" id="L210">      return findOne(SearchRequest.objectScopeSearchRequest(dn, new String[]{attr}))</span>
+<span class="fc" id="L211">          .map(ldapEntry -&gt; true)</span>
+<span class="fc" id="L212">          .defaultIfEmpty(false);</span>
     }
-<span class="nc" id="L195">    return Mono.just(false);</span>
+<span class="nc" id="L214">    return Mono.just(false);</span>
   }
 
   /**
@@ -205,7 +224,7 @@ public interface ReactiveLdaptiveOperations {
    */
   default &lt;T&gt; Mono&lt;Boolean&gt; exists(T domainObject,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L208">    return exists(entryMapper.mapDn(domainObject));</span>
+<span class="fc" id="L227">    return exists(entryMapper.mapDn(domainObject));</span>
   }
 
   /**
@@ -228,8 +247,8 @@ public interface ReactiveLdaptiveOperations {
    */
   default &lt;T&gt; Flux&lt;T&gt; saveAll(Collection&lt;T&gt; domainObjects,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L231">    return Flux.fromIterable(Optional.ofNullable(domainObjects).orElseGet(Collections::emptyList))</span>
-<span class="fc" id="L232">        .flatMap(domainObject -&gt; save(domainObject, entryMapper));</span>
+<span class="fc" id="L250">    return Flux.fromIterable(Optional.ofNullable(domainObjects).orElseGet(Collections::emptyList))</span>
+<span class="fc" id="L251">        .flatMap(domainObject -&gt; save(domainObject, entryMapper));</span>
   }
 
   /**
@@ -243,7 +262,7 @@ public interface ReactiveLdaptiveOperations {
   default &lt;T&gt; Mono&lt;Result&gt; remove(
       T domainObject,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L246">    return delete(DeleteRequest.builder().dn(entryMapper.mapDn(domainObject)).build());</span>
+<span class="fc" id="L265">    return delete(DeleteRequest.builder().dn(entryMapper.mapDn(domainObject)).build());</span>
   }
 
   /**
@@ -257,9 +276,9 @@ public interface ReactiveLdaptiveOperations {
   default &lt;T&gt; Mono&lt;Long&gt; removeAll(
       Collection&lt;T&gt; domainObjects,
       LdaptiveEntryMapper&lt;T&gt; entryMapper) {
-<span class="fc" id="L260">    return Flux.fromIterable(Optional.ofNullable(domainObjects).orElseGet(Collections::emptyList))</span>
-<span class="fc" id="L261">        .flatMap(domainObject -&gt; remove(domainObject, entryMapper))</span>
-<span class="fc" id="L262">        .count();</span>
+<span class="fc" id="L279">    return Flux.fromIterable(Optional.ofNullable(domainObjects).orElseGet(Collections::emptyList))</span>
+<span class="fc" id="L280">        .flatMap(domainObject -&gt; remove(domainObject, entryMapper))</span>
+<span class="fc" id="L281">        .count();</span>
   }
 
 }

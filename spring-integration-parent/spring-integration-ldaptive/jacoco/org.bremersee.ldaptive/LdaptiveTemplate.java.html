@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.ServiceException;
 import org.ldaptive.AddOperation;
 import org.ldaptive.AddRequest;
-import org.ldaptive.AttributeModification;
 import org.ldaptive.BindOperation;
 import org.ldaptive.BindRequest;
 import org.ldaptive.BindResponse;
@@ -56,37 +55,37 @@ import org.ldaptive.handler.ResultPredicate;
  *
  * @author Christian Bremer
  */
-<span class="fc" id="L59">@Slf4j</span>
-public class LdaptiveTemplate implements LdaptiveOperations, Cloneable {
+<span class="fc" id="L58">@Slf4j</span>
+public class LdaptiveTemplate implements LdaptiveOperations {
 
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">  private static final ResultPredicate NOT_COMPARE_RESULT = result -&gt; !result.isSuccess()</span>
-<span class="fc bfc" id="L63" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.COMPARE_TRUE</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.COMPARE_FALSE;</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">  private static final ResultPredicate NOT_COMPARE_RESULT = result -&gt; !result.isSuccess()</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.COMPARE_TRUE</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.COMPARE_FALSE;</span>
 
-<span class="fc bfc" id="L66" title="All 2 branches covered.">  private static final ResultPredicate NOT_DELETE_RESULT = result -&gt; !result.isSuccess()</span>
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">      &amp;&amp; result.getResultCode() != ResultCode.NO_SUCH_OBJECT;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">  private static final ResultPredicate NOT_DELETE_RESULT = result -&gt; !result.isSuccess()</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.NO_SUCH_OBJECT;</span>
 
-<span class="fc" id="L69">  private static final ResultPredicate NOT_FIND_RESULT = NOT_DELETE_RESULT;</span>
+<span class="fc" id="L68">  private static final ResultPredicate NOT_FIND_RESULT = NOT_DELETE_RESULT;</span>
 
   private final ConnectionFactory connectionFactory;
 
-<span class="fc" id="L73">  private LdaptiveErrorHandler errorHandler = new DefaultLdaptiveErrorHandler();</span>
+<span class="fc" id="L72">  private LdaptiveErrorHandler errorHandler = new DefaultLdaptiveErrorHandler();</span>
 
   /**
    * Instantiates a new ldaptive template.
    *
    * @param connectionFactory the connection factory
    */
-<span class="fc" id="L80">  public LdaptiveTemplate(ConnectionFactory connectionFactory) {</span>
-<span class="pc bpc" id="L81" title="1 of 2 branches missed.">    if (Objects.isNull(connectionFactory)) {</span>
-<span class="nc" id="L82">      throw new IllegalArgumentException(&quot;Connection factory must not be present.&quot;);</span>
+<span class="fc" id="L79">  public LdaptiveTemplate(ConnectionFactory connectionFactory) {</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">    if (Objects.isNull(connectionFactory)) {</span>
+<span class="nc" id="L81">      throw new IllegalArgumentException(&quot;Connection factory must not be present.&quot;);</span>
     }
-<span class="fc" id="L84">    this.connectionFactory = connectionFactory;</span>
-<span class="fc" id="L85">  }</span>
+<span class="fc" id="L83">    this.connectionFactory = connectionFactory;</span>
+<span class="fc" id="L84">  }</span>
 
   @Override
   public ConnectionFactory getConnectionFactory() {
-<span class="fc" id="L89">    return connectionFactory;</span>
+<span class="fc" id="L88">    return connectionFactory;</span>
   }
 
   /**
@@ -95,177 +94,164 @@ public class LdaptiveTemplate implements LdaptiveOperations, Cloneable {
    * @param errorHandler the error handler
    */
   public void setErrorHandler(final LdaptiveErrorHandler errorHandler) {
-<span class="fc bfc" id="L98" title="All 2 branches covered.">    if (errorHandler != null) {</span>
-<span class="fc" id="L99">      this.errorHandler = errorHandler;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (errorHandler != null) {</span>
+<span class="fc" id="L98">      this.errorHandler = errorHandler;</span>
     }
-<span class="fc" id="L101">  }</span>
+<span class="fc" id="L100">  }</span>
 
-  /**
-   * Returns a new instance of this ldaptive template with the same connection factory and error
-   * handler.
-   *
-   * @return a new instance of this ldaptive template
-   */
-  @SuppressWarnings(&quot;MethodDoesntCallSuperMethod&quot;)
   @Override
-  public LdaptiveTemplate clone() {
-<span class="fc" id="L112">    return clone(null);</span>
+  public LdaptiveTemplate copy() {
+<span class="fc" id="L104">    return copy(null);</span>
   }
 
-  /**
-   * Returns a new instance of this ldaptive template with the same connection factory and the given
-   * error handler.
-   *
-   * @param errorHandler the new error handler
-   * @return the new instance of the ldaptive template
-   */
-  public LdaptiveTemplate clone(final LdaptiveErrorHandler errorHandler) {
-<span class="fc" id="L123">    final LdaptiveTemplate template = new LdaptiveTemplate(connectionFactory);</span>
-<span class="fc" id="L124">    template.setErrorHandler(errorHandler);</span>
-<span class="fc" id="L125">    return template;</span>
+  @Override
+  public LdaptiveTemplate copy(LdaptiveErrorHandler errorHandler) {
+<span class="fc" id="L109">    final LdaptiveTemplate template = new LdaptiveTemplate(connectionFactory);</span>
+<span class="fc" id="L110">    template.setErrorHandler(errorHandler);</span>
+<span class="fc" id="L111">    return template;</span>
   }
 
   private &lt;Q extends Request, S extends Result&gt; S execute(Operation&lt;Q, S&gt; operation, Q request) {
     try {
-<span class="fc" id="L130">      return operation.execute(request);</span>
+<span class="fc" id="L116">      return operation.execute(request);</span>
 
-<span class="fc" id="L132">    } catch (Exception e) {</span>
-<span class="nc" id="L133">      errorHandler.handleError(e);</span>
-<span class="nc" id="L134">      return null;</span>
+<span class="fc" id="L118">    } catch (Exception e) {</span>
+<span class="nc" id="L119">      errorHandler.handleError(e);</span>
+<span class="nc" id="L120">      return null;</span>
     }
   }
 
   @Override
   public void add(AddRequest request) {
-<span class="fc" id="L140">    execute(</span>
-<span class="fc" id="L141">        AddOperation.builder()</span>
-<span class="fc" id="L142">            .factory(getConnectionFactory())</span>
-<span class="fc" id="L143">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
-<span class="fc" id="L144">            .build(),</span>
+<span class="fc" id="L126">    execute(</span>
+<span class="fc" id="L127">        AddOperation.builder()</span>
+<span class="fc" id="L128">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L129">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L130">            .build(),</span>
         request);
-<span class="fc" id="L146">  }</span>
+<span class="fc" id="L132">  }</span>
 
   @Override
   public boolean bind(BindRequest request) {
-<span class="fc" id="L150">    return Optional.ofNullable(execute(new BindOperation(getConnectionFactory()), request))</span>
-<span class="fc" id="L151">        .map(BindResponse::isSuccess)</span>
-<span class="fc" id="L152">        .orElse(false);</span>
+<span class="fc" id="L136">    return Optional.ofNullable(execute(new BindOperation(getConnectionFactory()), request))</span>
+<span class="fc" id="L137">        .map(BindResponse::isSuccess)</span>
+<span class="fc" id="L138">        .orElse(false);</span>
   }
 
   @Override
   public boolean compare(CompareRequest request) {
-<span class="fc" id="L157">    return Optional.ofNullable(execute(</span>
-<span class="fc" id="L158">            CompareOperation.builder()</span>
-<span class="fc" id="L159">                .factory(getConnectionFactory())</span>
-<span class="fc" id="L160">                .throwIf(NOT_COMPARE_RESULT)</span>
-<span class="fc" id="L161">                .build(),</span>
+<span class="fc" id="L143">    return Optional.ofNullable(execute(</span>
+<span class="fc" id="L144">            CompareOperation.builder()</span>
+<span class="fc" id="L145">                .factory(getConnectionFactory())</span>
+<span class="fc" id="L146">                .throwIf(NOT_COMPARE_RESULT)</span>
+<span class="fc" id="L147">                .build(),</span>
             request))
-<span class="fc" id="L163">        .map(CompareResponse::isTrue)</span>
-<span class="fc" id="L164">        .orElse(false);</span>
+<span class="fc" id="L149">        .map(CompareResponse::isTrue)</span>
+<span class="fc" id="L150">        .orElse(false);</span>
   }
 
   @Override
   public void delete(DeleteRequest request) {
-<span class="fc" id="L169">    execute(</span>
-<span class="fc" id="L170">        DeleteOperation.builder()</span>
-<span class="fc" id="L171">            .factory(getConnectionFactory())</span>
-<span class="fc" id="L172">            .throwIf(NOT_DELETE_RESULT)</span>
-<span class="fc" id="L173">            .build(),</span>
+<span class="fc" id="L155">    execute(</span>
+<span class="fc" id="L156">        DeleteOperation.builder()</span>
+<span class="fc" id="L157">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L158">            .throwIf(NOT_DELETE_RESULT)</span>
+<span class="fc" id="L159">            .build(),</span>
         request);
-<span class="fc" id="L175">  }</span>
+<span class="fc" id="L161">  }</span>
 
   @Override
   public ExtendedResponse executeExtension(ExtendedRequest request) {
-<span class="fc" id="L179">    return execute(</span>
-<span class="fc" id="L180">        ExtendedOperation.builder()</span>
-<span class="fc" id="L181">            .factory(getConnectionFactory())</span>
-<span class="fc" id="L182">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
-<span class="fc" id="L183">            .build(),</span>
+<span class="fc" id="L165">    return execute(</span>
+<span class="fc" id="L166">        ExtendedOperation.builder()</span>
+<span class="fc" id="L167">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L168">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L169">            .build(),</span>
         request);
   }
 
   @Override
   public void modify(ModifyRequest request) {
-<span class="pc bpc" id="L189" title="2 of 4 branches missed.">    if (request.getModifications() != null &amp;&amp; request.getModifications().length &gt; 0) {</span>
-<span class="fc" id="L190">      execute(</span>
-<span class="fc" id="L191">          ModifyOperation.builder()</span>
-<span class="fc" id="L192">              .factory(getConnectionFactory())</span>
-<span class="fc" id="L193">              .throwIf(ResultPredicate.NOT_SUCCESS)</span>
-<span class="fc" id="L194">              .build(),</span>
+<span class="pc bpc" id="L175" title="2 of 4 branches missed.">    if (request.getModifications() != null &amp;&amp; request.getModifications().length &gt; 0) {</span>
+<span class="fc" id="L176">      execute(</span>
+<span class="fc" id="L177">          ModifyOperation.builder()</span>
+<span class="fc" id="L178">              .factory(getConnectionFactory())</span>
+<span class="fc" id="L179">              .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L180">              .build(),</span>
           request);
     }
-<span class="fc" id="L197">  }</span>
+<span class="fc" id="L183">  }</span>
 
   @Override
   public void modifyDn(ModifyDnRequest request) {
-<span class="fc" id="L201">    execute(</span>
-<span class="fc" id="L202">        ModifyDnOperation.builder()</span>
-<span class="fc" id="L203">            .factory(getConnectionFactory())</span>
-<span class="fc" id="L204">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
-<span class="fc" id="L205">            .build(),</span>
+<span class="fc" id="L187">    execute(</span>
+<span class="fc" id="L188">        ModifyDnOperation.builder()</span>
+<span class="fc" id="L189">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L190">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L191">            .build(),</span>
         request);
-<span class="fc" id="L207">  }</span>
+<span class="fc" id="L193">  }</span>
 
   @Override
   public SearchResponse search(SearchRequest request) {
-<span class="fc" id="L211">    return execute(</span>
-<span class="fc" id="L212">        SearchOperation.builder()</span>
-<span class="fc" id="L213">            .factory(getConnectionFactory())</span>
-<span class="fc" id="L214">            .throwIf(NOT_FIND_RESULT)</span>
-<span class="fc" id="L215">            .build(),</span>
+<span class="fc" id="L197">    return execute(</span>
+<span class="fc" id="L198">        SearchOperation.builder()</span>
+<span class="fc" id="L199">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L200">            .throwIf(NOT_FIND_RESULT)</span>
+<span class="fc" id="L201">            .build(),</span>
         request);
   }
 
   @Override
   public boolean exists(String dn) {
     try {
-<span class="fc" id="L222">      SearchResponse response = SearchOperation.builder()</span>
-<span class="fc" id="L223">          .factory(getConnectionFactory())</span>
-<span class="fc" id="L224">          .throwIf(NOT_FIND_RESULT)</span>
-<span class="fc" id="L225">          .build()</span>
-<span class="fc" id="L226">          .execute(SearchRequest.objectScopeSearchRequest(dn));</span>
-<span class="fc" id="L227">      return response.isSuccess();</span>
+<span class="fc" id="L208">      SearchResponse response = SearchOperation.builder()</span>
+<span class="fc" id="L209">          .factory(getConnectionFactory())</span>
+<span class="fc" id="L210">          .throwIf(NOT_FIND_RESULT)</span>
+<span class="fc" id="L211">          .build()</span>
+<span class="fc" id="L212">          .execute(SearchRequest.objectScopeSearchRequest(dn));</span>
+<span class="fc" id="L213">      return response.isSuccess();</span>
 
-<span class="nc" id="L229">    } catch (LdapException e) {</span>
-<span class="nc" id="L230">      errorHandler.handleError(e);</span>
-<span class="nc" id="L231">      return false;</span>
+<span class="nc" id="L215">    } catch (LdapException e) {</span>
+<span class="nc" id="L216">      errorHandler.handleError(e);</span>
+<span class="nc" id="L217">      return false;</span>
     }
   }
 
   @Override
   public &lt;T&gt; T save(T domainObject, LdaptiveEntryMapper&lt;T&gt; entryMapper) {
 
-<span class="fc" id="L238">    String dn = entryMapper.mapDn(domainObject);</span>
-<span class="fc" id="L239">    SearchResponse searchResponse = execute(</span>
-<span class="fc" id="L240">        SearchOperation.builder()</span>
-<span class="fc" id="L241">            .factory(getConnectionFactory())</span>
-<span class="fc bfc" id="L242" title="All 2 branches covered.">            .throwIf(result -&gt; result.getResultCode() != ResultCode.NO_SUCH_OBJECT</span>
-<span class="pc bpc" id="L243" title="1 of 2 branches missed.">                &amp;&amp; result.getResultCode() != ResultCode.SUCCESS)</span>
-<span class="fc" id="L244">            .build(),</span>
-<span class="fc" id="L245">        SearchRequest.objectScopeSearchRequest(dn));</span>
-<span class="fc" id="L246">    return Optional.ofNullable(searchResponse)</span>
-<span class="fc" id="L247">        .map(SearchResponse::getEntry)</span>
-<span class="fc" id="L248">        .map(entry -&gt; {</span>
-<span class="fc" id="L249">          AttributeModification[] modifications = entryMapper.mapAndComputeModifications(</span>
-              domainObject, entry);
-<span class="fc" id="L251">          modify(new ModifyRequest(dn, modifications));</span>
-<span class="fc" id="L252">          return entryMapper.map(entry);</span>
-        })
-<span class="fc" id="L254">        .orElseGet(() -&gt; {</span>
-<span class="fc" id="L255">          String[] objectClasses = entryMapper.getObjectClasses();</span>
-<span class="pc bpc" id="L256" title="2 of 4 branches missed.">          if (objectClasses == null || objectClasses.length == 0) {</span>
-<span class="nc" id="L257">            final ServiceException se = ServiceException.internalServerError(</span>
+<span class="fc" id="L224">    String dn = entryMapper.mapDn(domainObject);</span>
+<span class="fc" id="L225">    SearchResponse searchResponse = execute(</span>
+<span class="fc" id="L226">        SearchOperation.builder()</span>
+<span class="fc" id="L227">            .factory(getConnectionFactory())</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">            .throwIf(result -&gt; result.getResultCode() != ResultCode.NO_SUCH_OBJECT</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">                &amp;&amp; result.getResultCode() != ResultCode.SUCCESS)</span>
+<span class="fc" id="L230">            .build(),</span>
+<span class="fc" id="L231">        SearchRequest.objectScopeSearchRequest(dn));</span>
+<span class="fc" id="L232">    return Optional.ofNullable(searchResponse)</span>
+<span class="fc" id="L233">        .map(SearchResponse::getEntry)</span>
+<span class="fc" id="L234">        .map(entry -&gt; entryMapper.mapAndComputeModifyRequest(domainObject, entry)</span>
+<span class="fc" id="L235">            .map(modReq -&gt; {</span>
+<span class="fc" id="L236">              modify(modReq);</span>
+<span class="fc" id="L237">              return entryMapper.map(entry);</span>
+            })
+<span class="fc" id="L239">            .orElse(domainObject))  // domain object exists, but nothing to modify</span>
+<span class="fc" id="L240">        .orElseGet(() -&gt; {          // otherwise, save new ldap entry</span>
+<span class="fc" id="L241">          String[] objectClasses = entryMapper.getObjectClasses();</span>
+<span class="pc bpc" id="L242" title="2 of 4 branches missed.">          if (objectClasses == null || objectClasses.length == 0) {</span>
+<span class="nc" id="L243">            final ServiceException se = ServiceException.internalServerError(</span>
                 &quot;Object classes must be specified to save a new ldap entry.&quot;,
                 &quot;org.bremersee:ldaptive-integration:d7aa5699-fd2e-45df-a863-97960e8095b8&quot;);
-<span class="nc" id="L260">            log.error(&quot;Saving domain object failed.&quot;, se);</span>
-<span class="nc" id="L261">            throw se;</span>
+<span class="nc" id="L246">            log.error(&quot;Saving domain object failed.&quot;, se);</span>
+<span class="nc" id="L247">            throw se;</span>
           }
-<span class="fc" id="L263">          LdapEntry entry = new LdapEntry();</span>
-<span class="fc" id="L264">          entryMapper.map(domainObject, entry);</span>
-<span class="fc" id="L265">          entry.setDn(dn);</span>
-<span class="fc" id="L266">          entry.addAttributes(new LdapAttribute(&quot;objectclass&quot;, objectClasses));</span>
-<span class="fc" id="L267">          add(new AddRequest(dn, entry.getAttributes()));</span>
-<span class="fc" id="L268">          return entryMapper.map(entry);</span>
+<span class="fc" id="L249">          LdapEntry entry = new LdapEntry();</span>
+<span class="fc" id="L250">          entryMapper.map(domainObject, entry);</span>
+<span class="fc" id="L251">          entry.setDn(dn);</span>
+<span class="fc" id="L252">          entry.addAttributes(new LdapAttribute(&quot;objectclass&quot;, objectClasses));</span>
+<span class="fc" id="L253">          add(new AddRequest(dn, entry.getAttributes()));</span>
+<span class="fc" id="L254">          return entryMapper.map(entry);</span>
         });
   }
 

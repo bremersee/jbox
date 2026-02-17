@@ -10,12 +10,11 @@ GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.serialization,Mul
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.serialization,GeometryToJsonConverter,2,197,2,18,1,39,2,13,0,5
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.serialization,LineStringToJsonConverter,5,18,1,1,1,6,1,3,0,3
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.serialization,PointToJsonConverter,5,18,1,1,1,6,1,3,0,3
-GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonFeature,13,171,6,20,1,38,6,18,0,11
+GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonFeature,13,171,6,20,2,38,6,18,0,11
 GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonObjectMapperModule,50,155,4,2,14,38,3,8,0,8
-GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonFeatureCollection,16,223,8,24,1,64,8,25,0,17
-GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonGeometryFactory,13,918,30,110,6,181,30,88,0,48
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.crs,GeoJsonCrsConstants,3,0,0,0,1,0,1,0,1,0
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.crs,AbstractGeoJsonCrs,4,72,3,7,2,14,3,8,0,6
+GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonFeatureCollection,16,224,8,24,2,63,8,25,0,17
+GeoJSON for JTS Topology Suite,org.bremersee.geojson,GeoJsonGeometryFactory,32,918,30,110,14,182,34,88,4,48
+GeoJSON for JTS Topology Suite,org.bremersee.geojson.crs,AbstractGeoJsonCrs,4,72,3,7,2,15,3,8,0,6
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.crs,GeoJsonLinkedCrs,0,80,2,10,0,21,2,11,0,7
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.crs,GeoJsonNamedCrs,0,40,1,5,0,11,1,6,0,4
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,StringToPolygonConverter,0,10,0,0,0,3,0,2,0,2
@@ -25,9 +24,9 @@ GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,StringToLineStrin
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,StringToGeometryConverter,0,9,0,0,0,3,0,2,0,2
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,StringToPointConverter,0,10,0,0,0,3,0,2,0,2
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,StringToMultiPolygonConverter,0,10,0,0,0,3,0,2,0,2
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,GeometryConverters,3,37,0,0,1,1,1,1,1,1
+GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,GeometryConverters,0,37,0,0,0,1,0,1,0,1
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,StringToMultiPointConverter,0,10,0,0,0,3,0,2,0,2
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,GeometryToStringConverter,0,6,0,0,0,2,0,2,0,2
+GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,GeometryToStringConverter,0,6,0,0,0,3,0,2,0,2
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter,AbstractStringToGeometryConverter,10,12,1,1,2,4,2,2,1,2
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.deserialization,JsonToMultiPointConverter,25,52,4,4,4,12,4,4,0,4
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.deserialization,JsonToMultiLineStringConverter,25,52,4,4,4,12,4,4,0,4
@@ -42,6 +41,5 @@ GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.deserialization,J
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.deserialization,ObjectToCoordinateSequenceConverter,9,34,2,2,2,9,2,3,0,3
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.converter.deserialization,JsonToLineStringConverter,23,35,3,3,4,9,3,3,0,3
 GeoJSON for JTS Topology Suite,org.bremersee.geojson.filter,Wgs84ToMercatorCoordinateFilter,1,109,2,16,0,25,2,13,0,6
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.filter,FilterConstants,3,0,0,0,1,0,1,0,1,0
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.filter,MercatorToWgs84CoordinateFilter,1,93,2,12,0,21,2,11,0,6
-GeoJSON for JTS Topology Suite,org.bremersee.geojson.filter,SwapCoordinateFilter,0,17,1,1,0,6,1,2,0,2
+GeoJSON for JTS Topology Suite,org.bremersee.geojson.filter,MercatorToWgs84CoordinateFilter,1,97,2,12,0,23,2,11,0,6
+GeoJSON for JTS Topology Suite,org.bremersee.geojson.filter,SwapCoordinateFilter,0,17,1,1,0,7,1,2,0,2

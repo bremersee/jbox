@@ -39,6 +39,7 @@ import org.ldaptive.FilterTemplate;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.SearchRequest;
+import org.ldaptive.dn.Dn;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -63,7 +64,7 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
   /**
    * The logger.
    */
-<span class="fc" id="L66">  private final Log logger = LogFactory.getLog(this.getClass());</span>
+<span class="fc" id="L67">  private final Log logger = LogFactory.getLog(this.getClass());</span>
 
   /**
    * The authentication properties.
@@ -83,7 +84,7 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
   /**
    * The account control evaluator.
    */
-<span class="fc" id="L86">  private AccountControlEvaluator accountControlEvaluator = new NoAccountControlEvaluator();</span>
+<span class="fc" id="L87">  private AccountControlEvaluator accountControlEvaluator = new NoAccountControlEvaluator();</span>
 
   /**
    * The remember-me token provider.
@@ -98,25 +99,25 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    */
   public LdaptiveUserDetailsService(
       LdaptiveAuthenticationProperties authenticationProperties,
-<span class="fc" id="L101">      LdaptiveTemplate ldaptiveTemplate) {</span>
+<span class="fc" id="L102">      LdaptiveTemplate ldaptiveTemplate) {</span>
 
-<span class="fc" id="L103">    this.authenticationProperties = authenticationProperties;</span>
-<span class="fc" id="L104">    this.ldaptiveTemplate = ldaptiveTemplate;</span>
-<span class="fc" id="L105">    Assert.notNull(getAuthenticationProperties(), &quot;Authentication properties are required.&quot;);</span>
-<span class="fc" id="L106">    Assert.notNull(getLdaptiveTemplate(), &quot;Ldaptive template is required.&quot;);</span>
-<span class="fc" id="L107">    setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (nonNull(authenticationProperties.getAccountControlEvaluator())) {</span>
-<span class="fc" id="L109">      setAccountControlEvaluator(authenticationProperties.getAccountControlEvaluator().get());</span>
+<span class="fc" id="L104">    this.authenticationProperties = authenticationProperties;</span>
+<span class="fc" id="L105">    this.ldaptiveTemplate = ldaptiveTemplate;</span>
+<span class="fc" id="L106">    Assert.notNull(getAuthenticationProperties(), &quot;Authentication properties are required.&quot;);</span>
+<span class="fc" id="L107">    Assert.notNull(getLdaptiveTemplate(), &quot;Ldaptive template is required.&quot;);</span>
+<span class="fc" id="L108">    setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (nonNull(authenticationProperties.getAccountControlEvaluator())) {</span>
+<span class="fc" id="L110">      setAccountControlEvaluator(authenticationProperties.getAccountControlEvaluator().get());</span>
     }
-<span class="pc bpc" id="L111" title="1 of 2 branches missed.">    if (isEmpty(getAuthenticationProperties().getPasswordLastSetAttribute())) {</span>
-<span class="fc" id="L112">      setRememberMeTokenProvider(</span>
-<span class="fc" id="L113">          new LdaptiveEvaluatedRememberMeTokenProvider(getAccountControlEvaluator()));</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (isEmpty(getAuthenticationProperties().getPasswordLastSetAttribute())) {</span>
+<span class="fc" id="L113">      setRememberMeTokenProvider(</span>
+<span class="fc" id="L114">          new LdaptiveEvaluatedRememberMeTokenProvider(getAccountControlEvaluator()));</span>
     } else {
-<span class="nc" id="L115">      setRememberMeTokenProvider(</span>
-<span class="nc" id="L116">          new LdaptivePwdLastSetRememberMeTokenProvider(getAccountControlEvaluator(),</span>
-<span class="nc" id="L117">              getAuthenticationProperties().getPasswordLastSetAttribute()));</span>
+<span class="nc" id="L116">      setRememberMeTokenProvider(</span>
+<span class="nc" id="L117">          new LdaptivePwdLastSetRememberMeTokenProvider(getAccountControlEvaluator(),</span>
+<span class="nc" id="L118">              getAuthenticationProperties().getPasswordLastSetAttribute()));</span>
     }
-<span class="fc" id="L119">  }</span>
+<span class="fc" id="L120">  }</span>
 
   /**
    * Sets granted authorities mapper.
@@ -125,10 +126,10 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    */
   public void setGrantedAuthoritiesMapper(
       GrantedAuthoritiesMapper grantedAuthoritiesMapper) {
-<span class="fc bfc" id="L128" title="All 2 branches covered.">    if (nonNull(grantedAuthoritiesMapper)) {</span>
-<span class="fc" id="L129">      this.grantedAuthoritiesMapper = grantedAuthoritiesMapper;</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (nonNull(grantedAuthoritiesMapper)) {</span>
+<span class="fc" id="L130">      this.grantedAuthoritiesMapper = grantedAuthoritiesMapper;</span>
     }
-<span class="fc" id="L131">  }</span>
+<span class="fc" id="L132">  }</span>
 
   /**
    * Sets account control evaluator.
@@ -137,10 +138,10 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    */
   public void setAccountControlEvaluator(
       AccountControlEvaluator accountControlEvaluator) {
-<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (nonNull(accountControlEvaluator)) {</span>
-<span class="fc" id="L141">      this.accountControlEvaluator = accountControlEvaluator;</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (nonNull(accountControlEvaluator)) {</span>
+<span class="fc" id="L142">      this.accountControlEvaluator = accountControlEvaluator;</span>
     }
-<span class="fc" id="L143">  }</span>
+<span class="fc" id="L144">  }</span>
 
   /**
    * Sets remember-me token provider.
@@ -148,41 +149,41 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @param rememberMeTokenProvider the remember-me token provider
    */
   public void setRememberMeTokenProvider(LdaptiveRememberMeTokenProvider rememberMeTokenProvider) {
-<span class="fc bfc" id="L151" title="All 2 branches covered.">    if (nonNull(rememberMeTokenProvider)) {</span>
-<span class="fc" id="L152">      this.rememberMeTokenProvider = rememberMeTokenProvider;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (nonNull(rememberMeTokenProvider)) {</span>
+<span class="fc" id="L153">      this.rememberMeTokenProvider = rememberMeTokenProvider;</span>
     }
-<span class="fc" id="L154">  }</span>
+<span class="fc" id="L155">  }</span>
 
   @Override
   public LdaptiveUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-<span class="fc" id="L158">    logger.debug(&quot;Loading user '&quot; + username + &quot;' ...&quot;);</span>
-<span class="fc" id="L159">    LdapEntry ldapEntry = findUser(username)</span>
-<span class="fc" id="L160">        .orElseThrow(() -&gt; new UsernameNotFoundException(String.format(&quot;%s not found.&quot;, username)));</span>
-<span class="fc" id="L161">    Collection&lt;? extends GrantedAuthority&gt; authorities = getAuthorities(ldapEntry);</span>
-<span class="fc" id="L162">    return new LdaptiveUser(</span>
+<span class="fc" id="L159">    logger.debug(&quot;Loading user '&quot; + username + &quot;' ...&quot;);</span>
+<span class="fc" id="L160">    LdapEntry ldapEntry = findUser(username)</span>
+<span class="fc" id="L161">        .orElseThrow(() -&gt; new UsernameNotFoundException(String.format(&quot;%s not found.&quot;, username)));</span>
+<span class="fc" id="L162">    Collection&lt;? extends GrantedAuthority&gt; authorities = getAuthorities(ldapEntry);</span>
+<span class="fc" id="L163">    return new LdaptiveUser(</span>
         ldapEntry,
-<span class="fc" id="L164">        Optional.ofNullable(getAuthenticationProperties().getUsernameAttribute())</span>
-<span class="fc" id="L165">            .map(ldapEntry::getAttribute)</span>
-<span class="fc" id="L166">            .map(LdapAttribute::getStringValue)</span>
-<span class="fc" id="L167">            .orElse(username),</span>
-<span class="fc" id="L168">        Optional.ofNullable(getAuthenticationProperties().getFirstNameAttribute())</span>
-<span class="fc" id="L169">            .map(ldapEntry::getAttribute)</span>
-<span class="fc" id="L170">            .map(LdapAttribute::getStringValue)</span>
-<span class="fc" id="L171">            .orElse(null),</span>
-<span class="fc" id="L172">        Optional.ofNullable(getAuthenticationProperties().getLastNameAttribute())</span>
-<span class="fc" id="L173">            .map(ldapEntry::getAttribute)</span>
-<span class="fc" id="L174">            .map(LdapAttribute::getStringValue)</span>
-<span class="fc" id="L175">            .orElse(null),</span>
-<span class="fc" id="L176">        Optional.ofNullable(getAuthenticationProperties().getEmailAttribute())</span>
-<span class="fc" id="L177">            .map(ldapEntry::getAttribute)</span>
-<span class="fc" id="L178">            .map(LdapAttribute::getStringValue)</span>
-<span class="fc" id="L179">            .orElse(null),</span>
+<span class="fc" id="L165">        Optional.ofNullable(getAuthenticationProperties().getUsernameAttribute())</span>
+<span class="fc" id="L166">            .map(ldapEntry::getAttribute)</span>
+<span class="fc" id="L167">            .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L168">            .orElse(username),</span>
+<span class="fc" id="L169">        Optional.ofNullable(getAuthenticationProperties().getFirstNameAttribute())</span>
+<span class="fc" id="L170">            .map(ldapEntry::getAttribute)</span>
+<span class="fc" id="L171">            .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L172">            .orElse(null),</span>
+<span class="fc" id="L173">        Optional.ofNullable(getAuthenticationProperties().getLastNameAttribute())</span>
+<span class="fc" id="L174">            .map(ldapEntry::getAttribute)</span>
+<span class="fc" id="L175">            .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L176">            .orElse(null),</span>
+<span class="fc" id="L177">        Optional.ofNullable(getAuthenticationProperties().getEmailAttribute())</span>
+<span class="fc" id="L178">            .map(ldapEntry::getAttribute)</span>
+<span class="fc" id="L179">            .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L180">            .orElse(null),</span>
         authorities,
-<span class="fc" id="L181">        getRememberMeTokenProvider().getRememberMeToken(ldapEntry),</span>
-<span class="fc" id="L182">        getAccountControlEvaluator().isAccountNonExpired(ldapEntry),</span>
-<span class="fc" id="L183">        getAccountControlEvaluator().isAccountNonLocked(ldapEntry),</span>
-<span class="fc" id="L184">        getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry),</span>
-<span class="fc" id="L185">        getAccountControlEvaluator().isEnabled(ldapEntry)</span>
+<span class="fc" id="L182">        getRememberMeTokenProvider().getRememberMeToken(ldapEntry),</span>
+<span class="fc" id="L183">        getAccountControlEvaluator().isAccountNonExpired(ldapEntry),</span>
+<span class="fc" id="L184">        getAccountControlEvaluator().isAccountNonLocked(ldapEntry),</span>
+<span class="fc" id="L185">        getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry),</span>
+<span class="fc" id="L186">        getAccountControlEvaluator().isEnabled(ldapEntry)</span>
     );
   }
 
@@ -193,10 +194,16 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the boolean
    */
   protected boolean isDn(String username) {
-<span class="fc" id="L196">    return Optional.ofNullable(username)</span>
-<span class="fc" id="L197">        .map(String::toLowerCase)</span>
-<span class="fc" id="L198">        .filter(name -&gt; name.endsWith(getAuthenticationProperties().getUserBaseDn().toLowerCase()))</span>
-<span class="fc" id="L199">        .isPresent();</span>
+    try {
+<span class="fc" id="L198">      Dn baseDn = new Dn(getAuthenticationProperties().getUserBaseDn());</span>
+<span class="fc" id="L199">      return Optional.ofNullable(username)</span>
+<span class="fc" id="L200">          .map(Dn::new)</span>
+<span class="fc" id="L201">          .filter(baseDn::isAncestor)</span>
+<span class="fc" id="L202">          .isPresent();</span>
+
+<span class="fc" id="L204">    } catch (RuntimeException e) {</span>
+<span class="fc" id="L205">      return false;</span>
+    }
   }
 
   /**
@@ -206,18 +213,18 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the user
    */
   public Optional&lt;LdapEntry&gt; findUser(String username) {
-<span class="fc bfc" id="L209" title="All 2 branches covered.">    SearchRequest searchRequest = isDn(username)</span>
-<span class="fc" id="L210">        ? SearchRequest.objectScopeSearchRequest(username)</span>
-<span class="fc" id="L211">        : SearchRequest.builder()</span>
-<span class="fc" id="L212">            .dn(getAuthenticationProperties().getUserBaseDn())</span>
-<span class="fc" id="L213">            .filter(FilterTemplate.builder()</span>
-<span class="fc" id="L214">                .filter(getAuthenticationProperties().getUserFindOneFilter())</span>
-<span class="fc" id="L215">                .parameters(username)</span>
-<span class="fc" id="L216">                .build())</span>
-<span class="fc" id="L217">            .scope(getAuthenticationProperties().getUserFindOneSearchScope())</span>
-<span class="fc" id="L218">            .sizeLimit(1)</span>
-<span class="fc" id="L219">            .build();</span>
-<span class="fc" id="L220">    return getLdaptiveTemplate().findOne(searchRequest);</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">    SearchRequest searchRequest = isDn(username)</span>
+<span class="fc" id="L217">        ? SearchRequest.objectScopeSearchRequest(username)</span>
+<span class="fc" id="L218">        : SearchRequest.builder()</span>
+<span class="fc" id="L219">            .dn(getAuthenticationProperties().getUserBaseDn())</span>
+<span class="fc" id="L220">            .filter(FilterTemplate.builder()</span>
+<span class="fc" id="L221">                .filter(getAuthenticationProperties().getUserFindOneFilter())</span>
+<span class="fc" id="L222">                .parameters(username)</span>
+<span class="fc" id="L223">                .build())</span>
+<span class="fc" id="L224">            .scope(getAuthenticationProperties().getUserFindOneSearchScope())</span>
+<span class="fc" id="L225">            .sizeLimit(1)</span>
+<span class="fc" id="L226">            .build();</span>
+<span class="fc" id="L227">    return getLdaptiveTemplate().findOne(searchRequest);</span>
   }
 
   /**
@@ -228,10 +235,10 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    */
   public Collection&lt;? extends GrantedAuthority&gt; getAuthorities(LdapEntry user) {
 
-<span class="pc bpc" id="L231" title="1 of 3 branches missed.">    return switch (getAuthenticationProperties().getGroupFetchStrategy()) {</span>
-<span class="nc" id="L232">      case NONE -&gt; Set.of();</span>
-<span class="fc" id="L233">      case USER_CONTAINS_GROUPS -&gt; getAuthoritiesByGroupsInUser(user);</span>
-<span class="fc" id="L234">      case GROUP_CONTAINS_USERS -&gt; getAuthoritiesByGroupsWithUser(user);</span>
+<span class="pc bpc" id="L238" title="1 of 3 branches missed.">    return switch (getAuthenticationProperties().getGroupFetchStrategy()) {</span>
+<span class="nc" id="L239">      case NONE -&gt; Set.of();</span>
+<span class="fc" id="L240">      case USER_CONTAINS_GROUPS -&gt; getAuthoritiesByGroupsInUser(user);</span>
+<span class="fc" id="L241">      case GROUP_CONTAINS_USERS -&gt; getAuthoritiesByGroupsWithUser(user);</span>
     };
   }
 
@@ -242,16 +249,16 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the roles by groups in user
    */
   protected Collection&lt;? extends GrantedAuthority&gt; getAuthoritiesByGroupsInUser(LdapEntry user) {
-<span class="fc" id="L245">    Collection&lt;? extends GrantedAuthority&gt; authorities = Stream.ofNullable(user)</span>
-<span class="fc" id="L246">        .map(entry -&gt; entry.getAttribute(getAuthenticationProperties().getMemberAttribute()))</span>
-<span class="fc" id="L247">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L248">        .map(LdapAttribute::getStringValues)</span>
-<span class="fc" id="L249">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L250">        .flatMap(Collection::stream)</span>
-<span class="fc" id="L251">        .map(LdaptiveEntryMapper::getRdn)</span>
-<span class="fc" id="L252">        .map(SimpleGrantedAuthority::new)</span>
-<span class="fc" id="L253">        .collect(Collectors.toSet());</span>
-<span class="fc" id="L254">    return getGrantedAuthoritiesMapper().mapAuthorities(authorities);</span>
+<span class="fc" id="L252">    Collection&lt;? extends GrantedAuthority&gt; authorities = Stream.ofNullable(user)</span>
+<span class="fc" id="L253">        .map(entry -&gt; entry.getAttribute(getAuthenticationProperties().getMemberAttribute()))</span>
+<span class="fc" id="L254">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L255">        .map(LdapAttribute::getStringValues)</span>
+<span class="fc" id="L256">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L257">        .flatMap(Collection::stream)</span>
+<span class="fc" id="L258">        .map(LdaptiveEntryMapper::getRdn)</span>
+<span class="fc" id="L259">        .map(SimpleGrantedAuthority::new)</span>
+<span class="fc" id="L260">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L261">    return getGrantedAuthoritiesMapper().mapAuthorities(authorities);</span>
   }
 
   /**
@@ -261,20 +268,20 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the roles by groups with user
    */
   protected Collection&lt;? extends GrantedAuthority&gt; getAuthoritiesByGroupsWithUser(LdapEntry user) {
-<span class="fc" id="L264">    Collection&lt;? extends GrantedAuthority&gt; authorities = getLdaptiveTemplate()</span>
-<span class="fc" id="L265">        .findAll(</span>
-<span class="fc" id="L266">            SearchRequest.builder()</span>
-<span class="fc" id="L267">                .dn(getAuthenticationProperties().getGroupBaseDn())</span>
-<span class="fc" id="L268">                .filter(FilterTemplate.builder()</span>
-<span class="fc" id="L269">                    .filter(getAuthorityFilter(user))</span>
-<span class="fc" id="L270">                    .build())</span>
-<span class="fc" id="L271">                .scope(getAuthenticationProperties().getGroupSearchScope())</span>
-<span class="fc" id="L272">                .build())</span>
-<span class="fc" id="L273">        .stream()</span>
-<span class="fc" id="L274">        .map(this::getAuthorityName)</span>
-<span class="fc" id="L275">        .map(SimpleGrantedAuthority::new)</span>
-<span class="fc" id="L276">        .collect(Collectors.toSet());</span>
-<span class="fc" id="L277">    return getGrantedAuthoritiesMapper().mapAuthorities(authorities);</span>
+<span class="fc" id="L271">    Collection&lt;? extends GrantedAuthority&gt; authorities = getLdaptiveTemplate()</span>
+<span class="fc" id="L272">        .findAll(</span>
+<span class="fc" id="L273">            SearchRequest.builder()</span>
+<span class="fc" id="L274">                .dn(getAuthenticationProperties().getGroupBaseDn())</span>
+<span class="fc" id="L275">                .filter(FilterTemplate.builder()</span>
+<span class="fc" id="L276">                    .filter(getAuthorityFilter(user))</span>
+<span class="fc" id="L277">                    .build())</span>
+<span class="fc" id="L278">                .scope(getAuthenticationProperties().getGroupSearchScope())</span>
+<span class="fc" id="L279">                .build())</span>
+<span class="fc" id="L280">        .stream()</span>
+<span class="fc" id="L281">        .map(this::getAuthorityName)</span>
+<span class="fc" id="L282">        .map(SimpleGrantedAuthority::new)</span>
+<span class="fc" id="L283">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L284">    return getGrantedAuthoritiesMapper().mapAuthorities(authorities);</span>
   }
 
   /**
@@ -284,19 +291,19 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the group filter
    */
   protected String getAuthorityFilter(LdapEntry user) {
-<span class="fc" id="L287">    String groupObjectClass = getAuthenticationProperties().getGroupObjectClass();</span>
-<span class="fc" id="L288">    String groupMemberAttribute = getAuthenticationProperties().getGroupMemberAttribute();</span>
+<span class="fc" id="L294">    String groupObjectClass = getAuthenticationProperties().getGroupObjectClass();</span>
+<span class="fc" id="L295">    String groupMemberAttribute = getAuthenticationProperties().getGroupMemberAttribute();</span>
     String groupMemberValue;
-<span class="fc" id="L290">    String groupMemberFormat = getAuthenticationProperties().getGroupMemberFormat();</span>
-<span class="pc bpc" id="L291" title="1 of 2 branches missed.">    if (isEmpty(groupMemberFormat)) {</span>
-<span class="nc" id="L292">      groupMemberValue = user.getDn();</span>
+<span class="fc" id="L297">    String groupMemberFormat = getAuthenticationProperties().getGroupMemberFormat();</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">    if (isEmpty(groupMemberFormat)) {</span>
+<span class="nc" id="L299">      groupMemberValue = user.getDn();</span>
     } else {
-<span class="fc" id="L294">      String username = user.getAttribute(getAuthenticationProperties().getUsernameAttribute())</span>
-<span class="fc" id="L295">          .getStringValue();</span>
-<span class="fc" id="L296">      groupMemberValue = groupMemberFormat</span>
-<span class="fc" id="L297">          .replaceFirst(Pattern.quote(USERNAME_PLACEHOLDER), username);</span>
+<span class="fc" id="L301">      String username = user.getAttribute(getAuthenticationProperties().getUsernameAttribute())</span>
+<span class="fc" id="L302">          .getStringValue();</span>
+<span class="fc" id="L303">      groupMemberValue = groupMemberFormat</span>
+<span class="fc" id="L304">          .replaceFirst(Pattern.quote(USERNAME_PLACEHOLDER), username);</span>
     }
-<span class="fc" id="L299">    return String.format(&quot;(&amp;(objectClass=%s)(%s=%s))&quot;,</span>
+<span class="fc" id="L306">    return String.format(&quot;(&amp;(objectClass=%s)(%s=%s))&quot;,</span>
         groupObjectClass, groupMemberAttribute, groupMemberValue);
   }
 
@@ -307,14 +314,14 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @return the group name
    */
   protected String getAuthorityName(LdapEntry group) {
-<span class="fc" id="L310">    String groupIdAttribute = getAuthenticationProperties().getGroupIdAttribute();</span>
-<span class="fc" id="L311">    String fallback = LdaptiveEntryMapper.getRdn(group.getDn());</span>
-<span class="pc bpc" id="L312" title="1 of 2 branches missed.">    if (isEmpty(groupIdAttribute)) {</span>
-<span class="nc" id="L313">      return fallback;</span>
+<span class="fc" id="L317">    String groupIdAttribute = getAuthenticationProperties().getGroupIdAttribute();</span>
+<span class="fc" id="L318">    String fallback = LdaptiveEntryMapper.getRdn(group.getDn());</span>
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">    if (isEmpty(groupIdAttribute)) {</span>
+<span class="nc" id="L320">      return fallback;</span>
     }
-<span class="fc" id="L315">    return Optional.ofNullable(group.getAttribute(groupIdAttribute))</span>
-<span class="fc" id="L316">        .map(LdapAttribute::getStringValue)</span>
-<span class="fc" id="L317">        .orElse(fallback);</span>
+<span class="fc" id="L322">    return Optional.ofNullable(group.getAttribute(groupIdAttribute))</span>
+<span class="fc" id="L323">        .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L324">        .orElse(fallback);</span>
   }
 
 }

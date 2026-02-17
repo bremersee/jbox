@@ -18,6 +18,14 @@ package org.bremersee.xml;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.attachment.AttachmentMarshaller;
+import jakarta.xml.bind.attachment.AttachmentUnmarshaller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,14 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.ValidationEventHandler;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import jakarta.xml.bind.attachment.AttachmentMarshaller;
-import jakarta.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import lombok.ToString;
@@ -46,29 +46,28 @@ import org.springframework.util.ClassUtils;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings(&quot;SameNameButDifferent&quot;)
 @ToString
 class JaxbContextBuilderImpl implements JaxbContextBuilder {
 
   /**
    * Key is package name, value is jaxb data set.
    */
-<span class="fc" id="L56">  private final Map&lt;Object, JaxbContextData&gt; jaxbContextDataMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L55">  private final Map&lt;Object, JaxbContextData&gt; jaxbContextDataMap = new ConcurrentHashMap&lt;&gt;();</span>
 
-<span class="fc" id="L58">  private final Map&lt;JaxbContextDetails, Schema&gt; schemaCache = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L57">  private final Map&lt;JaxbContextDetails, Schema&gt; schemaCache = new ConcurrentHashMap&lt;&gt;();</span>
 
-<span class="fc" id="L60">  private final Map&lt;JaxbContextDetails, JAXBContext&gt; jaxbContextCache</span>
+<span class="fc" id="L59">  private final Map&lt;JaxbContextDetails, JAXBContext&gt; jaxbContextCache</span>
       = new ConcurrentHashMap&lt;&gt;();
 
-<span class="fc" id="L63">  private JaxbDependenciesResolver dependenciesResolver = DEFAULT_DEPENDENCIES_RESOLVER;</span>
+<span class="fc" id="L62">  private JaxbDependenciesResolver dependenciesResolver = DEFAULT_DEPENDENCIES_RESOLVER;</span>
 
-<span class="fc" id="L65">  private SchemaBuilder schemaBuilder = SchemaBuilder.newInstance();</span>
+<span class="fc" id="L64">  private SchemaBuilder schemaBuilder = SchemaBuilder.newInstance();</span>
 
   private ClassLoader classLoader;
 
-<span class="fc" id="L69">  private boolean formattedOutput = true;</span>
+<span class="fc" id="L68">  private boolean formattedOutput = true;</span>
 
-<span class="fc" id="L71">  private SchemaMode schemaMode = SchemaMode.NEVER;</span>
+<span class="fc" id="L70">  private SchemaMode schemaMode = SchemaMode.NEVER;</span>
 
   private List&lt;XmlAdapter&lt;?, ?&gt;&gt; xmlAdapters;
 
@@ -81,269 +80,268 @@ class JaxbContextBuilderImpl implements JaxbContextBuilder {
   /**
    * Instantiates a new jaxb context builder.
    */
-<span class="fc" id="L84">  JaxbContextBuilderImpl() {</span>
-<span class="fc" id="L85">  }</span>
+<span class="fc" id="L83">  JaxbContextBuilderImpl() {</span>
+<span class="fc" id="L84">  }</span>
 
   private void clearCache() {
-<span class="fc" id="L88">    schemaCache.clear();</span>
-<span class="fc" id="L89">    jaxbContextCache.clear();</span>
-<span class="fc" id="L90">  }</span>
+<span class="fc" id="L87">    schemaCache.clear();</span>
+<span class="fc" id="L88">    jaxbContextCache.clear();</span>
+<span class="fc" id="L89">  }</span>
 
   @Override
   public JaxbContextBuilder copy() {
-<span class="fc" id="L94">    JaxbContextBuilderImpl copy = new JaxbContextBuilderImpl();</span>
-<span class="fc" id="L95">    copy.dependenciesResolver = dependenciesResolver;</span>
-<span class="fc" id="L96">    copy.schemaMode = schemaMode;</span>
-<span class="fc" id="L97">    copy.schemaCache.putAll(schemaCache);</span>
-<span class="fc" id="L98">    copy.attachmentMarshaller = attachmentMarshaller;</span>
-<span class="fc" id="L99">    copy.attachmentUnmarshaller = attachmentUnmarshaller;</span>
-<span class="fc" id="L100">    copy.classLoader = classLoader;</span>
-<span class="fc" id="L101">    copy.formattedOutput = formattedOutput;</span>
-<span class="fc" id="L102">    copy.jaxbContextCache.putAll(jaxbContextCache);</span>
-<span class="fc" id="L103">    copy.jaxbContextDataMap.putAll(jaxbContextDataMap);</span>
-<span class="fc" id="L104">    copy.schemaBuilder = schemaBuilder.copy();</span>
-<span class="fc" id="L105">    copy.validationEventHandler = validationEventHandler;</span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">    if (!isEmpty(xmlAdapters)) {</span>
-<span class="fc" id="L107">      copy.xmlAdapters = new ArrayList&lt;&gt;(xmlAdapters);</span>
+<span class="fc" id="L93">    JaxbContextBuilderImpl copy = new JaxbContextBuilderImpl();</span>
+<span class="fc" id="L94">    copy.dependenciesResolver = dependenciesResolver;</span>
+<span class="fc" id="L95">    copy.schemaMode = schemaMode;</span>
+<span class="fc" id="L96">    copy.schemaCache.putAll(schemaCache);</span>
+<span class="fc" id="L97">    copy.attachmentMarshaller = attachmentMarshaller;</span>
+<span class="fc" id="L98">    copy.attachmentUnmarshaller = attachmentUnmarshaller;</span>
+<span class="fc" id="L99">    copy.classLoader = classLoader;</span>
+<span class="fc" id="L100">    copy.formattedOutput = formattedOutput;</span>
+<span class="fc" id="L101">    copy.jaxbContextCache.putAll(jaxbContextCache);</span>
+<span class="fc" id="L102">    copy.jaxbContextDataMap.putAll(jaxbContextDataMap);</span>
+<span class="fc" id="L103">    copy.schemaBuilder = schemaBuilder.copy();</span>
+<span class="fc" id="L104">    copy.validationEventHandler = validationEventHandler;</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">    if (!isEmpty(xmlAdapters)) {</span>
+<span class="fc" id="L106">      copy.xmlAdapters = new ArrayList&lt;&gt;(xmlAdapters);</span>
     }
-<span class="fc" id="L109">    return copy;</span>
+<span class="fc" id="L108">    return copy;</span>
   }
 
   @Override
   public JaxbContextBuilder withSchemaMode(SchemaMode schemaMode) {
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    if (!isEmpty(schemaMode)) {</span>
-<span class="fc" id="L115">      this.schemaMode = schemaMode;</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (!isEmpty(schemaMode)) {</span>
+<span class="fc" id="L114">      this.schemaMode = schemaMode;</span>
     }
-<span class="fc" id="L117">    return this;</span>
+<span class="fc" id="L116">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withSchemaBuilder(SchemaBuilder schemaBuilder) {
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">    if (!isEmpty(schemaBuilder)) {</span>
-<span class="fc" id="L123">      this.schemaBuilder = schemaBuilder;</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    if (!isEmpty(schemaBuilder)) {</span>
+<span class="fc" id="L122">      this.schemaBuilder = schemaBuilder;</span>
     }
-<span class="fc" id="L125">    return this;</span>
+<span class="fc" id="L124">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withDependenciesResolver(JaxbDependenciesResolver resolver) {
-<span class="pc bpc" id="L130" title="3 of 4 branches missed.">    if ((isEmpty(dependenciesResolver) &amp;&amp; !isEmpty(resolver))</span>
-<span class="pc bpc" id="L131" title="1 of 4 branches missed.">        || (!isEmpty(dependenciesResolver) &amp;&amp; isEmpty(resolver))</span>
-<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        || (!isEmpty(dependenciesResolver) &amp;&amp; !ClassUtils.getUserClass(dependenciesResolver)</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        .equals(ClassUtils.getUserClass(resolver)))) {</span>
-<span class="fc" id="L134">      clearCache();</span>
+<span class="pc bpc" id="L129" title="3 of 4 branches missed.">    if ((isEmpty(dependenciesResolver) &amp;&amp; !isEmpty(resolver))</span>
+<span class="pc bpc" id="L130" title="1 of 4 branches missed.">        || (!isEmpty(dependenciesResolver) &amp;&amp; isEmpty(resolver))</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        || (!isEmpty(dependenciesResolver) &amp;&amp; !ClassUtils.getUserClass(dependenciesResolver)</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        .equals(ClassUtils.getUserClass(resolver)))) {</span>
+<span class="fc" id="L133">      clearCache();</span>
     }
-<span class="fc" id="L136">    this.dependenciesResolver = resolver;</span>
-<span class="fc" id="L137">    return this;</span>
+<span class="fc" id="L135">    this.dependenciesResolver = resolver;</span>
+<span class="fc" id="L136">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withContextClassLoader(ClassLoader classLoader) {
-<span class="fc" id="L142">    this.classLoader = classLoader;</span>
-<span class="fc" id="L143">    return this;</span>
+<span class="fc" id="L141">    this.classLoader = classLoader;</span>
+<span class="fc" id="L142">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withFormattedOutput(boolean formattedOutput) {
-<span class="fc" id="L148">    this.formattedOutput = formattedOutput;</span>
-<span class="fc" id="L149">    return this;</span>
+<span class="fc" id="L147">    this.formattedOutput = formattedOutput;</span>
+<span class="fc" id="L148">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withXmlAdapters(
       Collection&lt;? extends XmlAdapter&lt;?, ?&gt;&gt; xmlAdapters) {
 
-<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (isEmpty(xmlAdapters)) {</span>
-<span class="fc" id="L157">      this.xmlAdapters = null;</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (isEmpty(xmlAdapters)) {</span>
+<span class="fc" id="L156">      this.xmlAdapters = null;</span>
     } else {
-<span class="fc" id="L159">      this.xmlAdapters = xmlAdapters</span>
-<span class="fc" id="L160">          .stream()</span>
-<span class="fc" id="L161">          .filter(Objects::nonNull)</span>
-<span class="fc" id="L162">          .collect(Collectors.toList());</span>
+<span class="fc" id="L158">      this.xmlAdapters = xmlAdapters</span>
+<span class="fc" id="L159">          .stream()</span>
+<span class="fc" id="L160">          .filter(Objects::nonNull)</span>
+<span class="fc" id="L161">          .collect(Collectors.toList());</span>
     }
-<span class="fc" id="L164">    return this;</span>
+<span class="fc" id="L163">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withAttachmentMarshaller(
       AttachmentMarshaller attachmentMarshaller) {
-<span class="fc" id="L170">    this.attachmentMarshaller = attachmentMarshaller;</span>
-<span class="fc" id="L171">    return this;</span>
+<span class="fc" id="L169">    this.attachmentMarshaller = attachmentMarshaller;</span>
+<span class="fc" id="L170">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withAttachmentUnmarshaller(
       AttachmentUnmarshaller attachmentUnmarshaller) {
-<span class="fc" id="L177">    this.attachmentUnmarshaller = attachmentUnmarshaller;</span>
-<span class="fc" id="L178">    return this;</span>
+<span class="fc" id="L176">    this.attachmentUnmarshaller = attachmentUnmarshaller;</span>
+<span class="fc" id="L177">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder withValidationEventHandler(
       ValidationEventHandler validationEventHandler) {
-<span class="fc" id="L184">    this.validationEventHandler = validationEventHandler;</span>
-<span class="fc" id="L185">    return this;</span>
+<span class="fc" id="L183">    this.validationEventHandler = validationEventHandler;</span>
+<span class="fc" id="L184">    return this;</span>
   }
 
   @Override
   public JaxbContextBuilder add(JaxbContextMember data) {
-<span class="fc" id="L190">    return Optional.ofNullable(data)</span>
-<span class="fc" id="L191">        .map(JaxbContextData::new)</span>
-<span class="fc" id="L192">        .map(d -&gt; {</span>
-<span class="fc" id="L193">          clearCache();</span>
-<span class="fc" id="L194">          jaxbContextDataMap.put(d.getKey(), d);</span>
-<span class="fc" id="L195">          return this;</span>
+<span class="fc" id="L189">    return Optional.ofNullable(data)</span>
+<span class="fc" id="L190">        .map(JaxbContextData::new)</span>
+<span class="fc" id="L191">        .map(d -&gt; {</span>
+<span class="fc" id="L192">          clearCache();</span>
+<span class="fc" id="L193">          jaxbContextDataMap.put(d.getKey(), d);</span>
+<span class="fc" id="L194">          return this;</span>
         })
-<span class="fc" id="L197">        .orElse(this);</span>
+<span class="fc" id="L196">        .orElse(this);</span>
   }
-
 
   @Override
   public Unmarshaller buildUnmarshaller(Class&lt;?&gt;... classes) {
-<span class="fc bfc" id="L203" title="All 2 branches covered.">    if (!isEmpty(classes)) {</span>
-<span class="fc bfc" id="L204" title="All 2 branches covered.">      Class&lt;?&gt;[] jaxbClasses = isEmpty(dependenciesResolver)</span>
-<span class="fc" id="L205">          ? classes</span>
-<span class="fc" id="L206">          : dependenciesResolver.resolveClasses(classes);</span>
-<span class="fc" id="L207">      Arrays.stream(jaxbClasses)</span>
-<span class="fc" id="L208">          .map(JaxbContextData::new)</span>
-<span class="fc" id="L209">          .forEach(data -&gt; jaxbContextDataMap.computeIfAbsent(data.getKey(), key -&gt; {</span>
-<span class="fc" id="L210">            clearCache();</span>
-<span class="fc" id="L211">            return data;</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    if (!isEmpty(classes)) {</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">      Class&lt;?&gt;[] jaxbClasses = isEmpty(dependenciesResolver)</span>
+<span class="fc" id="L203">          ? classes</span>
+<span class="fc" id="L204">          : dependenciesResolver.resolveClasses(classes);</span>
+<span class="fc" id="L205">      Arrays.stream(jaxbClasses)</span>
+<span class="fc" id="L206">          .map(JaxbContextData::new)</span>
+<span class="fc" id="L207">          .forEach(data -&gt; jaxbContextDataMap.computeIfAbsent(data.getKey(), key -&gt; {</span>
+<span class="fc" id="L208">            clearCache();</span>
+<span class="fc" id="L209">            return data;</span>
           }));
     }
-<span class="fc" id="L214">    JaxbContextWrapper jaxbContext = computeJaxbContext(null);</span>
-<span class="fc" id="L215">    SchemaMode mode = jaxbContext.getSchemaMode();</span>
-<span class="fc bfc" id="L216" title="All 6 branches covered.">    if (mode == SchemaMode.ALWAYS</span>
+<span class="fc" id="L212">    JaxbContextWrapper jaxbContext = computeJaxbContext(null);</span>
+<span class="fc" id="L213">    SchemaMode mode = jaxbContext.getSchemaMode();</span>
+<span class="fc bfc" id="L214" title="All 6 branches covered.">    if (mode == SchemaMode.ALWAYS</span>
         || mode == SchemaMode.UNMARSHAL
         || mode == SchemaMode.EXTERNAL_XSD
-<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(jaxbContext.getDetails().getSchemaLocation())) {</span>
-<span class="fc" id="L220">      jaxbContext.setSchema(computeSchema(jaxbContext));</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(jaxbContext.getDetails().getSchemaLocation())) {</span>
+<span class="fc" id="L218">      jaxbContext.setSchema(computeSchema(jaxbContext));</span>
     }
     try {
-<span class="fc" id="L223">      return jaxbContext.createUnmarshaller();</span>
+<span class="fc" id="L221">      return jaxbContext.createUnmarshaller();</span>
 
-<span class="nc" id="L225">    } catch (JAXBException e) {</span>
-<span class="nc" id="L226">      throw new JaxbRuntimeException(e);</span>
+<span class="nc" id="L223">    } catch (JAXBException e) {</span>
+<span class="nc" id="L224">      throw new JaxbRuntimeException(e);</span>
     }
   }
 
   @Override
   public Marshaller buildMarshaller(Object value) {
-<span class="fc" id="L232">    JaxbContextWrapper jaxbContext = computeJaxbContext(value);</span>
-<span class="fc" id="L233">    SchemaMode mode = jaxbContext.getSchemaMode();</span>
-<span class="fc bfc" id="L234" title="All 6 branches covered.">    if ((mode == SchemaMode.ALWAYS</span>
+<span class="fc" id="L230">    JaxbContextWrapper jaxbContext = computeJaxbContext(value);</span>
+<span class="fc" id="L231">    SchemaMode mode = jaxbContext.getSchemaMode();</span>
+<span class="fc bfc" id="L232" title="All 6 branches covered.">    if ((mode == SchemaMode.ALWAYS</span>
         || mode == SchemaMode.MARSHAL
         || mode == SchemaMode.EXTERNAL_XSD)
-<span class="fc bfc" id="L237" title="All 2 branches covered.">        &amp;&amp; !isEmpty(jaxbContext.getDetails().getSchemaLocation())) {</span>
-<span class="fc" id="L238">      jaxbContext.setSchema(computeSchema(jaxbContext));</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        &amp;&amp; !isEmpty(jaxbContext.getDetails().getSchemaLocation())) {</span>
+<span class="fc" id="L236">      jaxbContext.setSchema(computeSchema(jaxbContext));</span>
     }
     try {
-<span class="fc" id="L241">      return jaxbContext.createMarshaller();</span>
-<span class="nc" id="L242">    } catch (JAXBException e) {</span>
-<span class="nc" id="L243">      throw new JaxbRuntimeException(e);</span>
+<span class="fc" id="L239">      return jaxbContext.createMarshaller();</span>
+<span class="nc" id="L240">    } catch (JAXBException e) {</span>
+<span class="nc" id="L241">      throw new JaxbRuntimeException(e);</span>
     }
   }
 
   @Override
   public JaxbContextBuilder initJaxbContext() {
-<span class="fc bfc" id="L249" title="All 2 branches covered.">    if (!jaxbContextDataMap.isEmpty()) {</span>
-<span class="fc" id="L250">      buildJaxbContext(null);</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">    if (!jaxbContextDataMap.isEmpty()) {</span>
+<span class="fc" id="L248">      buildJaxbContext(null);</span>
     }
-<span class="fc" id="L252">    return this;</span>
+<span class="fc" id="L250">    return this;</span>
   }
 
   @Override
   public JaxbContextWrapper buildJaxbContext(Object value) {
-<span class="fc" id="L257">    JaxbContextWrapper wrapper = computeJaxbContext(value);</span>
-<span class="fc" id="L258">    SchemaMode mode = wrapper.getSchemaMode();</span>
-<span class="pc bpc" id="L259" title="2 of 8 branches missed.">    if ((mode == SchemaMode.ALWAYS</span>
+<span class="fc" id="L255">    JaxbContextWrapper wrapper = computeJaxbContext(value);</span>
+<span class="fc" id="L256">    SchemaMode mode = wrapper.getSchemaMode();</span>
+<span class="pc bpc" id="L257" title="2 of 8 branches missed.">    if ((mode == SchemaMode.ALWAYS</span>
         || mode == SchemaMode.MARSHAL
         || mode == SchemaMode.UNMARSHAL
         || mode == SchemaMode.EXTERNAL_XSD)
-<span class="fc bfc" id="L263" title="All 2 branches covered.">        &amp;&amp; !isEmpty(wrapper.getDetails().getSchemaLocation())) {</span>
-<span class="fc" id="L264">      wrapper.setSchema(computeSchema(wrapper));</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">        &amp;&amp; !isEmpty(wrapper.getDetails().getSchemaLocation())) {</span>
+<span class="fc" id="L262">      wrapper.setSchema(computeSchema(wrapper));</span>
     }
-<span class="fc" id="L266">    return wrapper;</span>
+<span class="fc" id="L264">    return wrapper;</span>
   }
 
   @Override
   public Schema buildSchema(Object value) {
-<span class="fc" id="L271">    return computeSchema(value);</span>
+<span class="fc" id="L269">    return computeSchema(value);</span>
   }
 
   private JaxbContextDetails buildDetails() {
-<span class="fc" id="L275">    return jaxbContextDataMap.values().stream()</span>
-<span class="fc" id="L276">        .collect(JaxbContextDetails.contextDataCollector());</span>
+<span class="fc" id="L273">    return jaxbContextDataMap.values().stream()</span>
+<span class="fc" id="L274">        .collect(JaxbContextDetails.contextDataCollector());</span>
   }
 
   private JaxbContextDetails buildDetails(Object value) {
-<span class="fc bfc" id="L280" title="All 2 branches covered.">    if (isEmpty(value)) {</span>
-<span class="fc" id="L281">      return buildDetails();</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">    if (isEmpty(value)) {</span>
+<span class="fc" id="L279">      return buildDetails();</span>
     }
-<span class="fc bfc" id="L283" title="All 2 branches covered.">    if (value instanceof Class&lt;?&gt;) {</span>
-<span class="fc" id="L284">      return buildDetails(new Class&lt;?&gt;[]{(Class&lt;?&gt;) value});</span>
+<span class="fc bfc" id="L281" title="All 2 branches covered.">    if (value instanceof Class&lt;?&gt;) {</span>
+<span class="fc" id="L282">      return buildDetails(new Class&lt;?&gt;[]{(Class&lt;?&gt;) value});</span>
     }
     Class&lt;?&gt;[] classes;
-<span class="fc bfc" id="L287" title="All 2 branches covered.">    if (value instanceof Class&lt;?&gt;[]) {</span>
-<span class="fc bfc" id="L288" title="All 2 branches covered.">      classes = isEmpty(dependenciesResolver)</span>
-<span class="fc" id="L289">          ? (Class&lt;?&gt;[]) value</span>
-<span class="fc" id="L290">          : dependenciesResolver.resolveClasses(value);</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">    if (value instanceof Class&lt;?&gt;[] clsArray) {</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">      classes = isEmpty(dependenciesResolver)</span>
+<span class="fc" id="L287">          ? clsArray</span>
+<span class="fc" id="L288">          : dependenciesResolver.resolveClasses(value);</span>
     } else {
-<span class="fc bfc" id="L292" title="All 2 branches covered.">      classes = isEmpty(dependenciesResolver)</span>
-<span class="fc" id="L293">          ? new Class&lt;?&gt;[]{value.getClass()}</span>
-<span class="fc" id="L294">          : dependenciesResolver.resolveClasses(value);</span>
+<span class="fc bfc" id="L290" title="All 2 branches covered.">      classes = isEmpty(dependenciesResolver)</span>
+<span class="fc" id="L291">          ? new Class&lt;?&gt;[]{value.getClass()}</span>
+<span class="fc" id="L292">          : dependenciesResolver.resolveClasses(value);</span>
     }
-<span class="fc" id="L296">    return Arrays.stream(classes)</span>
-<span class="fc" id="L297">        .map(JaxbContextData::new)</span>
-<span class="fc" id="L298">        .map(data -&gt; jaxbContextDataMap.computeIfAbsent(data.getKey(), key -&gt; {</span>
-<span class="fc" id="L299">          clearCache();</span>
-<span class="fc" id="L300">          return data;</span>
+<span class="fc" id="L294">    return Arrays.stream(classes)</span>
+<span class="fc" id="L295">        .map(JaxbContextData::new)</span>
+<span class="fc" id="L296">        .map(data -&gt; jaxbContextDataMap.computeIfAbsent(data.getKey(), key -&gt; {</span>
+<span class="fc" id="L297">          clearCache();</span>
+<span class="fc" id="L298">          return data;</span>
         }))
-<span class="fc" id="L302">        .collect(JaxbContextDetails.contextDataCollector());</span>
+<span class="fc" id="L300">        .collect(JaxbContextDetails.contextDataCollector());</span>
   }
 
   private JaxbContextWrapper computeJaxbContext(Object value) {
-<span class="fc" id="L306">    JaxbContextDetails details = buildDetails(value);</span>
-<span class="fc" id="L307">    JAXBContext jaxbContext = jaxbContextCache.computeIfAbsent(details, key -&gt; {</span>
+<span class="fc" id="L304">    JaxbContextDetails details = buildDetails(value);</span>
+<span class="fc" id="L305">    JAXBContext jaxbContext = jaxbContextCache.computeIfAbsent(details, key -&gt; {</span>
       try {
-<span class="fc bfc" id="L309" title="All 2 branches covered.">        return isEmpty(classLoader)</span>
-<span class="fc" id="L310">            ? JAXBContext.newInstance(key.getClasses())</span>
-<span class="fc" id="L311">            : JAXBContext.newInstance(key.getClasses(classLoader));</span>
+<span class="fc bfc" id="L307" title="All 2 branches covered.">        return isEmpty(classLoader)</span>
+<span class="fc" id="L308">            ? JAXBContext.newInstance(key.getClasses())</span>
+<span class="fc" id="L309">            : JAXBContext.newInstance(key.getClasses(classLoader));</span>
 
-<span class="nc" id="L313">      } catch (Exception e) {</span>
-<span class="nc" id="L314">        throw new JaxbRuntimeException(</span>
-<span class="nc" id="L315">            String.format(&quot;Creating jaxb context failed with builder context: %s&quot;, key),</span>
+<span class="nc" id="L311">      } catch (Exception e) {</span>
+<span class="nc" id="L312">        throw new JaxbRuntimeException(</span>
+<span class="nc" id="L313">            String.format(&quot;Creating jaxb context failed with builder context: %s&quot;, key),</span>
             e);
       }
     });
-<span class="fc" id="L319">    JaxbContextWrapper wrapper = new JaxbContextWrapper(jaxbContext, details);</span>
-<span class="fc" id="L320">    wrapper.setAttachmentMarshaller(attachmentMarshaller);</span>
-<span class="fc" id="L321">    wrapper.setAttachmentUnmarshaller(attachmentUnmarshaller);</span>
-<span class="fc" id="L322">    wrapper.setFormattedOutput(formattedOutput);</span>
-<span class="fc" id="L323">    wrapper.setValidationEventHandler(validationEventHandler);</span>
-<span class="fc" id="L324">    wrapper.setXmlAdapters(xmlAdapters);</span>
-<span class="fc" id="L325">    wrapper.setSchemaMode(schemaMode);</span>
-<span class="fc" id="L326">    return wrapper;</span>
+<span class="fc" id="L317">    JaxbContextWrapper wrapper = new JaxbContextWrapper(jaxbContext, details);</span>
+<span class="fc" id="L318">    wrapper.setAttachmentMarshaller(attachmentMarshaller);</span>
+<span class="fc" id="L319">    wrapper.setAttachmentUnmarshaller(attachmentUnmarshaller);</span>
+<span class="fc" id="L320">    wrapper.setFormattedOutput(formattedOutput);</span>
+<span class="fc" id="L321">    wrapper.setValidationEventHandler(validationEventHandler);</span>
+<span class="fc" id="L322">    wrapper.setXmlAdapters(xmlAdapters);</span>
+<span class="fc" id="L323">    wrapper.setSchemaMode(schemaMode);</span>
+<span class="fc" id="L324">    return wrapper;</span>
   }
 
   private Schema computeSchema(Object value) {
-<span class="fc" id="L330">    return computeSchema(computeJaxbContext(value));</span>
+<span class="fc" id="L328">    return computeSchema(computeJaxbContext(value));</span>
   }
 
   private Schema computeSchema(JaxbContextWrapper jaxbContext) {
-<span class="fc" id="L334">    JaxbContextDetails details = jaxbContext.getDetails();</span>
-<span class="fc" id="L335">    return schemaCache.computeIfAbsent(details, key -&gt; {</span>
-<span class="fc" id="L336">      SchemaSourcesResolver sourcesResolver = new SchemaSourcesResolver();</span>
+<span class="fc" id="L332">    JaxbContextDetails details = jaxbContext.getDetails();</span>
+<span class="fc" id="L333">    return schemaCache.computeIfAbsent(details, key -&gt; {</span>
+<span class="fc" id="L334">      SchemaSourcesResolver sourcesResolver = new SchemaSourcesResolver();</span>
       try {
-<span class="fc" id="L338">        jaxbContext.generateSchema(sourcesResolver);</span>
-<span class="nc" id="L339">      } catch (Exception e) {</span>
-<span class="nc" id="L340">        throw new JaxbRuntimeException(e);</span>
-<span class="fc" id="L341">      }</span>
-<span class="fc" id="L342">      List&lt;Source&gt; sources = new ArrayList&lt;&gt;(</span>
-<span class="fc" id="L343">          sourcesResolver.toSources(key.getNameSpaces()));</span>
-<span class="fc" id="L344">      Set&lt;String&gt; locations = key.getSchemaLocations();</span>
-<span class="fc" id="L345">      sources.addAll(schemaBuilder.fetchSchemaSources(locations));</span>
-<span class="fc" id="L346">      return schemaBuilder.buildSchema(sources);</span>
+<span class="fc" id="L336">        jaxbContext.generateSchema(sourcesResolver);</span>
+<span class="nc" id="L337">      } catch (Exception e) {</span>
+<span class="nc" id="L338">        throw new JaxbRuntimeException(e);</span>
+<span class="fc" id="L339">      }</span>
+<span class="fc" id="L340">      List&lt;Source&gt; sources = new ArrayList&lt;&gt;(</span>
+<span class="fc" id="L341">          sourcesResolver.toSources(key.getNameSpaces()));</span>
+<span class="fc" id="L342">      Set&lt;String&gt; locations = key.getSchemaLocations();</span>
+<span class="fc" id="L343">      sources.addAll(schemaBuilder.fetchSchemaSources(locations));</span>
+<span class="fc" id="L344">      return schemaBuilder.buildSchema(sources);</span>
     });
   }
 

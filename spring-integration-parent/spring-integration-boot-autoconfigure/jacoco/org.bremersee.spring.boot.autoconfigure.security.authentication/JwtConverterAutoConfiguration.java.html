@@ -28,6 +28,8 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +38,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -43,15 +46,20 @@ import org.springframework.util.ClassUtils;
  *
  * @author Christian Bremer
  */
-@AutoConfiguration
+@AutoConfiguration(
+    before = {
+        SecurityAutoConfiguration.class,
+        ReactiveSecurityAutoConfiguration.class
+    })
 @ConditionalOnClass(name = {
-    &quot;org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter&quot;
+    &quot;org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter&quot;,
+    &quot;org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter&quot;
 })
 @ConditionalOnProperty(
     prefix = &quot;spring.security.oauth2.resourceserver.jwt&quot;,
     name = &quot;jwk-set-uri&quot;)
 @EnableConfigurationProperties(AuthenticationProperties.class)
-<span class="fc" id="L54">@Slf4j</span>
+<span class="fc" id="L62">@Slf4j</span>
 public class JwtConverterAutoConfiguration {
 
   private final JwtConverterProperties properties;
@@ -61,24 +69,24 @@ public class JwtConverterAutoConfiguration {
    *
    * @param properties the properties
    */
-<span class="fc" id="L64">  public JwtConverterAutoConfiguration(AuthenticationProperties properties) {</span>
-<span class="fc" id="L65">    this.properties = properties.getJwtConverter();</span>
-<span class="fc" id="L66">  }</span>
+<span class="fc" id="L72">  public JwtConverterAutoConfiguration(AuthenticationProperties properties) {</span>
+<span class="fc" id="L73">    this.properties = properties.getJwtConverter();</span>
+<span class="fc" id="L74">  }</span>
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-<span class="fc" id="L73">    log.info(&quot;&quot;&quot;</span>
+<span class="fc" id="L81">    log.info(&quot;&quot;&quot;</span>
             
             *********************************************************************************
             * {}
             * properties = {}
             *********************************************************************************&quot;&quot;&quot;,
-<span class="fc" id="L79">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
+<span class="fc" id="L87">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
         properties);
-<span class="fc" id="L81">  }</span>
+<span class="fc" id="L89">  }</span>
 
   /**
    * Creates jwt converter.
@@ -86,34 +94,36 @@ public class JwtConverterAutoConfiguration {
    * @param mapper the mapper
    * @return the converter
    */
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingBean({JwtAuthenticationConverter.class})
   @Bean
   public Converter&lt;Jwt, AbstractAuthenticationToken&gt; jwtConverter(
       ObjectProvider&lt;GrantedAuthoritiesMapper&gt; mapper) {
 
-<span class="fc" id="L94">    GrantedAuthoritiesMapper grantedAuthoritiesMapper = mapper</span>
-<span class="pc" id="L95">        .getIfAvailable(() -&gt; new NormalizedGrantedAuthoritiesMapper(</span>
-<span class="nc" id="L96">            properties.getDefaultRoles(),</span>
-<span class="nc" id="L97">            properties.toRoleMappings(),</span>
-<span class="nc" id="L98">            properties.getRolePrefix(),</span>
-<span class="nc" id="L99">            getCaseTransformation(properties.getRoleCaseTransformation()),</span>
-<span class="nc" id="L100">            properties.toRoleStringReplacements()));</span>
+<span class="fc" id="L102">    log.info(&quot;Creating new jwt authentication converter.&quot;);</span>
 
-<span class="fc" id="L102">    return new JsonPathJwtConverter(</span>
-<span class="fc" id="L103">        properties.getNameJsonPath(),</span>
-<span class="fc" id="L104">        properties.getFirstNameJsonPath(),</span>
-<span class="fc" id="L105">        properties.getLastNameJsonPath(),</span>
-<span class="fc" id="L106">        properties.getEmailJsonPath(),</span>
-<span class="fc" id="L107">        properties.getRolesJsonPath(),</span>
-<span class="fc" id="L108">        properties.isRolesValueList(),</span>
-<span class="fc" id="L109">        properties.getRolesValueSeparator(),</span>
+<span class="fc" id="L104">    GrantedAuthoritiesMapper grantedAuthoritiesMapper = mapper</span>
+<span class="pc" id="L105">        .getIfAvailable(() -&gt; new NormalizedGrantedAuthoritiesMapper(</span>
+<span class="nc" id="L106">            properties.getDefaultRoles(),</span>
+<span class="nc" id="L107">            properties.toRoleMappings(),</span>
+<span class="nc" id="L108">            properties.getRolePrefix(),</span>
+<span class="nc" id="L109">            getCaseTransformation(properties.getRoleCaseTransformation()),</span>
+<span class="nc" id="L110">            properties.toRoleStringReplacements()));</span>
+
+<span class="fc" id="L112">    return new JsonPathJwtConverter(</span>
+<span class="fc" id="L113">        properties.getNameJsonPath(),</span>
+<span class="fc" id="L114">        properties.getFirstNameJsonPath(),</span>
+<span class="fc" id="L115">        properties.getLastNameJsonPath(),</span>
+<span class="fc" id="L116">        properties.getEmailJsonPath(),</span>
+<span class="fc" id="L117">        properties.getRolesJsonPath(),</span>
+<span class="fc" id="L118">        properties.isRolesValueList(),</span>
+<span class="fc" id="L119">        properties.getRolesValueSeparator(),</span>
         grantedAuthoritiesMapper
     );
   }
 
   private CaseTransformation getCaseTransformation(
       AuthenticationProperties.CaseTransformation source) {
-<span class="nc bnc" id="L116" title="All 2 branches missed.">    return isNull(source) ? CaseTransformation.NONE : CaseTransformation.valueOf(source.name());</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    return isNull(source) ? CaseTransformation.NONE : CaseTransformation.valueOf(source.name());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

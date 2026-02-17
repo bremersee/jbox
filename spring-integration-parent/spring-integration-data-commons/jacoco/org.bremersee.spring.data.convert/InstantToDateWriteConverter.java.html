@@ -16,7 +16,6 @@
 
 package org.bremersee.spring.data.convert;
 
-
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
@@ -32,24 +31,30 @@ import org.springframework.lang.NonNull;
  */
 @WritingConverter
 @ToString
-<span class="fc" id="L35">public class InstantToDateWriteConverter implements Converter&lt;Instant, Date&gt; {</span>
+public class InstantToDateWriteConverter implements Converter&lt;Instant, Date&gt; {
+
+  /**
+   * Instantiates a new instant to date write converter.
+   */
+<span class="fc" id="L39">  public InstantToDateWriteConverter() {</span>
+<span class="fc" id="L40">  }</span>
 
   @Override
   public Date convert(@NonNull Instant instant) {
-<span class="fc" id="L39">    return Date.from(instant);</span>
+<span class="fc" id="L44">    return Date.from(instant);</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L45">      return true;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L50">      return true;</span>
     }
-<span class="nc bnc" id="L47" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L52" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L52">    return Objects.hashCode(getClass());</span>
+<span class="nc" id="L57">    return Objects.hashCode(getClass());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

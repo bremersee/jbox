@@ -96,6 +96,9 @@ public class LdaptiveUser extends SerLdapEntry
    *
    * @param ldapEntry the ldap entry
    * @param username the username
+   * @param firstName the first name
+   * @param lastName the last name
+   * @param email the email
    * @param authorities the authorities
    * @param password the password
    * @param accountNonExpired the account non expired
@@ -115,23 +118,23 @@ public class LdaptiveUser extends SerLdapEntry
       boolean accountNonLocked,
       boolean credentialsNonExpired,
       boolean enabled) {
-<span class="fc" id="L118">    super(ldapEntry);</span>
-<span class="fc" id="L119">    this.username = username;</span>
-<span class="fc" id="L120">    this.firstName = firstName;</span>
-<span class="fc" id="L121">    this.lastName = lastName;</span>
-<span class="fc" id="L122">    this.email = email;</span>
-<span class="fc" id="L123">    this.authorities = Optional.ofNullable(authorities).orElseGet(List::of);</span>
-<span class="fc" id="L124">    this.password = Optional.ofNullable(password)</span>
-<span class="pc" id="L125">        .orElseGet(() -&gt; LdaptiveRememberMeTokenProvider.invalid().getRememberMeToken(ldapEntry));</span>
-<span class="fc" id="L126">    this.accountNonExpired = accountNonExpired;</span>
-<span class="fc" id="L127">    this.accountNonLocked = accountNonLocked;</span>
-<span class="fc" id="L128">    this.credentialsNonExpired = credentialsNonExpired;</span>
-<span class="fc" id="L129">    this.enabled = enabled;</span>
-<span class="fc" id="L130">  }</span>
+<span class="fc" id="L121">    super(ldapEntry);</span>
+<span class="fc" id="L122">    this.username = username;</span>
+<span class="fc" id="L123">    this.firstName = firstName;</span>
+<span class="fc" id="L124">    this.lastName = lastName;</span>
+<span class="fc" id="L125">    this.email = email;</span>
+<span class="fc" id="L126">    this.authorities = Optional.ofNullable(authorities).orElseGet(List::of);</span>
+<span class="fc" id="L127">    this.password = Optional.ofNullable(password)</span>
+<span class="pc" id="L128">        .orElseGet(() -&gt; LdaptiveRememberMeTokenProvider.invalid().getRememberMeToken(ldapEntry));</span>
+<span class="fc" id="L129">    this.accountNonExpired = accountNonExpired;</span>
+<span class="fc" id="L130">    this.accountNonLocked = accountNonLocked;</span>
+<span class="fc" id="L131">    this.credentialsNonExpired = credentialsNonExpired;</span>
+<span class="fc" id="L132">    this.enabled = enabled;</span>
+<span class="fc" id="L133">  }</span>
 
   @Override
   public String getName() {
-<span class="fc" id="L134">    return getUsername();</span>
+<span class="fc" id="L137">    return getUsername();</span>
   }
 
 }

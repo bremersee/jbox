@@ -29,8 +29,13 @@ import org.springframework.data.convert.ReadingConverter;
  */
 @ReadingConverter
 @ToString
-<span class="fc" id="L32">public class TimeZoneReadConverter extends StringToTimeZoneConverter</span>
+public class TimeZoneReadConverter extends StringToTimeZoneConverter
     implements Converter&lt;String, TimeZone&gt; {
 
+  /**
+   * Instantiates a new time zone read converter.
+   */
+<span class="fc" id="L38">  public TimeZoneReadConverter() {</span>
+<span class="fc" id="L39">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

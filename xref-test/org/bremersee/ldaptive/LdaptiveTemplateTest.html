@@ -171,336 +171,358 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>   }
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">   * Find existing person.</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">   * Find one existing person.</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>   @Test
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>   <strong class="jxr_keyword">void</strong> findExistingPerson() {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>   <strong class="jxr_keyword">void</strong> findOneAndExpectSizeLimitExceeded() {
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>     SearchRequest searchRequest = SearchRequest.builder()
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         .dn(<span class="jxr_string">"ou=people,"</span> + baseDn)
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         .filter(FilterTemplate.builder()
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>             .filter(<span class="jxr_string">"(&amp;(objectclass=inetOrgPerson)(uid={0}))"</span>)
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>             .parameters(<span class="jxr_string">"anna"</span>)
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>             .build())
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>         .scope(SearchScope.ONELEVEL)
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>             .filter(<span class="jxr_string">"(objectclass=inetOrgPerson)"</span>)
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>             .build())
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>         .scope(SearchScope.ONELEVEL)
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         .sizeLimit(1)
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         .build();
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate.findOne(searchRequest);
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>     assertTrue(entry.isPresent());
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>     assertEquals(<span class="jxr_string">"anna"</span>, entry.get().getAttribute(<span class="jxr_string">"uid"</span>).getStringValue());
-<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>     Optional&lt;Person&gt; person = ldaptiveTemplate.findOne(searchRequest, personMapper);
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>     assertTrue(person.isPresent());
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>     assertEquals(<span class="jxr_string">"anna"</span>, person.get().getUid());
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>   }
-<a class="jxr_linenumber" name="L187" href="#L187">187</a> 
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L189" href="#L189">189</a> <em class="jxr_javadoccomment">   * Find existing person by dn.</em>
-<a class="jxr_linenumber" name="L190" href="#L190">190</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>   @Test
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>   <strong class="jxr_keyword">void</strong> findExistingPersonByDn() {
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>     String dn = <span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn;
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>         .findOne(SearchRequest.objectScopeSearchRequest(dn));
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>     assertTrue(entry.isPresent());
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>   }
-<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L200" href="#L200">200</a> <em class="jxr_javadoccomment">   * Find non existing person.</em>
-<a class="jxr_linenumber" name="L201" href="#L201">201</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>   @Test
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>   <strong class="jxr_keyword">void</strong> findNonExistingPerson() {
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>     SearchRequest searchRequest = SearchRequest.builder()
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         .dn(<span class="jxr_string">"ou=people,"</span> + baseDn)
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>         .filter(FilterTemplate.builder()
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>             .filter(<span class="jxr_string">"(&amp;(objectclass=inetOrgPerson)(uid={0}))"</span>)
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>             .parameters(UUID.randomUUID().toString().replace(<span class="jxr_string">"-"</span>, <span class="jxr_string">""</span>))
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>             .build())
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>         .scope(SearchScope.ONELEVEL)
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>         .build();
-<a class="jxr_linenumber" name="L212" href="#L212">212</a> 
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate.findOne(searchRequest);
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>     assertFalse(entry.isPresent());
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>     assertThrows(LdaptiveException.<strong class="jxr_keyword">class</strong>, () -&gt; ldaptiveTemplate.findOne(searchRequest));
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>   }
+<a class="jxr_linenumber" name="L181" href="#L181">181</a> 
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> <em class="jxr_javadoccomment">   * Find existing person.</em>
+<a class="jxr_linenumber" name="L184" href="#L184">184</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>   @Test
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>   <strong class="jxr_keyword">void</strong> findExistingPerson() {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>     SearchRequest searchRequest = SearchRequest.builder()
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         .dn(<span class="jxr_string">"ou=people,"</span> + baseDn)
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         .filter(FilterTemplate.builder()
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>             .filter(<span class="jxr_string">"(&amp;(objectclass=inetOrgPerson)(uid={0}))"</span>)
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>             .parameters(<span class="jxr_string">"anna"</span>)
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>             .build())
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>         .scope(SearchScope.ONELEVEL)
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>         .sizeLimit(1)
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>         .build();
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> 
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate.findOne(searchRequest);
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>     assertTrue(entry.isPresent());
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>     assertEquals(<span class="jxr_string">"anna"</span>, entry.get().getAttribute(<span class="jxr_string">"uid"</span>).getStringValue());
+<a class="jxr_linenumber" name="L200" href="#L200">200</a> 
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>     Optional&lt;Person&gt; person = ldaptiveTemplate.findOne(searchRequest, personMapper);
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>     assertTrue(person.isPresent());
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>     assertEquals(<span class="jxr_string">"anna"</span>, person.get().getUid());
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>   }
+<a class="jxr_linenumber" name="L205" href="#L205">205</a> 
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L207" href="#L207">207</a> <em class="jxr_javadoccomment">   * Find existing person by dn.</em>
+<a class="jxr_linenumber" name="L208" href="#L208">208</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>   @Test
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>   <strong class="jxr_keyword">void</strong> findExistingPersonByDn() {
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>     String dn = <span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn;
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>         .findOne(SearchRequest.objectScopeSearchRequest(dn));
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>     assertTrue(entry.isPresent());
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>   }
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> 
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   * Find non existing person by dn.</em>
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   * Find non existing person.</em>
 <a class="jxr_linenumber" name="L219" href="#L219">219</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>   @Test
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>   <strong class="jxr_keyword">void</strong> findNonExistingPersonByDn() {
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>     String uid = UUID.randomUUID().toString().replace(<span class="jxr_string">"-"</span>, <span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>     String dn = <span class="jxr_string">"uid="</span> + uid + <span class="jxr_string">",ou=people,"</span> + baseDn;
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>         .findOne(SearchRequest.objectScopeSearchRequest(dn));
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>     assertFalse(entry.isPresent());
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>   }
-<a class="jxr_linenumber" name="L228" href="#L228">228</a> 
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L230" href="#L230">230</a> <em class="jxr_javadoccomment">   * Generate user password and bind.</em>
-<a class="jxr_linenumber" name="L231" href="#L231">231</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>   @Test
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>   <strong class="jxr_keyword">void</strong> generateUserPasswordAndBind() {
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>     String dn = <span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn;
-<a class="jxr_linenumber" name="L235" href="#L235">235</a> 
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>     String initPasswd = ldaptiveTemplate.generateUserPassword(dn);
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>     assertNotNull(initPasswd);
-<a class="jxr_linenumber" name="L238" href="#L238">238</a> 
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>     String newPasswd = initPasswd + <span class="jxr_string">"Pass1234"</span>;
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>     ldaptiveTemplate.modifyUserPassword(dn, initPasswd, newPasswd);
-<a class="jxr_linenumber" name="L241" href="#L241">241</a> 
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">boolean</strong> success = ldaptiveTemplate.bind(SimpleBindRequest.builder()
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>         .dn(dn)
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>         .password(newPasswd)
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         .build());
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>     assertTrue(success);
-<a class="jxr_linenumber" name="L247" href="#L247">247</a> 
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>     success = ldaptiveTemplate.bind(SimpleBindRequest.builder()
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         .dn(dn)
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>         .password(initPasswd + <span class="jxr_string">"f"</span>)
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>         .build());
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>     assertFalse(success);
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>   }
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">   * Set user password fails.</em>
-<a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>   @Test
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>   <strong class="jxr_keyword">void</strong> setUserPasswordFails() {
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>     String dn = <span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn;
-<a class="jxr_linenumber" name="L261" href="#L261">261</a> 
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>     String initPasswd = ldaptiveTemplate.generateUserPassword(dn);
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>     assertNotNull(initPasswd);
-<a class="jxr_linenumber" name="L264" href="#L264">264</a> 
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>     String newPasswd = initPasswd + <span class="jxr_string">"Pass1234"</span>;
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>     assertThrows(ServiceException.<strong class="jxr_keyword">class</strong>, () -&gt; ldaptiveTemplate.modifyUserPassword(dn, <span class="jxr_string">"wrong"</span>, newPasswd));
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>   }
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">   * Exists group.</em>
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>   @Test
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>   <strong class="jxr_keyword">void</strong> existsGroup() {
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>     group.setCn(<span class="jxr_string">"developers"</span>);
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>     assertTrue(ldaptiveTemplate.exists(group, groupMapper));
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>     group.setCn(<span class="jxr_string">"na"</span>);
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>     assertFalse(ldaptiveTemplate.exists(group, groupMapper));
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>   }
-<a class="jxr_linenumber" name="L280" href="#L280">280</a> 
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_javadoccomment">   * Compare group.</em>
-<a class="jxr_linenumber" name="L283" href="#L283">283</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>   @Test
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>   <strong class="jxr_keyword">void</strong> compareGroup() {
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>     group.setCn(<span class="jxr_string">"developers"</span>);
-<a class="jxr_linenumber" name="L288" href="#L288">288</a> 
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>     assertTrue(ldaptiveTemplate.compare(CompareRequest.builder()
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>         .dn(groupMapper.mapDn(group))
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         .name(<span class="jxr_string">"ou"</span>)
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         .value(<span class="jxr_string">"developer"</span>)
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         .build()));
-<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>     assertFalse(ldaptiveTemplate.compare(CompareRequest.builder()
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         .dn(groupMapper.mapDn(group))
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         .name(<span class="jxr_string">"ou"</span>)
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>         .value(<span class="jxr_string">"manager"</span>)
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>         .build()));
-<a class="jxr_linenumber" name="L300" href="#L300">300</a> 
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>     assertFalse(ldaptiveTemplate.compare(CompareRequest.builder()
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         .dn(groupMapper.mapDn(group))
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         .name(<span class="jxr_string">"notexists"</span>)
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>         .value(<span class="jxr_string">"manager"</span>)
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         .build()));
-<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>     group.setCn(<span class="jxr_string">"notexists"</span>);
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>     assertThrows(ServiceException.<strong class="jxr_keyword">class</strong>, () -&gt; ldaptiveTemplate.compare(CompareRequest.builder()
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>   <strong class="jxr_keyword">void</strong> findNonExistingPerson() {
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>     SearchRequest searchRequest = SearchRequest.builder()
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         .dn(<span class="jxr_string">"ou=people,"</span> + baseDn)
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>         .filter(FilterTemplate.builder()
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>             .filter(<span class="jxr_string">"(&amp;(objectclass=inetOrgPerson)(uid={0}))"</span>)
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>             .parameters(UUID.randomUUID().toString().replace(<span class="jxr_string">"-"</span>, <span class="jxr_string">""</span>))
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>             .build())
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         .scope(SearchScope.ONELEVEL)
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         .build();
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> 
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate.findOne(searchRequest);
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     assertFalse(entry.isPresent());
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>   }
+<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">   * Find non existing person by dn.</em>
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>   @Test
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>   <strong class="jxr_keyword">void</strong> findNonExistingPersonByDn() {
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>     String uid = UUID.randomUUID().toString().replace(<span class="jxr_string">"-"</span>, <span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>     String dn = <span class="jxr_string">"uid="</span> + uid + <span class="jxr_string">",ou=people,"</span> + baseDn;
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>     Optional&lt;LdapEntry&gt; entry = ldaptiveTemplate
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         .findOne(SearchRequest.objectScopeSearchRequest(dn));
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>     assertFalse(entry.isPresent());
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>   }
+<a class="jxr_linenumber" name="L246" href="#L246">246</a> 
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L248" href="#L248">248</a> <em class="jxr_javadoccomment">   * Generate user password and bind.</em>
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>   @Test
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>   <strong class="jxr_keyword">void</strong> generateUserPasswordAndBind() {
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>     String dn = <span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn;
+<a class="jxr_linenumber" name="L253" href="#L253">253</a> 
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>     String initPasswd = ldaptiveTemplate.generateUserPassword(dn);
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>     assertNotNull(initPasswd);
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     String newPasswd = initPasswd + <span class="jxr_string">"Pass1234"</span>;
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>     ldaptiveTemplate.modifyUserPassword(dn, initPasswd, newPasswd);
+<a class="jxr_linenumber" name="L259" href="#L259">259</a> 
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>     <strong class="jxr_keyword">boolean</strong> success = ldaptiveTemplate.bind(SimpleBindRequest.builder()
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         .dn(dn)
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         .password(newPasswd)
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         .build());
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>     assertTrue(success);
+<a class="jxr_linenumber" name="L265" href="#L265">265</a> 
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>     success = ldaptiveTemplate.bind(SimpleBindRequest.builder()
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         .dn(dn)
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>         .password(initPasswd + <span class="jxr_string">"f"</span>)
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>         .build());
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>     assertFalse(success);
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>   }
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">   * Set user password fails.</em>
+<a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>   @Test
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>   <strong class="jxr_keyword">void</strong> setUserPasswordFails() {
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>     String dn = <span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn;
+<a class="jxr_linenumber" name="L279" href="#L279">279</a> 
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>     String initPasswd = ldaptiveTemplate.generateUserPassword(dn);
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>     assertNotNull(initPasswd);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     String newPasswd = initPasswd + <span class="jxr_string">"Pass1234"</span>;
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>     assertThrows(ServiceException.<strong class="jxr_keyword">class</strong>, () -&gt; ldaptiveTemplate
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         .modifyUserPassword(dn, <span class="jxr_string">"wrong"</span>, newPasswd));
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>   }
+<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">   * Exists group.</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>   @Test
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>   <strong class="jxr_keyword">void</strong> existsGroup() {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>     group.setCn(<span class="jxr_string">"developers"</span>);
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>     assertTrue(ldaptiveTemplate.exists(group, groupMapper));
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     group.setCn(<span class="jxr_string">"na"</span>);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>     assertFalse(ldaptiveTemplate.exists(group, groupMapper));
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>   }
+<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_javadoccomment">   * Compare group.</em>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>   @Test
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>   <strong class="jxr_keyword">void</strong> compareGroup() {
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>     group.setCn(<span class="jxr_string">"developers"</span>);
+<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>     assertTrue(ldaptiveTemplate.compare(CompareRequest.builder()
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>         .dn(groupMapper.mapDn(group))
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>         .name(<span class="jxr_string">"ou"</span>)
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>         .value(<span class="jxr_string">"developer"</span>)
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>         .build()));
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>   }
-<a class="jxr_linenumber" name="L314" href="#L314">314</a> 
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L316" href="#L316">316</a> <em class="jxr_javadoccomment">   * Add and modify and delete person.</em>
-<a class="jxr_linenumber" name="L317" href="#L317">317</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>   @Test
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>   <strong class="jxr_keyword">void</strong> addAndModifyAndDeletePerson() {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> person = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>     person.setCn(<span class="jxr_string">"A person"</span>);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>     person.setSn(<span class="jxr_string">"Person"</span>);
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>     person.setUid(<span class="jxr_string">"person"</span>);
-<a class="jxr_linenumber" name="L324" href="#L324">324</a> 
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>     String dn = personMapper.mapDn(person);
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>     LdapEntry destination = <strong class="jxr_keyword">new</strong> LdapEntry();
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>     personMapper.map(person, destination);
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>     destination.setDn(dn);
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>     destination.addAttributes(<strong class="jxr_keyword">new</strong> LdapAttribute(
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>         <span class="jxr_string">"objectclass"</span>,
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>         personMapper.getObjectClasses()));
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>     ldaptiveTemplate.add(<strong class="jxr_keyword">new</strong> AddRequest(dn, destination.getAttributes()));
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>     assertTrue(ldaptiveTemplate.exists(person, personMapper));
+<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     assertFalse(ldaptiveTemplate.compare(CompareRequest.builder()
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         .dn(groupMapper.mapDn(group))
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         .name(<span class="jxr_string">"ou"</span>)
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>         .value(<span class="jxr_string">"manager"</span>)
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         .build()));
+<a class="jxr_linenumber" name="L319" href="#L319">319</a> 
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>     assertFalse(ldaptiveTemplate.compare(CompareRequest.builder()
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         .dn(groupMapper.mapDn(group))
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         .name(<span class="jxr_string">"notexists"</span>)
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         .value(<span class="jxr_string">"manager"</span>)
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         .build()));
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> 
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     group.setCn(<span class="jxr_string">"notexists"</span>);
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>     CompareRequest cr = CompareRequest.builder()
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>         .dn(groupMapper.mapDn(group))
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         .name(<span class="jxr_string">"ou"</span>)
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>         .value(<span class="jxr_string">"developer"</span>)
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>         .build();
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>     assertThrows(ServiceException.<strong class="jxr_keyword">class</strong>, () -&gt; ldaptiveTemplate.compare(cr));
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>   }
 <a class="jxr_linenumber" name="L334" href="#L334">334</a> 
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>     person.setSn(<span class="jxr_string">"Surname"</span>);
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>     ModifyRequest modifyRequest = personMapper
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         .mapAndComputeModifyRequest(person, destination);
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>     ldaptiveTemplate.modify(modifyRequest);
-<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>     person = ldaptiveTemplate.findOne(SearchRequest.objectScopeSearchRequest(dn), personMapper)
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Person"</span>, <span class="jxr_string">"person"</span>));
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>     assertEquals(<span class="jxr_string">"Surname"</span>, person.getSn());
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>     person.setSn(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>     modifyRequest = personMapper
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>         .mapAndComputeModifyRequest(person, destination);
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     ldaptiveTemplate.modify(modifyRequest);
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>     person = ldaptiveTemplate.findOne(SearchRequest.objectScopeSearchRequest(dn), personMapper)
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Person"</span>, <span class="jxr_string">"person"</span>));
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     assertNull(person.getSn());
-<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>     ldaptiveTemplate.delete(<strong class="jxr_keyword">new</strong> DeleteRequest(dn));
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>     assertFalse(ldaptiveTemplate.exists(person, personMapper));
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>   }
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L358" href="#L358">358</a> <em class="jxr_javadoccomment">   * Save and remove group.</em>
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>   @Test
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>   <strong class="jxr_keyword">void</strong> saveAndRemoveGroup() {
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>     group.setCn(<span class="jxr_string">"party"</span>);
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>     group.setOu(<span class="jxr_string">"Party Guests"</span>);
-<a class="jxr_linenumber" name="L365" href="#L365">365</a> 
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     Set&lt;String&gt; members = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;&gt;();
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>     members.add(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn);
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>     group.setMembers(members);
-<a class="jxr_linenumber" name="L369" href="#L369">369</a> 
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>     group = ldaptiveTemplate.save(group, groupMapper);
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     assertNotNull(group);
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>     SearchRequest searchRequest = SearchRequest.builder()
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>         .dn(<span class="jxr_string">"ou=groups,"</span> + baseDn)
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>         .filter(FilterTemplate.builder()
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>             .filter(<span class="jxr_string">"(&amp;(objectclass=groupOfUniqueNames)(cn={0}))"</span>)
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>             .parameters(<span class="jxr_string">"party"</span>)
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>             .build())
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>         .scope(SearchScope.ONELEVEL)
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>         .build();
-<a class="jxr_linenumber" name="L381" href="#L381">381</a> 
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>     group = ldaptiveTemplate.findOne(searchRequest, groupMapper)
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Group"</span>, <span class="jxr_string">"party"</span>));
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>     assertEquals(<span class="jxr_string">"party"</span>, group.getCn());
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>     assertEquals(<span class="jxr_string">"Party Guests"</span>, group.getOu());
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L336" href="#L336">336</a> <em class="jxr_javadoccomment">   * Add and modify and delete person.</em>
+<a class="jxr_linenumber" name="L337" href="#L337">337</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>   @Test
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>   <strong class="jxr_keyword">void</strong> addAndModifyAndDeletePerson() {
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> person = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>     person.setCn(<span class="jxr_string">"A person"</span>);
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>     person.setSn(<span class="jxr_string">"Person"</span>);
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>     person.setUid(<span class="jxr_string">"person"</span>);
+<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>     String dn = personMapper.mapDn(person);
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>     LdapEntry destination = <strong class="jxr_keyword">new</strong> LdapEntry();
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>     personMapper.map(person, destination);
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     destination.setDn(dn);
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     destination.addAttributes(<strong class="jxr_keyword">new</strong> LdapAttribute(
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         <span class="jxr_string">"objectclass"</span>,
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>         personMapper.getObjectClasses()));
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     ldaptiveTemplate.add(<strong class="jxr_keyword">new</strong> AddRequest(dn, destination.getAttributes()));
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     assertTrue(ldaptiveTemplate.exists(person, personMapper));
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>     person.setSn(<span class="jxr_string">"Surname"</span>);
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>     ModifyRequest modifyRequest = personMapper
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         .mapAndComputeModifyRequest(person, destination)
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         .orElseThrow();
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>     ldaptiveTemplate.modify(modifyRequest);
+<a class="jxr_linenumber" name="L360" href="#L360">360</a> 
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>     person = ldaptiveTemplate.findOne(SearchRequest.objectScopeSearchRequest(dn), personMapper)
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Person"</span>, <span class="jxr_string">"person"</span>));
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>     assertEquals(<span class="jxr_string">"Surname"</span>, person.getSn());
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> 
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>     person.setSn(<span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     modifyRequest = personMapper
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>         .mapAndComputeModifyRequest(person, destination)
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>         .orElseThrow();
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     ldaptiveTemplate.modify(modifyRequest);
+<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>     person = ldaptiveTemplate.findOne(SearchRequest.objectScopeSearchRequest(dn), personMapper)
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Person"</span>, <span class="jxr_string">"person"</span>));
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>     assertNull(person.getSn());
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>     ldaptiveTemplate.delete(<strong class="jxr_keyword">new</strong> DeleteRequest(dn));
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>     assertFalse(ldaptiveTemplate.exists(person, personMapper));
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>   }
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> 
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_javadoccomment">   * Save and remove group.</em>
+<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>   @Test
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>   <strong class="jxr_keyword">void</strong> saveAndRemoveGroup() {
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>     group.setCn(<span class="jxr_string">"party"</span>);
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>     group.setOu(<span class="jxr_string">"Party Guests"</span>);
 <a class="jxr_linenumber" name="L387" href="#L387">387</a> 
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>     group.getMembers().add(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn);
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>     group.getMembers().add(<span class="jxr_string">"uid=gustav,ou=people,"</span> + baseDn);
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>     group = ldaptiveTemplate.save(group, groupMapper);
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>     assertNotNull(group);
-<a class="jxr_linenumber" name="L392" href="#L392">392</a> 
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>     group = ldaptiveTemplate.findOne(searchRequest, groupMapper)
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Group"</span>, <span class="jxr_string">"party"</span>));
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>     assertEquals(<span class="jxr_string">"party"</span>, group.getCn());
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>     assertEquals(<span class="jxr_string">"Party Guests"</span>, group.getOu());
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn));
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn));
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=gustav,ou=people,"</span> + baseDn));
-<a class="jxr_linenumber" name="L400" href="#L400">400</a> 
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>     group.getMembers().remove(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn);
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>     group = ldaptiveTemplate.save(group, groupMapper);
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>     assertNotNull(group);
-<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>     group = ldaptiveTemplate.findOne(searchRequest, groupMapper)
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Group"</span>, <span class="jxr_string">"party"</span>));
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>     assertEquals(<span class="jxr_string">"party"</span>, group.getCn());
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>     assertEquals(<span class="jxr_string">"Party Guests"</span>, group.getOu());
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn));
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=gustav,ou=people,"</span> + baseDn));
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>     assertFalse(group.getMembers().contains(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn));
-<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>     ldaptiveTemplate.remove(group, groupMapper);
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>     assertFalse(ldaptiveTemplate.exists(group, groupMapper));
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>   }
-<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">   * Save and delete persons.</em>
-<a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>   @Test
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>   <strong class="jxr_keyword">void</strong> saveAndRemovePersons() {
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p0 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>     p0.setCn(<span class="jxr_string">"Person Number 0"</span>);
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>     p0.setSn(<span class="jxr_string">"Person 0"</span>);
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>     p0.setUid(<span class="jxr_string">"person0"</span>);
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p1 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>     p1.setCn(<span class="jxr_string">"Person Number 1"</span>);
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>     p1.setSn(<span class="jxr_string">"Person 1"</span>);
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>     p1.setUid(<span class="jxr_string">"person1"</span>);
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p2 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>     p2.setCn(<span class="jxr_string">"Person Number 2"</span>);
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>     p2.setSn(<span class="jxr_string">"Person 2"</span>);
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>     p2.setUid(<span class="jxr_string">"person2"</span>);
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>     Set&lt;String&gt; members = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;&gt;();
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>     members.add(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn);
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>     group.setMembers(members);
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     group = ldaptiveTemplate.save(group, groupMapper);
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>     assertNotNull(group);
+<a class="jxr_linenumber" name="L394" href="#L394">394</a> 
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>     SearchRequest searchRequest = SearchRequest.builder()
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>         .dn(<span class="jxr_string">"ou=groups,"</span> + baseDn)
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>         .filter(FilterTemplate.builder()
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>             .filter(<span class="jxr_string">"(&amp;(objectclass=groupOfUniqueNames)(cn={0}))"</span>)
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>             .parameters(<span class="jxr_string">"party"</span>)
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>             .build())
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>         .scope(SearchScope.ONELEVEL)
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>         .build();
+<a class="jxr_linenumber" name="L403" href="#L403">403</a> 
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>     group = ldaptiveTemplate.findOne(searchRequest, groupMapper)
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Group"</span>, <span class="jxr_string">"party"</span>));
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>     assertEquals(<span class="jxr_string">"party"</span>, group.getCn());
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>     assertEquals(<span class="jxr_string">"Party Guests"</span>, group.getOu());
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> 
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>     group.getMembers().add(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn);
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     group.getMembers().add(<span class="jxr_string">"uid=gustav,ou=people,"</span> + baseDn);
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>     group = ldaptiveTemplate.save(group, groupMapper);
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>     assertNotNull(group);
+<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>     group = ldaptiveTemplate.findOne(searchRequest, groupMapper)
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Group"</span>, <span class="jxr_string">"party"</span>));
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>     assertEquals(<span class="jxr_string">"party"</span>, group.getCn());
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>     assertEquals(<span class="jxr_string">"Party Guests"</span>, group.getOu());
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=gustav,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L422" href="#L422">422</a> 
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>     group.getMembers().remove(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn);
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>     group = ldaptiveTemplate.save(group, groupMapper);
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>     assertNotNull(group);
+<a class="jxr_linenumber" name="L426" href="#L426">426</a> 
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>     group = ldaptiveTemplate.findOne(searchRequest, groupMapper)
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         .orElseThrow(() -&gt; ServiceException.notFound(<span class="jxr_string">"Group"</span>, <span class="jxr_string">"party"</span>));
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     assertEquals(<span class="jxr_string">"party"</span>, group.getCn());
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     assertEquals(<span class="jxr_string">"Party Guests"</span>, group.getOu());
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=anna,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>     assertTrue(group.getMembers().contains(<span class="jxr_string">"uid=gustav,ou=people,"</span> + baseDn));
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>     assertFalse(group.getMembers().contains(<span class="jxr_string">"uid=hans,ou=people,"</span> + baseDn));
 <a class="jxr_linenumber" name="L434" href="#L434">434</a> 
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>     ldaptiveTemplate.saveAll(Arrays.asList(p0, p1, p2), personMapper)
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>         .forEach(person -&gt; log.info(<span class="jxr_string">"New person: {}"</span>, person));
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>     assertTrue(ldaptiveTemplate.exists(p0, personMapper));
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     assertTrue(ldaptiveTemplate.exists(p1, personMapper));
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>     assertTrue(ldaptiveTemplate.exists(p2, personMapper));
-<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>     ldaptiveTemplate.removeAll(Arrays.asList(p0, p1, p2), personMapper);
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>     assertFalse(ldaptiveTemplate.exists(p0, personMapper));
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>     assertFalse(ldaptiveTemplate.exists(p1, personMapper));
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>     assertFalse(ldaptiveTemplate.exists(p2, personMapper));
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>   }
-<a class="jxr_linenumber" name="L446" href="#L446">446</a> 
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">   * Modify dn.</em>
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>   @Test
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>   <strong class="jxr_keyword">void</strong> modifyDn() {
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p0 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>     p0.setCn(<span class="jxr_string">"Gottfried"</span>);
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>     p0.setSn(<span class="jxr_string">"Benn"</span>);
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>     p0.setUid(<span class="jxr_string">"benn"</span>);
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>     ldaptiveTemplate.remove(group, groupMapper);
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>     assertFalse(ldaptiveTemplate.exists(group, groupMapper));
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>   }
+<a class="jxr_linenumber" name="L438" href="#L438">438</a> 
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> <em class="jxr_javadoccomment">   * Save and delete persons.</em>
+<a class="jxr_linenumber" name="L441" href="#L441">441</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>   @Test
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>   <strong class="jxr_keyword">void</strong> saveAndRemovePersons() {
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p0 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>     p0.setCn(<span class="jxr_string">"Person Number 0"</span>);
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>     p0.setSn(<span class="jxr_string">"Person 0"</span>);
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>     p0.setUid(<span class="jxr_string">"person0"</span>);
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p1 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>     p1.setCn(<span class="jxr_string">"Person Number 1"</span>);
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>     p1.setSn(<span class="jxr_string">"Person 1"</span>);
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>     p1.setUid(<span class="jxr_string">"person1"</span>);
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p2 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>     p2.setCn(<span class="jxr_string">"Person Number 2"</span>);
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>     p2.setSn(<span class="jxr_string">"Person 2"</span>);
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>     p2.setUid(<span class="jxr_string">"person2"</span>);
 <a class="jxr_linenumber" name="L456" href="#L456">456</a> 
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>     p0 = ldaptiveTemplate.save(p0, personMapper);
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>     assertNotNull(p0);
-<a class="jxr_linenumber" name="L459" href="#L459">459</a> 
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>     ldaptiveTemplate.modifyDn(ModifyDnRequest.builder()
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>         .oldDN(personMapper.mapDn(p0))
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>         .newRDN(<span class="jxr_string">"uid=gbn"</span>)
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>         .delete(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>         .build());
-<a class="jxr_linenumber" name="L465" href="#L465">465</a> 
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>     Optional&lt;Person&gt; pr = ldaptiveTemplate.findAll(
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>             SearchRequest.builder()
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>                 .dn(<span class="jxr_string">"ou=people,"</span> + baseDn)
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>                 .filter(<span class="jxr_string">"(sn=Benn)"</span>)
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>                 .build(),
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>             personMapper)
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>         .filter(p -&gt; <span class="jxr_string">"gbn"</span>.equals(p.getUid()))
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>         .findAny();
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>     assertTrue(pr.isPresent());
-<a class="jxr_linenumber" name="L475" href="#L475">475</a> 
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>     ldaptiveTemplate.delete(DeleteRequest.builder().dn(personMapper.mapDn(pr.get())).build());
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>   }
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>     ldaptiveTemplate.saveAll(Arrays.asList(p0, p1, p2), personMapper)
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         .forEach(person -&gt; log.info(<span class="jxr_string">"New person: {}"</span>, person));
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>     assertTrue(ldaptiveTemplate.exists(p0, personMapper));
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>     assertTrue(ldaptiveTemplate.exists(p1, personMapper));
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>     assertTrue(ldaptiveTemplate.exists(p2, personMapper));
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> 
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>     ldaptiveTemplate.removeAll(Arrays.asList(p0, p1, p2), personMapper);
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>     assertFalse(ldaptiveTemplate.exists(p0, personMapper));
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>     assertFalse(ldaptiveTemplate.exists(p1, personMapper));
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>     assertFalse(ldaptiveTemplate.exists(p2, personMapper));
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>   }
+<a class="jxr_linenumber" name="L468" href="#L468">468</a> 
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">   * Modify dn.</em>
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>   @Test
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>   <strong class="jxr_keyword">void</strong> modifyDn() {
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>     <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a> p0 = <strong class="jxr_keyword">new</strong> <a name="Person" href="../../../org/bremersee/ldaptive/app/Person.html#Person">Person</a>();
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>     p0.setCn(<span class="jxr_string">"Gottfried"</span>);
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>     p0.setSn(<span class="jxr_string">"Benn"</span>);
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>     p0.setUid(<span class="jxr_string">"benn"</span>);
 <a class="jxr_linenumber" name="L478" href="#L478">478</a> 
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L480" href="#L480">480</a> <em class="jxr_javadoccomment">   * Test clone.</em>
-<a class="jxr_linenumber" name="L481" href="#L481">481</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>   @Test
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>   <strong class="jxr_keyword">void</strong> testClone() {
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>     LdaptiveTemplate clone = ldaptiveTemplate.clone();
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>     clone.setErrorHandler(<strong class="jxr_keyword">new</strong> DefaultLdaptiveErrorHandler());
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>     group.setCn(<span class="jxr_string">"developers"</span>);
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>     assertTrue(clone.exists(group, groupMapper));
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>     group.setCn(<span class="jxr_string">"na"</span>);
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>     assertFalse(clone.exists(group, groupMapper));
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>   }
-<a class="jxr_linenumber" name="L492" href="#L492">492</a> 
-<a class="jxr_linenumber" name="L493" href="#L493">493</a> }
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>     p0 = ldaptiveTemplate.save(p0, personMapper);
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>     assertNotNull(p0);
+<a class="jxr_linenumber" name="L481" href="#L481">481</a> 
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>     ldaptiveTemplate.modifyDn(ModifyDnRequest.builder()
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>         .oldDN(personMapper.mapDn(p0))
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>         .newRDN(<span class="jxr_string">"uid=gbn"</span>)
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>         .delete(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>         .build());
+<a class="jxr_linenumber" name="L487" href="#L487">487</a> 
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>     Optional&lt;Person&gt; pr = ldaptiveTemplate.findAll(
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>             SearchRequest.builder()
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>                 .dn(<span class="jxr_string">"ou=people,"</span> + baseDn)
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>                 .filter(<span class="jxr_string">"(sn=Benn)"</span>)
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>                 .build(),
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>             personMapper)
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>         .filter(p -&gt; <span class="jxr_string">"gbn"</span>.equals(p.getUid()))
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>         .findAny();
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>     assertTrue(pr.isPresent());
+<a class="jxr_linenumber" name="L497" href="#L497">497</a> 
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>     ldaptiveTemplate.delete(DeleteRequest.builder().dn(personMapper.mapDn(pr.get())).build());
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>   }
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> 
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   * Test clone.</em>
+<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>   @Test
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>   <strong class="jxr_keyword">void</strong> testCopy() {
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>     LdaptiveTemplate clone = ldaptiveTemplate.copy();
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>     clone.setErrorHandler(<strong class="jxr_keyword">new</strong> DefaultLdaptiveErrorHandler());
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>     <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a> group = <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../org/bremersee/ldaptive/app/Group.html#Group">Group</a>();
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>     group.setCn(<span class="jxr_string">"developers"</span>);
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>     assertTrue(clone.exists(group, groupMapper));
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>     group.setCn(<span class="jxr_string">"na"</span>);
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>     assertFalse(clone.exists(group, groupMapper));
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>   }
+<a class="jxr_linenumber" name="L514" href="#L514">514</a> 
+<a class="jxr_linenumber" name="L515" href="#L515">515</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

@@ -19,6 +19,7 @@ package org.bremersee.spring.boot.autoconfigure.web;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -36,9 +37,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  */
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(name = {&quot;org.springframework.web.cors.UrlBasedCorsConfigurationSource&quot;})
+@ConditionalOnProperty(prefix = &quot;bremersee.web.cors&quot;, name = &quot;enabled&quot;, havingValue = &quot;true&quot;)
 @EnableConfigurationProperties(CorsProperties.class)
 @AutoConfiguration
-<span class="fc" id="L41">@Slf4j</span>
+<span class="fc" id="L43">@Slf4j</span>
 public class CorsConfigurationSourceAutoConfiguration {
 
   private final CorsProperties corsProperties;
@@ -48,24 +50,24 @@ public class CorsConfigurationSourceAutoConfiguration {
    *
    * @param corsProperties the cors properties
    */
-<span class="fc" id="L51">  public CorsConfigurationSourceAutoConfiguration(CorsProperties corsProperties) {</span>
-<span class="fc" id="L52">    this.corsProperties = corsProperties;</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L53">  public CorsConfigurationSourceAutoConfiguration(CorsProperties corsProperties) {</span>
+<span class="fc" id="L54">    this.corsProperties = corsProperties;</span>
+<span class="fc" id="L55">  }</span>
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-<span class="fc" id="L60">    log.info(&quot;&quot;&quot;</span>
+<span class="fc" id="L62">    log.info(&quot;&quot;&quot;</span>
 
             *********************************************************************************
             * {}
             * properties = {}
             *********************************************************************************&quot;&quot;&quot;,
-<span class="fc" id="L66">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
+<span class="fc" id="L68">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
         corsProperties);
-<span class="fc" id="L68">  }</span>
+<span class="fc" id="L70">  }</span>
 
   /**
    * Creates cors configuration source.
@@ -74,9 +76,9 @@ public class CorsConfigurationSourceAutoConfiguration {
    */
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
-<span class="fc" id="L77">    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();</span>
-<span class="fc" id="L78">    source.setCorsConfigurations(corsProperties.toCorsConfigurations());</span>
-<span class="fc" id="L79">    return source;</span>
+<span class="fc" id="L79">    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();</span>
+<span class="fc" id="L80">    source.setCorsConfigurations(corsProperties.toCorsConfigurations());</span>
+<span class="fc" id="L81">    return source;</span>
   }
 
 }

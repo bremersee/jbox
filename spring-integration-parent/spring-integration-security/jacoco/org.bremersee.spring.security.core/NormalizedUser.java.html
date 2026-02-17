@@ -32,12 +32,24 @@ public class NormalizedUser implements NormalizedPrincipal {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The username of the user.
+   */
   private final String name;
 
+  /**
+   * The first name of the user.
+   */
   private final String firstName;
 
+  /**
+   * The last name of the user.
+   */
   private final String lastName;
 
+  /**
+   * The email of the user.
+   */
   private final String email;
 
   /**
@@ -48,31 +60,31 @@ public class NormalizedUser implements NormalizedPrincipal {
    * @param lastName the last name
    * @param email the email
    */
-<span class="fc" id="L51">  public NormalizedUser(String name, String firstName, String lastName, String email) {</span>
-<span class="fc" id="L52">    this.name = name;</span>
-<span class="fc" id="L53">    this.firstName = firstName;</span>
-<span class="fc" id="L54">    this.lastName = lastName;</span>
-<span class="fc" id="L55">    this.email = email;</span>
-<span class="fc" id="L56">  }</span>
+<span class="fc" id="L63">  public NormalizedUser(String name, String firstName, String lastName, String email) {</span>
+<span class="fc" id="L64">    this.name = name;</span>
+<span class="fc" id="L65">    this.firstName = firstName;</span>
+<span class="fc" id="L66">    this.lastName = lastName;</span>
+<span class="fc" id="L67">    this.email = email;</span>
+<span class="fc" id="L68">  }</span>
 
   @Override
   public String getName() {
-<span class="fc" id="L60">    return name;</span>
+<span class="fc" id="L72">    return name;</span>
   }
 
   @Override
   public String getFirstName() {
-<span class="fc" id="L65">    return firstName;</span>
+<span class="fc" id="L77">    return firstName;</span>
   }
 
   @Override
   public String getLastName() {
-<span class="fc" id="L70">    return lastName;</span>
+<span class="fc" id="L82">    return lastName;</span>
   }
 
   @Override
   public String getEmail() {
-<span class="fc" id="L75">    return email;</span>
+<span class="fc" id="L87">    return email;</span>
   }
 
 }

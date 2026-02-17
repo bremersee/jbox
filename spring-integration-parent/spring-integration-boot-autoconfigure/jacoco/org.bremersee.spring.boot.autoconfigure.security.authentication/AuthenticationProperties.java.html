@@ -38,17 +38,24 @@ public class AuthenticationProperties {
   /**
    * The remember-me properties.
    */
-  private RememberMeProperties rememberMe = new RememberMeProperties();
+<span class="fc" id="L41">  private RememberMeProperties rememberMe = new RememberMeProperties();</span>
 
   /**
    * The jwt converter properties.
    */
-  private JwtConverterProperties jwtConverter = new JwtConverterProperties();
+<span class="fc" id="L46">  private JwtConverterProperties jwtConverter = new JwtConverterProperties();</span>
 
   /**
    * The ldaptive properties.
    */
-  private LdaptiveProperties ldaptive = new LdaptiveProperties();
+<span class="fc" id="L51">  private LdaptiveProperties ldaptive = new LdaptiveProperties();</span>
+
+  /**
+   * Instantiates new authentication properties.
+   */
+  public AuthenticationProperties() {
+<span class="fc" id="L57">    super();</span>
+<span class="fc" id="L58">  }</span>
 
   /**
    * The remember-me properties.
@@ -92,6 +99,13 @@ public class AuthenticationProperties {
      * The token validity in seconds (default two weeks).
      */
     private Integer tokenValiditySeconds;
+
+    /**
+     * Instantiates new remember-me properties.
+     */
+    public RememberMeProperties() {
+<span class="fc" id="L107">      super();</span>
+<span class="fc" id="L108">    }</span>
   }
 
   /**
@@ -103,53 +117,53 @@ public class AuthenticationProperties {
     /**
      * The json path to the username.
      */
-    private String nameJsonPath = &quot;$.sub&quot;; // keycloak: $.preferred_username
+<span class="fc" id="L120">    private String nameJsonPath = &quot;$.sub&quot;; // keycloak: $.preferred_username</span>
 
     /**
      * The json path to the first name.
      */
-    private String firstNameJsonPath = &quot;$.given_name&quot;;
+<span class="fc" id="L125">    private String firstNameJsonPath = &quot;$.given_name&quot;;</span>
 
     /**
      * The json path to the last name.
      */
-    private String lastNameJsonPath = &quot;$.family_name&quot;;
+<span class="fc" id="L130">    private String lastNameJsonPath = &quot;$.family_name&quot;;</span>
 
     /**
      * The json path to the email.
      */
-    private String emailJsonPath = &quot;$.email&quot;;
+<span class="fc" id="L135">    private String emailJsonPath = &quot;$.email&quot;;</span>
 
     /**
      * The json path to the roles.
      */
-    private String rolesJsonPath = &quot;$.scope&quot;; // keycloak: $.realm_access.roles
+<span class="fc" id="L140">    private String rolesJsonPath = &quot;$.scope&quot;; // keycloak: $.realm_access.roles</span>
 
     /**
      * Specifies whether the roles are represented as a json array or as a list separated by
      * {@link #getRolesValueSeparator()}.
      */
-    private boolean rolesValueList = false; // keycloak: true
+<span class="fc" id="L146">    private boolean rolesValueList = false; // keycloak: true</span>
 
     /**
      * The roles separator to use if {@link #isRolesValueList()} is set to {@code false}.
      */
-    private String rolesValueSeparator = &quot; &quot;;
+<span class="fc" id="L151">    private String rolesValueSeparator = &quot; &quot;;</span>
 
     /**
      * The default roles.
      */
-    private List&lt;String&gt; defaultRoles = new ArrayList&lt;&gt;();
+<span class="fc" id="L156">    private List&lt;String&gt; defaultRoles = new ArrayList&lt;&gt;();</span>
 
     /**
      * The role mappings.
      */
-    private List&lt;RoleMapping&gt; roleMapping = new ArrayList&lt;&gt;();
+<span class="fc" id="L161">    private List&lt;RoleMapping&gt; roleMapping = new ArrayList&lt;&gt;();</span>
 
     /**
      * The role prefix (like 'ROLE_' or 'SCOPE_').
      */
-    private String rolePrefix = &quot;SCOPE_&quot;; // keycloak: ROLE_
+<span class="fc" id="L166">    private String rolePrefix = &quot;SCOPE_&quot;; // keycloak: ROLE_</span>
 
     /**
      * The role case transformation.
@@ -162,17 +176,24 @@ public class AuthenticationProperties {
     private List&lt;StringReplacement&gt; roleStringReplacements;
 
     /**
+     * Instantiates new jwt converter properties.
+     */
+    public JwtConverterProperties() {
+<span class="fc" id="L182">      super();</span>
+<span class="fc" id="L183">    }</span>
+
+    /**
      * To role mappings map.
      *
      * @return the map
      */
     public Map&lt;String, String&gt; toRoleMappings() {
-<span class="nc" id="L170">      return Stream.ofNullable(getRoleMapping())</span>
-<span class="nc" id="L171">          .flatMap(Collection::stream)</span>
-<span class="nc" id="L172">          .collect(Collectors.toMap(</span>
+<span class="nc" id="L191">      return Stream.ofNullable(getRoleMapping())</span>
+<span class="nc" id="L192">          .flatMap(Collection::stream)</span>
+<span class="nc" id="L193">          .collect(Collectors.toMap(</span>
               RoleMapping::getSource,
               RoleMapping::getTarget,
-<span class="nc" id="L175">              (first, second) -&gt; first,</span>
+<span class="nc" id="L196">              (first, second) -&gt; first,</span>
               LinkedHashMap::new));
     }
 
@@ -182,12 +203,12 @@ public class AuthenticationProperties {
      * @return the map
      */
     public Map&lt;String, String&gt; toRoleStringReplacements() {
-<span class="nc" id="L185">      return Stream.ofNullable(getRoleStringReplacements())</span>
-<span class="nc" id="L186">          .flatMap(Collection::stream)</span>
-<span class="nc" id="L187">          .collect(Collectors.toMap(</span>
+<span class="nc" id="L206">      return Stream.ofNullable(getRoleStringReplacements())</span>
+<span class="nc" id="L207">          .flatMap(Collection::stream)</span>
+<span class="nc" id="L208">          .collect(Collectors.toMap(</span>
               StringReplacement::getRegex,
               StringReplacement::getReplacement,
-<span class="nc" id="L190">              (first, second) -&gt; first,</span>
+<span class="nc" id="L211">              (first, second) -&gt; first,</span>
               LinkedHashMap::new));
     }
 
@@ -202,7 +223,7 @@ public class AuthenticationProperties {
     /**
      * The ldap template with default configuration properties.
      */
-    private Template template = Template.ACTIVE_DIRECTORY;
+<span class="fc" id="L226">    private Template template = Template.ACTIVE_DIRECTORY;</span>
 
     /**
      * The username to bind dn converter property.
@@ -213,6 +234,11 @@ public class AuthenticationProperties {
      * The user base dn (like 'ou=people,dc=example,dc=org'). This value is always required.
      */
     private String userBaseDn;
+
+    /**
+     * A list with refused usernames.
+     */
+    private List&lt;String&gt; refusedUsernames;
 
     /**
      * The object class of the user (like 'inetOrgPerson'). The selected template contains a
@@ -350,82 +376,89 @@ public class AuthenticationProperties {
     private List&lt;StringReplacement&gt; roleStringReplacements;
 
     /**
+     * Instantiates new ldaptive properties.
+     */
+    public LdaptiveProperties() {
+<span class="fc" id="L382">      super();</span>
+<span class="fc" id="L383">    }</span>
+
+    /**
      * The search scope.
      */
-<span class="nc" id="L355">    public enum SearchScope {</span>
+<span class="nc" id="L388">    public enum SearchScope {</span>
 
       /**
        * Base object search.
        */
-<span class="nc" id="L360">      OBJECT,</span>
+<span class="nc" id="L393">      OBJECT,</span>
 
       /**
        * Single level search.
        */
-<span class="nc" id="L365">      ONELEVEL,</span>
+<span class="nc" id="L398">      ONELEVEL,</span>
 
       /**
        * Whole subtree search.
        */
-<span class="nc" id="L370">      SUBTREE,</span>
+<span class="nc" id="L403">      SUBTREE,</span>
 
       /**
        * Subordinate subtree search. See draft-sermersheim-ldap-subordinate-scope.
        */
-<span class="nc" id="L375">      SUBORDINATE</span>
+<span class="nc" id="L408">      SUBORDINATE</span>
     }
 
     /**
      * The username to bind dn converter property.
      */
-<span class="nc" id="L381">    public enum UsernameToBindDnConverterProperty {</span>
+<span class="nc" id="L414">    public enum UsernameToBindDnConverterProperty {</span>
 
       /**
        * By user rdn attribute username to bind dn converter property.
        */
-<span class="nc" id="L386">      BY_USER_RDN_ATTRIBUTE,</span>
+<span class="nc" id="L419">      BY_USER_RDN_ATTRIBUTE,</span>
 
       /**
        * By domain email username to bind dn converter property.
        */
-<span class="nc" id="L391">      BY_DOMAIN_EMAIL</span>
+<span class="nc" id="L424">      BY_DOMAIN_EMAIL</span>
     }
 
     /**
      * The account control evaluator property.
      */
-<span class="nc" id="L397">    public enum AccountControlEvaluatorProperty {</span>
+<span class="nc" id="L430">    public enum AccountControlEvaluatorProperty {</span>
 
       /**
        * The None.
        */
-<span class="nc" id="L402">      NONE,</span>
+<span class="nc" id="L435">      NONE,</span>
 
       /**
        * The Active directory.
        */
-<span class="nc" id="L407">      ACTIVE_DIRECTORY</span>
+<span class="nc" id="L440">      ACTIVE_DIRECTORY</span>
     }
 
     /**
      * The group fetch strategy.
      */
-<span class="nc" id="L413">    public enum GroupFetchStrategy {</span>
+<span class="nc" id="L446">    public enum GroupFetchStrategy {</span>
 
       /**
        * Groups will not be fetched.
        */
-<span class="nc" id="L418">      NONE,</span>
+<span class="nc" id="L451">      NONE,</span>
 
       /**
        * User contains groups group-fetch strategy.
        */
-<span class="nc" id="L423">      USER_CONTAINS_GROUPS,</span>
+<span class="nc" id="L456">      USER_CONTAINS_GROUPS,</span>
 
       /**
        * Group contains users group-fetch strategy.
        */
-<span class="nc" id="L428">      GROUP_CONTAINS_USERS</span>
+<span class="nc" id="L461">      GROUP_CONTAINS_USERS</span>
     }
 
     /**
@@ -433,27 +466,27 @@ public class AuthenticationProperties {
      *
      * @author Christian Bremer
      */
-<span class="fc" id="L436">    public enum Template {</span>
+<span class="fc" id="L469">    public enum Template {</span>
 
       /**
        * Active directory template.
        */
-<span class="fc" id="L441">      ACTIVE_DIRECTORY,</span>
+<span class="fc" id="L474">      ACTIVE_DIRECTORY,</span>
 
       /**
        * Open ldap template.
        */
-<span class="fc" id="L446">      OPEN_LDAP,</span>
+<span class="fc" id="L479">      OPEN_LDAP,</span>
 
       /**
        * User contains groups template.
        */
-<span class="fc" id="L451">      USER_CONTAINS_GROUPS,</span>
+<span class="fc" id="L484">      USER_CONTAINS_GROUPS,</span>
 
       /**
        * Group contains users template.
        */
-<span class="fc" id="L456">      GROUP_CONTAINS_USERS</span>
+<span class="fc" id="L489">      GROUP_CONTAINS_USERS</span>
     }
   }
 
@@ -466,27 +499,34 @@ public class AuthenticationProperties {
     private String source;
 
     private String target;
+
+    /**
+     * Instantiates a new role mapping.
+     */
+    public RoleMapping() {
+<span class="nc" id="L507">      super();</span>
+<span class="nc" id="L508">    }</span>
   }
 
   /**
    * The case transformation.
    */
-<span class="nc" id="L474">  public enum CaseTransformation {</span>
+<span class="nc" id="L514">  public enum CaseTransformation {</span>
 
     /**
      * None case transformation.
      */
-<span class="nc" id="L479">    NONE,</span>
+<span class="nc" id="L519">    NONE,</span>
 
     /**
      * To upper case transformation.
      */
-<span class="nc" id="L484">    TO_UPPER_CASE,</span>
+<span class="nc" id="L524">    TO_UPPER_CASE,</span>
 
     /**
      * To lower case transformation.
      */
-<span class="nc" id="L489">    TO_LOWER_CASE</span>
+<span class="nc" id="L529">    TO_LOWER_CASE</span>
   }
 
   /**
@@ -505,6 +545,13 @@ public class AuthenticationProperties {
      * The string to be substituted for each match.
      */
     private String replacement;
+
+    /**
+     * Instantiates a new string replacement.
+     */
+    public StringReplacement() {
+<span class="nc" id="L553">      super();</span>
+<span class="nc" id="L554">    }</span>
   }
 
 }

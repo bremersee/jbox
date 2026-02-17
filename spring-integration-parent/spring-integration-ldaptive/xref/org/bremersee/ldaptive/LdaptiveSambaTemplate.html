@@ -71,7 +71,7 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>    }
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>    @Override
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>    <strong class="jxr_keyword">public</strong> <a name="LdaptiveSambaTemplate" href="../../../org/bremersee/ldaptive/LdaptiveSambaTemplate.html#LdaptiveSambaTemplate">LdaptiveSambaTemplate</a> clone(<a name="LdaptiveErrorHandler" href="../../../org/bremersee/ldaptive/LdaptiveErrorHandler.html#LdaptiveErrorHandler">LdaptiveErrorHandler</a> errorHandler) {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    <strong class="jxr_keyword">public</strong> <a name="LdaptiveSambaTemplate" href="../../../org/bremersee/ldaptive/LdaptiveSambaTemplate.html#LdaptiveSambaTemplate">LdaptiveSambaTemplate</a> copy(<a name="LdaptiveErrorHandler" href="../../../org/bremersee/ldaptive/LdaptiveErrorHandler.html#LdaptiveErrorHandler">LdaptiveErrorHandler</a> errorHandler) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      <a name="LdaptiveSambaTemplate" href="../../../org/bremersee/ldaptive/LdaptiveSambaTemplate.html#LdaptiveSambaTemplate">LdaptiveSambaTemplate</a> template = <strong class="jxr_keyword">new</strong> <a name="LdaptiveSambaTemplate" href="../../../org/bremersee/ldaptive/LdaptiveSambaTemplate.html#LdaptiveSambaTemplate">LdaptiveSambaTemplate</a>(getConnectionFactory());
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      template.setErrorHandler(errorHandler);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">return</strong> template;
@@ -102,7 +102,7 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          .dn(dn)
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          .modifications(attributeModification)
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          .build();
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">this</strong>.clone(<strong class="jxr_keyword">new</strong> <a name="AbstractLdaptiveErrorHandler" href="../../../org/bremersee/ldaptive/AbstractLdaptiveErrorHandler.html#AbstractLdaptiveErrorHandler">AbstractLdaptiveErrorHandler</a>() {
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">this</strong>.copy(<strong class="jxr_keyword">new</strong> <a name="AbstractLdaptiveErrorHandler" href="../../../org/bremersee/ldaptive/AbstractLdaptiveErrorHandler.html#AbstractLdaptiveErrorHandler">AbstractLdaptiveErrorHandler</a>() {
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>            @Override
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>            <strong class="jxr_keyword">public</strong> <a name="LdaptiveException" href="../../../org/bremersee/ldaptive/LdaptiveException.html#LdaptiveException">LdaptiveException</a> map(LdapException ldapException) {
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>             <strong class="jxr_keyword">int</strong> httpStatus;
@@ -177,6 +177,6 @@
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> }
 </pre>
 <hr/>
-<div id="footer">© 2015–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2015–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

@@ -3,7 +3,7 @@ Spring Integration Minio,org.bremersee.minio,MinioRepository,0,10,0,0,0,2,0,2,0,
 Spring Integration Minio,org.bremersee.minio,MinioObjectId,0,10,0,0,0,2,0,2,0,2
 Spring Integration Minio,org.bremersee.minio,MinioClientCallbackWithoutResult,0,5,0,0,0,2,0,1,0,1
 Spring Integration Minio,org.bremersee.minio,MinioTemplate,6,38,0,2,2,13,0,6,0,5
-Spring Integration Minio,org.bremersee.minio,DefaultMinioErrorHandler,28,221,12,33,11,57,12,26,1,9
+Spring Integration Minio,org.bremersee.minio,DefaultMinioErrorHandler,28,223,12,33,11,58,12,26,1,9
 Spring Integration Minio,org.bremersee.minio,DefaultMinioObjectId,0,21,0,0,0,8,0,3,0,3
 Spring Integration Minio,org.bremersee.minio,MinioException.new AbstractServiceExceptionBuilder() {...},0,11,0,0,0,2,0,2,0,2
 Spring Integration Minio,org.bremersee.minio,MinioOperations,5,541,4,4,2,108,4,101,0,101

@@ -16,13 +16,16 @@
 
 package org.bremersee.ldaptive.serializable;
 
+import static java.util.Objects.nonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -45,29 +48,79 @@ public class SerLdapEntry implements Serializable {
   /**
    * The distinguished name.
    */
+  @JsonProperty(value = &quot;dn&quot;)
   private final String dn;
 
   /**
    * The attributes.
    */
-  private final Map&lt;String, SerLdapAttr&gt; attributes;
+  @JsonProperty(value = &quot;attributes&quot;)
+  private final Collection&lt;SerLdapAttr&gt; attributes;
 
   /**
    * Instantiates a new serializable ldap entry.
    *
    * @param ldapEntry the ldap entry
    */
-<span class="fc" id="L60">  public SerLdapEntry(LdapEntry ldapEntry) {</span>
-<span class="fc" id="L61">    this.dn = Optional.ofNullable(ldapEntry)</span>
-<span class="fc" id="L62">        .map(LdapEntry::getDn)</span>
-<span class="fc" id="L63">        .orElse(null);</span>
-<span class="fc" id="L64">    this.attributes = Stream.ofNullable(ldapEntry)</span>
-<span class="fc" id="L65">        .map(LdapEntry::getAttributes)</span>
-<span class="fc" id="L66">        .flatMap(Collection::stream)</span>
-<span class="fc" id="L67">        .map(SerLdapAttr::new)</span>
-<span class="fc" id="L68">        .collect(Collectors</span>
-<span class="fc" id="L69">            .toUnmodifiableMap(SerLdapAttr::getAttributeName, Function.identity()));</span>
-<span class="fc" id="L70">  }</span>
+<span class="fc" id="L65">  public SerLdapEntry(LdapEntry ldapEntry) {</span>
+<span class="fc" id="L66">    this.dn = Optional.ofNullable(ldapEntry)</span>
+<span class="fc" id="L67">        .map(LdapEntry::getDn)</span>
+<span class="fc" id="L68">        .orElse(null);</span>
+<span class="fc" id="L69">    this.attributes = Stream.ofNullable(ldapEntry)</span>
+<span class="fc" id="L70">        .map(LdapEntry::getAttributes)</span>
+<span class="fc" id="L71">        .flatMap(Collection::stream)</span>
+<span class="fc" id="L72">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L73">        .map(SerLdapAttr::new)</span>
+<span class="fc" id="L74">        .toList();</span>
+<span class="fc" id="L75">  }</span>
+
+  /**
+   * Instantiates a new Ser ldap entry.
+   *
+   * @param dn the dn
+   * @param attributes the attributes
+   */
+  @JsonCreator
+  public SerLdapEntry(
+      @JsonProperty(value = &quot;dn&quot;) String dn,
+<span class="fc" id="L86">      @JsonProperty(value = &quot;attributes&quot;) List&lt;SerLdapAttr&gt; attributes) {</span>
+<span class="fc" id="L87">    this.dn = dn;</span>
+<span class="fc" id="L88">    this.attributes = attributes;</span>
+<span class="fc" id="L89">  }</span>
+
+  /**
+   * To ldap entry.
+   *
+   * @return the ldap entry
+   */
+  public LdapEntry toLdapEntry() {
+<span class="fc" id="L97">    LdapEntry ldapEntry = new LdapEntry();</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">    if (nonNull(dn)) {</span>
+<span class="fc" id="L99">      ldapEntry.setDn(dn);</span>
+    }
+<span class="pc bpc" id="L101" title="2 of 4 branches missed.">    if (nonNull(attributes) &amp;&amp; !attributes.isEmpty()) {</span>
+<span class="fc" id="L102">      ldapEntry.addAttributes(attributes</span>
+<span class="fc" id="L103">          .stream()</span>
+<span class="fc" id="L104">          .map(SerLdapAttr::toLdapAttribute)</span>
+<span class="fc" id="L105">          .toList());</span>
+    }
+<span class="fc" id="L107">    return ldapEntry;</span>
+  }
+
+  /**
+   * Find attribute.
+   *
+   * @param attributeName the attribute name
+   * @return the optional attribute
+   */
+  public Optional&lt;SerLdapAttr&gt; findAttribute(String attributeName) {
+<span class="fc" id="L117">    return Optional.ofNullable(attributeName)</span>
+<span class="fc" id="L118">        .flatMap(name -&gt; Stream.ofNullable(attributes)</span>
+<span class="fc" id="L119">            .flatMap(Collection::stream)</span>
+<span class="fc" id="L120">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L121">            .filter(attr -&gt; name.equalsIgnoreCase(attr.getAttributeName()))</span>
+<span class="fc" id="L122">            .findFirst());</span>
+  }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

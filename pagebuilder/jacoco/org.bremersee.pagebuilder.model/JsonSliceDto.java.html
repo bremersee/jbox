@@ -18,6 +18,7 @@ package org.bremersee.pagebuilder.model;
 
 import static java.util.Objects.isNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ public abstract class JsonSliceDto&lt;T&gt; extends AbstractSliceDto&lt;T&gt; {
   /**
    * Instantiates a new slice data transfer object.
    */
-<span class="fc" id="L48">  protected JsonSliceDto() {</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L49">  protected JsonSliceDto() {</span>
+<span class="fc" id="L50">  }</span>
 
   /**
    * Instantiates a new slice data transfer object.
@@ -56,9 +57,9 @@ public abstract class JsonSliceDto&lt;T&gt; extends AbstractSliceDto&lt;T&gt; {
    * @param size the size
    * @param hasNext the has next
    */
-  public JsonSliceDto(List&lt;? extends T&gt; content, int number, int size, boolean hasNext) {
-<span class="fc" id="L60">    super(content, number, size, hasNext);</span>
-<span class="fc" id="L61">  }</span>
+  protected JsonSliceDto(List&lt;? extends T&gt; content, int number, int size, boolean hasNext) {
+<span class="fc" id="L61">    super(content, number, size, hasNext);</span>
+<span class="fc" id="L62">  }</span>
 
   /**
    * Instantiates a new slice data transfer object.
@@ -69,10 +70,10 @@ public abstract class JsonSliceDto&lt;T&gt; extends AbstractSliceDto&lt;T&gt; {
    * @param hasNext the has next
    * @param sort the sort
    */
-  public JsonSliceDto(List&lt;? extends T&gt; content, int number, int size, boolean hasNext,
+  protected JsonSliceDto(List&lt;? extends T&gt; content, int number, int size, boolean hasNext,
       SortOrder sort) {
-<span class="fc" id="L74">    super(content, number, size, hasNext, sort);</span>
-<span class="fc" id="L75">  }</span>
+<span class="fc" id="L75">    super(content, number, size, hasNext, sort);</span>
+<span class="fc" id="L76">  }</span>
 
   /**
    * Instantiates a new slice data transfer object.
@@ -83,26 +84,28 @@ public abstract class JsonSliceDto&lt;T&gt; extends AbstractSliceDto&lt;T&gt; {
    * @param hasNext the has next
    * @param sort the sort
    */
-  public JsonSliceDto(List&lt;? extends T&gt; content, int number, int size, boolean hasNext,
+  protected JsonSliceDto(List&lt;? extends T&gt; content, int number, int size, boolean hasNext,
       Sort sort) {
-<span class="fc" id="L88">    super(content, number, size, hasNext, sort);</span>
-<span class="fc" id="L89">  }</span>
+<span class="fc" id="L89">    super(content, number, size, hasNext, sort);</span>
+<span class="fc" id="L90">  }</span>
 
   /**
    * Instantiates a new slice data transfer object.
    *
    * @param slice the slice
    */
-  public JsonSliceDto(Slice&lt;? extends T&gt; slice) {
-<span class="fc" id="L97">    super(slice);</span>
-<span class="fc" id="L98">  }</span>
+  protected JsonSliceDto(Slice&lt;? extends T&gt; slice) {
+<span class="fc" id="L98">    super(slice);</span>
+<span class="fc" id="L99">  }</span>
 
+  @Schema(name = &quot;content&quot;, description = &quot;The content of the slice.&quot;)
+  @JsonProperty(value = &quot;content&quot;)
   @Override
   public List&lt;T&gt; getContent() {
-<span class="pc bpc" id="L102" title="1 of 2 branches missed.">    if (isNull(content)) {</span>
-<span class="nc" id="L103">      content = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">    if (isNull(content)) {</span>
+<span class="nc" id="L106">      content = new ArrayList&lt;&gt;();</span>
     }
-<span class="fc" id="L105">    return content;</span>
+<span class="fc" id="L108">    return content;</span>
   }
 
 }

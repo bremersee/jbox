@@ -24,10 +24,10 @@
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">package</strong> org.bremersee.xml;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.io.File;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> jakarta.xml.bind.JAXBContext;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> jakarta.xml.bind.Marshaller;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> jakarta.xml.bind.JAXBContext;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> jakarta.xml.bind.Marshaller;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.io.File;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.DocumentBuilder;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.DocumentBuilderFactory;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> javax.xml.validation.Schema;
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">   * ignoringElementContentWhitespace = false</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * namespaceAware                   = true</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * validating                       = false</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * xIncludeAware                    = false</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * xmlIncludeAware                  = false</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * &lt;/pre&gt;</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   * @param coalescing the coalescing</em>
@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * @param ignoringElementContentWhitespace the ignoring element content whitespace</em>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">   * @param namespaceAware the namespace aware</em>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * @param validating the validating</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   * @param xIncludeAware the x include aware</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   * @param xmlIncludeAware the x include aware</em>
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">   * @return the xml document builder</em>
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>    <a name="XmlDocumentBuilder" href="../../../org/bremersee/xml/XmlDocumentBuilder.html#XmlDocumentBuilder">XmlDocumentBuilder</a> configureFactory(
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>        Boolean ignoringElementContentWhitespace,
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>        Boolean namespaceAware,
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>        Boolean validating,
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>        Boolean xIncludeAware);
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>        Boolean xmlIncludeAware);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">   * Sets the given attribute to the underlying {@link DocumentBuilderFactory}.</em>
@@ -223,6 +223,6 @@
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> }
 </pre>
 <hr/>
-<div id="footer">© 2020–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2020–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

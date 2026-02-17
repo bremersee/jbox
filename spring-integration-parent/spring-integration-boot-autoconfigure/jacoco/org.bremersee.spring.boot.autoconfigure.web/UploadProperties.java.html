@@ -35,12 +35,17 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @EqualsAndHashCode
 @Validated
-<span class="fc" id="L38">public class UploadProperties {</span>
+public class UploadProperties {
 
   /**
    * The tmp dir.
    */
 <span class="fc" id="L43">  private File tmpDir = new File(System.getProperty(&quot;java.io.tmpdir&quot;));</span>
 
+  /**
+   * Instantiates new upload properties.
+   */
+<span class="fc" id="L48">  public UploadProperties() {</span>
+<span class="fc" id="L49">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

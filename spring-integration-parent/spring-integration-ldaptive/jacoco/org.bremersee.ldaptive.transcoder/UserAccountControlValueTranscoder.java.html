@@ -16,114 +16,43 @@
 
 package org.bremersee.ldaptive.transcoder;
 
-import static java.util.Objects.nonNull;
-
-import java.util.Optional;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 import org.ldaptive.transcode.AbstractStringValueTranscoder;
+import org.ldaptive.transcode.IntegerValueTranscoder;
 
 /**
  * The user account control value transcoder.
  *
  * @author Christian Bremer
  */
-@ToString
-<span class="fc" id="L32">@Slf4j</span>
-<span class="fc" id="L33">public class UserAccountControlValueTranscoder extends AbstractStringValueTranscoder&lt;Integer&gt; {</span>
+public class UserAccountControlValueTranscoder
+    extends AbstractStringValueTranscoder&lt;UserAccountControl&gt; {
+
+<span class="fc" id="L30">  private final IntegerValueTranscoder intValueTranscoder = new IntegerValueTranscoder();</span>
 
   /**
-   * The attribute name in an active directory controller.
+   * Instantiates a new user account control value transcoder.
    */
-  public static final String ATTRIBUTE_NAME = &quot;userAccountControl&quot;;
+  public UserAccountControlValueTranscoder() {
+<span class="fc" id="L36">    super();</span>
+<span class="fc" id="L37">  }</span>
 
-  /**
-   * The bit map value of a disabled account.
-   */
-  public static final int ACCOUNT_DISABLED = 1 &lt;&lt; 1;
-
-  /**
-   * The bit map value of a normal account.
-   */
-  public static final int NORMAL_ACCOUNT = 1 &lt;&lt; 9;
-
-  /**
-   * The bit map value a password that doesn't expire.
-   */
-  public static final int DONT_EXPIRE_PASSWORD = 1 &lt;&lt; 16;
-
-  /**
-   * Gets user account control value.
-   *
-   * @param enabled the enabled
-   * @param existingValue the existing value
-   * @return the user account control value
-   */
-  public static int getUserAccountControlValue(Boolean enabled, Integer existingValue) {
-<span class="fc" id="L63">    int value = Optional.ofNullable(existingValue).orElse(0);</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">    if ((value &amp; NORMAL_ACCOUNT) != NORMAL_ACCOUNT) {</span>
-<span class="fc" id="L65">      value = value + NORMAL_ACCOUNT;</span>
+  @Override
+  public UserAccountControl decodeStringValue(String value) {
+    try {
+<span class="fc" id="L42">      return new UserAccountControl(intValueTranscoder.decodeStringValue(value));</span>
+<span class="nc" id="L43">    } catch (RuntimeException re) {</span>
+<span class="nc" id="L44">      return new UserAccountControl();</span>
     }
-<span class="fc bfc" id="L67" title="All 2 branches covered.">    if ((value &amp; DONT_EXPIRE_PASSWORD) != DONT_EXPIRE_PASSWORD) {</span>
-<span class="fc" id="L68">      value = value + DONT_EXPIRE_PASSWORD;</span>
-    }
-<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (Boolean.FALSE.equals(enabled)) {</span>
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">      if ((value &amp; ACCOUNT_DISABLED) != ACCOUNT_DISABLED) {</span>
-<span class="fc" id="L72">        value = value + ACCOUNT_DISABLED;</span>
-      }
-    } else {
-<span class="fc bfc" id="L75" title="All 2 branches covered.">      if ((value &amp; ACCOUNT_DISABLED) == ACCOUNT_DISABLED) {</span>
-<span class="fc" id="L76">        value = value - ACCOUNT_DISABLED;</span>
-      }
-    }
-<span class="fc" id="L79">    return value;</span>
-  }
-
-  /**
-   * Determines whether an account is enabled or not. If the user account control value is
-   * {@code null}*, {@code true} will be returned (account is enabled).
-   *
-   * @param userAccountControlValue the user account control value (can be {@code null})
-   * @return the boolean
-   */
-  public static boolean isUserAccountEnabled(Integer userAccountControlValue) {
-<span class="fc" id="L90">    return isUserAccountEnabled(userAccountControlValue, true);</span>
-  }
-
-  /**
-   * Determines whether an account is enabled or not.
-   *
-   * @param userAccountControlValue the user account control value (can be {@code null})
-   * @param defaultValue the default value (will be returned, if user account control value is
-   *     {@code null})
-   * @return the boolean
-   */
-  public static boolean isUserAccountEnabled(
-      Integer userAccountControlValue,
-      boolean defaultValue) {
-
-<span class="fc bfc" id="L105" title="All 2 branches covered.">    return userAccountControlValue == null</span>
-<span class="fc" id="L106">        ? defaultValue</span>
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        : ((userAccountControlValue &amp; ACCOUNT_DISABLED) != ACCOUNT_DISABLED);</span>
   }
 
   @Override
-  public Integer decodeStringValue(String value) {
-<span class="pc bpc" id="L112" title="1 of 4 branches missed.">    return nonNull(value) &amp;&amp; !value.isBlank()</span>
-<span class="fc" id="L113">        ? Integer.parseInt(value)</span>
-<span class="fc" id="L114">        : getUserAccountControlValue(true, 0);</span>
+  public String encodeStringValue(UserAccountControl value) {
+<span class="fc" id="L50">    return intValueTranscoder.encodeStringValue(value.getValue());</span>
   }
 
   @Override
-  public String encodeStringValue(Integer value) {
-<span class="fc" id="L119">    return Optional.ofNullable(value)</span>
-<span class="fc" id="L120">        .map(String::valueOf)</span>
-<span class="fc" id="L121">        .orElseGet(() -&gt; String.valueOf(getUserAccountControlValue(true, 0)));</span>
-  }
-
-  @Override
-  public Class&lt;Integer&gt; getType() {
-<span class="fc" id="L126">    return Integer.class;</span>
+  public Class&lt;UserAccountControl&gt; getType() {
+<span class="fc" id="L55">    return UserAccountControl.class;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

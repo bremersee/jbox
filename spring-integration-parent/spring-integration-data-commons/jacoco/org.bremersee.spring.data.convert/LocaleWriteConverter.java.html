@@ -29,24 +29,30 @@ import org.springframework.data.convert.WritingConverter;
  */
 @WritingConverter
 @ToString
-<span class="fc" id="L32">public class LocaleWriteConverter implements Converter&lt;Locale, String&gt; {</span>
+public class LocaleWriteConverter implements Converter&lt;Locale, String&gt; {
+
+  /**
+   * Instantiates a new locale write converter.
+   */
+<span class="fc" id="L37">  public LocaleWriteConverter() {</span>
+<span class="fc" id="L38">  }</span>
 
   @Override
   public String convert(Locale source) {
-<span class="fc" id="L36">    return source.toLanguageTag();</span>
+<span class="fc" id="L42">    return source.toLanguageTag();</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L42">      return true;</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L48">      return true;</span>
     }
-<span class="nc bnc" id="L44" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L50" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L49">    return Objects.hashCode(getClass());</span>
+<span class="nc" id="L55">    return Objects.hashCode(getClass());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

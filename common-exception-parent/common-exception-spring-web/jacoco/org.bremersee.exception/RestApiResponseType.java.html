@@ -16,7 +16,6 @@
 
 package org.bremersee.exception;
 
-import static java.util.Objects.nonNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -24,6 +23,7 @@ import static org.springframework.http.MediaType.TEXT_XML;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import org.springframework.http.MediaType;
@@ -99,7 +99,7 @@ public enum RestApiResponseType {
   }
 
   private static boolean isJson(MediaType contentType) {
-<span class="fc bfc" id="L102" title="All 2 branches covered.">    return nonNull(contentType)</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">    return Objects.nonNull(contentType)</span>
 <span class="fc bfc" id="L103" title="All 2 branches covered.">        &amp;&amp; (contentType.isCompatibleWith(APPLICATION_JSON)</span>
 <span class="fc bfc" id="L104" title="All 2 branches covered.">        || contentType.isCompatibleWith(APPLICATION_PLUS_JSON));</span>
   }
@@ -114,7 +114,7 @@ public enum RestApiResponseType {
   }
 
   private static boolean isXml(MediaType contentType) {
-<span class="fc bfc" id="L117" title="All 2 branches covered.">    return nonNull(contentType)</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    return Objects.nonNull(contentType)</span>
 <span class="fc bfc" id="L118" title="All 2 branches covered.">        &amp;&amp; (contentType.isCompatibleWith(APPLICATION_XML)</span>
 <span class="fc bfc" id="L119" title="All 2 branches covered.">        || contentType.isCompatibleWith(APPLICATION_PLUS_XML)</span>
 <span class="fc bfc" id="L120" title="All 2 branches covered.">        || TEXT_XML.isCompatibleWith(contentType));</span>

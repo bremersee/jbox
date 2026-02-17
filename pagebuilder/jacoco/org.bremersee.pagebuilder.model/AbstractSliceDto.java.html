@@ -78,7 +78,7 @@ public abstract class AbstractSliceDto&lt;T&gt; extends AbstractChunkDto&lt;T&gt
    * @param size the size
    * @param hasNext the has next
    */
-  public AbstractSliceDto(
+  protected AbstractSliceDto(
       List&lt;? extends T&gt; content,
       int number,
       int size,
@@ -95,7 +95,7 @@ public abstract class AbstractSliceDto&lt;T&gt; extends AbstractChunkDto&lt;T&gt
    * @param hasNext the has next
    * @param sort the sort oder
    */
-  public AbstractSliceDto(
+  protected AbstractSliceDto(
       List&lt;? extends T&gt; content,
       int number,
       int size,
@@ -116,7 +116,7 @@ public abstract class AbstractSliceDto&lt;T&gt; extends AbstractChunkDto&lt;T&gt
    * @param hasNext the has next
    * @param sort the sort
    */
-  public AbstractSliceDto(
+  protected AbstractSliceDto(
       List&lt;? extends T&gt; content,
       int number,
       int size,
@@ -135,7 +135,7 @@ public abstract class AbstractSliceDto&lt;T&gt; extends AbstractChunkDto&lt;T&gt
    *
    * @param slice the slice
    */
-  public AbstractSliceDto(Slice&lt;? extends T&gt; slice) {
+  protected AbstractSliceDto(Slice&lt;? extends T&gt; slice) {
 <span class="fc" id="L139">    this(</span>
 <span class="fc" id="L140">        slice.getContent(),</span>
 <span class="fc" id="L141">        slice.getNumber(),</span>

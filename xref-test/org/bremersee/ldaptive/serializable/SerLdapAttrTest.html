@@ -22,7 +22,7 @@
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.ldaptive.LdapUtils;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * The type Ser ldap attr test.</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * The serializable ldap attribute test.</em>
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">class</strong> <a name="SerLdapAttrTest" href="../../../../org/bremersee/ldaptive/serializable/SerLdapAttrTest.html#SerLdapAttrTest">SerLdapAttrTest</a> {
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
@@ -133,8 +133,8 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>   @ValueSource(booleans = {false, <strong class="jxr_keyword">true</strong>})
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>   <strong class="jxr_keyword">void</strong> testHashCode(<strong class="jxr_keyword">boolean</strong> binary) {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>     SerLdapAttr ldapAttr = createSerLdapAttr(binary);
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     assertThat(ldapAttr.hashCode())
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         .isEqualTo(createSerLdapAttr(binary).hashCode());
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     assertThat(ldapAttr)
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         .hasSameHashCodeAs(createSerLdapAttr(binary));
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>   }
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   <em class="jxr_javadoccomment">/**</em>
@@ -233,6 +233,6 @@
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

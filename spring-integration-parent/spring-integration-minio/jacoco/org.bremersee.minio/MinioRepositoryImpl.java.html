@@ -221,80 +221,80 @@ public class MinioRepositoryImpl implements MinioRepository {
         });
   }
 
-  private static void delete(MultipartFile multipartFile) {
-<span class="pc bpc" id="L225" title="2 of 4 branches missed.">    if (multipartFile != null &amp;&amp; multipartFile.getResource().isFile()) {</span>
-      try {
-<span class="fc" id="L227">        Files.delete(multipartFile.getResource().getFile().toPath());</span>
-<span class="nc" id="L228">      } catch (Exception ignored) {</span>
-        // ignored
-<span class="fc" id="L230">      }</span>
-    }
-<span class="fc" id="L232">  }</span>
-
   @Override
   public boolean exists(MinioObjectId id) {
-<span class="fc" id="L236">    return minio.objectExists(StatObjectArgs.builder()</span>
-<span class="fc" id="L237">        .region(region)</span>
-<span class="fc" id="L238">        .bucket(bucket)</span>
-<span class="fc" id="L239">        .object(id.getName())</span>
-<span class="fc" id="L240">        .versionId(id.getVersionId())</span>
-<span class="fc" id="L241">        .build());</span>
+<span class="fc" id="L226">    return minio.objectExists(StatObjectArgs.builder()</span>
+<span class="fc" id="L227">        .region(region)</span>
+<span class="fc" id="L228">        .bucket(bucket)</span>
+<span class="fc" id="L229">        .object(id.getName())</span>
+<span class="fc" id="L230">        .versionId(id.getVersionId())</span>
+<span class="fc" id="L231">        .build());</span>
   }
 
   @Override
   public Optional&lt;MinioMultipartFile&gt; findOne(MinioObjectId id) {
     try {
-<span class="fc" id="L247">      StatObjectResponse objectStat = minio.statObject(StatObjectArgs.builder()</span>
-<span class="fc" id="L248">          .region(region)</span>
-<span class="fc" id="L249">          .bucket(bucket)</span>
-<span class="fc" id="L250">          .object(id.getName())</span>
-<span class="fc" id="L251">          .versionId(id.getVersionId())</span>
-<span class="fc" id="L252">          .build());</span>
-<span class="fc" id="L253">      return Optional.of(new MinioMultipartFileImpl(minio, region, objectStat));</span>
+<span class="fc" id="L237">      StatObjectResponse objectStat = minio.statObject(StatObjectArgs.builder()</span>
+<span class="fc" id="L238">          .region(region)</span>
+<span class="fc" id="L239">          .bucket(bucket)</span>
+<span class="fc" id="L240">          .object(id.getName())</span>
+<span class="fc" id="L241">          .versionId(id.getVersionId())</span>
+<span class="fc" id="L242">          .build());</span>
+<span class="fc" id="L243">      return Optional.of(new MinioMultipartFileImpl(minio, region, objectStat));</span>
 
-<span class="nc" id="L255">    } catch (MinioException e) {</span>
-<span class="nc bnc" id="L256" title="All 2 branches missed.">      if (404 == e.status()) {</span>
-<span class="nc" id="L257">        return Optional.empty();</span>
+<span class="nc" id="L245">    } catch (MinioException e) {</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">      if (404 == e.status()) {</span>
+<span class="nc" id="L247">        return Optional.empty();</span>
       }
-<span class="nc" id="L259">      throw e;</span>
+<span class="nc" id="L249">      throw e;</span>
     }
   }
 
   @Override
   public List&lt;MinioMultipartFile&gt; findAll(String prefix) {
-<span class="fc" id="L265">    Iterable&lt;Result&lt;Item&gt;&gt; results = minio.listObjects(ListObjectsArgs.builder()</span>
-<span class="fc" id="L266">        .region(region)</span>
-<span class="fc" id="L267">        .bucket(bucket)</span>
-<span class="fc" id="L268">        .includeVersions(enableVersioning)</span>
-<span class="fc" id="L269">        .recursive(true)</span>
-<span class="fc" id="L270">        .prefix(prefix)</span>
-<span class="fc" id="L271">        .build());</span>
-<span class="fc" id="L272">    List&lt;MinioMultipartFile&gt; fileList = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L273" title="All 2 branches covered.">    for (Result&lt;Item&gt; result : results) {</span>
+<span class="fc" id="L255">    Iterable&lt;Result&lt;Item&gt;&gt; results = minio.listObjects(ListObjectsArgs.builder()</span>
+<span class="fc" id="L256">        .region(region)</span>
+<span class="fc" id="L257">        .bucket(bucket)</span>
+<span class="fc" id="L258">        .includeVersions(enableVersioning)</span>
+<span class="fc" id="L259">        .recursive(true)</span>
+<span class="fc" id="L260">        .prefix(prefix)</span>
+<span class="fc" id="L261">        .build());</span>
+<span class="fc" id="L262">    List&lt;MinioMultipartFile&gt; fileList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">    for (Result&lt;Item&gt; result : results) {</span>
       try {
-<span class="fc" id="L275">        Item item = result.get();</span>
-<span class="pc bpc" id="L276" title="2 of 4 branches missed.">        if (!item.isDir() &amp;&amp; !item.isDeleteMarker()) {</span>
-<span class="fc" id="L277">          fileList.add(new MinioMultipartFileImpl(</span>
-<span class="fc" id="L278">              getMinioOperations(),</span>
+<span class="fc" id="L265">        Item item = result.get();</span>
+<span class="pc bpc" id="L266" title="2 of 4 branches missed.">        if (!item.isDir() &amp;&amp; !item.isDeleteMarker()) {</span>
+<span class="fc" id="L267">          fileList.add(new MinioMultipartFileImpl(</span>
+<span class="fc" id="L268">              getMinioOperations(),</span>
               region,
               bucket,
               item));
         }
-<span class="nc" id="L283">      } catch (Exception ignored) {</span>
+<span class="nc" id="L273">      } catch (Exception ignored) {</span>
         // ignored
-<span class="fc" id="L285">      }</span>
-<span class="fc" id="L286">    }</span>
-<span class="fc" id="L287">    return fileList;</span>
+<span class="fc" id="L275">      }</span>
+<span class="fc" id="L276">    }</span>
+<span class="fc" id="L277">    return fileList;</span>
   }
 
   @Override
   public void delete(MinioObjectId id) {
-<span class="fc" id="L292">    minio.removeObject(RemoveObjectArgs.builder()</span>
-<span class="fc" id="L293">        .region(region)</span>
-<span class="fc" id="L294">        .bucket(bucket)</span>
-<span class="fc" id="L295">        .object(id.getName())</span>
-<span class="fc" id="L296">        .versionId(id.getVersionId())</span>
-<span class="fc" id="L297">        .build());</span>
+<span class="fc" id="L282">    minio.removeObject(RemoveObjectArgs.builder()</span>
+<span class="fc" id="L283">        .region(region)</span>
+<span class="fc" id="L284">        .bucket(bucket)</span>
+<span class="fc" id="L285">        .object(id.getName())</span>
+<span class="fc" id="L286">        .versionId(id.getVersionId())</span>
+<span class="fc" id="L287">        .build());</span>
+<span class="fc" id="L288">  }</span>
+
+  private static void delete(MultipartFile multipartFile) {
+<span class="pc bpc" id="L291" title="2 of 4 branches missed.">    if (multipartFile != null &amp;&amp; multipartFile.getResource().isFile()) {</span>
+      try {
+<span class="fc" id="L293">        Files.delete(multipartFile.getResource().getFile().toPath());</span>
+<span class="nc" id="L294">      } catch (Exception ignored) {</span>
+        // ignored
+<span class="fc" id="L296">      }</span>
+    }
 <span class="fc" id="L298">  }</span>
 
   @Override

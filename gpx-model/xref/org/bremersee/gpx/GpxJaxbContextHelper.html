@@ -46,8 +46,8 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>    }
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   * Parses the elemants of the given GPX extensions ({@link ExtensionsType#getAnies()}) with the</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   * given {@link JAXBContext}:</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   * Parses the elements of the given GPX extensions ({@link ExtensionsType#getAnies()}) with the</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   * given {@link JAXBContext}.</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;If the {@link JAXBContext} can unmarshall the {@link Element} to a concrete object, a map</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">   * entry will be created with the class of the object as key and a list with all unmarshalled</em>
@@ -74,8 +74,8 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>    }
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   * Parses the elemants of the given GPX extensions ({@link ExtensionsType#getAnies()}) with the</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">   * given {@link Unmarshaller}:</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   * Parses the elements of the given GPX extensions ({@link ExtensionsType#getAnies()}) with the</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">   * given {@link Unmarshaller}.</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;If the {@link Unmarshaller} can unmarshall the {@link Element} to a concrete object, a map</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * entry will be created with the class of the object as key and a list with all unmarshalled</em>
@@ -122,32 +122,32 @@
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">   * Find all extensions of the given type.</em>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   * @param cls the type</em>
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise {@link</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   *     Class#equals(Object)} will be used</em>
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">   * @param parsedExtensions the parsed extensions (see {@link GpxJaxbContextHelper#parseExtensions(ExtensionsType,</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">   *     JAXBContext)})</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   *     {@link Class#equals(Object)} will be used</em>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">   * @param parsedExtensions the parsed extensions (see</em>
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">   *     {@link GpxJaxbContextHelper#parseExtensions(ExtensionsType, JAXBContext)})</em>
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the type</em>
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> <em class="jxr_javadoccomment">   * @return an unmodifiable list of all extensions of the given type</em>
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; List&lt;T&gt; findExtensions(
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>       <strong class="jxr_keyword">final</strong> Class&lt;T&gt; cls,
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>       <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> instancesOf,
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>       <strong class="jxr_keyword">final</strong> Map&lt;Class&lt;?&gt;, List&lt;Object&gt;&gt; parsedExtensions) {
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">if</strong> (cls == <strong class="jxr_keyword">null</strong> || parsedExtensions == <strong class="jxr_keyword">null</strong> || parsedExtensions.isEmpty()) {
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>       <strong class="jxr_keyword">return</strong> Collections.emptyList();
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     }
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <strong class="jxr_keyword">final</strong> List&lt;T&gt; list = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">for</strong> (Map.Entry&lt;Class&lt;?&gt;, List&lt;Object&gt;&gt; entry : parsedExtensions.entrySet()) {
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>       <strong class="jxr_keyword">final</strong> Class&lt;?&gt; c = entry.getKey();
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>       <strong class="jxr_keyword">if</strong> (cls.equals(c) || (instancesOf &amp;&amp; cls.isAssignableFrom(c))) {
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         <strong class="jxr_keyword">final</strong> List&lt;Object&gt; values = entry.getValue();
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">if</strong> (values != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>           <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Object value : values) {
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>             <strong class="jxr_keyword">if</strong> (value != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>                 &amp;&amp; (cls.equals(value.getClass())
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>                 || (instancesOf &amp;&amp; cls.isAssignableFrom(value.getClass())))) {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>               <em class="jxr_comment">//noinspection unchecked</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>   @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; List&lt;T&gt; findExtensions(
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>       <strong class="jxr_keyword">final</strong> Class&lt;T&gt; cls,
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>       <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> instancesOf,
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>       <strong class="jxr_keyword">final</strong> Map&lt;Class&lt;?&gt;, List&lt;Object&gt;&gt; parsedExtensions) {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">if</strong> (cls == <strong class="jxr_keyword">null</strong> || parsedExtensions == <strong class="jxr_keyword">null</strong> || parsedExtensions.isEmpty()) {
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>       <strong class="jxr_keyword">return</strong> Collections.emptyList();
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">final</strong> List&lt;T&gt; list = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">for</strong> (Map.Entry&lt;Class&lt;?&gt;, List&lt;Object&gt;&gt; entry : parsedExtensions.entrySet()) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>       <strong class="jxr_keyword">final</strong> Class&lt;?&gt; c = entry.getKey();
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>       <strong class="jxr_keyword">if</strong> (cls.equals(c) || (instancesOf &amp;&amp; cls.isAssignableFrom(c))) {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">final</strong> List&lt;Object&gt; values = entry.getValue();
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">if</strong> (values != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>           <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Object value : values) {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>             <strong class="jxr_keyword">if</strong> (value != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>                 &amp;&amp; (cls.equals(value.getClass())
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 || (instancesOf &amp;&amp; cls.isAssignableFrom(value.getClass())))) {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>               list.add((T) value);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             }
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>           }
@@ -161,8 +161,8 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">   * Find all extensions of the given type.</em>
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">   * @param cls the type</em>
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise {@link</em>
-<a class="jxr_linenumber" name="L157" href="#L157">157</a> <em class="jxr_javadoccomment">   *     Class#equals(Object)} will be used</em>
+<a class="jxr_linenumber" name="L156" href="#L156">156</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise</em>
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> <em class="jxr_javadoccomment">   *     {@link Class#equals(Object)} will be used</em>
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> <em class="jxr_javadoccomment">   * @param extensions the GPX extensions</em>
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">   * @param jaxbContext the {@link JAXBContext} to parse the elements</em>
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the type</em>
@@ -181,8 +181,8 @@
 <a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_javadoccomment">   * Find all extensions of the given type.</em>
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L175" href="#L175">175</a> <em class="jxr_javadoccomment">   * @param cls the type</em>
-<a class="jxr_linenumber" name="L176" href="#L176">176</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise {@link</em>
-<a class="jxr_linenumber" name="L177" href="#L177">177</a> <em class="jxr_javadoccomment">   *     Class#equals(Object)} will be used</em>
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise</em>
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> <em class="jxr_javadoccomment">   *     {@link Class#equals(Object)} will be used</em>
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> <em class="jxr_javadoccomment">   * @param extensions the GPX extensions</em>
 <a class="jxr_linenumber" name="L179" href="#L179">179</a> <em class="jxr_javadoccomment">   * @param unmarshaller the {@link Unmarshaller} to parse the elements</em>
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the type</em>
@@ -201,10 +201,10 @@
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_javadoccomment">   * Find the first extension of the given type.</em>
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">   * @param cls the type</em>
-<a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise {@link</em>
-<a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">   *     Class#equals(Object)} will be used</em>
-<a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">   * @param parsedExtensions the parsed extensions (see {@link GpxJaxbContextHelper#parseExtensions(ExtensionsType,</em>
-<a class="jxr_linenumber" name="L199" href="#L199">199</a> <em class="jxr_javadoccomment">   *     JAXBContext)})</em>
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise</em>
+<a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">   *     {@link Class#equals(Object)} will be used</em>
+<a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">   * @param parsedExtensions the parsed extensions (see</em>
+<a class="jxr_linenumber" name="L199" href="#L199">199</a> <em class="jxr_javadoccomment">   *     {@link GpxJaxbContextHelper#parseExtensions(ExtensionsType, JAXBContext)})</em>
 <a class="jxr_linenumber" name="L200" href="#L200">200</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the type</em>
 <a class="jxr_linenumber" name="L201" href="#L201">201</a> <em class="jxr_javadoccomment">   * @return {@link Optional#empty()} if there is no such element, otherwise an optional with the</em>
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> <em class="jxr_javadoccomment">   *     parsed element</em>
@@ -222,8 +222,8 @@
 <a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">   * Find the first extension of the given type.</em>
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">   * @param cls the type</em>
-<a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise {@link</em>
-<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   *     Class#equals(Object)} will be used</em>
+<a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise</em>
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   *     {@link Class#equals(Object)} will be used</em>
 <a class="jxr_linenumber" name="L219" href="#L219">219</a> <em class="jxr_javadoccomment">   * @param extensions the GPX extensions</em>
 <a class="jxr_linenumber" name="L220" href="#L220">220</a> <em class="jxr_javadoccomment">   * @param jaxbContext the {@link JAXBContext} to parse the elements</em>
 <a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the type</em>
@@ -244,8 +244,8 @@
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">   * Find the first extension of the given type.</em>
 <a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_javadoccomment">   * @param cls the type</em>
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise {@link</em>
-<a class="jxr_linenumber" name="L240" href="#L240">240</a> <em class="jxr_javadoccomment">   *     Class#equals(Object)} will be used</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">   * @param instancesOf if {@code true} instanceof will be used, otherwise</em>
+<a class="jxr_linenumber" name="L240" href="#L240">240</a> <em class="jxr_javadoccomment">   *     {@link Class#equals(Object)} will be used</em>
 <a class="jxr_linenumber" name="L241" href="#L241">241</a> <em class="jxr_javadoccomment">   * @param extensions the GPX extensions</em>
 <a class="jxr_linenumber" name="L242" href="#L242">242</a> <em class="jxr_javadoccomment">   * @param unmarshaller the {@link Unmarshaller} to parse the elements</em>
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the type</em>
@@ -265,6 +265,6 @@
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

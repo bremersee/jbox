@@ -29,8 +29,13 @@ import org.springframework.data.convert.WritingConverter;
  */
 @WritingConverter
 @ToString
-<span class="fc" id="L32">public class TimeZoneWriteConverter extends TimeZoneToStringConverter</span>
+public class TimeZoneWriteConverter extends TimeZoneToStringConverter
     implements Converter&lt;TimeZone, String&gt; {
 
+  /**
+   * Instantiates a new time zone write converter.
+   */
+<span class="fc" id="L38">  public TimeZoneWriteConverter() {</span>
+<span class="fc" id="L39">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

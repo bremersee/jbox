@@ -45,7 +45,6 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    */
   public static final String TYPE_OGC_WKT = &quot;ogcwkt&quot;;
 
-
   /**
    * The coordinate reference system (CRS) with type &lt;code&gt;esriwkt&lt;/code&gt;.
    */
@@ -54,17 +53,17 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
   /**
    * Default constructor.
    */
-<span class="fc" id="L57">  public GeoJsonLinkedCrs() {</span>
-<span class="fc" id="L58">  }</span>
+<span class="fc" id="L56">  public GeoJsonLinkedCrs() {</span>
+<span class="fc" id="L57">  }</span>
 
   /**
    * Constructs the coordinate reference system (CRS) with the specified link.
    *
    * @param href the link to the coordinate reference system (CRS)
    */
-<span class="fc" id="L65">  public GeoJsonLinkedCrs(String href) {</span>
-<span class="fc" id="L66">    setHref(href);</span>
-<span class="fc" id="L67">  }</span>
+<span class="fc" id="L64">  public GeoJsonLinkedCrs(String href) {</span>
+<span class="fc" id="L65">    setHref(href);</span>
+<span class="fc" id="L66">  }</span>
 
   /**
    * Constructs the coordinate reference system (CRS) with the specified link and type.
@@ -72,10 +71,10 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    * @param href the link to the coordinate reference system (CRS)
    * @param type the type of the coordinate reference system (CRS)
    */
-<span class="fc" id="L75">  public GeoJsonLinkedCrs(String href, String type) {</span>
-<span class="fc" id="L76">    setHref(href);</span>
-<span class="fc" id="L77">    setType(type);</span>
-<span class="fc" id="L78">  }</span>
+<span class="fc" id="L74">  public GeoJsonLinkedCrs(String href, String type) {</span>
+<span class="fc" id="L75">    setHref(href);</span>
+<span class="fc" id="L76">    setType(type);</span>
+<span class="fc" id="L77">  }</span>
 
   /**
    * Return the link to the coordinate reference system (CRS).
@@ -84,8 +83,8 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    */
   @JsonIgnore
   public String getHref() {
-<span class="fc" id="L87">    Object tmp = getProperties().get(&quot;href&quot;);</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    return tmp == null ? null : tmp.toString();</span>
+<span class="fc" id="L86">    Object tmp = getProperties().get(&quot;href&quot;);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    return tmp == null ? null : tmp.toString();</span>
   }
 
   /**
@@ -95,12 +94,12 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    */
   @JsonIgnore
   public void setHref(String href) {
-<span class="pc bpc" id="L98" title="1 of 4 branches missed.">    if (href == null || href.trim().isEmpty()) {</span>
-<span class="fc" id="L99">      getProperties().remove(&quot;href&quot;);</span>
+<span class="pc bpc" id="L97" title="1 of 4 branches missed.">    if (href == null || href.trim().isEmpty()) {</span>
+<span class="fc" id="L98">      getProperties().remove(&quot;href&quot;);</span>
     } else {
-<span class="fc" id="L101">      getProperties().put(&quot;href&quot;, href);</span>
+<span class="fc" id="L100">      getProperties().put(&quot;href&quot;, href);</span>
     }
-<span class="fc" id="L103">  }</span>
+<span class="fc" id="L102">  }</span>
 
   /**
    * Return the type of the coordinate reference system (CRS).
@@ -109,8 +108,8 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    */
   @JsonIgnore
   public String getType() {
-<span class="fc" id="L112">    Object tmp = getProperties().get(&quot;type&quot;);</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">    return tmp == null ? null : tmp.toString();</span>
+<span class="fc" id="L111">    Object tmp = getProperties().get(&quot;type&quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    return tmp == null ? null : tmp.toString();</span>
   }
 
   /**
@@ -120,12 +119,12 @@ public class GeoJsonLinkedCrs extends AbstractGeoJsonCrs {
    */
   @JsonIgnore
   public void setType(String type) {
-<span class="pc bpc" id="L123" title="1 of 4 branches missed.">    if (type == null || type.trim().isEmpty()) {</span>
-<span class="fc" id="L124">      getProperties().remove(&quot;type&quot;);</span>
+<span class="pc bpc" id="L122" title="1 of 4 branches missed.">    if (type == null || type.trim().isEmpty()) {</span>
+<span class="fc" id="L123">      getProperties().remove(&quot;type&quot;);</span>
     } else {
-<span class="fc" id="L126">      getProperties().put(&quot;type&quot;, type);</span>
+<span class="fc" id="L125">      getProperties().put(&quot;type&quot;, type);</span>
     }
-<span class="fc" id="L128">  }</span>
+<span class="fc" id="L127">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

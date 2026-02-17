@@ -18,6 +18,7 @@ package org.bremersee.pagebuilder.model;
 
 import static java.util.Objects.isNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ public abstract class JsonPageDto&lt;T&gt; extends AbstractPageDto&lt;T&gt; {
   /**
    * Instantiates a new json page transfer object.
    */
-<span class="fc" id="L48">  protected JsonPageDto() {</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L49">  protected JsonPageDto() {</span>
+<span class="fc" id="L50">  }</span>
 
   /**
    * Instantiates a new json page transfer object.
@@ -56,9 +57,9 @@ public abstract class JsonPageDto&lt;T&gt; extends AbstractPageDto&lt;T&gt; {
    * @param size the size
    * @param totalElements the total elements
    */
-  public JsonPageDto(List&lt;? extends T&gt; content, int number, int size, long totalElements) {
-<span class="fc" id="L60">    super(content, number, size, totalElements);</span>
-<span class="fc" id="L61">  }</span>
+  protected JsonPageDto(List&lt;? extends T&gt; content, int number, int size, long totalElements) {
+<span class="fc" id="L61">    super(content, number, size, totalElements);</span>
+<span class="fc" id="L62">  }</span>
 
   /**
    * Instantiates a new json page transfer object.
@@ -69,10 +70,10 @@ public abstract class JsonPageDto&lt;T&gt; extends AbstractPageDto&lt;T&gt; {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  public JsonPageDto(List&lt;? extends T&gt; content, int number, int size, long totalElements,
+  protected JsonPageDto(List&lt;? extends T&gt; content, int number, int size, long totalElements,
       SortOrder sort) {
-<span class="fc" id="L74">    super(content, number, size, totalElements, sort);</span>
-<span class="fc" id="L75">  }</span>
+<span class="fc" id="L75">    super(content, number, size, totalElements, sort);</span>
+<span class="fc" id="L76">  }</span>
 
   /**
    * Instantiates a new json page transfer object.
@@ -83,26 +84,28 @@ public abstract class JsonPageDto&lt;T&gt; extends AbstractPageDto&lt;T&gt; {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  public JsonPageDto(List&lt;? extends T&gt; content, int number, int size, long totalElements,
+  protected JsonPageDto(List&lt;? extends T&gt; content, int number, int size, long totalElements,
       Sort sort) {
-<span class="fc" id="L88">    super(content, number, size, totalElements, sort);</span>
-<span class="fc" id="L89">  }</span>
+<span class="fc" id="L89">    super(content, number, size, totalElements, sort);</span>
+<span class="fc" id="L90">  }</span>
 
   /**
    * Instantiates a new json page transfer object.
    *
    * @param page the page
    */
-  public JsonPageDto(Page&lt;? extends T&gt; page) {
-<span class="fc" id="L97">    super(page);</span>
-<span class="fc" id="L98">  }</span>
+  protected JsonPageDto(Page&lt;? extends T&gt; page) {
+<span class="fc" id="L98">    super(page);</span>
+<span class="fc" id="L99">  }</span>
 
+  @Schema(name = &quot;content&quot;, description = &quot;The content of the page.&quot;)
+  @JsonProperty(value = &quot;content&quot;)
   @Override
   public List&lt;T&gt; getContent() {
-<span class="pc bpc" id="L102" title="1 of 2 branches missed.">    if (isNull(content)) {</span>
-<span class="nc" id="L103">      content = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">    if (isNull(content)) {</span>
+<span class="nc" id="L106">      content = new ArrayList&lt;&gt;();</span>
     }
-<span class="fc" id="L105">    return content;</span>
+<span class="fc" id="L108">    return content;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

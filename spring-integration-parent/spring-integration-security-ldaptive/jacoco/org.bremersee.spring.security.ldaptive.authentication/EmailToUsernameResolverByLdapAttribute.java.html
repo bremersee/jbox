@@ -18,9 +18,7 @@ package org.bremersee.spring.security.ldaptive.authentication;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.logging.Log;
@@ -42,7 +40,7 @@ public class EmailToUsernameResolverByLdapAttribute implements EmailToUsernameRe
   /**
    * The Logger.
    */
-<span class="fc" id="L45">  protected final Log logger = LogFactory.getLog(this.getClass());</span>
+<span class="fc" id="L43">  protected final Log logger = LogFactory.getLog(this.getClass());</span>
 
   /**
    * The properties.
@@ -64,17 +62,17 @@ public class EmailToUsernameResolverByLdapAttribute implements EmailToUsernameRe
    */
   public EmailToUsernameResolverByLdapAttribute(
       LdaptiveAuthenticationProperties properties,
-<span class="fc" id="L67">      LdaptiveTemplate ldaptiveTemplate) {</span>
-<span class="fc" id="L68">    this.properties = properties;</span>
-<span class="fc" id="L69">    this.ldaptiveTemplate = ldaptiveTemplate;</span>
-<span class="fc" id="L70">  }</span>
+<span class="fc" id="L65">      LdaptiveTemplate ldaptiveTemplate) {</span>
+<span class="fc" id="L66">    this.properties = properties;</span>
+<span class="fc" id="L67">    this.ldaptiveTemplate = ldaptiveTemplate;</span>
+<span class="fc" id="L68">  }</span>
 
   @Override
   public Optional&lt;String&gt; getUsernameByEmail(String email) {
-<span class="fc" id="L74">    return Optional.ofNullable(email)</span>
-<span class="fc bfc" id="L75" title="All 2 branches covered.">        .filter(mail -&gt; isValidEmail(mail)</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">            &amp;&amp; areRequiredPropertiesPresent())</span>
-<span class="fc" id="L77">        .flatMap(this::findUsernameByEmail);</span>
+<span class="fc" id="L72">    return Optional.ofNullable(email)</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        .filter(mail -&gt; isValidEmail(mail)</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            &amp;&amp; areRequiredPropertiesPresent())</span>
+<span class="fc" id="L75">        .flatMap(this::findUsernameByEmail);</span>
   }
 
   /**
@@ -83,35 +81,33 @@ public class EmailToUsernameResolverByLdapAttribute implements EmailToUsernameRe
    * @return the boolean
    */
   protected boolean areRequiredPropertiesPresent() {
-<span class="pc bpc" id="L86" title="1 of 2 branches missed.">    return !isEmpty(getProperties().getUserBaseDn())</span>
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(getProperties().getUserObjectClass())</span>
-<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(getProperties().getUserFindOneSearchScope())</span>
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(getProperties().getEmailAttribute())</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        &amp;&amp; !isEmpty(getProperties().getUsernameAttribute());</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">    return !isEmpty(getProperties().getUserBaseDn())</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(getProperties().getUserObjectClass())</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(getProperties().getUserFindOneSearchScope())</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        &amp;&amp; !isEmpty(getProperties().getEmailAttribute())</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        &amp;&amp; !isEmpty(getProperties().getUsernameAttribute());</span>
   }
 
   private Optional&lt;String&gt; findUsernameByEmail(String email) {
     try {
-<span class="fc" id="L95">      String filter = String.format(&quot;(&amp;(objectClass=%s)(%s={0}))&quot;,</span>
-<span class="fc" id="L96">          getProperties().getUserObjectClass(), getProperties().getEmailAttribute());</span>
-<span class="fc" id="L97">      SearchRequest searchRequest = SearchRequest.builder()</span>
-<span class="fc" id="L98">          .dn(getProperties().getUserBaseDn())</span>
-<span class="fc" id="L99">          .filter(FilterTemplate.builder()</span>
-<span class="fc" id="L100">              .filter(filter)</span>
-<span class="fc" id="L101">              .parameters(email)</span>
-<span class="fc" id="L102">              .build())</span>
-<span class="fc" id="L103">          .scope(getProperties().getUserFindOneSearchScope())</span>
-<span class="fc" id="L104">          .build();</span>
-<span class="fc" id="L105">      return Stream.ofNullable(getLdaptiveTemplate().findAll(searchRequest))</span>
-<span class="pc bpc" id="L106" title="1 of 2 branches missed.">          .filter(collection -&gt; collection.size() == 1)</span>
-<span class="fc" id="L107">          .flatMap(Collection::stream)</span>
-<span class="fc" id="L108">          .findFirst()</span>
-<span class="fc" id="L109">          .map(ldapEntry -&gt; ldapEntry.getAttribute(getProperties().getUsernameAttribute()))</span>
-<span class="fc" id="L110">          .map(LdapAttribute::getStringValue);</span>
+<span class="fc" id="L93">      String filter = String.format(&quot;(&amp;(objectClass=%s)(%s={0}))&quot;,</span>
+<span class="fc" id="L94">          getProperties().getUserObjectClass(), getProperties().getEmailAttribute());</span>
+<span class="fc" id="L95">      SearchRequest searchRequest = SearchRequest.builder()</span>
+<span class="fc" id="L96">          .dn(getProperties().getUserBaseDn())</span>
+<span class="fc" id="L97">          .filter(FilterTemplate.builder()</span>
+<span class="fc" id="L98">              .filter(filter)</span>
+<span class="fc" id="L99">              .parameters(email)</span>
+<span class="fc" id="L100">              .build())</span>
+<span class="fc" id="L101">          .scope(getProperties().getUserFindOneSearchScope())</span>
+<span class="fc" id="L102">          .sizeLimit(1)</span>
+<span class="fc" id="L103">          .build();</span>
+<span class="fc" id="L104">      return getLdaptiveTemplate().findOne(searchRequest)</span>
+<span class="fc" id="L105">          .map(ldapEntry -&gt; ldapEntry.getAttribute(getProperties().getUsernameAttribute()))</span>
+<span class="fc" id="L106">          .map(LdapAttribute::getStringValue);</span>
 
-<span class="fc" id="L112">    } catch (LdaptiveException e) {</span>
-<span class="fc" id="L113">      logger.warn(&quot;Resolve username by email '&quot; + email + &quot;' failed.&quot;, e);</span>
-<span class="fc" id="L114">      return Optional.empty();</span>
+<span class="fc" id="L108">    } catch (LdaptiveException e) {</span>
+<span class="fc" id="L109">      logger.warn(&quot;Resolve username by email '&quot; + email + &quot;' failed.&quot;, e);</span>
+<span class="fc" id="L110">      return Optional.empty();</span>
     }
   }
 }

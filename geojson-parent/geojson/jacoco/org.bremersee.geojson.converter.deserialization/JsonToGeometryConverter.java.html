@@ -17,20 +17,12 @@
 package org.bremersee.geojson.converter.deserialization;
 
 import static java.util.Objects.isNull;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRIES;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY_COLLECTION;
-import static org.bremersee.geojson.GeoJsonConstants.LINESTRING;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_LINESTRING;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_POINT;
-import static org.bremersee.geojson.GeoJsonConstants.MULTI_POLYGON;
-import static org.bremersee.geojson.GeoJsonConstants.POINT;
-import static org.bremersee.geojson.GeoJsonConstants.POLYGON;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.bremersee.geojson.GeoJsonConstants;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
@@ -78,8 +70,8 @@ public class JsonToGeometryConverter extends AbstractJsonToGeometryConverter {
    * Instantiates a new json to geometry converter.
    */
   public JsonToGeometryConverter() {
-<span class="fc" id="L81">    this(new GeometryFactory());</span>
-<span class="fc" id="L82">  }</span>
+<span class="fc" id="L73">    this(new GeometryFactory());</span>
+<span class="fc" id="L74">  }</span>
 
   /**
    * Instantiates a new json to geometry converter.
@@ -87,28 +79,28 @@ public class JsonToGeometryConverter extends AbstractJsonToGeometryConverter {
    * @param geometryFactory the geometry factory
    */
   public JsonToGeometryConverter(GeometryFactory geometryFactory) {
-<span class="fc" id="L90">    super(geometryFactory);</span>
-<span class="fc" id="L91">    ObjectToCoordinateConverter coordinateConverter = new ObjectToCoordinateConverter();</span>
-<span class="fc" id="L92">    ObjectToCoordinateSequenceConverter coordinateSequenceConverter</span>
+<span class="fc" id="L82">    super(geometryFactory);</span>
+<span class="fc" id="L83">    ObjectToCoordinateConverter coordinateConverter = new ObjectToCoordinateConverter();</span>
+<span class="fc" id="L84">    ObjectToCoordinateSequenceConverter coordinateSequenceConverter</span>
         = new ObjectToCoordinateSequenceConverter(coordinateConverter);
 
-<span class="fc" id="L95">    pointConverter = new JsonToPointConverter(getGeometryFactory(), coordinateConverter);</span>
-<span class="fc" id="L96">    lineStringConverter = new JsonToLineStringConverter(</span>
-<span class="fc" id="L97">        getGeometryFactory(),</span>
+<span class="fc" id="L87">    pointConverter = new JsonToPointConverter(getGeometryFactory(), coordinateConverter);</span>
+<span class="fc" id="L88">    lineStringConverter = new JsonToLineStringConverter(</span>
+<span class="fc" id="L89">        getGeometryFactory(),</span>
         coordinateSequenceConverter);
-<span class="fc" id="L99">    polygonConverter = new JsonToPolygonConverter(</span>
-<span class="fc" id="L100">        getGeometryFactory(),</span>
+<span class="fc" id="L91">    polygonConverter = new JsonToPolygonConverter(</span>
+<span class="fc" id="L92">        getGeometryFactory(),</span>
         coordinateSequenceConverter);
-<span class="fc" id="L102">    multiPointConverter = new JsonToMultiPointConverter(</span>
-<span class="fc" id="L103">        getGeometryFactory(),</span>
+<span class="fc" id="L94">    multiPointConverter = new JsonToMultiPointConverter(</span>
+<span class="fc" id="L95">        getGeometryFactory(),</span>
         pointConverter);
-<span class="fc" id="L105">    multiLineStringConverter = new JsonToMultiLineStringConverter(</span>
-<span class="fc" id="L106">        getGeometryFactory(),</span>
+<span class="fc" id="L97">    multiLineStringConverter = new JsonToMultiLineStringConverter(</span>
+<span class="fc" id="L98">        getGeometryFactory(),</span>
         lineStringConverter);
-<span class="fc" id="L108">    multiPolygonConverter = new JsonToMultiPolygonConverter(</span>
-<span class="fc" id="L109">        getGeometryFactory(),</span>
+<span class="fc" id="L100">    multiPolygonConverter = new JsonToMultiPolygonConverter(</span>
+<span class="fc" id="L101">        getGeometryFactory(),</span>
         polygonConverter);
-<span class="fc" id="L111">  }</span>
+<span class="fc" id="L103">  }</span>
 
   /**
    * Convert geometry.
@@ -117,45 +109,45 @@ public class JsonToGeometryConverter extends AbstractJsonToGeometryConverter {
    * @return the geometry
    */
   public Geometry convert(Map&lt;String, Object&gt; source) {
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">    if (isNull(source)) {</span>
-<span class="nc" id="L121">      return null;</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (isNull(source)) {</span>
+<span class="nc" id="L113">      return null;</span>
     }
-<span class="fc" id="L123">    String type = String.valueOf(source.get(TYPE));</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">    if (POINT.equals(type)) {</span>
-<span class="fc" id="L125">      return pointConverter.convert(source);</span>
+<span class="fc" id="L115">    String type = String.valueOf(source.get(GeoJsonConstants.TYPE));</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (GeoJsonConstants.POINT.equals(type)) {</span>
+<span class="fc" id="L117">      return pointConverter.convert(source);</span>
 
-<span class="fc bfc" id="L127" title="All 2 branches covered.">    } else if (LINESTRING.equals(type)) {</span>
-<span class="fc" id="L128">      return lineStringConverter.convert(source);</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    } else if (GeoJsonConstants.LINESTRING.equals(type)) {</span>
+<span class="fc" id="L120">      return lineStringConverter.convert(source);</span>
 
-<span class="fc bfc" id="L130" title="All 2 branches covered.">    } else if (POLYGON.equals(type)) {</span>
-<span class="fc" id="L131">      return polygonConverter.convert(source);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    } else if (GeoJsonConstants.POLYGON.equals(type)) {</span>
+<span class="fc" id="L123">      return polygonConverter.convert(source);</span>
 
-<span class="fc bfc" id="L133" title="All 2 branches covered.">    } else if (MULTI_POINT.equals(type)) {</span>
-<span class="fc" id="L134">      return multiPointConverter.convert(source);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    } else if (GeoJsonConstants.MULTI_POINT.equals(type)) {</span>
+<span class="fc" id="L126">      return multiPointConverter.convert(source);</span>
 
-<span class="fc bfc" id="L136" title="All 2 branches covered.">    } else if (MULTI_LINESTRING.equals(type)) {</span>
-<span class="fc" id="L137">      return multiLineStringConverter.convert(source);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">    } else if (GeoJsonConstants.MULTI_LINESTRING.equals(type)) {</span>
+<span class="fc" id="L129">      return multiLineStringConverter.convert(source);</span>
 
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    } else if (MULTI_POLYGON.equals(type)) {</span>
-<span class="fc" id="L140">      return multiPolygonConverter.convert(source);</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">    } else if (GeoJsonConstants.MULTI_POLYGON.equals(type)) {</span>
+<span class="fc" id="L132">      return multiPolygonConverter.convert(source);</span>
 
-<span class="fc bfc" id="L142" title="All 2 branches covered.">    } else if (GEOMETRY_COLLECTION.equals(type)) {</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    } else if (GeoJsonConstants.GEOMETRY_COLLECTION.equals(type)) {</span>
       Geometry[] geometries;
-<span class="fc" id="L144">      Object value = source.get(GEOMETRIES);</span>
-<span class="fc bfc" id="L145" title="All 2 branches covered.">      if (isNull(value)) {</span>
-<span class="fc" id="L146">        geometries = new Geometry[0];</span>
+<span class="fc" id="L136">      Object value = source.get(GeoJsonConstants.GEOMETRIES);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">      if (isNull(value)) {</span>
+<span class="fc" id="L138">        geometries = new Geometry[0];</span>
       } else {
         //noinspection unchecked
-<span class="fc" id="L149">        geometries = ((List&lt;Map&lt;String, Object&gt;&gt;) value)</span>
-<span class="fc" id="L150">            .stream()</span>
-<span class="fc" id="L151">            .map(this::convert)</span>
-<span class="fc" id="L152">            .filter(Objects::nonNull)</span>
-<span class="fc" id="L153">            .toArray(Geometry[]::new);</span>
+<span class="fc" id="L141">        geometries = ((List&lt;Map&lt;String, Object&gt;&gt;) value)</span>
+<span class="fc" id="L142">            .stream()</span>
+<span class="fc" id="L143">            .map(this::convert)</span>
+<span class="fc" id="L144">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L145">            .toArray(Geometry[]::new);</span>
       }
-<span class="fc" id="L155">      return getGeometryFactory().createGeometryCollection(geometries);</span>
+<span class="fc" id="L147">      return getGeometryFactory().createGeometryCollection(geometries);</span>
     }
 
-<span class="fc" id="L158">    throw new IllegalArgumentException(String.format(&quot;Illegal geometry: %s&quot;, source));</span>
+<span class="fc" id="L150">    throw new IllegalArgumentException(String.format(&quot;Illegal geometry: %s&quot;, source));</span>
   }
 
 }

@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -61,7 +60,7 @@ public interface Ace {
    * @return the ace builder
    */
   static AceBuilder builder() {
-<span class="fc" id="L64">    return new AceBuilder();</span>
+<span class="fc" id="L63">    return new AceBuilder();</span>
   }
 
   /**
@@ -70,7 +69,7 @@ public interface Ace {
    * @return the ace
    */
   static Ace empty() {
-<span class="fc" id="L73">    return builder().build();</span>
+<span class="fc" id="L72">    return builder().build();</span>
   }
 
   /**
@@ -108,15 +107,15 @@ public interface Ace {
    */
   @ToString
   @EqualsAndHashCode
-<span class="fc" id="L111">  class AceBuilder {</span>
+<span class="fc" id="L110">  class AceBuilder {</span>
 
     private boolean guest;
 
-<span class="fc" id="L115">    private final TreeSet&lt;String&gt; users = new TreeSet&lt;&gt;(String::compareToIgnoreCase);</span>
+<span class="fc" id="L114">    private final TreeSet&lt;String&gt; users = new TreeSet&lt;&gt;(String::compareToIgnoreCase);</span>
 
-<span class="fc" id="L117">    private final TreeSet&lt;String&gt; roles = new TreeSet&lt;&gt;(String::compareToIgnoreCase);</span>
+<span class="fc" id="L116">    private final TreeSet&lt;String&gt; roles = new TreeSet&lt;&gt;(String::compareToIgnoreCase);</span>
 
-<span class="fc" id="L119">    private final TreeSet&lt;String&gt; groups = new TreeSet&lt;&gt;(String::compareToIgnoreCase);</span>
+<span class="fc" id="L118">    private final TreeSet&lt;String&gt; groups = new TreeSet&lt;&gt;(String::compareToIgnoreCase);</span>
 
     /**
      * From ace builder.
@@ -125,13 +124,13 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder from(Ace ace) {
-<span class="fc bfc" id="L128" title="All 2 branches covered.">      if (nonNull(ace)) {</span>
-<span class="fc" id="L129">        guest(ace.isGuest());</span>
-<span class="fc" id="L130">        users(ace.getUsers());</span>
-<span class="fc" id="L131">        roles(ace.getRoles());</span>
-<span class="fc" id="L132">        groups(ace.getGroups());</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">      if (nonNull(ace)) {</span>
+<span class="fc" id="L128">        guest(ace.isGuest());</span>
+<span class="fc" id="L129">        users(ace.getUsers());</span>
+<span class="fc" id="L130">        roles(ace.getRoles());</span>
+<span class="fc" id="L131">        groups(ace.getGroups());</span>
       }
-<span class="fc" id="L134">      return this;</span>
+<span class="fc" id="L133">      return this;</span>
     }
 
     /**
@@ -141,8 +140,8 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder guest(boolean isGuest) {
-<span class="fc" id="L144">      this.guest = isGuest;</span>
-<span class="fc" id="L145">      return this;</span>
+<span class="fc" id="L143">      this.guest = isGuest;</span>
+<span class="fc" id="L144">      return this;</span>
     }
 
     /**
@@ -152,8 +151,8 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder users(Collection&lt;String&gt; users) {
-<span class="fc" id="L155">      this.users.clear();</span>
-<span class="pc bpc" id="L156" title="1 of 2 branches missed.">      return addUsers(nonNull(users) ? users : List.of());</span>
+<span class="fc" id="L154">      this.users.clear();</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">      return addUsers(nonNull(users) ? users : List.of());</span>
     }
 
     /**
@@ -163,12 +162,12 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder addUsers(Collection&lt;String&gt; users) {
-<span class="pc bpc" id="L166" title="1 of 2 branches missed.">      if (nonNull(users)) {</span>
-<span class="fc" id="L167">        users.stream()</span>
-<span class="pc bpc" id="L168" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry) &amp;&amp; !entry.isBlank())</span>
-<span class="fc" id="L169">            .forEach(this.users::add);</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">      if (nonNull(users)) {</span>
+<span class="fc" id="L166">        users.stream()</span>
+<span class="pc bpc" id="L167" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry) &amp;&amp; !entry.isBlank())</span>
+<span class="fc" id="L168">            .forEach(this.users::add);</span>
       }
-<span class="fc" id="L171">      return this;</span>
+<span class="fc" id="L170">      return this;</span>
     }
 
     /**
@@ -178,12 +177,12 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder removeUsers(Collection&lt;String&gt; users) {
-<span class="pc bpc" id="L181" title="1 of 2 branches missed.">      if (nonNull(users)) {</span>
-<span class="fc" id="L182">        users.stream()</span>
-<span class="fc" id="L183">            .filter(Objects::nonNull)</span>
-<span class="fc" id="L184">            .forEach(this.users::remove);</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">      if (nonNull(users)) {</span>
+<span class="fc" id="L181">        users.stream()</span>
+<span class="fc" id="L182">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L183">            .forEach(this.users::remove);</span>
       }
-<span class="fc" id="L186">      return this;</span>
+<span class="fc" id="L185">      return this;</span>
     }
 
     /**
@@ -193,8 +192,8 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder roles(Collection&lt;String&gt; roles) {
-<span class="fc" id="L196">      this.roles.clear();</span>
-<span class="pc bpc" id="L197" title="1 of 2 branches missed.">      return addRoles(nonNull(roles) ? roles : List.of());</span>
+<span class="fc" id="L195">      this.roles.clear();</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">      return addRoles(nonNull(roles) ? roles : List.of());</span>
     }
 
     /**
@@ -204,12 +203,12 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder addRoles(Collection&lt;String&gt; roles) {
-<span class="pc bpc" id="L207" title="1 of 2 branches missed.">      if (nonNull(roles)) {</span>
-<span class="fc" id="L208">        roles.stream()</span>
-<span class="pc bpc" id="L209" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry) &amp;&amp; !entry.isBlank())</span>
-<span class="fc" id="L210">            .forEach(this.roles::add);</span>
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">      if (nonNull(roles)) {</span>
+<span class="fc" id="L207">        roles.stream()</span>
+<span class="pc bpc" id="L208" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry) &amp;&amp; !entry.isBlank())</span>
+<span class="fc" id="L209">            .forEach(this.roles::add);</span>
       }
-<span class="fc" id="L212">      return this;</span>
+<span class="fc" id="L211">      return this;</span>
     }
 
     /**
@@ -219,12 +218,12 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder removeRoles(Collection&lt;String&gt; roles) {
-<span class="pc bpc" id="L222" title="1 of 2 branches missed.">      if (nonNull(roles)) {</span>
-<span class="fc" id="L223">        roles.stream()</span>
-<span class="fc" id="L224">            .filter(Objects::nonNull)</span>
-<span class="fc" id="L225">            .forEach(this.roles::remove);</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">      if (nonNull(roles)) {</span>
+<span class="fc" id="L222">        roles.stream()</span>
+<span class="fc" id="L223">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L224">            .forEach(this.roles::remove);</span>
       }
-<span class="fc" id="L227">      return this;</span>
+<span class="fc" id="L226">      return this;</span>
     }
 
     /**
@@ -234,8 +233,8 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder groups(Collection&lt;String&gt; groups) {
-<span class="fc" id="L237">      this.groups.clear();</span>
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">      return addGroups(nonNull(groups) ? groups : List.of());</span>
+<span class="fc" id="L236">      this.groups.clear();</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">      return addGroups(nonNull(groups) ? groups : List.of());</span>
     }
 
     /**
@@ -245,12 +244,12 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder addGroups(Collection&lt;String&gt; groups) {
-<span class="pc bpc" id="L248" title="1 of 2 branches missed.">      if (nonNull(groups)) {</span>
-<span class="fc" id="L249">        groups.stream()</span>
-<span class="pc bpc" id="L250" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry) &amp;&amp; !entry.isBlank())</span>
-<span class="fc" id="L251">            .forEach(this.groups::add);</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">      if (nonNull(groups)) {</span>
+<span class="fc" id="L248">        groups.stream()</span>
+<span class="pc bpc" id="L249" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry) &amp;&amp; !entry.isBlank())</span>
+<span class="fc" id="L250">            .forEach(this.groups::add);</span>
       }
-<span class="fc" id="L253">      return this;</span>
+<span class="fc" id="L252">      return this;</span>
     }
 
     /**
@@ -260,12 +259,12 @@ public interface Ace {
      * @return the ace builder
      */
     public AceBuilder removeGroups(Collection&lt;String&gt; groups) {
-<span class="pc bpc" id="L263" title="1 of 2 branches missed.">      if (nonNull(groups)) {</span>
-<span class="fc" id="L264">        groups.stream()</span>
-<span class="fc" id="L265">            .filter(Objects::nonNull)</span>
-<span class="fc" id="L266">            .forEach(this.groups::remove);</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">      if (nonNull(groups)) {</span>
+<span class="fc" id="L263">        groups.stream()</span>
+<span class="fc" id="L264">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L265">            .forEach(this.groups::remove);</span>
       }
-<span class="fc" id="L268">      return this;</span>
+<span class="fc" id="L267">      return this;</span>
     }
 
     /**
@@ -274,7 +273,7 @@ public interface Ace {
      * @return the ace
      */
     public Ace build() {
-<span class="fc" id="L277">      return new AceImpl(guest, users, roles, groups);</span>
+<span class="fc" id="L276">      return new AceImpl(guest, users, roles, groups);</span>
     }
 
   }
@@ -284,31 +283,49 @@ public interface Ace {
    *
    * @author Christian Bremer
    */
-  @SuppressWarnings(&quot;SameNameButDifferent&quot;)
-  @Getter
   @ToString
   @EqualsAndHashCode
   class AceImpl implements Ace {
 
-    private final boolean guest;
+    private final boolean guestFlag;
 
-    private final SortedSet&lt;String&gt; users;
+    private final SortedSet&lt;String&gt; userSet;
 
-    private final SortedSet&lt;String&gt; roles;
+    private final SortedSet&lt;String&gt; roleSet;
 
-    private final SortedSet&lt;String&gt; groups;
+    private final SortedSet&lt;String&gt; groupSet;
 
     private AceImpl(
         boolean guest,
         SortedSet&lt;String&gt; users,
         SortedSet&lt;String&gt; roles,
-<span class="fc" id="L305">        SortedSet&lt;String&gt; groups) {</span>
+<span class="fc" id="L302">        SortedSet&lt;String&gt; groups) {</span>
 
-<span class="fc" id="L307">      this.guest = guest;</span>
-<span class="fc" id="L308">      this.users = unmodifiableSortedSet(users);</span>
-<span class="fc" id="L309">      this.roles = unmodifiableSortedSet(roles);</span>
-<span class="fc" id="L310">      this.groups = unmodifiableSortedSet(groups);</span>
-<span class="fc" id="L311">    }</span>
+<span class="fc" id="L304">      this.guestFlag = guest;</span>
+<span class="fc" id="L305">      this.userSet = unmodifiableSortedSet(users);</span>
+<span class="fc" id="L306">      this.roleSet = unmodifiableSortedSet(roles);</span>
+<span class="fc" id="L307">      this.groupSet = unmodifiableSortedSet(groups);</span>
+<span class="fc" id="L308">    }</span>
+
+    @Override
+    public boolean isGuest() {
+<span class="fc" id="L312">      return guestFlag;</span>
+    }
+
+    @Override
+    public SortedSet&lt;String&gt; getUsers() {
+<span class="fc" id="L317">      return userSet;</span>
+    }
+
+    @Override
+    public SortedSet&lt;String&gt; getRoles() {
+<span class="fc" id="L322">      return roleSet;</span>
+    }
+
+    @Override
+    public SortedSet&lt;String&gt; getGroups() {
+<span class="fc" id="L327">      return groupSet;</span>
+    }
   }
 
 }

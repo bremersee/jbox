@@ -262,11 +262,12 @@ public class RestApiExceptionMapperBootProperties {
      *
      * @return the status
      */
+    @Override
     public int getStatus() {
-<span class="pc bpc" id="L266" title="1 of 2 branches missed.">      if (HttpStatus.resolve(status) == null) {</span>
-<span class="nc" id="L267">        return HttpStatus.INTERNAL_SERVER_ERROR.value();</span>
+<span class="pc bpc" id="L267" title="1 of 2 branches missed.">      if (HttpStatus.resolve(status) == null) {</span>
+<span class="nc" id="L268">        return HttpStatus.INTERNAL_SERVER_ERROR.value();</span>
       }
-<span class="fc" id="L269">      return status;</span>
+<span class="fc" id="L270">      return status;</span>
     }
 
   }
@@ -275,27 +276,32 @@ public class RestApiExceptionMapperBootProperties {
    * The exception mapping config.
    */
   @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
   public static class ExceptionMappingConfigImpl implements ExceptionMappingConfig {
 
     private String exceptionClassName;
 
-    private Boolean includeMessage = true;
+<span class="fc" id="L283">    private Boolean includeMessage = true;</span>
 
-    private Boolean includeException = true;
+<span class="fc" id="L285">    private Boolean includeException = true;</span>
 
-    private Boolean includeApplicationName = true;
+<span class="fc" id="L287">    private Boolean includeApplicationName = true;</span>
 
-    private Boolean includePath = true;
+<span class="fc" id="L289">    private Boolean includePath = true;</span>
 
-    private Boolean includeHandler = false;
+<span class="fc" id="L291">    private Boolean includeHandler = false;</span>
 
-    private Boolean includeStackTrace = false;
+<span class="fc" id="L293">    private Boolean includeStackTrace = false;</span>
 
-    private Boolean includeCause = false;
+<span class="fc" id="L295">    private Boolean includeCause = false;</span>
 
-    private Boolean evaluateAnnotationFirst = false;
+<span class="fc" id="L297">    private Boolean evaluateAnnotationFirst = false;</span>
+
+    /**
+     * Instantiates a new exception mapping config.
+     */
+    public ExceptionMappingConfigImpl() {
+<span class="fc" id="L303">      super();</span>
+<span class="fc" id="L304">    }</span>
 
   }
 

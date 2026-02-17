@@ -45,20 +45,26 @@ import org.springframework.util.ClassUtils;
 })
 @AutoConfiguration
 <span class="fc" id="L47">@Slf4j</span>
-<span class="fc" id="L48">public class RestApiExceptionParserForWebFluxAutoConfiguration {</span>
+public class RestApiExceptionParserForWebFluxAutoConfiguration {
+
+  /**
+   * Instantiates a new rest api exception parser for web flux autoconfiguration.
+   */
+<span class="fc" id="L53">  public RestApiExceptionParserForWebFluxAutoConfiguration() {</span>
+<span class="fc" id="L54">  }</span>
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-<span class="fc" id="L55">    log.info(&quot;&quot;&quot;</span>
+<span class="fc" id="L61">    log.info(&quot;&quot;&quot;</span>
 
             *********************************************************************************
             * {}
             *********************************************************************************&quot;&quot;&quot;,
-<span class="fc" id="L60">        ClassUtils.getUserClass(getClass()).getSimpleName());</span>
-<span class="fc" id="L61">  }</span>
+<span class="fc" id="L66">        ClassUtils.getUserClass(getClass()).getSimpleName());</span>
+<span class="fc" id="L67">  }</span>
 
   /**
    * Creates rest api exception parser for reactive web application.
@@ -72,10 +78,10 @@ import org.springframework.util.ClassUtils;
   public RestApiExceptionParser restApiExceptionParser(
       ObjectProvider&lt;Jackson2ObjectMapperBuilder&gt; objectMapperBuilderProvider) {
 
-<span class="fc" id="L75">    Jackson2ObjectMapperBuilder objectMapperBuilder = objectMapperBuilderProvider.getIfAvailable();</span>
-<span class="fc" id="L76">    return Optional.ofNullable(objectMapperBuilder)</span>
-<span class="fc" id="L77">        .map(RestApiExceptionParserImpl::new)</span>
-<span class="fc" id="L78">        .orElseGet(RestApiExceptionParserImpl::new);</span>
+<span class="fc" id="L81">    Jackson2ObjectMapperBuilder objectMapperBuilder = objectMapperBuilderProvider.getIfAvailable();</span>
+<span class="fc" id="L82">    return Optional.ofNullable(objectMapperBuilder)</span>
+<span class="fc" id="L83">        .map(RestApiExceptionParserImpl::new)</span>
+<span class="fc" id="L84">        .orElseGet(RestApiExceptionParserImpl::new);</span>
   }
 
 }

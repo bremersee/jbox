@@ -204,7 +204,6 @@ public abstract class ConverterUtils {
 <span class="fc" id="L204">    return OffsetDateTime.ofInstant(xmlCalendarToInstant(xmlGregorianCalendar), ZoneOffset.UTC);</span>
   }
 
-
   /**
    * Calendar to xml calendar.
    *
@@ -212,14 +211,14 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar calendarToXmlCalendar(GregorianCalendar calendar) {
-<span class="fc bfc" id="L215" title="All 2 branches covered.">    if (calendar == null) {</span>
-<span class="fc" id="L216">      return null;</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">    if (calendar == null) {</span>
+<span class="fc" id="L215">      return null;</span>
     }
     try {
-<span class="fc" id="L219">      return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);</span>
+<span class="fc" id="L218">      return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);</span>
 
-<span class="nc" id="L221">    } catch (DatatypeConfigurationException e) {</span>
-<span class="nc" id="L222">      throw new UnsupportedOperationException(&quot;Creating XMLGregorianCalendar failed.&quot;, e);</span>
+<span class="nc" id="L220">    } catch (DatatypeConfigurationException e) {</span>
+<span class="nc" id="L221">      throw new UnsupportedOperationException(&quot;Creating XMLGregorianCalendar failed.&quot;, e);</span>
     }
   }
 
@@ -230,7 +229,7 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar dateToXmlCalendar(Date date) {
-<span class="fc" id="L233">    return dateToXmlCalendar(date, null);</span>
+<span class="fc" id="L232">    return dateToXmlCalendar(date, null);</span>
   }
 
   /**
@@ -241,7 +240,7 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar dateToXmlCalendar(Date date, TimeZone zone) {
-<span class="fc" id="L244">    return dateToXmlCalendar(date, zone, null);</span>
+<span class="fc" id="L243">    return dateToXmlCalendar(date, zone, null);</span>
   }
 
   /**
@@ -253,18 +252,18 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar dateToXmlCalendar(Date date, TimeZone zone, Locale locale) {
-<span class="fc bfc" id="L256" title="All 2 branches covered.">    if (date == null) {</span>
-<span class="fc" id="L257">      return null;</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">    if (date == null) {</span>
+<span class="fc" id="L256">      return null;</span>
     }
-<span class="pc bpc" id="L259" title="1 of 2 branches missed.">    TimeZone tz = zone != null ? zone : TimeZone.getTimeZone(&quot;GMT&quot;);</span>
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">    TimeZone tz = zone != null ? zone : TimeZone.getTimeZone(&quot;GMT&quot;);</span>
     GregorianCalendar calendar;
-<span class="fc bfc" id="L261" title="All 2 branches covered.">    if (locale != null) {</span>
-<span class="fc" id="L262">      calendar = new GregorianCalendar(tz, locale);</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">    if (locale != null) {</span>
+<span class="fc" id="L261">      calendar = new GregorianCalendar(tz, locale);</span>
     } else {
-<span class="fc" id="L264">      calendar = new GregorianCalendar(tz);</span>
+<span class="fc" id="L263">      calendar = new GregorianCalendar(tz);</span>
     }
-<span class="fc" id="L266">    calendar.setTime(date);</span>
-<span class="fc" id="L267">    return calendarToXmlCalendar(calendar);</span>
+<span class="fc" id="L265">    calendar.setTime(date);</span>
+<span class="fc" id="L266">    return calendarToXmlCalendar(calendar);</span>
   }
 
   /**
@@ -274,7 +273,7 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar millisToXmlCalendar(Long millis) {
-<span class="fc" id="L277">    return millisToXmlCalendar(millis, null);</span>
+<span class="fc" id="L276">    return millisToXmlCalendar(millis, null);</span>
   }
 
   /**
@@ -285,7 +284,7 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar millisToXmlCalendar(Long millis, TimeZone zone) {
-<span class="fc" id="L288">    return millisToXmlCalendar(millis, zone, null);</span>
+<span class="fc" id="L287">    return millisToXmlCalendar(millis, zone, null);</span>
   }
 
   /**
@@ -301,12 +300,11 @@ public abstract class ConverterUtils {
       TimeZone zone,
       Locale locale) {
 
-<span class="fc bfc" id="L304" title="All 2 branches covered.">    if (millis == null) {</span>
-<span class="fc" id="L305">      return null;</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">    if (millis == null) {</span>
+<span class="fc" id="L304">      return null;</span>
     }
-<span class="fc" id="L307">    return dateToXmlCalendar(new Date(millis), zone, locale);</span>
+<span class="fc" id="L306">    return dateToXmlCalendar(new Date(millis), zone, locale);</span>
   }
-
 
   /**
    * Instant to xml calendar.
@@ -315,7 +313,7 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar instantToXmlCalendar(Instant instant) {
-<span class="fc" id="L318">    return instantToXmlCalendar(instant, null);</span>
+<span class="fc" id="L316">    return instantToXmlCalendar(instant, null);</span>
   }
 
   /**
@@ -326,7 +324,7 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar instantToXmlCalendar(Instant instant, ZoneId zoneId) {
-<span class="fc" id="L329">    return instantToXmlCalendar(instant, zoneId, null);</span>
+<span class="fc" id="L327">    return instantToXmlCalendar(instant, zoneId, null);</span>
   }
 
   /**
@@ -342,11 +340,11 @@ public abstract class ConverterUtils {
       ZoneId zoneId,
       Locale locale) {
 
-<span class="fc bfc" id="L345" title="All 2 branches covered.">    if (instant == null) {</span>
-<span class="fc" id="L346">      return null;</span>
+<span class="fc bfc" id="L343" title="All 2 branches covered.">    if (instant == null) {</span>
+<span class="fc" id="L344">      return null;</span>
     }
-<span class="pc bpc" id="L348" title="1 of 2 branches missed.">    TimeZone tz = zoneId != null ? TimeZone.getTimeZone(zoneId) : TimeZone.getTimeZone(&quot;GMT&quot;);</span>
-<span class="fc" id="L349">    return dateToXmlCalendar(Date.from(instant), tz, locale);</span>
+<span class="pc bpc" id="L346" title="1 of 2 branches missed.">    TimeZone tz = zoneId != null ? TimeZone.getTimeZone(zoneId) : TimeZone.getTimeZone(&quot;GMT&quot;);</span>
+<span class="fc" id="L347">    return dateToXmlCalendar(Date.from(instant), tz, locale);</span>
   }
 
   /**
@@ -356,10 +354,10 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar offsetDateTimeToXmlCalendar(OffsetDateTime dateTime) {
-<span class="fc bfc" id="L359" title="All 2 branches covered.">    if (dateTime == null) {</span>
-<span class="fc" id="L360">      return null;</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">    if (dateTime == null) {</span>
+<span class="fc" id="L358">      return null;</span>
     }
-<span class="fc" id="L362">    return instantToXmlCalendar(dateTime.toInstant(), dateTime.getOffset());</span>
+<span class="fc" id="L360">    return instantToXmlCalendar(dateTime.toInstant(), dateTime.getOffset());</span>
   }
 
   /**
@@ -369,10 +367,10 @@ public abstract class ConverterUtils {
    * @return the xml gregorian calendar
    */
   public static XMLGregorianCalendar offsetDateTimeToXmlCalendarUtc(OffsetDateTime dateTime) {
-<span class="fc bfc" id="L372" title="All 2 branches covered.">    if (dateTime == null) {</span>
-<span class="fc" id="L373">      return null;</span>
+<span class="fc bfc" id="L370" title="All 2 branches covered.">    if (dateTime == null) {</span>
+<span class="fc" id="L371">      return null;</span>
     }
-<span class="fc" id="L375">    return instantToXmlCalendar(dateTime.toInstant(), ZoneOffset.UTC);</span>
+<span class="fc" id="L373">    return instantToXmlCalendar(dateTime.toInstant(), ZoneOffset.UTC);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

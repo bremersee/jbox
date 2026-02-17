@@ -16,6 +16,7 @@
 
 package org.bremersee.xml;
 
+import jakarta.xml.bind.SchemaOutputResolver;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import jakarta.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
@@ -39,7 +39,6 @@ import lombok.NoArgsConstructor;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings(&quot;SameNameButDifferent&quot;)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class SchemaSourcesResolver extends SchemaOutputResolver {
 
@@ -47,11 +46,11 @@ class SchemaSourcesResolver extends SchemaOutputResolver {
 
   @Override
   public Result createOutput(String namespaceUri, String suggestedFileName) {
-<span class="fc" id="L50">    StringWriter out = new StringWriter();</span>
-<span class="fc" id="L51">    StreamResult res = new StreamResult(out);</span>
-<span class="fc" id="L52">    res.setSystemId(suggestedFileName);</span>
-<span class="fc" id="L53">    buffers.put(namespaceUri, res);</span>
-<span class="fc" id="L54">    return res;</span>
+<span class="fc" id="L49">    StringWriter out = new StringWriter();</span>
+<span class="fc" id="L50">    StreamResult res = new StreamResult(out);</span>
+<span class="fc" id="L51">    res.setSystemId(suggestedFileName);</span>
+<span class="fc" id="L52">    buffers.put(namespaceUri, res);</span>
+<span class="fc" id="L53">    return res;</span>
   }
 
   /**
@@ -61,19 +60,19 @@ class SchemaSourcesResolver extends SchemaOutputResolver {
    * @return the list with the schema sources
    */
   List&lt;Source&gt; toSources(Collection&lt;String&gt; excludedNameSpaces) {
-<span class="fc" id="L64">    Set&lt;String&gt; excluded = Optional.ofNullable(excludedNameSpaces)</span>
-<span class="fc" id="L65">        .map(HashSet::new)</span>
-<span class="fc" id="L66">        .orElseGet(HashSet::new);</span>
-<span class="fc" id="L67">    List&lt;Source&gt; sources = new ArrayList&lt;&gt;(buffers.size());</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (Map.Entry&lt;String, StreamResult&gt; result : buffers.entrySet()) {</span>
-<span class="pc bpc" id="L69" title="1 of 2 branches missed.">      if (!excluded.contains(result.getKey())) {</span>
-<span class="fc" id="L70">        String systemId = result.getValue().getSystemId();</span>
-<span class="fc" id="L71">        String schema = result.getValue().getWriter().toString();</span>
-<span class="fc" id="L72">        StreamSource source = new StreamSource(new StringReader(schema), systemId);</span>
-<span class="fc" id="L73">        sources.add(source);</span>
+<span class="fc" id="L63">    Set&lt;String&gt; excluded = Optional.ofNullable(excludedNameSpaces)</span>
+<span class="fc" id="L64">        .map(HashSet::new)</span>
+<span class="fc" id="L65">        .orElseGet(HashSet::new);</span>
+<span class="fc" id="L66">    List&lt;Source&gt; sources = new ArrayList&lt;&gt;(buffers.size());</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    for (Map.Entry&lt;String, StreamResult&gt; result : buffers.entrySet()) {</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">      if (!excluded.contains(result.getKey())) {</span>
+<span class="fc" id="L69">        String systemId = result.getValue().getSystemId();</span>
+<span class="fc" id="L70">        String schema = result.getValue().getWriter().toString();</span>
+<span class="fc" id="L71">        StreamSource source = new StreamSource(new StringReader(schema), systemId);</span>
+<span class="fc" id="L72">        sources.add(source);</span>
       }
-<span class="fc" id="L75">    }</span>
-<span class="fc" id="L76">    return sources;</span>
+<span class="fc" id="L74">    }</span>
+<span class="fc" id="L75">    return sources;</span>
   }
 
 }

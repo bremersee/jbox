@@ -26,26 +26,33 @@ import org.ldaptive.LdapException;
  * @author Christian Bremer
  */
 <span class="fc" id="L28">@Slf4j</span>
-<span class="fc" id="L29">public abstract class AbstractLdaptiveErrorHandler implements LdaptiveErrorHandler {</span>
+public abstract class AbstractLdaptiveErrorHandler implements LdaptiveErrorHandler {
+
+  /**
+   * Instantiates a new abstract ldaptive error handler.
+   */
+  protected AbstractLdaptiveErrorHandler() {
+<span class="fc" id="L35">    super();</span>
+<span class="fc" id="L36">  }</span>
 
   @Override
   public void handleError(Throwable t) {
     final LdaptiveException ldaptiveException;
-<span class="fc bfc" id="L34" title="All 2 branches covered.">    if (t instanceof LdaptiveException) {</span>
-<span class="fc" id="L35">      ldaptiveException = (LdaptiveException) t;</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">    } else if (t instanceof LdapException) {</span>
-<span class="fc" id="L37">      ldaptiveException = map((LdapException) t);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    if (t instanceof LdaptiveException le) {</span>
+<span class="fc" id="L42">      ldaptiveException = le;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    } else if (t instanceof LdapException le) {</span>
+<span class="fc" id="L44">      ldaptiveException = map(le);</span>
     } else {
-<span class="fc" id="L39">      ldaptiveException = LdaptiveException.builder()</span>
-<span class="fc" id="L40">          .reason(Optional.ofNullable(t)</span>
-<span class="fc" id="L41">              .filter(throwable -&gt; throwable instanceof Exception)</span>
-<span class="fc" id="L42">              .map(Throwable::getMessage)</span>
-<span class="fc" id="L43">              .orElse(&quot;Unknown&quot;))</span>
-<span class="fc" id="L44">          .cause(t)</span>
-<span class="fc" id="L45">          .build();</span>
+<span class="fc" id="L46">      ldaptiveException = LdaptiveException.builder()</span>
+<span class="fc" id="L47">          .reason(Optional.ofNullable(t)</span>
+<span class="fc" id="L48">              .filter(Exception.class::isInstance)</span>
+<span class="fc" id="L49">              .map(Throwable::getMessage)</span>
+<span class="fc" id="L50">              .orElse(&quot;Unknown&quot;))</span>
+<span class="fc" id="L51">          .cause(t)</span>
+<span class="fc" id="L52">          .build();</span>
     }
-<span class="fc" id="L47">    log.error(&quot;LDAP operation failed.&quot;, ldaptiveException);</span>
-<span class="fc" id="L48">    throw ldaptiveException;</span>
+<span class="fc" id="L54">    log.error(&quot;LDAP operation failed.&quot;, ldaptiveException);</span>
+<span class="fc" id="L55">    throw ldaptiveException;</span>
   }
 
 }

@@ -16,15 +16,8 @@
 
 package org.bremersee.geojson;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.bremersee.geojson.GeoJsonConstants.BBOX;
-import static org.bremersee.geojson.GeoJsonConstants.FEATURE;
-import static org.bremersee.geojson.GeoJsonConstants.GEOMETRY;
-import static org.bremersee.geojson.GeoJsonConstants.ID;
-import static org.bremersee.geojson.GeoJsonConstants.PROPERTIES;
-import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,18 +49,18 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
 
   @Schema(description = &quot;The id of the GeoJSON feature.&quot;)
   @JsonInclude(Include.NON_NULL)
-  @JsonProperty(ID)
+  @JsonProperty(GeoJsonConstants.ID)
   private final String id;
 
   @Schema(description = &quot;The bounding box of the GeoJSON feature.&quot;)
   @JsonInclude(Include.NON_EMPTY)
-  @JsonProperty(BBOX)
+  @JsonProperty(GeoJsonConstants.BBOX)
   private final double[] bbox;
 
   @Schema(description = &quot;GeoJSON&quot;, implementation = org.bremersee.geojson.model.Geometry.class)
   @JsonSerialize(using = JacksonGeometrySerializer.class)
   @JsonInclude(Include.ALWAYS)
-  @JsonProperty(GEOMETRY)
+  @JsonProperty(GeoJsonConstants.GEOMETRY)
   private final G geometry;
 
   @JsonIgnore
@@ -84,28 +77,29 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
    */
   @JsonCreator
   GeoJsonFeature(
-      @JsonProperty(value = TYPE, required = true) String type,
-      @JsonProperty(ID) String id,
-      @JsonProperty(BBOX) double[] bbox,
-      @JsonProperty(GEOMETRY)
+      @JsonProperty(value = GeoJsonConstants.TYPE, required = true) String type,
+      @JsonProperty(GeoJsonConstants.ID) String id,
+      @JsonProperty(GeoJsonConstants.BBOX) double[] bbox,
+      @JsonProperty(GeoJsonConstants.GEOMETRY)
       @JsonDeserialize(using = JacksonGeometryDeserializer.class)
       G geometry,
-<span class="fc" id="L93">      @JsonProperty(PROPERTIES) P properties) {</span>
+<span class="fc" id="L86">      @JsonProperty(GeoJsonConstants.PROPERTIES) P properties) {</span>
 
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    if (!FEATURE.equals(type)) {</span>
-<span class="nc" id="L96">      throw new IllegalArgumentException(String.format(&quot;Type must be '%s'.&quot;, FEATURE));</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (!GeoJsonConstants.FEATURE.equals(type)) {</span>
+<span class="nc" id="L89">      throw new IllegalArgumentException(String</span>
+<span class="nc" id="L90">          .format(&quot;Type must be '%s'.&quot;, GeoJsonConstants.FEATURE));</span>
     }
 
-<span class="fc" id="L99">    this.id = id;</span>
-<span class="pc bpc" id="L100" title="1 of 6 branches missed.">    if (isNull(bbox) || (bbox.length == 4) || (bbox.length == 6)) {</span>
-<span class="fc" id="L101">      this.bbox = bbox;</span>
+<span class="fc" id="L93">    this.id = id;</span>
+<span class="pc bpc" id="L94" title="1 of 6 branches missed.">    if (isNull(bbox) || (bbox.length == 4) || (bbox.length == 6)) {</span>
+<span class="fc" id="L95">      this.bbox = bbox;</span>
     } else {
-<span class="fc" id="L103">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L97">      throw new IllegalArgumentException(</span>
           &quot;Bounding box must be null or must have a length of four or six.&quot;);
     }
-<span class="fc" id="L106">    this.geometry = geometry;</span>
-<span class="fc" id="L107">    this.properties = properties;</span>
-<span class="fc" id="L108">  }</span>
+<span class="fc" id="L100">    this.geometry = geometry;</span>
+<span class="fc" id="L101">    this.properties = properties;</span>
+<span class="fc" id="L102">  }</span>
 
   /**
    * Instantiates a new geo json feature.
@@ -120,8 +114,8 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
       double[] bbox,
       G geometry,
       P properties) {
-<span class="fc" id="L123">    this(FEATURE, id, bbox, geometry, properties);</span>
-<span class="fc" id="L124">  }</span>
+<span class="fc" id="L117">    this(GeoJsonConstants.FEATURE, id, bbox, geometry, properties);</span>
+<span class="fc" id="L118">  }</span>
 
   /**
    * Instantiates a new geo json feature.
@@ -138,23 +132,26 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
       boolean calculateBounds,
       P properties) {
 
-<span class="fc" id="L141">    this(</span>
-        FEATURE,
+<span class="fc" id="L135">    this(</span>
+        GeoJsonConstants.FEATURE,
         id,
-<span class="fc bfc" id="L144" title="All 2 branches covered.">        calculateBounds ? GeoJsonGeometryFactory.getBoundingBox(geometry) : null,</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        calculateBounds ? GeoJsonGeometryFactory.getBoundingBox(geometry) : null,</span>
         geometry,
         properties);
-<span class="fc" id="L147">  }</span>
+<span class="fc" id="L141">  }</span>
 
   /**
    * Gets type.
    *
    * @return the type
    */
-  @Schema(description = &quot;The feature type.&quot;, requiredMode = REQUIRED, example = FEATURE)
-  @JsonProperty(value = TYPE, required = true)
+  @Schema(
+      description = &quot;The feature type.&quot;,
+      requiredMode = Schema.RequiredMode.REQUIRED,
+      example = GeoJsonConstants.FEATURE)
+  @JsonProperty(value = GeoJsonConstants.TYPE, required = true)
   public final String getType() {
-<span class="fc" id="L157">    return FEATURE;</span>
+<span class="fc" id="L154">    return GeoJsonConstants.FEATURE;</span>
   }
 
   /**
@@ -164,7 +161,7 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
    */
   @JsonIgnore
   public String getId() {
-<span class="fc" id="L167">    return id;</span>
+<span class="fc" id="L164">    return id;</span>
   }
 
   /**
@@ -175,7 +172,7 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
    */
   @JsonIgnore
   public double[] getBbox() {
-<span class="fc" id="L178">    return bbox;</span>
+<span class="fc" id="L175">    return bbox;</span>
   }
 
   /**
@@ -185,7 +182,7 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
    */
   @JsonIgnore
   public G getGeometry() {
-<span class="fc" id="L188">    return geometry;</span>
+<span class="fc" id="L185">    return geometry;</span>
   }
 
   /**
@@ -195,44 +192,44 @@ public class GeoJsonFeature&lt;G extends Geometry, P&gt; extends UnknownAware {
    */
   @Schema(description = &quot;The properties of the GeoJSON feature.&quot;)
   @JsonInclude(Include.NON_EMPTY)
-  @JsonProperty(PROPERTIES)
+  @JsonProperty(GeoJsonConstants.PROPERTIES)
   public P getProperties() {
-<span class="fc" id="L200">    return properties;</span>
+<span class="fc" id="L197">    return properties;</span>
   }
 
   @Override
   public String toString() {
-<span class="fc" id="L205">    return &quot;GeoJsonFeature {&quot;</span>
-<span class="fc" id="L206">        + &quot;id='&quot; + getId() + '\''</span>
-<span class="fc" id="L207">        + &quot;, bbox=&quot; + Arrays.toString(getBbox())</span>
-<span class="fc bfc" id="L208" title="All 2 branches covered.">        + &quot;, geometry=&quot; + (nonNull(getGeometry()) ? getGeometry().toText() : &quot;null&quot;)</span>
-<span class="fc" id="L209">        + &quot;, properties=&quot; + getProperties()</span>
-<span class="fc" id="L210">        + &quot;, unknown=&quot; + unknown()</span>
+<span class="fc" id="L202">    return &quot;GeoJsonFeature {&quot;</span>
+<span class="fc" id="L203">        + &quot;id='&quot; + getId() + '\''</span>
+<span class="fc" id="L204">        + &quot;, bbox=&quot; + Arrays.toString(getBbox())</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        + &quot;, geometry=&quot; + (nonNull(getGeometry()) ? getGeometry().toText() : &quot;null&quot;)</span>
+<span class="fc" id="L206">        + &quot;, properties=&quot; + getProperties()</span>
+<span class="fc" id="L207">        + &quot;, unknown=&quot; + unknown()</span>
         + '}';
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L216">    int result = Objects.hash(getId(), getProperties());</span>
-<span class="fc" id="L217">    result = 31 * result + Arrays.hashCode(getBbox());</span>
-<span class="fc bfc" id="L218" title="All 2 branches covered.">    if (nonNull(getGeometry())) {</span>
-<span class="fc" id="L219">      result = 31 * result + getGeometry().toText().hashCode();</span>
+<span class="fc" id="L213">    int result = Objects.hash(getId(), getProperties());</span>
+<span class="fc" id="L214">    result = 31 * result + Arrays.hashCode(getBbox());</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">    if (nonNull(getGeometry())) {</span>
+<span class="fc" id="L216">      result = 31 * result + getGeometry().toText().hashCode();</span>
     }
-<span class="fc" id="L221">    return result;</span>
+<span class="fc" id="L218">    return result;</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="fc bfc" id="L226" title="All 2 branches covered.">    if (this == o) {</span>
-<span class="fc" id="L227">      return true;</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">    if (this == o) {</span>
+<span class="fc" id="L224">      return true;</span>
     }
-<span class="fc bfc" id="L229" title="All 2 branches covered.">    if (!(o instanceof GeoJsonFeature&lt;?, ?&gt; that)) {</span>
-<span class="fc" id="L230">      return false;</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">    if (!(o instanceof GeoJsonFeature&lt;?, ?&gt; that)) {</span>
+<span class="fc" id="L227">      return false;</span>
     }
-<span class="pc bpc" id="L232" title="1 of 2 branches missed.">    return Objects.equals(getId(), that.getId())</span>
-<span class="pc bpc" id="L233" title="1 of 2 branches missed.">        &amp;&amp; GeoJsonGeometryFactory.equals(getGeometry(), that.getGeometry())</span>
-<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        &amp;&amp; Arrays.equals(getBbox(), that.getBbox())</span>
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        &amp;&amp; Objects.equals(getProperties(), that.getProperties());</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">    return Objects.equals(getId(), that.getId())</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">        &amp;&amp; GeoJsonGeometryFactory.equals(getGeometry(), that.getGeometry())</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">        &amp;&amp; Arrays.equals(getBbox(), that.getBbox())</span>
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        &amp;&amp; Objects.equals(getProperties(), that.getProperties());</span>
   }
 
 }

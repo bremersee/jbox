@@ -43,7 +43,7 @@ import java.util.TreeMap;
     @Type(value = GeoJsonLinkedCrs.class, name = &quot;link&quot;),
     @Type(value = GeoJsonNamedCrs.class, name = &quot;name&quot;)
 })
-<span class="fc" id="L46">public class AbstractGeoJsonCrs implements Serializable {</span>
+public class AbstractGeoJsonCrs implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 1L;
@@ -65,41 +65,46 @@ import java.util.TreeMap;
   }
 
   /**
-   * Set the properties the properties that store information about the coordinate reference system
-   * (CRS).
+   * Instantiates a new Abstract geo json crs.
+   */
+<span class="fc" id="L70">  public AbstractGeoJsonCrs() {</span>
+<span class="fc" id="L71">  }</span>
+
+  /**
+   * Set the properties that store information about the coordinate reference system (CRS).
    *
    * @param properties the properties that store information about the coordinate reference
    *     system
    */
   protected final void setProperties(final Map&lt;String, Object&gt; properties) {
-<span class="fc" id="L75">    this.properties = Objects.requireNonNullElseGet(properties, LinkedHashMap::new);</span>
-<span class="fc" id="L76">  }</span>
+<span class="fc" id="L80">    this.properties = Objects.requireNonNullElseGet(properties, LinkedHashMap::new);</span>
+<span class="fc" id="L81">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (this == o) {</span>
-<span class="fc" id="L81">      return true;</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">    if (this == o) {</span>
+<span class="fc" id="L86">      return true;</span>
     }
-<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (!(o instanceof AbstractGeoJsonCrs that)) {</span>
-<span class="fc" id="L84">      return false;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (!(o instanceof AbstractGeoJsonCrs that)) {</span>
+<span class="fc" id="L89">      return false;</span>
     }
-<span class="pc bpc" id="L86" title="1 of 2 branches missed.">    if (properties == that.properties) {</span>
-<span class="nc" id="L87">      return true;</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">    if (properties == that.properties) {</span>
+<span class="nc" id="L92">      return true;</span>
     }
-<span class="pc bpc" id="L89" title="2 of 4 branches missed.">    if (properties == null || that.properties == null) {</span>
-<span class="nc" id="L90">      return false;</span>
+<span class="pc bpc" id="L94" title="2 of 4 branches missed.">    if (properties == null || that.properties == null) {</span>
+<span class="nc" id="L95">      return false;</span>
     }
-<span class="fc" id="L92">    return Objects.equals(new TreeMap&lt;&gt;(properties), new TreeMap&lt;&gt;(that.properties));</span>
+<span class="fc" id="L97">    return Objects.equals(new TreeMap&lt;&gt;(properties), new TreeMap&lt;&gt;(that.properties));</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L97">    return Objects.hash(properties);</span>
+<span class="fc" id="L102">    return Objects.hash(properties);</span>
   }
 
   @Override
   public String toString() {
-<span class="fc" id="L102">    return getClass().getSimpleName() + &quot; {&quot;</span>
+<span class="fc" id="L107">    return getClass().getSimpleName() + &quot; {&quot;</span>
         + &quot;properties=&quot; + properties
         + '}';
   }

@@ -226,7 +226,7 @@
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>   @AfterAll
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>   <strong class="jxr_keyword">void</strong> afterAll() {
-<a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_comment">//    embeddedMinio.removeBucket(RemoveBucketArgs.builder().bucket(DEFAULT_BUCKET).build());</em>
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>     <em class="jxr_comment">// embeddedMinio.removeBucket(RemoveBucketArgs.builder().bucket(DEFAULT_BUCKET).build());</em>
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     <strong class="jxr_keyword">if</strong> (playMinioEnabled
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>         &amp;&amp; playMinio.bucketExists(BucketExistsArgs.builder().bucket(DEFAULT_BUCKET).build())) {
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>       playMinio.removeBucket(RemoveBucketArgs.builder().bucket(DEFAULT_BUCKET).build());
@@ -1608,6 +1608,6 @@
 <a class="jxr_linenumber" name="L1600" href="#L1600">1600</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

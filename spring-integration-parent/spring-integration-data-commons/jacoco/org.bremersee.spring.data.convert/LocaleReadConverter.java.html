@@ -32,25 +32,31 @@ import org.springframework.util.StringUtils;
  */
 @ReadingConverter
 @ToString
-<span class="fc" id="L35">public class LocaleReadConverter implements Converter&lt;String, Locale&gt; {</span>
+public class LocaleReadConverter implements Converter&lt;String, Locale&gt; {
+
+  /**
+   * Instantiates a new locale read converter.
+   */
+<span class="fc" id="L40">  public LocaleReadConverter() {</span>
+<span class="fc" id="L41">  }</span>
 
   @Override
   public Locale convert(@NonNull String source) {
-<span class="fc" id="L39">    return Optional.ofNullable(StringUtils.parseLocale(source))</span>
-<span class="fc" id="L40">        .orElse(Locale.ENGLISH);</span>
+<span class="fc" id="L45">    return Optional.ofNullable(StringUtils.parseLocale(source))</span>
+<span class="fc" id="L46">        .orElse(Locale.ENGLISH);</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L46">      return true;</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L52">      return true;</span>
     }
-<span class="nc bnc" id="L48" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L54" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L53">    return Objects.hashCode(getClass());</span>
+<span class="nc" id="L59">    return Objects.hashCode(getClass());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

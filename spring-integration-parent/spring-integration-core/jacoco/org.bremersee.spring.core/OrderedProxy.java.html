@@ -26,7 +26,13 @@ import org.springframework.core.Ordered;
  *
  * @author Christian Bremer
  */
-<span class="nc" id="L29">public abstract class OrderedProxy {</span>
+public abstract class OrderedProxy {
+
+  /**
+   * Instantiates a new ordered proxy.
+   */
+  private OrderedProxy() {
+  }
 
   /**
    * Create a proxy of the target object that implements {@link Ordered}.
@@ -34,28 +40,28 @@ import org.springframework.core.Ordered;
    * @param &lt;T&gt; the type of the proxy
    * @param target the target
    * @param orderedValue the ordered value
-   * @return the type of the proxy; if the target implements one or more interfaces, it must be one of these interfaces,
-   *     otherwise it must be {@link Ordered}
+   * @return the type of the proxy; if the target implements one or more interfaces, it must be one
+   *     of these interfaces,     otherwise it must be {@link Ordered}
    */
   public static &lt;T&gt; T create(Object target, int orderedValue) {
-<span class="pc bpc" id="L41" title="1 of 4 branches missed.">    if (target instanceof Ordered &amp;&amp; ((Ordered) target).getOrder() == orderedValue) {</span>
+<span class="pc bpc" id="L47" title="1 of 4 branches missed.">    if (target instanceof Ordered &amp;&amp; ((Ordered) target).getOrder() == orderedValue) {</span>
       //noinspection unchecked
-<span class="fc" id="L43">      return (T) target;</span>
+<span class="fc" id="L49">      return (T) target;</span>
     }
-<span class="fc" id="L45">    ProxyFactory proxyFactory = new ProxyFactory(target);</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    if (!(target instanceof Ordered)) {</span>
-<span class="fc" id="L47">      proxyFactory.addInterface(Ordered.class);</span>
+<span class="fc" id="L51">    ProxyFactory proxyFactory = new ProxyFactory(target);</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">    if (!(target instanceof Ordered)) {</span>
+<span class="fc" id="L53">      proxyFactory.addInterface(Ordered.class);</span>
     }
-<span class="fc" id="L49">    proxyFactory.addAdvice((MethodInterceptor) methodInvocation -&gt; {</span>
-<span class="fc" id="L50">      Method method = methodInvocation.getMethod();</span>
-<span class="pc bpc" id="L51" title="1 of 4 branches missed.">      if (method.getName().equals(&quot;getOrder&quot;) &amp;&amp; method.getParameterCount() == 0) {</span>
-<span class="fc" id="L52">        return orderedValue;</span>
+<span class="fc" id="L55">    proxyFactory.addAdvice((MethodInterceptor) methodInvocation -&gt; {</span>
+<span class="fc" id="L56">      Method method = methodInvocation.getMethod();</span>
+<span class="pc bpc" id="L57" title="1 of 4 branches missed.">      if (method.getName().equals(&quot;getOrder&quot;) &amp;&amp; method.getParameterCount() == 0) {</span>
+<span class="fc" id="L58">        return orderedValue;</span>
       } else {
-<span class="fc" id="L54">        return methodInvocation.proceed();</span>
+<span class="fc" id="L60">        return methodInvocation.proceed();</span>
       }
     });
     //noinspection unchecked
-<span class="fc" id="L58">    return (T) proxyFactory.getProxy();</span>
+<span class="fc" id="L64">    return (T) proxyFactory.getProxy();</span>
   }
 
 }

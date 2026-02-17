@@ -157,7 +157,7 @@ import java.util.Locale;
 <span class="nc" id="L157">      return NONE;</span>
     }
 <span class="fc" id="L159">    String source = text.substring(0, Math.min(text.length(), 2));</span>
-<span class="fc bfc" id="L160" title="All 2 branches covered.">    for (MongoSearchLanguage b : MongoSearchLanguage.values()) {</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    for (MongoSearchLanguage b : values()) {</span>
 <span class="pc bpc" id="L161" title="1 of 4 branches missed.">      if (b.value.equalsIgnoreCase(source) || b.name().equalsIgnoreCase(source)) {</span>
 <span class="fc" id="L162">        return b;</span>
       }

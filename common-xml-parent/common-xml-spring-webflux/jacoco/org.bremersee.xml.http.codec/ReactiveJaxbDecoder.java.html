@@ -18,13 +18,6 @@ package org.bremersee.xml.http.codec;
 
 import static java.util.Objects.isNull;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import javax.xml.XMLConstants;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.UnmarshalException;
@@ -32,6 +25,13 @@ import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchema;
 import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -45,7 +45,6 @@ import org.springframework.core.codec.CodecException;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.core.codec.Hints;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.log.LogFormatUtils;
 import org.springframework.http.MediaType;
@@ -83,16 +82,15 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
    */
   private static final String JAXB_DEFAULT_ANNOTATION_VALUE = &quot;##default&quot;;
 
-<span class="fc" id="L86">  private static final XMLInputFactory inputFactory = StaxUtils.createDefensiveInputFactory();</span>
+<span class="fc" id="L85">  private static final XMLInputFactory inputFactory = StaxUtils.createDefensiveInputFactory();</span>
 
-
-<span class="fc" id="L89">  private final XmlEventDecoder xmlEventDecoder = new XmlEventDecoder();</span>
+<span class="fc" id="L87">  private final XmlEventDecoder xmlEventDecoder = new XmlEventDecoder();</span>
 
   private final JaxbContextBuilder jaxbContextBuilder;
 
   private final Set&lt;Class&lt;?&gt;&gt; ignoreReadingClasses;
 
-<span class="fc" id="L95">  private int maxInMemorySize = 256 * 1024;</span>
+<span class="fc" id="L93">  private int maxInMemorySize = 256 * 1024;</span>
 
   /**
    * Instantiates a new reactive jaxb decoder.
@@ -100,8 +98,8 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
    * @param jaxbContextBuilder the jaxb context builder
    */
   public ReactiveJaxbDecoder(JaxbContextBuilder jaxbContextBuilder) {
-<span class="fc" id="L103">    this(jaxbContextBuilder, null);</span>
-<span class="fc" id="L104">  }</span>
+<span class="fc" id="L101">    this(jaxbContextBuilder, null);</span>
+<span class="fc" id="L102">  }</span>
 
   /**
    * Instantiates a new Reactive jaxb decoder.
@@ -113,27 +111,27 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
       JaxbContextBuilder jaxbContextBuilder,
       Set&lt;Class&lt;?&gt;&gt; ignoreReadingClasses) {
 
-<span class="fc" id="L116">    super(MimeTypeUtils.APPLICATION_XML, MimeTypeUtils.TEXT_XML,</span>
+<span class="fc" id="L114">    super(MimeTypeUtils.APPLICATION_XML, MimeTypeUtils.TEXT_XML,</span>
         new MediaType(&quot;application&quot;, &quot;*+xml&quot;));
-<span class="fc" id="L118">    Assert.notNull(jaxbContextBuilder, &quot;JaxbContextBuilder must be present.&quot;);</span>
-<span class="fc" id="L119">    this.jaxbContextBuilder = jaxbContextBuilder;</span>
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">    this.ignoreReadingClasses = isNull(ignoreReadingClasses) ? Set.of() : ignoreReadingClasses;</span>
-<span class="fc" id="L121">  }</span>
+<span class="fc" id="L116">    Assert.notNull(jaxbContextBuilder, &quot;JaxbContextBuilder must be present.&quot;);</span>
+<span class="fc" id="L117">    this.jaxbContextBuilder = jaxbContextBuilder;</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    this.ignoreReadingClasses = isNull(ignoreReadingClasses) ? Set.of() : ignoreReadingClasses;</span>
+<span class="fc" id="L119">  }</span>
 
   /**
    * Set the max number of bytes that can be buffered by this decoder. This is either the size of
    * the entire input when decoding as a whole, or when using async parsing with Aalto XML, it is
    * the size of one top-level XML tree. When the limit is exceeded, {@link
-   * DataBufferLimitException}* is raised.
+   * org.springframework.core.io.buffer.DataBufferLimitException} is raised.
    *
-   * &lt;p&gt;By default this is set to 256K.
+   * &lt;p&gt;By default, this is set to 256K.
    *
    * @param byteCount the max number of bytes to buffer, or -1 for unlimited
    */
   public void setMaxInMemorySize(int byteCount) {
-<span class="fc" id="L134">    this.maxInMemorySize = byteCount;</span>
-<span class="fc" id="L135">    this.xmlEventDecoder.setMaxInMemorySize(byteCount);</span>
-<span class="fc" id="L136">  }</span>
+<span class="fc" id="L132">    this.maxInMemorySize = byteCount;</span>
+<span class="fc" id="L133">    this.xmlEventDecoder.setMaxInMemorySize(byteCount);</span>
+<span class="fc" id="L134">  }</span>
 
   /**
    * Return the {@link #setMaxInMemorySize configured} byte count limit.
@@ -141,21 +139,20 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
    * @return the max in memory size
    */
   public int getMaxInMemorySize() {
-<span class="fc" id="L144">    return this.maxInMemorySize;</span>
+<span class="fc" id="L142">    return this.maxInMemorySize;</span>
   }
-
 
   @Override
   public boolean canDecode(
       @NonNull ResolvableType elementType,
       @Nullable MimeType mimeType) {
 
-<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (super.canDecode(elementType, mimeType)) {</span>
-<span class="fc" id="L154">      final Class&lt;?&gt; outputClass = elementType.getRawClass();</span>
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">      return !ignoreReadingClasses.contains(outputClass)</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">          &amp;&amp; jaxbContextBuilder.canUnmarshal(outputClass);</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    if (super.canDecode(elementType, mimeType)) {</span>
+<span class="fc" id="L151">      final Class&lt;?&gt; outputClass = elementType.getRawClass();</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">      return !ignoreReadingClasses.contains(outputClass)</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">          &amp;&amp; jaxbContextBuilder.canUnmarshal(outputClass);</span>
     } else {
-<span class="fc" id="L158">      return false;</span>
+<span class="fc" id="L155">      return false;</span>
     }
   }
 
@@ -167,20 +164,20 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
       @Nullable MimeType mimeType,
       @Nullable Map&lt;String, Object&gt; hints) {
 
-<span class="nc" id="L170">    Flux&lt;XMLEvent&gt; xmlEventFlux = this.xmlEventDecoder.decode(</span>
-<span class="nc" id="L171">        inputStream, ResolvableType.forClass(XMLEvent.class), mimeType, hints);</span>
+<span class="nc" id="L167">    Flux&lt;XMLEvent&gt; xmlEventFlux = this.xmlEventDecoder.decode(</span>
+<span class="nc" id="L168">        inputStream, ResolvableType.forClass(XMLEvent.class), mimeType, hints);</span>
 
-<span class="nc" id="L173">    Class&lt;?&gt; outputClass = elementType.toClass();</span>
-<span class="nc" id="L174">    QName typeName = toQName(outputClass);</span>
-<span class="nc" id="L175">    Flux&lt;List&lt;XMLEvent&gt;&gt; splitEvents = split(xmlEventFlux, typeName);</span>
+<span class="nc" id="L170">    Class&lt;?&gt; outputClass = elementType.toClass();</span>
+<span class="nc" id="L171">    QName typeName = toQualifiedName(outputClass);</span>
+<span class="nc" id="L172">    Flux&lt;List&lt;XMLEvent&gt;&gt; splitEvents = split(xmlEventFlux, typeName);</span>
 
-<span class="nc" id="L177">    return splitEvents.map(events -&gt; {</span>
-<span class="nc" id="L178">      Object value = unmarshal(events, outputClass);</span>
-<span class="nc" id="L179">      LogFormatUtils.traceDebug(logger, traceOn -&gt; {</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">        String formatted = LogFormatUtils.formatValue(value, !traceOn);</span>
-<span class="nc" id="L181">        return Hints.getLogPrefix(hints) + &quot;Decoded [&quot; + formatted + &quot;]&quot;;</span>
+<span class="nc" id="L174">    return splitEvents.map(events -&gt; {</span>
+<span class="nc" id="L175">      Object value = unmarshal(events, outputClass);</span>
+<span class="nc" id="L176">      LogFormatUtils.traceDebug(logger, traceOn -&gt; {</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        String formatted = LogFormatUtils.formatValue(value, !traceOn);</span>
+<span class="nc" id="L178">        return Hints.getLogPrefix(hints) + &quot;Decoded [&quot; + formatted + &quot;]&quot;;</span>
       });
-<span class="nc" id="L183">      return value;</span>
+<span class="nc" id="L180">      return value;</span>
     });
   }
 
@@ -195,14 +192,14 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
       @Nullable Map&lt;String, Object&gt; hints) throws DecodingException {
 
     try {
-<span class="fc" id="L198">      Iterator eventReader = inputFactory.createXMLEventReader(dataBuffer.asInputStream());</span>
-<span class="fc" id="L199">      List&lt;XMLEvent&gt; events = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L200">      eventReader.forEachRemaining(event -&gt; events.add((XMLEvent) event));</span>
-<span class="fc" id="L201">      return unmarshal(events, targetType.toClass());</span>
-<span class="nc" id="L202">    } catch (XMLStreamException ex) {</span>
-<span class="nc" id="L203">      throw Exceptions.propagate(ex);</span>
+<span class="fc" id="L195">      Iterator eventReader = inputFactory.createXMLEventReader(dataBuffer.asInputStream());</span>
+<span class="fc" id="L196">      List&lt;XMLEvent&gt; events = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L197">      eventReader.forEachRemaining(event -&gt; events.add((XMLEvent) event));</span>
+<span class="fc" id="L198">      return unmarshal(events, targetType.toClass());</span>
+<span class="nc" id="L199">    } catch (XMLStreamException ex) {</span>
+<span class="nc" id="L200">      throw Exceptions.propagate(ex);</span>
     } finally {
-<span class="fc" id="L205">      DataBufferUtils.release(dataBuffer);</span>
+<span class="fc" id="L202">      DataBufferUtils.release(dataBuffer);</span>
     }
   }
 
@@ -214,25 +211,24 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
       @Nullable MimeType mimeType,
       @Nullable Map&lt;String, Object&gt; hints) {
 
-    //noinspection NullableInLambdaInTransform
-<span class="fc" id="L218">    return DataBufferUtils.join(input, this.maxInMemorySize)</span>
-<span class="fc" id="L219">        .map(dataBuffer -&gt; decode(dataBuffer, elementType, mimeType, hints));</span>
+<span class="fc" id="L214">    return DataBufferUtils.join(input, this.maxInMemorySize)</span>
+<span class="fc" id="L215">        .map(dataBuffer -&gt; decode(dataBuffer, elementType, mimeType, hints));</span>
   }
 
   private Object unmarshal(List&lt;XMLEvent&gt; events, Class&lt;?&gt; outputClass) {
     try {
-<span class="fc" id="L224">      Unmarshaller unmarshaller = jaxbContextBuilder.buildUnmarshaller(outputClass);</span>
-<span class="fc" id="L225">      XMLEventReader eventReader = StaxUtils.createXMLEventReader(events);</span>
-<span class="pc bpc" id="L226" title="1 of 2 branches missed.">      if (outputClass.isAnnotationPresent(XmlRootElement.class)) {</span>
-<span class="fc" id="L227">        return unmarshaller.unmarshal(eventReader);</span>
+<span class="fc" id="L220">      Unmarshaller unmarshaller = jaxbContextBuilder.buildUnmarshaller(outputClass);</span>
+<span class="fc" id="L221">      XMLEventReader eventReader = StaxUtils.createXMLEventReader(events);</span>
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">      if (outputClass.isAnnotationPresent(XmlRootElement.class)) {</span>
+<span class="fc" id="L223">        return unmarshaller.unmarshal(eventReader);</span>
       } else {
-<span class="nc" id="L229">        JAXBElement&lt;?&gt; jaxbElement = unmarshaller.unmarshal(eventReader, outputClass);</span>
-<span class="nc" id="L230">        return jaxbElement.getValue();</span>
+<span class="nc" id="L225">        JAXBElement&lt;?&gt; jaxbElement = unmarshaller.unmarshal(eventReader, outputClass);</span>
+<span class="nc" id="L226">        return jaxbElement.getValue();</span>
       }
-<span class="nc" id="L232">    } catch (UnmarshalException ex) {</span>
-<span class="nc" id="L233">      throw new DecodingException(&quot;Could not unmarshal XML to &quot; + outputClass, ex);</span>
-<span class="nc" id="L234">    } catch (JAXBException ex) {</span>
-<span class="nc" id="L235">      throw new CodecException(&quot;Invalid JAXB configuration&quot;, ex);</span>
+<span class="nc" id="L228">    } catch (UnmarshalException ex) {</span>
+<span class="nc" id="L229">      throw new DecodingException(&quot;Could not unmarshal XML to &quot; + outputClass, ex);</span>
+<span class="nc" id="L230">    } catch (JAXBException ex) {</span>
+<span class="nc" id="L231">      throw new CodecException(&quot;Invalid JAXB configuration&quot;, ex);</span>
     }
   }
 
@@ -243,36 +239,36 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
    * @param outputClass the output class
    * @return the q name
    */
-  QName toQName(Class&lt;?&gt; outputClass) {
+  QName toQualifiedName(Class&lt;?&gt; outputClass) {
     String localPart;
     String namespaceUri;
 
-<span class="nc bnc" id="L250" title="All 2 branches missed.">    if (outputClass.isAnnotationPresent(XmlRootElement.class)) {</span>
-<span class="nc" id="L251">      XmlRootElement annotation = outputClass.getAnnotation(XmlRootElement.class);</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">    if (outputClass.isAnnotationPresent(XmlRootElement.class)) {</span>
+<span class="nc" id="L247">      XmlRootElement annotation = outputClass.getAnnotation(XmlRootElement.class);</span>
+<span class="nc" id="L248">      localPart = annotation.name();</span>
+<span class="nc" id="L249">      namespaceUri = annotation.namespace();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">    } else if (outputClass.isAnnotationPresent(XmlType.class)) {</span>
+<span class="nc" id="L251">      XmlType annotation = outputClass.getAnnotation(XmlType.class);</span>
 <span class="nc" id="L252">      localPart = annotation.name();</span>
 <span class="nc" id="L253">      namespaceUri = annotation.namespace();</span>
-<span class="nc bnc" id="L254" title="All 2 branches missed.">    } else if (outputClass.isAnnotationPresent(XmlType.class)) {</span>
-<span class="nc" id="L255">      XmlType annotation = outputClass.getAnnotation(XmlType.class);</span>
-<span class="nc" id="L256">      localPart = annotation.name();</span>
-<span class="nc" id="L257">      namespaceUri = annotation.namespace();</span>
-<span class="nc" id="L258">    } else {</span>
-<span class="nc" id="L259">      throw new IllegalArgumentException(&quot;Output class [&quot; + outputClass.getName()</span>
+<span class="nc" id="L254">    } else {</span>
+<span class="nc" id="L255">      throw new IllegalArgumentException(&quot;Output class [&quot; + outputClass.getName()</span>
           + &quot;] is neither annotated with @XmlRootElement nor @XmlType&quot;);
     }
 
-<span class="nc bnc" id="L263" title="All 2 branches missed.">    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(localPart)) {</span>
-<span class="nc" id="L264">      localPart = ClassUtils.getShortNameAsProperty(outputClass);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(localPart)) {</span>
+<span class="nc" id="L260">      localPart = ClassUtils.getShortNameAsProperty(outputClass);</span>
     }
-<span class="nc bnc" id="L266" title="All 2 branches missed.">    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(namespaceUri)) {</span>
-<span class="nc" id="L267">      Package outputClassPackage = outputClass.getPackage();</span>
-<span class="nc bnc" id="L268" title="All 4 branches missed.">      if (outputClassPackage != null &amp;&amp; outputClassPackage.isAnnotationPresent(XmlSchema.class)) {</span>
-<span class="nc" id="L269">        XmlSchema annotation = outputClassPackage.getAnnotation(XmlSchema.class);</span>
-<span class="nc" id="L270">        namespaceUri = annotation.namespace();</span>
-<span class="nc" id="L271">      } else {</span>
-<span class="nc" id="L272">        namespaceUri = XMLConstants.NULL_NS_URI;</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(namespaceUri)) {</span>
+<span class="nc" id="L263">      Package outputClassPackage = outputClass.getPackage();</span>
+<span class="nc bnc" id="L264" title="All 4 branches missed.">      if (outputClassPackage != null &amp;&amp; outputClassPackage.isAnnotationPresent(XmlSchema.class)) {</span>
+<span class="nc" id="L265">        XmlSchema annotation = outputClassPackage.getAnnotation(XmlSchema.class);</span>
+<span class="nc" id="L266">        namespaceUri = annotation.namespace();</span>
+<span class="nc" id="L267">      } else {</span>
+<span class="nc" id="L268">        namespaceUri = XMLConstants.NULL_NS_URI;</span>
       }
     }
-<span class="nc" id="L275">    return new QName(namespaceUri, localPart);</span>
+<span class="nc" id="L271">    return new QName(namespaceUri, localPart);</span>
   }
 
   /**
@@ -302,7 +298,7 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
    * @return the list of xml events as flux
    */
   Flux&lt;List&lt;XMLEvent&gt;&gt; split(Flux&lt;XMLEvent&gt; xmlEventFlux, QName desiredName) {
-<span class="nc" id="L305">    return xmlEventFlux.handle(new SplitHandler(desiredName));</span>
+<span class="nc" id="L301">    return xmlEventFlux.handle(new SplitHandler(desiredName));</span>
   }
 
   private static class SplitHandler implements
@@ -312,44 +308,44 @@ public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
 
     private List&lt;XMLEvent&gt; events;
 
-<span class="nc" id="L315">    private int elementDepth = 0;</span>
+<span class="nc" id="L311">    private int elementDepth = 0;</span>
 
-<span class="nc" id="L317">    private int barrier = Integer.MAX_VALUE;</span>
+<span class="nc" id="L313">    private int barrier = Integer.MAX_VALUE;</span>
 
     /**
      * Instantiates a new split handler.
      *
      * @param desiredName the desired name
      */
-<span class="nc" id="L324">    public SplitHandler(QName desiredName) {</span>
-<span class="nc" id="L325">      this.desiredName = desiredName;</span>
-<span class="nc" id="L326">    }</span>
+<span class="nc" id="L320">    public SplitHandler(QName desiredName) {</span>
+<span class="nc" id="L321">      this.desiredName = desiredName;</span>
+<span class="nc" id="L322">    }</span>
 
     @Override
     public void accept(XMLEvent event, SynchronousSink&lt;List&lt;XMLEvent&gt;&gt; sink) {
-<span class="nc bnc" id="L330" title="All 2 branches missed.">      if (event.isStartElement()) {</span>
-<span class="nc bnc" id="L331" title="All 2 branches missed.">        if (this.barrier == Integer.MAX_VALUE) {</span>
-<span class="nc" id="L332">          QName startElementName = event.asStartElement().getName();</span>
-<span class="nc bnc" id="L333" title="All 2 branches missed.">          if (this.desiredName.equals(startElementName)) {</span>
-<span class="nc" id="L334">            this.events = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L335">            this.barrier = this.elementDepth;</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">      if (event.isStartElement()) {</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">        if (this.barrier == Integer.MAX_VALUE) {</span>
+<span class="nc" id="L328">          QName startElementName = event.asStartElement().getName();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">          if (this.desiredName.equals(startElementName)) {</span>
+<span class="nc" id="L330">            this.events = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L331">            this.barrier = this.elementDepth;</span>
           }
         }
-<span class="nc" id="L338">        this.elementDepth++;</span>
+<span class="nc" id="L334">        this.elementDepth++;</span>
       }
-<span class="nc bnc" id="L340" title="All 2 branches missed.">      if (this.elementDepth &gt; this.barrier) {</span>
-<span class="nc bnc" id="L341" title="All 2 branches missed.">        Assert.state(this.events != null, &quot;No XMLEvent List&quot;);</span>
-<span class="nc" id="L342">        this.events.add(event);</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">      if (this.elementDepth &gt; this.barrier) {</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">        Assert.state(this.events != null, &quot;No XMLEvent List&quot;);</span>
+<span class="nc" id="L338">        this.events.add(event);</span>
       }
-<span class="nc bnc" id="L344" title="All 2 branches missed.">      if (event.isEndElement()) {</span>
-<span class="nc" id="L345">        this.elementDepth--;</span>
-<span class="nc bnc" id="L346" title="All 2 branches missed.">        if (this.elementDepth == this.barrier) {</span>
-<span class="nc" id="L347">          this.barrier = Integer.MAX_VALUE;</span>
-<span class="nc bnc" id="L348" title="All 2 branches missed.">          Assert.state(this.events != null, &quot;No XMLEvent List&quot;);</span>
-<span class="nc" id="L349">          sink.next(this.events);</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">      if (event.isEndElement()) {</span>
+<span class="nc" id="L341">        this.elementDepth--;</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        if (this.elementDepth == this.barrier) {</span>
+<span class="nc" id="L343">          this.barrier = Integer.MAX_VALUE;</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">          Assert.state(this.events != null, &quot;No XMLEvent List&quot;);</span>
+<span class="nc" id="L345">          sink.next(this.events);</span>
         }
       }
-<span class="nc" id="L352">    }</span>
+<span class="nc" id="L348">    }</span>
   }
 
 }

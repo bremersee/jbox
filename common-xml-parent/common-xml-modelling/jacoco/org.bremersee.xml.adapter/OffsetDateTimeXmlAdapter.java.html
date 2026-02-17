@@ -30,21 +30,27 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Christian Bremer
  */
-<span class="fc" id="L33">public class OffsetDateTimeXmlAdapter extends XmlAdapter&lt;String, OffsetDateTime&gt; {</span>
+public class OffsetDateTimeXmlAdapter extends XmlAdapter&lt;String, OffsetDateTime&gt; {
+
+  /**
+   * Instantiates a new offset date time xml adapter.
+   */
+<span class="fc" id="L38">  public OffsetDateTimeXmlAdapter() {</span>
+<span class="fc" id="L39">  }</span>
 
   @Override
   public OffsetDateTime unmarshal(String v) throws Exception {
-<span class="fc bfc" id="L37" title="All 2 branches covered.">    return v == null</span>
-<span class="fc" id="L38">        ? null</span>
-<span class="fc" id="L39">        : xmlCalendarToOffsetDateTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(v));</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    return v == null</span>
+<span class="fc" id="L44">        ? null</span>
+<span class="fc" id="L45">        : xmlCalendarToOffsetDateTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(v));</span>
   }
 
   @Override
   public String marshal(OffsetDateTime v) {
-<span class="fc" id="L44">    return Optional</span>
-<span class="fc" id="L45">        .ofNullable(offsetDateTimeToXmlCalendar(v))</span>
-<span class="fc" id="L46">        .map(XMLGregorianCalendar::toXMLFormat)</span>
-<span class="fc" id="L47">        .orElse(null);</span>
+<span class="fc" id="L50">    return Optional</span>
+<span class="fc" id="L51">        .ofNullable(offsetDateTimeToXmlCalendar(v))</span>
+<span class="fc" id="L52">        .map(XMLGregorianCalendar::toXMLFormat)</span>
+<span class="fc" id="L53">        .orElse(null);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

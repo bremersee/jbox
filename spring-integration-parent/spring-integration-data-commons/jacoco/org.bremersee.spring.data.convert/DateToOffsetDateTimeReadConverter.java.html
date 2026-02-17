@@ -31,24 +31,30 @@ import org.springframework.data.convert.ReadingConverter;
  */
 @ReadingConverter
 @ToString
-<span class="fc" id="L34">public class DateToOffsetDateTimeReadConverter implements Converter&lt;Date, OffsetDateTime&gt; {</span>
+public class DateToOffsetDateTimeReadConverter implements Converter&lt;Date, OffsetDateTime&gt; {
+
+  /**
+   * Instantiates a new date to offset date time read converter.
+   */
+<span class="fc" id="L39">  public DateToOffsetDateTimeReadConverter() {</span>
+<span class="fc" id="L40">  }</span>
 
   @Override
   public OffsetDateTime convert(Date date) {
-<span class="fc" id="L38">    return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);</span>
+<span class="fc" id="L44">    return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L44">      return true;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L50">      return true;</span>
     }
-<span class="nc bnc" id="L46" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L52" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L51">    return Objects.hashCode(getClass());</span>
+<span class="nc" id="L57">    return Objects.hashCode(getClass());</span>
   }
 
 }

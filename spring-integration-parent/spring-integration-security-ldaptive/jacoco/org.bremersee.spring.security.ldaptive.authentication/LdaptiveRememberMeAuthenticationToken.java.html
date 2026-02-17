@@ -32,6 +32,9 @@ public class LdaptiveRememberMeAuthenticationToken
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The delegate.
+   */
   private final LdaptiveAuthentication delegate;
 
   /**
@@ -44,23 +47,23 @@ public class LdaptiveRememberMeAuthenticationToken
   public LdaptiveRememberMeAuthenticationToken(
       String key,
       LdaptiveAuthentication ldaptiveAuthentication) {
-<span class="fc" id="L47">    super(key, ldaptiveAuthentication.getPrincipal(), ldaptiveAuthentication.getAuthorities());</span>
-<span class="fc" id="L48">    this.delegate = ldaptiveAuthentication;</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L50">    super(key, ldaptiveAuthentication.getPrincipal(), ldaptiveAuthentication.getAuthorities());</span>
+<span class="fc" id="L51">    this.delegate = ldaptiveAuthentication;</span>
+<span class="fc" id="L52">  }</span>
 
   @Override
   public LdaptiveUserDetails getPrincipal() {
-<span class="nc" id="L53">    return delegate.getPrincipal();</span>
+<span class="nc" id="L56">    return delegate.getPrincipal();</span>
   }
 
   @Override
   public Object getCredentials() {
-<span class="nc" id="L58">    return delegate.getCredentials();</span>
+<span class="nc" id="L61">    return delegate.getCredentials();</span>
   }
 
   @Override
   public String getName() {
-<span class="nc" id="L63">    return delegate.getName();</span>
+<span class="nc" id="L66">    return delegate.getName();</span>
   }
 
 }

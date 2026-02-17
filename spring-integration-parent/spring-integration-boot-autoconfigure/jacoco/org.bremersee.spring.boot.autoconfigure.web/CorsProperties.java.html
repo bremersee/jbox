@@ -34,7 +34,16 @@ import org.springframework.web.cors.CorsConfiguration;
 @Data
 public class CorsProperties {
 
-  private List&lt;UrlBasedCorsConfiguration&gt; configurations = new ArrayList&lt;&gt;();
+  private boolean enabled;
+
+<span class="fc" id="L39">  private List&lt;UrlBasedCorsConfiguration&gt; configurations = new ArrayList&lt;&gt;();</span>
+
+  /**
+   * Instantiates a new cors properties.
+   */
+  public CorsProperties() {
+<span class="fc" id="L45">    super();</span>
+<span class="fc" id="L46">  }</span>
 
   /**
    * To cors configurations map.
@@ -42,18 +51,18 @@ public class CorsProperties {
    * @return the map
    */
   public Map&lt;String, CorsConfiguration&gt; toCorsConfigurations() {
-<span class="pc bpc" id="L45" title="1 of 2 branches missed.">    if (getConfigurations().isEmpty()) {</span>
-<span class="fc" id="L46">      return Map.of(&quot;/**&quot;, new CorsConfiguration().applyPermitDefaultValues());</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">    if (getConfigurations().isEmpty()) {</span>
+<span class="fc" id="L55">      return Map.of(&quot;/**&quot;, new CorsConfiguration().applyPermitDefaultValues());</span>
     }
-<span class="nc" id="L48">    return getConfigurations().stream()</span>
-<span class="nc" id="L49">        .collect(Collectors.toMap(</span>
+<span class="nc" id="L57">    return getConfigurations().stream()</span>
+<span class="nc" id="L58">        .collect(Collectors.toMap(</span>
             UrlBasedCorsConfiguration::getPath,
             UrlBasedCorsConfiguration::getConfiguration,
             CorsConfiguration::combine));
   }
 
   /**
-   * Theurl based cors configuration.
+   * The url based cors configuration.
    */
   @Data
   public static class UrlBasedCorsConfiguration {
@@ -66,8 +75,15 @@ public class CorsProperties {
     /**
      * The configuration for the path.
      */
-    @NestedConfigurationProperty
+<span class="nc" id="L78">    @NestedConfigurationProperty</span>
     private CorsConfiguration configuration = new CorsConfiguration();
+
+    /**
+     * Instantiates a new url based cors configuration.
+     */
+    public UrlBasedCorsConfiguration() {
+<span class="nc" id="L85">      super();</span>
+<span class="nc" id="L86">    }</span>
   }
 
 }

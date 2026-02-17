@@ -57,8 +57,8 @@ abstract class AbstractDocumentToGeometryConverter&lt;G extends Geometry&gt;
 <span class="fc" id="L57">    geometryConverter = new JsonToGeometryConverter(gf);</span>
 <span class="fc" id="L58">  }</span>
 
+  @SuppressWarnings(&quot;unchecked&quot;)
   public G convert(@NonNull Document document) {
-    //noinspection unchecked
 <span class="fc" id="L62">    return (G) geometryConverter.convert(document);</span>
   }
 

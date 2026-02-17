@@ -6,9 +6,11 @@ org.bremersee.acl.spring.data.mongodb
 org.bremersee.acl.spring.data.mongodb.app
 org.bremersee.comparator
 org.bremersee.comparator.model
+org.bremersee.comparator.spring.boot
 org.bremersee.comparator.spring.converter
 org.bremersee.comparator.spring.converter.components
 org.bremersee.comparator.spring.mapper
+org.bremersee.comparator.spring.web
 org.bremersee.comparator.testmodel
 org.bremersee.exception
 org.bremersee.exception.feign
@@ -42,6 +44,7 @@ org.bremersee.gpx
 org.bremersee.kml.v22
 org.bremersee.ldaptive
 org.bremersee.ldaptive.app
+org.bremersee.ldaptive.converter
 org.bremersee.ldaptive.serializable
 org.bremersee.ldaptive.transcoder
 org.bremersee.minio
@@ -50,9 +53,8 @@ org.bremersee.pagebuilder.integration
 org.bremersee.pagebuilder.integration.components
 org.bremersee.pagebuilder.model
 org.bremersee.pagebuilder.testmodel
-org.bremersee.spring.boot.autoconfigure.data.commons
-org.bremersee.spring.boot.autoconfigure.data.ldaptive
 org.bremersee.spring.boot.autoconfigure.data.mongo
+org.bremersee.spring.boot.autoconfigure.ldaptive
 org.bremersee.spring.boot.autoconfigure.minio
 org.bremersee.spring.boot.autoconfigure.minio.app
 org.bremersee.spring.boot.autoconfigure.security.authentication
@@ -61,6 +63,7 @@ org.bremersee.spring.boot.autoconfigure.web
 org.bremersee.spring.boot.autoconfigure.web.reactive
 org.bremersee.spring.core
 org.bremersee.spring.core.convert.support
+org.bremersee.spring.core.regex
 org.bremersee.spring.data.convert
 org.bremersee.spring.data.mongodb.core
 org.bremersee.spring.security.core

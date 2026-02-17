@@ -30,29 +30,35 @@ import org.springframework.lang.NonNull;
  * @author Christian Bremer
  */
 @ReadingConverter
-<span class="fc" id="L33">public class DocumentToAceConverter implements Converter&lt;Document, Ace&gt; {</span>
+public class DocumentToAceConverter implements Converter&lt;Document, Ace&gt; {
+
+  /**
+   * Instantiates a new document to ace converter.
+   */
+<span class="fc" id="L38">  public DocumentToAceConverter() {</span>
+<span class="fc" id="L39">  }</span>
 
   @Override
   public Ace convert(@NonNull Document source) {
-<span class="fc" id="L37">    return Ace.builder()</span>
-<span class="fc" id="L38">        .guest(source.getBoolean(Ace.GUEST, false))</span>
-<span class="fc" id="L39">        .users(source.getList(Ace.USERS, String.class, List.of()))</span>
-<span class="fc" id="L40">        .roles(source.getList(Ace.ROLES, String.class, List.of()))</span>
-<span class="fc" id="L41">        .groups(source.getList(Ace.GROUPS, String.class, List.of()))</span>
-<span class="fc" id="L42">        .build();</span>
+<span class="fc" id="L43">    return Ace.builder()</span>
+<span class="fc" id="L44">        .guest(source.getBoolean(Ace.GUEST, false))</span>
+<span class="fc" id="L45">        .users(source.getList(Ace.USERS, String.class, List.of()))</span>
+<span class="fc" id="L46">        .roles(source.getList(Ace.ROLES, String.class, List.of()))</span>
+<span class="fc" id="L47">        .groups(source.getList(Ace.GROUPS, String.class, List.of()))</span>
+<span class="fc" id="L48">        .build();</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L47" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L48">      return true;</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L54">      return true;</span>
     }
-<span class="nc bnc" id="L50" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L55">    return Objects.hashCode(getClass());</span>
+<span class="fc" id="L61">    return Objects.hashCode(getClass());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

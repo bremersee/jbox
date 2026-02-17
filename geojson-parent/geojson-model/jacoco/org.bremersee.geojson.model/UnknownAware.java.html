@@ -101,22 +101,22 @@ public abstract class UnknownAware {
    * @param clazz the expected result class
    * @return an empty optional if the value was not found or can not be casted, otherwise the value
    */
+  @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
   public &lt;T&gt; Optional&lt;T&gt; findUnknown(String jsonPath, Class&lt;T&gt; clazz) {
-<span class="pc bpc" id="L105" title="2 of 6 branches missed.">    if (!hasUnknown() || !isJsonPath(jsonPath) || clazz == null) {</span>
-<span class="fc" id="L106">      return Optional.empty();</span>
+<span class="pc bpc" id="L106" title="2 of 6 branches missed.">    if (!hasUnknown() || !isJsonPath(jsonPath) || clazz == null) {</span>
+<span class="fc" id="L107">      return Optional.empty();</span>
     }
-<span class="fc" id="L108">    Object value = null;</span>
-<span class="fc" id="L109">    Map&lt;String, Object&gt; tmpUnknown = unknown;</span>
-<span class="fc" id="L110">    StringTokenizer tokenizer = new StringTokenizer(jsonPath.substring(2), &quot;.&quot;);</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">    while (tokenizer.hasMoreTokens()) {</span>
-<span class="fc" id="L112">      String token = tokenizer.nextToken();</span>
-<span class="fc" id="L113">      value = tmpUnknown.get(token);</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">      if (value == null) {</span>
-<span class="fc" id="L115">        break;</span>
+<span class="fc" id="L109">    Object value = null;</span>
+<span class="fc" id="L110">    Map&lt;String, Object&gt; tmpUnknown = unknown;</span>
+<span class="fc" id="L111">    StringTokenizer tokenizer = new StringTokenizer(jsonPath.substring(2), &quot;.&quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    while (tokenizer.hasMoreTokens()) {</span>
+<span class="fc" id="L113">      String token = tokenizer.nextToken();</span>
+<span class="fc" id="L114">      value = tmpUnknown.get(token);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">      if (value == null) {</span>
+<span class="fc" id="L116">        break;</span>
       }
-<span class="fc bfc" id="L117" title="All 4 branches covered.">      if (value instanceof Map &amp;&amp; tokenizer.hasMoreTokens()) {</span>
+<span class="fc bfc" id="L118" title="All 4 branches covered.">      if (value instanceof Map &amp;&amp; tokenizer.hasMoreTokens()) {</span>
         try {
-          //noinspection unchecked,rawtypes
 <span class="fc" id="L120">          tmpUnknown = (Map) value;</span>
 <span class="nc" id="L121">        } catch (Exception e) {</span>
 <span class="nc" id="L122">          return Optional.empty();</span>
@@ -138,15 +138,15 @@ public abstract class UnknownAware {
    *
    * @param &lt;E&gt; the list element type
    * @param jsonPath the json path, e. g. {@code $.firstKey.secondKey.thirdKey}
-   * @param clazz he list element type
+   * @param clazz the list element type
    * @return an empty optional if the list was not found or can not be casted, otherwise the list
    */
+  @SuppressWarnings({&quot;Convert2MethodRef&quot;, &quot;unchecked&quot;})
   public &lt;E&gt; Optional&lt;List&lt;E&gt;&gt; findUnknownList(String jsonPath, Class&lt;E&gt; clazz) {
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    if (clazz == null) {</span>
-<span class="nc" id="L146">      return Optional.empty();</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">    if (clazz == null) {</span>
+<span class="nc" id="L147">      return Optional.empty();</span>
     }
     try {
-      //noinspection unchecked,Convert2MethodRef
 <span class="fc" id="L150">      return findUnknown(jsonPath, List.class).map(</span>
 <span class="fc" id="L151">          list -&gt; Collections.unmodifiableList(list));</span>
 
@@ -159,7 +159,7 @@ public abstract class UnknownAware {
    * Find a map / json object from the unknown map.
    *
    * @param jsonPath the json path, e. g. {@code $.firstKey.secondKey.thirdKey}
-   * @return an empty optional if the map / json object was not found or can not be casted,
+   * @return an empty optional if the map / json object was not found or can not be cast,
    *     otherwise the map / json object
    */
   public Optional&lt;Map&lt;String, Object&gt;&gt; findUnknownMap(String jsonPath) {

@@ -138,34 +138,36 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     assertEquals(404, me.status());
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     me = handler.map(<strong class="jxr_keyword">new</strong> ErrorResponseException(
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">new</strong> ErrorResponse(<span class="jxr_string">"BucketAlreadyExists"</span>, <span class="jxr_string">"message"</span>, <span class="jxr_string">"bucket"</span>, <span class="jxr_string">"object"</span>, <span class="jxr_string">"123"</span>, <span class="jxr_string">"456"</span>, <span class="jxr_string">"789"</span>),
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <strong class="jxr_keyword">new</strong> Response.Builder()
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>             .protocol(Protocol.HTTP_1_1)
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>             .code(500)
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>             .message(<span class="jxr_string">"Internal server error"</span>)
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .request(<strong class="jxr_keyword">new</strong> Request.Builder()
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>                 .url(<span class="jxr_string">"http://example.org"</span>)
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>                 .build())
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>             .build(),
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>     assertEquals(409, me.status());
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>     me = handler.map(<strong class="jxr_keyword">new</strong> ErrorResponseException(
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>         <strong class="jxr_keyword">new</strong> ErrorResponse(UUID.randomUUID().toString(), <span class="jxr_string">"message"</span>, <span class="jxr_string">"bucket"</span>, <span class="jxr_string">"object"</span>, <span class="jxr_string">"123"</span>, <span class="jxr_string">"456"</span>, <span class="jxr_string">"789"</span>),
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">new</strong> Response.Builder()
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>             .protocol(Protocol.HTTP_1_1)
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>             .code(500)
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>             .message(<span class="jxr_string">"Internal server error"</span>)
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>             .request(<strong class="jxr_keyword">new</strong> Request.Builder()
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>                 .url(<span class="jxr_string">"http://example.org"</span>)
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>                 .build())
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>             .build(),
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>     assertEquals(500, me.status());
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>   }
-<a class="jxr_linenumber" name="L158" href="#L158">158</a> }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">new</strong> ErrorResponse(<span class="jxr_string">"BucketAlreadyExists"</span>, <span class="jxr_string">"message"</span>, <span class="jxr_string">"bucket"</span>, <span class="jxr_string">"object"</span>, <span class="jxr_string">"123"</span>, <span class="jxr_string">"456"</span>,
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>             <span class="jxr_string">"789"</span>),
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">new</strong> Response.Builder()
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>             .protocol(Protocol.HTTP_1_1)
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>             .code(500)
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .message(<span class="jxr_string">"Internal server error"</span>)
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             .request(<strong class="jxr_keyword">new</strong> Request.Builder()
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>                 .url(<span class="jxr_string">"http://example.org"</span>)
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>                 .build())
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>             .build(),
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     assertEquals(409, me.status());
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> 
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     me = handler.map(<strong class="jxr_keyword">new</strong> ErrorResponseException(
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">new</strong> ErrorResponse(UUID.randomUUID().toString(), <span class="jxr_string">"message"</span>, <span class="jxr_string">"bucket"</span>, <span class="jxr_string">"object"</span>, <span class="jxr_string">"123"</span>, <span class="jxr_string">"456"</span>,
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>             <span class="jxr_string">"789"</span>),
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>         <strong class="jxr_keyword">new</strong> Response.Builder()
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>             .protocol(Protocol.HTTP_1_1)
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>             .code(500)
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>             .message(<span class="jxr_string">"Internal server error"</span>)
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>             .request(<strong class="jxr_keyword">new</strong> Request.Builder()
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>                 .url(<span class="jxr_string">"http://example.org"</span>)
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>                 .build())
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>             .build(),
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     assertEquals(500, me.status());
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>   }
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

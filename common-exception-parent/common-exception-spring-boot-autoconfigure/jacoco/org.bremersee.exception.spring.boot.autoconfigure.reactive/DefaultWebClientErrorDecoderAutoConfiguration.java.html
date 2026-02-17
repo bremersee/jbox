@@ -46,20 +46,27 @@ import org.springframework.util.ClassUtils;
 })
 @AutoConfiguration
 <span class="fc" id="L48">@Slf4j</span>
-<span class="fc" id="L49">public class DefaultWebClientErrorDecoderAutoConfiguration {</span>
+public class DefaultWebClientErrorDecoderAutoConfiguration {
+
+  /**
+   * Instantiates a new default web client error decoder auto configuration.
+   */
+  public DefaultWebClientErrorDecoderAutoConfiguration() {
+<span class="fc" id="L55">    super();</span>
+<span class="fc" id="L56">  }</span>
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-<span class="fc" id="L56">    log.info(&quot;&quot;&quot;</span>
+<span class="fc" id="L63">    log.info(&quot;&quot;&quot;</span>
 
             *********************************************************************************
             * {}
             *********************************************************************************&quot;&quot;&quot;,
-<span class="fc" id="L61">        ClassUtils.getUserClass(getClass()).getSimpleName());</span>
-<span class="fc" id="L62">  }</span>
+<span class="fc" id="L68">        ClassUtils.getUserClass(getClass()).getSimpleName());</span>
+<span class="fc" id="L69">  }</span>
 
   /**
    * Default web client error decoder default web client error decoder.
@@ -72,7 +79,7 @@ import org.springframework.util.ClassUtils;
   public DefaultWebClientErrorDecoder defaultWebClientErrorDecoder(
       ObjectProvider&lt;RestApiExceptionParser&gt; restApiExceptionParser) {
 
-<span class="fc" id="L75">    return new DefaultWebClientErrorDecoder(restApiExceptionParser.getIfAvailable());</span>
+<span class="fc" id="L82">    return new DefaultWebClientErrorDecoder(restApiExceptionParser.getIfAvailable());</span>
   }
 
 }

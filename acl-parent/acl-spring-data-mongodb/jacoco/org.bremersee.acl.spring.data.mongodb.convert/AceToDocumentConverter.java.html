@@ -29,29 +29,35 @@ import org.springframework.lang.NonNull;
  * @author Christian Bremer
  */
 @WritingConverter
-<span class="fc" id="L32">public class AceToDocumentConverter implements Converter&lt;Ace, Document&gt; {</span>
+public class AceToDocumentConverter implements Converter&lt;Ace, Document&gt; {
+
+  /**
+   * Instantiates a new ace to document converter.
+   */
+<span class="fc" id="L37">  public AceToDocumentConverter() {</span>
+<span class="fc" id="L38">  }</span>
 
   @Override
   public Document convert(@NonNull Ace source) {
-<span class="fc" id="L36">    Document target = new Document();</span>
-<span class="fc" id="L37">    target.put(Ace.GUEST, source.isGuest());</span>
-<span class="fc" id="L38">    target.put(Ace.USERS, source.getUsers());</span>
-<span class="fc" id="L39">    target.put(Ace.ROLES, source.getRoles());</span>
-<span class="fc" id="L40">    target.put(Ace.GROUPS, source.getGroups());</span>
-<span class="fc" id="L41">    return target;</span>
+<span class="fc" id="L42">    Document target = new Document();</span>
+<span class="fc" id="L43">    target.put(Ace.GUEST, source.isGuest());</span>
+<span class="fc" id="L44">    target.put(Ace.USERS, source.getUsers());</span>
+<span class="fc" id="L45">    target.put(Ace.ROLES, source.getRoles());</span>
+<span class="fc" id="L46">    target.put(Ace.GROUPS, source.getGroups());</span>
+<span class="fc" id="L47">    return target;</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L47">      return true;</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L53">      return true;</span>
     }
-<span class="nc bnc" id="L49" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L55" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L54">    return Objects.hashCode(getClass());</span>
+<span class="fc" id="L60">    return Objects.hashCode(getClass());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -714,7 +714,7 @@ public enum WptSymbol {
    */
   @JsonCreator
   public static WptSymbol fromValue(String value) {
-<span class="fc bfc" id="L717" title="All 2 branches covered.">    for (WptSymbol e : WptSymbol.values()) {</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">    for (WptSymbol e : values()) {</span>
 <span class="pc bpc" id="L718" title="1 of 4 branches missed.">      if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {</span>
 <span class="fc" id="L719">        return e;</span>
       }

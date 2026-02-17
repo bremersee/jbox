@@ -22,8 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -40,13 +38,13 @@ public interface JaxbContextDetails {
    * @return the collector
    */
   static Collector&lt;JaxbContextData, ?, JaxbContextDetailsImpl&gt; contextDataCollector() {
-<span class="fc" id="L43">    return Collector.of(JaxbContextDetailsImpl::new, JaxbContextDetailsImpl::add, (left, right) -&gt; {</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">      if (left.size() &lt; right.size()) {</span>
-<span class="nc" id="L45">        right.addAll(left);</span>
-<span class="nc" id="L46">        return right;</span>
+<span class="fc" id="L41">    return Collector.of(JaxbContextDetailsImpl::new, JaxbContextDetailsImpl::add, (left, right) -&gt; {</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">      if (left.size() &lt; right.size()) {</span>
+<span class="nc" id="L43">        right.addAll(left);</span>
+<span class="nc" id="L44">        return right;</span>
       } else {
-<span class="nc" id="L48">        left.addAll(right);</span>
-<span class="nc" id="L49">        return left;</span>
+<span class="nc" id="L46">        left.addAll(right);</span>
+<span class="nc" id="L47">        return left;</span>
       }
     });
   }
@@ -57,7 +55,7 @@ public interface JaxbContextDetails {
    * @return the empty jaxb context details
    */
   static JaxbContextDetails empty() {
-<span class="fc" id="L60">    return new JaxbContextDetailsImpl();</span>
+<span class="fc" id="L58">    return new JaxbContextDetailsImpl();</span>
   }
 
   /**
@@ -88,15 +86,15 @@ public interface JaxbContextDetails {
    * @return the name spaces with schema locations
    */
   default Set&lt;String&gt; getNameSpacesWithSchemaLocations() {
-<span class="fc" id="L91">    return Optional.of(schemaLocationToArray(getSchemaLocation()))</span>
-<span class="fc" id="L92">        .map(parts -&gt; {</span>
-<span class="fc" id="L93">          Set&lt;String&gt; locations = new LinkedHashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">          for (int i = 1; i &lt; parts.length; i = i + 2) {</span>
-<span class="fc" id="L95">            locations.add(parts[i - 1] + &quot; &quot; + parts[i]);</span>
+<span class="fc" id="L89">    return Optional.of(schemaLocationToArray(getSchemaLocation()))</span>
+<span class="fc" id="L90">        .map(parts -&gt; {</span>
+<span class="fc" id="L91">          Set&lt;String&gt; locations = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">          for (int i = 1; i &lt; parts.length; i = i + 2) {</span>
+<span class="fc" id="L93">            locations.add(parts[i - 1] + &quot; &quot; + parts[i]);</span>
           }
-<span class="fc" id="L97">          return locations;</span>
+<span class="fc" id="L95">          return locations;</span>
         })
-<span class="fc" id="L99">        .orElseGet(Collections::emptySet);</span>
+<span class="fc" id="L97">        .orElseGet(Collections::emptySet);</span>
   }
 
   /**
@@ -105,15 +103,15 @@ public interface JaxbContextDetails {
    * @return the name spaces
    */
   default Set&lt;String&gt; getNameSpaces() {
-<span class="fc" id="L108">    return Optional.of(schemaLocationToArray(getSchemaLocation()))</span>
-<span class="fc" id="L109">        .map(parts -&gt; {</span>
-<span class="fc" id="L110">          Set&lt;String&gt; nameSpaces = new LinkedHashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">          for (int i = 0; i &lt; parts.length; i = i + 2) {</span>
-<span class="fc" id="L112">            nameSpaces.add(parts[i]);</span>
+<span class="fc" id="L106">    return Optional.of(schemaLocationToArray(getSchemaLocation()))</span>
+<span class="fc" id="L107">        .map(parts -&gt; {</span>
+<span class="fc" id="L108">          Set&lt;String&gt; nameSpaces = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">          for (int i = 0; i &lt; parts.length; i = i + 2) {</span>
+<span class="fc" id="L110">            nameSpaces.add(parts[i]);</span>
           }
-<span class="fc" id="L114">          return nameSpaces;</span>
+<span class="fc" id="L112">          return nameSpaces;</span>
         })
-<span class="fc" id="L116">        .orElseGet(Collections::emptySet);</span>
+<span class="fc" id="L114">        .orElseGet(Collections::emptySet);</span>
   }
 
   /**
@@ -125,51 +123,56 @@ public interface JaxbContextDetails {
    * @return the schema locations
    */
   default Set&lt;String&gt; getSchemaLocations() {
-<span class="fc" id="L128">    return Optional.of(schemaLocationToArray(getSchemaLocation()))</span>
-<span class="fc" id="L129">        .map(parts -&gt; {</span>
-<span class="fc" id="L130">          Set&lt;String&gt; locations = new LinkedHashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">          for (int i = 1; i &lt; parts.length; i = i + 2) {</span>
-<span class="fc" id="L132">            locations.add(parts[i]);</span>
+<span class="fc" id="L126">    return Optional.of(schemaLocationToArray(getSchemaLocation()))</span>
+<span class="fc" id="L127">        .map(parts -&gt; {</span>
+<span class="fc" id="L128">          Set&lt;String&gt; locations = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">          for (int i = 1; i &lt; parts.length; i = i + 2) {</span>
+<span class="fc" id="L130">            locations.add(parts[i]);</span>
           }
-<span class="fc" id="L134">          return locations;</span>
+<span class="fc" id="L132">          return locations;</span>
         })
-<span class="fc" id="L136">        .orElse(Collections.emptySet());</span>
+<span class="fc" id="L134">        .orElse(Collections.emptySet());</span>
   }
 
   private static String[] schemaLocationToArray(String schemaLocation) {
-<span class="fc" id="L140">    return Optional.ofNullable(schemaLocation)</span>
-<span class="fc" id="L141">        .map(sl -&gt; sl.replaceAll(&quot;^\\s*|\\s*$&quot;, &quot;&quot;))</span>
-<span class="fc" id="L142">        .map(sl -&gt; sl.replaceAll(&quot;[\\s]{2,}&quot;, &quot; &quot;))</span>
-<span class="fc" id="L143">        .map(sl -&gt; StringUtils.delimitedListToStringArray(sl, &quot; &quot;))</span>
-<span class="pc" id="L144">        .orElseGet(() -&gt; new String[0]);</span>
+<span class="fc" id="L138">    return Optional.ofNullable(schemaLocation)</span>
+<span class="fc" id="L139">        .map(sl -&gt; sl.replaceAll(&quot;^\\s*|\\s*$&quot;, &quot;&quot;))</span>
+<span class="fc" id="L140">        .map(sl -&gt; sl.replaceAll(&quot;[\\s]{2,}&quot;, &quot; &quot;))</span>
+<span class="fc" id="L141">        .map(sl -&gt; StringUtils.delimitedListToStringArray(sl, &quot; &quot;))</span>
+<span class="pc" id="L142">        .orElseGet(() -&gt; new String[0]);</span>
   }
 
   /**
    * The jaxb context details implementation.
    */
-  @SuppressWarnings(&quot;SameNameButDifferent&quot;)
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
   class JaxbContextDetailsImpl
       extends LinkedHashSet&lt;JaxbContextData&gt;
       implements JaxbContextDetails {
 
+    /**
+     * Instantiates a jaxb contexts details.
+     */
+    private JaxbContextDetailsImpl() {
+      super();
+    }
+
     @Override
     public String getSchemaLocation() {
-<span class="fc" id="L158">      return this.stream()</span>
-<span class="fc" id="L159">          .flatMap(JaxbContextData::getNameSpacesWithSchemaLocations)</span>
-<span class="fc" id="L160">          .distinct()</span>
-<span class="fc" id="L161">          .sorted()</span>
-<span class="fc" id="L162">          .map(SchemaLocation::toString)</span>
-<span class="fc" id="L163">          .collect(Collectors.joining(&quot; &quot;));</span>
+<span class="fc" id="L161">      return this.stream()</span>
+<span class="fc" id="L162">          .flatMap(JaxbContextData::getNameSpacesWithSchemaLocations)</span>
+<span class="fc" id="L163">          .distinct()</span>
+<span class="fc" id="L164">          .sorted()</span>
+<span class="fc" id="L165">          .map(SchemaLocation::toString)</span>
+<span class="fc" id="L166">          .collect(Collectors.joining(&quot; &quot;));</span>
     }
 
     @Override
     public Class&lt;?&gt;[] getClasses(ClassLoader... classLoaders) {
-<span class="fc" id="L168">      return ClassUtils</span>
-<span class="fc" id="L169">          .toClassArray(this</span>
-<span class="fc" id="L170">              .stream()</span>
-<span class="fc" id="L171">              .flatMap(data -&gt; data.getJaxbClasses(classLoaders))</span>
-<span class="fc" id="L172">              .collect(Collectors.toSet()));</span>
+<span class="fc" id="L171">      return ClassUtils</span>
+<span class="fc" id="L172">          .toClassArray(this</span>
+<span class="fc" id="L173">              .stream()</span>
+<span class="fc" id="L174">              .flatMap(data -&gt; data.getJaxbClasses(classLoaders))</span>
+<span class="fc" id="L175">              .collect(Collectors.toSet()));</span>
     }
 
   }

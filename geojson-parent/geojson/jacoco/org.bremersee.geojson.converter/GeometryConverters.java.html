@@ -25,7 +25,13 @@ import org.springframework.core.convert.converter.Converter;
  *
  * @author Christian Bremer
  */
-<span class="nc" id="L28">public abstract class GeometryConverters {</span>
+public abstract class GeometryConverters {
+
+  /**
+   * Instantiates new geometry converters.
+   */
+  private GeometryConverters() {
+  }
 
   /**
    * Gets converters to register.
@@ -36,7 +42,7 @@ import org.springframework.core.convert.converter.Converter;
   public static List&lt;Converter&lt;?, ?&gt;&gt; getConvertersToRegister(
       GeoJsonGeometryFactory geometryFactory) {
 
-<span class="fc" id="L39">    return List.of(</span>
+<span class="fc" id="L45">    return List.of(</span>
         new GeometryToStringConverter(),
         new StringToPointConverter(geometryFactory),
         new StringToLineStringConverter(geometryFactory),

@@ -165,7 +165,7 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>       <strong class="jxr_keyword">return</strong> NONE;
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>     }
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     String source = text.substring(0, Math.min(text.length(), 2));
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">for</strong> (<a name="MongoSearchLanguage" href="../../../../../../org/bremersee/spring/data/mongodb/core/MongoSearchLanguage.html#MongoSearchLanguage">MongoSearchLanguage</a> b : MongoSearchLanguage.values()) {
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">for</strong> (<a name="MongoSearchLanguage" href="../../../../../../org/bremersee/spring/data/mongodb/core/MongoSearchLanguage.html#MongoSearchLanguage">MongoSearchLanguage</a> b : values()) {
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>       <strong class="jxr_keyword">if</strong> (b.value.equalsIgnoreCase(source) || b.name().equalsIgnoreCase(source)) {
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         <strong class="jxr_keyword">return</strong> b;
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>       }
@@ -191,6 +191,6 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> 
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

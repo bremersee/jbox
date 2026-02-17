@@ -21,16 +21,6 @@ import static java.lang.reflect.Modifier.isStatic;
 import static java.lang.reflect.Modifier.isTransient;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAnyAttribute;
@@ -50,6 +40,16 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -69,12 +69,11 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings(&quot;SameNameButDifferent&quot;)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
 
   @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L77">  private static final Class&lt;? extends Annotation&gt;[] EXPLICIT_XML_ANNOTATIONS = new Class[]{</span>
+<span class="fc" id="L76">  private static final Class&lt;? extends Annotation&gt;[] EXPLICIT_XML_ANNOTATIONS = new Class[]{</span>
       XmlAnyAttribute.class,
       XmlAnyElement.class,
       XmlAttachmentRef.class,
@@ -92,126 +91,123 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
 
   @Override
   public Class&lt;?&gt;[] resolveClasses(Object value) {
-<span class="fc" id="L95">    Set&lt;ScanResult&gt; scanResults = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">    if (value instanceof Class&lt;?&gt;[]) {</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">      for (Class&lt;?&gt; clazz : (Class&lt;?&gt;[]) value) {</span>
-<span class="fc" id="L98">        resolveClasses(clazz, scanResults);</span>
+<span class="fc" id="L94">    Set&lt;ScanResult&gt; scanResults = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (value instanceof Class&lt;?&gt;[] clsArray) {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">      for (Class&lt;?&gt; clazz : clsArray) {</span>
+<span class="fc" id="L97">        resolveClasses(clazz, scanResults);</span>
       }
     } else {
-<span class="fc" id="L101">      resolveClasses(value, scanResults);</span>
+<span class="fc" id="L100">      resolveClasses(value, scanResults);</span>
     }
-<span class="fc" id="L103">    return ClassUtils.toClassArray(scanResults</span>
-<span class="fc" id="L104">        .stream()</span>
-<span class="fc" id="L105">        .map(ScanResult::getClazz)</span>
-<span class="fc" id="L106">        .collect(Collectors.toSet()));</span>
+<span class="fc" id="L102">    return ClassUtils.toClassArray(scanResults</span>
+<span class="fc" id="L103">        .stream()</span>
+<span class="fc" id="L104">        .map(ScanResult::getClazz)</span>
+<span class="fc" id="L105">        .collect(Collectors.toSet()));</span>
   }
 
   private boolean resolveClasses(Object value, Set&lt;ScanResult&gt; scanResults) {
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">    if (isEmpty(value)</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">        || stopResolving(ClassUtils.getUserClass(value), value, scanResults)) {</span>
-<span class="fc" id="L112">      return false;</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    if (isEmpty(value)</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        || stopResolving(ClassUtils.getUserClass(value), value, scanResults)) {</span>
+<span class="fc" id="L111">      return false;</span>
     }
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    if (value instanceof Class) {</span>
-<span class="nc" id="L115">      resolveClasses((Class&lt;?&gt;) value, scanResults);</span>
-<span class="nc" id="L116">      return true;</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (value instanceof Class) {</span>
+<span class="nc" id="L114">      resolveClasses((Class&lt;?&gt;) value, scanResults);</span>
+<span class="nc" id="L115">      return true;</span>
     }
-<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (value instanceof Collection) {</span>
-<span class="fc" id="L119">      Collection&lt;?&gt; collection = (Collection&lt;?&gt;) value;</span>
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">      if (!collection.isEmpty()) {</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        for (Object v : collection) {</span>
-<span class="fc bfc" id="L122" title="All 2 branches covered.">          if (!resolveClasses(v, scanResults)) {</span>
-<span class="fc" id="L123">            return true;</span>
-          }
-<span class="fc" id="L125">        }</span>
-      }
-<span class="fc" id="L127">      return true;</span>
+<span class="pc bpc" id="L117" title="1 of 4 branches missed.">    if ((value instanceof Collection&lt;?&gt; collection) &amp;&amp; !collection.isEmpty()) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">      for (Object v : collection) {</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (!resolveClasses(v, scanResults)) {</span>
+<span class="fc" id="L120">          return true;</span>
+        }
+<span class="fc" id="L122">      }</span>
+<span class="fc" id="L123">      return true;</span>
     }
-<span class="fc" id="L129">    Class&lt;?&gt; clazz = ClassUtils.getUserClass(value);</span>
-<span class="fc" id="L130">    resolveSuperClasses(clazz, value, scanResults);</span>
-<span class="fc" id="L131">    ReflectionUtils.doWithFields(</span>
+<span class="fc" id="L125">    Class&lt;?&gt; clazz = ClassUtils.getUserClass(value);</span>
+<span class="fc" id="L126">    resolveSuperClasses(clazz, value, scanResults);</span>
+<span class="fc" id="L127">    ReflectionUtils.doWithFields(</span>
         clazz,
         new XmlFieldCallback(value, scanResults),
         new XmlFieldFilter(clazz));
-<span class="fc" id="L135">    ReflectionUtils.doWithMethods(</span>
+<span class="fc" id="L131">    ReflectionUtils.doWithMethods(</span>
         clazz,
         new XmlMethodCallback(value, scanResults),
         new XmlMethodFilter(clazz));
-<span class="fc" id="L139">    Optional.ofNullable(AnnotationUtils.findAnnotation(clazz, XmlSeeAlso.class))</span>
-<span class="pc" id="L140">        .ifPresent(seeAlso -&gt; Arrays.stream(seeAlso.value())</span>
-<span class="nc" id="L141">            .forEach(seeAlsoClass -&gt; resolveClasses(seeAlsoClass, scanResults)));</span>
-<span class="fc" id="L142">    return true;</span>
+<span class="fc" id="L135">    Optional.ofNullable(AnnotationUtils.findAnnotation(clazz, XmlSeeAlso.class))</span>
+<span class="pc" id="L136">        .ifPresent(seeAlso -&gt; Arrays.stream(seeAlso.value())</span>
+<span class="nc" id="L137">            .forEach(seeAlsoClass -&gt; resolveClasses(seeAlsoClass, scanResults)));</span>
+<span class="fc" id="L138">    return true;</span>
   }
 
   private void resolveClasses(Class&lt;?&gt; clazz, Set&lt;ScanResult&gt; scanResults) {
-<span class="fc bfc" id="L146" title="All 2 branches covered.">    if (stopResolving(clazz, null, scanResults)) {</span>
-<span class="fc" id="L147">      return;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (stopResolving(clazz, null, scanResults)) {</span>
+<span class="fc" id="L143">      return;</span>
     }
-<span class="fc" id="L149">    resolveSuperClasses(clazz, null, scanResults);</span>
-<span class="fc" id="L150">    ReflectionUtils.doWithFields(</span>
+<span class="fc" id="L145">    resolveSuperClasses(clazz, null, scanResults);</span>
+<span class="fc" id="L146">    ReflectionUtils.doWithFields(</span>
         clazz,
         new XmlFieldCallback(null, scanResults),
         new XmlFieldFilter(clazz));
-<span class="fc" id="L154">    ReflectionUtils.doWithMethods(</span>
+<span class="fc" id="L150">    ReflectionUtils.doWithMethods(</span>
         clazz,
         new XmlMethodCallback(null, scanResults),
         new XmlMethodFilter(clazz));
-<span class="fc" id="L158">    Optional.ofNullable(AnnotationUtils.findAnnotation(clazz, XmlSeeAlso.class))</span>
-<span class="pc" id="L159">        .ifPresent(seeAlso -&gt; Arrays.stream(seeAlso.value())</span>
-<span class="nc" id="L160">            .forEach(seeAlsoClass -&gt; resolveClasses(seeAlsoClass, scanResults)));</span>
-<span class="fc" id="L161">  }</span>
+<span class="fc" id="L154">    Optional.ofNullable(AnnotationUtils.findAnnotation(clazz, XmlSeeAlso.class))</span>
+<span class="pc" id="L155">        .ifPresent(seeAlso -&gt; Arrays.stream(seeAlso.value())</span>
+<span class="nc" id="L156">            .forEach(seeAlsoClass -&gt; resolveClasses(seeAlsoClass, scanResults)));</span>
+<span class="fc" id="L157">  }</span>
 
   private void resolveSuperClasses(
       Class&lt;?&gt; clazz,
       Object source,
       Set&lt;ScanResult&gt; scanResults) {
 
-<span class="fc bfc" id="L168" title="All 2 branches covered.">    if (!stopResolving(clazz, source, scanResults)) {</span>
-<span class="fc" id="L169">      scanResults.add(new ScanResult(clazz, source));</span>
-<span class="fc" id="L170">      resolveSuperClasses(clazz.getSuperclass(), null, scanResults);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    if (!stopResolving(clazz, source, scanResults)) {</span>
+<span class="fc" id="L165">      scanResults.add(new ScanResult(clazz, source));</span>
+<span class="fc" id="L166">      resolveSuperClasses(clazz.getSuperclass(), null, scanResults);</span>
     }
-<span class="fc" id="L172">  }</span>
+<span class="fc" id="L168">  }</span>
 
   private boolean stopResolving(Class&lt;?&gt; clazz, Object source,
       Set&lt;ScanResult&gt; scanResults) {
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">    return isEmpty(clazz)</span>
-<span class="fc bfc" id="L177" title="All 4 branches covered.">        || (!isAnnotatedWithXml(clazz) &amp;&amp; !Collection.class.isAssignableFrom(clazz))</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">        || scanResults.contains(new ScanResult(clazz, source));</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">    return isEmpty(clazz)</span>
+<span class="fc bfc" id="L173" title="All 4 branches covered.">        || (!isAnnotatedWithXml(clazz) &amp;&amp; !Collection.class.isAssignableFrom(clazz))</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        || scanResults.contains(new ScanResult(clazz, source));</span>
   }
 
   private boolean isAnnotatedWithXml(Class&lt;?&gt; clazz) {
-<span class="fc bfc" id="L182" title="All 2 branches covered.">    return clazz.isAnnotationPresent(XmlRootElement.class)</span>
-<span class="fc bfc" id="L183" title="All 2 branches covered.">        || clazz.isAnnotationPresent(XmlType.class);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">    return clazz.isAnnotationPresent(XmlRootElement.class)</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        || clazz.isAnnotationPresent(XmlType.class);</span>
   }
 
   private void processXmlAnnotations(AnnotatedElement element,
       Set&lt;ScanResult&gt; scanResults) {
-<span class="fc" id="L188">    processXmlElement(AnnotationUtils.findAnnotation(element, XmlElement.class), scanResults);</span>
-<span class="fc" id="L189">    Optional</span>
-<span class="fc" id="L190">        .ofNullable(AnnotationUtils.findAnnotation(element, XmlElements.class))</span>
-<span class="fc" id="L191">        .map(XmlElements::value)</span>
-<span class="pc" id="L192">        .ifPresent(a -&gt; Arrays.stream(a).forEach(e -&gt; processXmlElement(e, scanResults)));</span>
+<span class="fc" id="L184">    processXmlElement(AnnotationUtils.findAnnotation(element, XmlElement.class), scanResults);</span>
+<span class="fc" id="L185">    Optional</span>
+<span class="fc" id="L186">        .ofNullable(AnnotationUtils.findAnnotation(element, XmlElements.class))</span>
+<span class="fc" id="L187">        .map(XmlElements::value)</span>
+<span class="pc" id="L188">        .ifPresent(a -&gt; Arrays.stream(a).forEach(e -&gt; processXmlElement(e, scanResults)));</span>
 
-<span class="fc" id="L194">    processXmlElementRef(AnnotationUtils.findAnnotation(element, XmlElementRef.class), scanResults);</span>
-<span class="fc" id="L195">    Optional</span>
-<span class="fc" id="L196">        .ofNullable(AnnotationUtils.findAnnotation(element, XmlElementRefs.class))</span>
-<span class="fc" id="L197">        .map(XmlElementRefs::value)</span>
-<span class="pc" id="L198">        .ifPresent(a -&gt; Arrays.stream(a).forEach(e -&gt; processXmlElementRef(e, scanResults)));</span>
-<span class="fc" id="L199">  }</span>
+<span class="fc" id="L190">    processXmlElementRef(AnnotationUtils.findAnnotation(element, XmlElementRef.class), scanResults);</span>
+<span class="fc" id="L191">    Optional</span>
+<span class="fc" id="L192">        .ofNullable(AnnotationUtils.findAnnotation(element, XmlElementRefs.class))</span>
+<span class="fc" id="L193">        .map(XmlElementRefs::value)</span>
+<span class="pc" id="L194">        .ifPresent(a -&gt; Arrays.stream(a).forEach(e -&gt; processXmlElementRef(e, scanResults)));</span>
+<span class="fc" id="L195">  }</span>
 
   private void processXmlElement(XmlElement annotation, Set&lt;ScanResult&gt; scanResults) {
-<span class="fc" id="L202">    Optional.ofNullable(annotation)</span>
-<span class="fc" id="L203">        .map(XmlElement::type)</span>
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">        .filter(type -&gt; !type.equals(XmlElement.DEFAULT.class))</span>
-<span class="pc" id="L205">        .ifPresent(type -&gt; resolveClasses(type, scanResults));</span>
-<span class="fc" id="L206">  }</span>
+<span class="fc" id="L198">    Optional.ofNullable(annotation)</span>
+<span class="fc" id="L199">        .map(XmlElement::type)</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">        .filter(type -&gt; !type.equals(XmlElement.DEFAULT.class))</span>
+<span class="pc" id="L201">        .ifPresent(type -&gt; resolveClasses(type, scanResults));</span>
+<span class="fc" id="L202">  }</span>
 
   private void processXmlElementRef(XmlElementRef annotation,
       Set&lt;ScanResult&gt; scanResults) {
-<span class="fc" id="L210">    Optional.ofNullable(annotation)</span>
-<span class="fc" id="L211">        .map(XmlElementRef::type)</span>
-<span class="pc bnc" id="L212" title="All 2 branches missed.">        .filter(type -&gt; !type.equals(XmlElementRef.DEFAULT.class))</span>
-<span class="pc" id="L213">        .ifPresent(type -&gt; resolveClasses(type, scanResults));</span>
-<span class="fc" id="L214">  }</span>
+<span class="fc" id="L206">    Optional.ofNullable(annotation)</span>
+<span class="fc" id="L207">        .map(XmlElementRef::type)</span>
+<span class="pc bnc" id="L208" title="All 2 branches missed.">        .filter(type -&gt; !type.equals(XmlElementRef.DEFAULT.class))</span>
+<span class="pc" id="L209">        .ifPresent(type -&gt; resolveClasses(type, scanResults));</span>
+<span class="fc" id="L210">  }</span>
 
   private class XmlFieldCallback implements FieldCallback {
 
@@ -225,44 +221,44 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
      * @param value the value
      * @param scanResults the scan results
      */
-<span class="fc" id="L228">    XmlFieldCallback(Object value, Set&lt;ScanResult&gt; scanResults) {</span>
-<span class="fc" id="L229">      this.value = value;</span>
-<span class="fc" id="L230">      this.scanResults = scanResults;</span>
-<span class="fc" id="L231">    }</span>
+<span class="fc" id="L224">    XmlFieldCallback(Object value, Set&lt;ScanResult&gt; scanResults) {</span>
+<span class="fc" id="L225">      this.value = value;</span>
+<span class="fc" id="L226">      this.scanResults = scanResults;</span>
+<span class="fc" id="L227">    }</span>
 
     @Override
-<span class="pc bpc" id="L234" title="1 of 2 branches missed.">    public void doWith(@NonNull Field field) throws IllegalArgumentException {</span>
-<span class="fc" id="L235">      ReflectionUtils.makeAccessible(field);</span>
-<span class="fc" id="L236">      processXmlAnnotations(field, scanResults);</span>
-<span class="fc bfc" id="L237" title="All 2 branches covered.">      if (isEmpty(value)) {</span>
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        if (Collection.class.isAssignableFrom(field.getType())) {</span>
-<span class="nc bnc" id="L239" title="All 2 branches missed.">          for (ResolvableType rt : ResolvableType.forField(field).getGenerics()) {</span>
-<span class="nc" id="L240">            resolveClasses(rt.resolve(), scanResults);</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">    public void doWith(@NonNull Field field) throws IllegalArgumentException {</span>
+<span class="fc" id="L231">      ReflectionUtils.makeAccessible(field);</span>
+<span class="fc" id="L232">      processXmlAnnotations(field, scanResults);</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">      if (isEmpty(value)) {</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (Collection.class.isAssignableFrom(field.getType())) {</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">          for (ResolvableType rt : ResolvableType.forField(field).getGenerics()) {</span>
+<span class="nc" id="L236">            resolveClasses(rt.resolve(), scanResults);</span>
           }
         } else {
-<span class="fc" id="L243">          resolveClasses(field.getType(), scanResults);</span>
+<span class="fc" id="L239">          resolveClasses(field.getType(), scanResults);</span>
         }
       } else {
-<span class="fc" id="L246">        Object fieldValue = ReflectionUtils.getField(field, value);</span>
-<span class="fc bfc" id="L247" title="All 2 branches covered.">        if (!isEmpty(fieldValue)) {</span>
-<span class="pc bpc" id="L248" title="1 of 4 branches missed.">          if (fieldValue instanceof Collection &amp;&amp; ((Collection&lt;?&gt;) fieldValue).isEmpty()) {</span>
-<span class="nc bnc" id="L249" title="All 2 branches missed.">            for (ResolvableType rt : ResolvableType.forField(field).getGenerics()) {</span>
-<span class="nc" id="L250">              resolveClasses(rt.resolve(), scanResults);</span>
+<span class="fc" id="L242">        Object fieldValue = ReflectionUtils.getField(field, value);</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (!isEmpty(fieldValue)) {</span>
+<span class="pc bpc" id="L244" title="1 of 4 branches missed.">          if (fieldValue instanceof Collection &amp;&amp; ((Collection&lt;?&gt;) fieldValue).isEmpty()) {</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">            for (ResolvableType rt : ResolvableType.forField(field).getGenerics()) {</span>
+<span class="nc" id="L246">              resolveClasses(rt.resolve(), scanResults);</span>
             }
           } else {
-<span class="fc" id="L253">            resolveClasses(fieldValue, scanResults);</span>
+<span class="fc" id="L249">            resolveClasses(fieldValue, scanResults);</span>
           }
         } else {
-<span class="pc bpc" id="L256" title="1 of 2 branches missed.">          if (Collection.class.isAssignableFrom(field.getType())) {</span>
-<span class="nc bnc" id="L257" title="All 2 branches missed.">            for (ResolvableType rt : ResolvableType.forField(field).getGenerics()) {</span>
-<span class="nc" id="L258">              resolveClasses(rt.resolve(), scanResults);</span>
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">          if (Collection.class.isAssignableFrom(field.getType())) {</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">            for (ResolvableType rt : ResolvableType.forField(field).getGenerics()) {</span>
+<span class="nc" id="L254">              resolveClasses(rt.resolve(), scanResults);</span>
             }
           } else {
-<span class="fc" id="L261">            resolveClasses(field.getType(), scanResults);</span>
+<span class="fc" id="L257">            resolveClasses(field.getType(), scanResults);</span>
           }
         }
       }
-<span class="fc" id="L265">    }</span>
+<span class="fc" id="L261">    }</span>
   }
 
   private class XmlMethodCallback implements MethodCallback {
@@ -277,46 +273,47 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
      * @param value the value
      * @param scanResults the scan results
      */
-<span class="fc" id="L280">    XmlMethodCallback(Object value, Set&lt;ScanResult&gt; scanResults) {</span>
-<span class="fc" id="L281">      this.value = value;</span>
-<span class="fc" id="L282">      this.scanResults = scanResults;</span>
-<span class="fc" id="L283">    }</span>
+<span class="fc" id="L276">    XmlMethodCallback(Object value, Set&lt;ScanResult&gt; scanResults) {</span>
+<span class="fc" id="L277">      this.value = value;</span>
+<span class="fc" id="L278">      this.scanResults = scanResults;</span>
+<span class="fc" id="L279">    }</span>
 
     @Override
-<span class="pc bpc" id="L286" title="1 of 2 branches missed.">    public void doWith(@NonNull Method method) throws IllegalArgumentException {</span>
-<span class="fc" id="L287">      ReflectionUtils.makeAccessible(method);</span>
-<span class="fc" id="L288">      processXmlAnnotations(method, scanResults);</span>
-<span class="fc bfc" id="L289" title="All 2 branches covered.">      if (isEmpty(value)) {</span>
-<span class="pc bpc" id="L290" title="1 of 2 branches missed.">        if (Collection.class.isAssignableFrom(method.getReturnType())) {</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">          for (ResolvableType rt : ResolvableType.forMethodReturnType(method).getGenerics()) {</span>
-<span class="nc" id="L292">            resolveClasses(rt.resolve(), scanResults);</span>
+<span class="pc bpc" id="L282" title="1 of 2 branches missed.">    public void doWith(@NonNull Method method) throws IllegalArgumentException {</span>
+<span class="fc" id="L283">      ReflectionUtils.makeAccessible(method);</span>
+<span class="fc" id="L284">      processXmlAnnotations(method, scanResults);</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">      if (isEmpty(value)) {</span>
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (Collection.class.isAssignableFrom(method.getReturnType())) {</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">          for (ResolvableType rt : ResolvableType.forMethodReturnType(method).getGenerics()) {</span>
+<span class="nc" id="L288">            resolveClasses(rt.resolve(), scanResults);</span>
           }
         } else {
-<span class="fc" id="L295">          resolveClasses(method.getReturnType(), scanResults);</span>
+<span class="fc" id="L291">          resolveClasses(method.getReturnType(), scanResults);</span>
         }
       } else {
-<span class="fc" id="L298">        Object methodValue = ReflectionUtils.invokeMethod(method, value);</span>
-<span class="fc bfc" id="L299" title="All 2 branches covered.">        if (!isEmpty(methodValue)) {</span>
-<span class="pc bpc" id="L300" title="1 of 4 branches missed.">          if (methodValue instanceof Collection &amp;&amp; ((Collection&lt;?&gt;) methodValue).isEmpty()) {</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">            for (ResolvableType rt : ResolvableType</span>
-<span class="nc" id="L302">                .forMethodReturnType(method, ClassUtils.getUserClass(value))</span>
-<span class="nc" id="L303">                .getGenerics()) {</span>
-<span class="nc" id="L304">              resolveClasses(rt.resolve(), scanResults);</span>
+<span class="fc" id="L294">        Object methodValue = ReflectionUtils.invokeMethod(method, value);</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">        if (!isEmpty(methodValue)) {</span>
+<span class="pc bpc" id="L296" title="1 of 4 branches missed.">          if (methodValue instanceof Collection &amp;&amp; ((Collection&lt;?&gt;) methodValue).isEmpty()) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">            for (ResolvableType rt : ResolvableType</span>
+<span class="nc" id="L298">                .forMethodReturnType(method, ClassUtils.getUserClass(value))</span>
+<span class="nc" id="L299">                .getGenerics()) {</span>
+<span class="nc" id="L300">              resolveClasses(rt.resolve(), scanResults);</span>
             }
           } else {
-<span class="fc" id="L307">            resolveClasses(methodValue, scanResults);</span>
+<span class="fc" id="L303">            resolveClasses(methodValue, scanResults);</span>
           }
         } else {
-<span class="fc" id="L310">          resolveClasses(method.getReturnType(), scanResults);</span>
+<span class="fc" id="L306">          resolveClasses(method.getReturnType(), scanResults);</span>
         }
       }
-<span class="fc" id="L313">    }</span>
+<span class="fc" id="L309">    }</span>
   }
 
   private static boolean anyXmlAnnotationPresent(AnnotatedElement element) {
-<span class="fc" id="L317">    return Arrays.stream(EXPLICIT_XML_ANNOTATIONS).anyMatch(element::isAnnotationPresent);</span>
+<span class="fc" id="L313">    return Arrays.stream(EXPLICIT_XML_ANNOTATIONS).anyMatch(element::isAnnotationPresent);</span>
   }
 
+  @SuppressWarnings(&quot;ClassCanBeRecord&quot;)
   private static class XmlFieldFilter implements FieldFilter {
 
     private final XmlAccessType accessType;
@@ -326,36 +323,34 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
      *
      * @param clazz the class
      */
-<span class="fc" id="L329">    XmlFieldFilter(Class&lt;?&gt; clazz) {</span>
-<span class="fc" id="L330">      this.accessType = Optional</span>
-<span class="fc" id="L331">          .ofNullable(AnnotationUtils.findAnnotation(clazz, XmlAccessorType.class))</span>
-<span class="fc" id="L332">          .map(XmlAccessorType::value)</span>
-<span class="fc" id="L333">          .orElseGet(() -&gt; Optional</span>
-<span class="fc" id="L334">              .ofNullable(clazz.getPackage().getAnnotation(XmlAccessorType.class))</span>
-<span class="fc" id="L335">              .map(XmlAccessorType::value)</span>
-<span class="fc" id="L336">              .orElse(XmlAccessType.PUBLIC_MEMBER));</span>
-<span class="fc" id="L337">    }</span>
+<span class="fc" id="L326">    XmlFieldFilter(Class&lt;?&gt; clazz) {</span>
+<span class="fc" id="L327">      this.accessType = Optional</span>
+<span class="fc" id="L328">          .ofNullable(AnnotationUtils.findAnnotation(clazz, XmlAccessorType.class))</span>
+<span class="fc" id="L329">          .map(XmlAccessorType::value)</span>
+<span class="fc" id="L330">          .orElseGet(() -&gt; Optional</span>
+<span class="fc" id="L331">              .ofNullable(clazz.getPackage().getAnnotation(XmlAccessorType.class))</span>
+<span class="fc" id="L332">              .map(XmlAccessorType::value)</span>
+<span class="fc" id="L333">              .orElse(XmlAccessType.PUBLIC_MEMBER));</span>
+<span class="fc" id="L334">    }</span>
 
     @Override
     public boolean matches(Field field) {
-<span class="fc" id="L341">      int modifiers = field.getModifiers();</span>
-<span class="pc bpc" id="L342" title="1 of 2 branches missed.">      if (isStatic(modifiers)</span>
-<span class="pc bpc" id="L343" title="1 of 2 branches missed.">          || isTransient(modifiers)</span>
-<span class="fc bfc" id="L344" title="All 2 branches covered.">          || field.isAnnotationPresent(XmlTransient.class)) {</span>
-<span class="fc" id="L345">        return false;</span>
+<span class="fc" id="L338">      int modifiers = field.getModifiers();</span>
+<span class="pc bpc" id="L339" title="1 of 2 branches missed.">      if (isStatic(modifiers)</span>
+<span class="pc bpc" id="L340" title="1 of 2 branches missed.">          || isTransient(modifiers)</span>
+<span class="fc bfc" id="L341" title="All 2 branches covered.">          || field.isAnnotationPresent(XmlTransient.class)) {</span>
+<span class="fc" id="L342">        return false;</span>
       }
-<span class="pc bpc" id="L347" title="1 of 3 branches missed.">      switch (accessType) {</span>
-        case FIELD:
-<span class="fc" id="L349">          return true;</span>
-        case PUBLIC_MEMBER:
-<span class="pc bpc" id="L351" title="1 of 4 branches missed.">          return isPublic(modifiers) || anyXmlAnnotationPresent(field);</span>
-        default: // PROPERTY, NONE
-<span class="nc" id="L353">          return anyXmlAnnotationPresent(field);</span>
-      }
+<span class="pc bpc" id="L344" title="1 of 3 branches missed.">      return switch (accessType) {</span>
+<span class="fc" id="L345">        case FIELD -&gt; true;</span>
+<span class="pc bpc" id="L346" title="1 of 4 branches missed.">        case PUBLIC_MEMBER -&gt; isPublic(modifiers) || anyXmlAnnotationPresent(field);</span>
+<span class="nc" id="L347">        default -&gt; anyXmlAnnotationPresent(field); // PROPERTY, NONE</span>
+      };
     }
 
   }
 
+  @SuppressWarnings(&quot;ClassCanBeRecord&quot;)
   private static class XmlMethodFilter implements MethodFilter {
 
     private final XmlAccessType accessType;
@@ -365,39 +360,36 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
      *
      * @param clazz the class
      */
-<span class="fc" id="L368">    XmlMethodFilter(Class&lt;?&gt; clazz) {</span>
-<span class="fc" id="L369">      this.accessType = Optional</span>
-<span class="fc" id="L370">          .ofNullable(AnnotationUtils.findAnnotation(clazz, XmlAccessorType.class))</span>
-<span class="fc" id="L371">          .map(XmlAccessorType::value)</span>
-<span class="fc" id="L372">          .orElseGet(() -&gt; Optional</span>
-<span class="fc" id="L373">              .ofNullable(clazz.getPackage().getAnnotation(XmlAccessorType.class))</span>
-<span class="fc" id="L374">              .map(XmlAccessorType::value)</span>
-<span class="fc" id="L375">              .orElse(XmlAccessType.PUBLIC_MEMBER));</span>
-<span class="fc" id="L376">    }</span>
+<span class="fc" id="L363">    XmlMethodFilter(Class&lt;?&gt; clazz) {</span>
+<span class="fc" id="L364">      this.accessType = Optional</span>
+<span class="fc" id="L365">          .ofNullable(AnnotationUtils.findAnnotation(clazz, XmlAccessorType.class))</span>
+<span class="fc" id="L366">          .map(XmlAccessorType::value)</span>
+<span class="fc" id="L367">          .orElseGet(() -&gt; Optional</span>
+<span class="fc" id="L368">              .ofNullable(clazz.getPackage().getAnnotation(XmlAccessorType.class))</span>
+<span class="fc" id="L369">              .map(XmlAccessorType::value)</span>
+<span class="fc" id="L370">              .orElse(XmlAccessType.PUBLIC_MEMBER));</span>
+<span class="fc" id="L371">    }</span>
 
     @Override
     public boolean matches(Method method) {
-<span class="fc" id="L380">      int modifiers = method.getModifiers();</span>
-<span class="fc bfc" id="L381" title="All 2 branches covered.">      if (isStatic(modifiers)</span>
-<span class="pc bpc" id="L382" title="1 of 4 branches missed.">          || !(method.getName().startsWith(&quot;get&quot;) || method.getName().startsWith(&quot;is&quot;))</span>
-<span class="pc bpc" id="L383" title="1 of 2 branches missed.">          || method.getParameterCount() &gt; 0</span>
-<span class="pc bpc" id="L384" title="1 of 2 branches missed.">          || method.getReturnType().equals(Void.class)</span>
-<span class="pc bpc" id="L385" title="1 of 2 branches missed.">          || method.isAnnotationPresent(XmlTransient.class)) {</span>
-<span class="fc" id="L386">        return false;</span>
+<span class="fc" id="L375">      int modifiers = method.getModifiers();</span>
+<span class="fc bfc" id="L376" title="All 2 branches covered.">      if (isStatic(modifiers)</span>
+<span class="pc bpc" id="L377" title="1 of 4 branches missed.">          || !(method.getName().startsWith(&quot;get&quot;) || method.getName().startsWith(&quot;is&quot;))</span>
+<span class="pc bpc" id="L378" title="1 of 2 branches missed.">          || method.getParameterCount() &gt; 0</span>
+<span class="pc bpc" id="L379" title="1 of 2 branches missed.">          || method.getReturnType().equals(Void.class)</span>
+<span class="pc bpc" id="L380" title="1 of 2 branches missed.">          || method.isAnnotationPresent(XmlTransient.class)) {</span>
+<span class="fc" id="L381">        return false;</span>
       }
-<span class="pc bpc" id="L388" title="1 of 3 branches missed.">      switch (accessType) {</span>
-        case PROPERTY:
-<span class="nc" id="L390">          return true;</span>
-        case PUBLIC_MEMBER:
-<span class="pc bpc" id="L392" title="3 of 4 branches missed.">          return isPublic(modifiers) || anyXmlAnnotationPresent(method);</span>
-        default:
-<span class="fc" id="L394">          return anyXmlAnnotationPresent(method);</span>
-      }
+<span class="pc bpc" id="L383" title="1 of 3 branches missed.">      return switch (accessType) {</span>
+<span class="nc" id="L384">        case PROPERTY -&gt; true;</span>
+<span class="pc bpc" id="L385" title="3 of 4 branches missed.">        case PUBLIC_MEMBER -&gt; isPublic(modifiers) || anyXmlAnnotationPresent(method);</span>
+<span class="fc" id="L386">        default -&gt; anyXmlAnnotationPresent(method);</span>
+      };
     }
   }
 
-  @SuppressWarnings(&quot;SameNameButDifferent&quot;)
   @EqualsAndHashCode
+  @SuppressWarnings(&quot;ClassCanBeRecord&quot;)
   private static class ScanResult {
 
     private final Class&lt;?&gt; clazz;
@@ -410,11 +402,11 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
      * @param clazz the class
      * @param source the source
      */
-<span class="fc" id="L413">    ScanResult(Class&lt;?&gt; clazz, Object source) {</span>
-<span class="fc" id="L414">      Assert.notNull(clazz, &quot;Class must be present.&quot;);</span>
-<span class="fc" id="L415">      this.clazz = clazz;</span>
-<span class="fc" id="L416">      this.source = source;</span>
-<span class="fc" id="L417">    }</span>
+<span class="fc" id="L405">    ScanResult(Class&lt;?&gt; clazz, Object source) {</span>
+<span class="fc" id="L406">      Assert.notNull(clazz, &quot;Class must be present.&quot;);</span>
+<span class="fc" id="L407">      this.clazz = clazz;</span>
+<span class="fc" id="L408">      this.source = source;</span>
+<span class="fc" id="L409">    }</span>
 
     /**
      * Gets clazz.
@@ -422,7 +414,7 @@ class JaxbDependenciesResolverImpl implements JaxbDependenciesResolver {
      * @return the class
      */
     Class&lt;?&gt; getClazz() {
-<span class="fc" id="L425">      return clazz;</span>
+<span class="fc" id="L417">      return clazz;</span>
     }
   }
 

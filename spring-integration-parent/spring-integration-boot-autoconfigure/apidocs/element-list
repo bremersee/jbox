@@ -1,6 +1,5 @@
 org.bremersee.spring.boot.autoconfigure
 org.bremersee.spring.boot.autoconfigure.data
-org.bremersee.spring.boot.autoconfigure.data.commons
 org.bremersee.spring.boot.autoconfigure.data.mongo
 org.bremersee.spring.boot.autoconfigure.ldaptive
 org.bremersee.spring.boot.autoconfigure.minio

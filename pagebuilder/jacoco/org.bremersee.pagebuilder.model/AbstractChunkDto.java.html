@@ -48,6 +48,7 @@ import org.springframework.data.domain.SliceImpl;
  * The abstract chunk dto.
  *
  * @param &lt;T&gt; the type of the content
+ * @author Christian Bremer
  */
 @SuppressWarnings(&quot;unused&quot;)
 @XmlAccessorType(XmlAccessType.NONE)
@@ -56,7 +57,7 @@ import org.springframework.data.domain.SliceImpl;
 @EqualsAndHashCode
 @ToString
 @Schema(description = &quot;The chunk.&quot;)
-public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
+abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 1;
@@ -75,17 +76,17 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    * Instantiates a new chunk dto.
    */
   protected AbstractChunkDto() {
-<span class="nc" id="L78">    this(List.of(), new SortOrder(List.of()));</span>
-<span class="nc" id="L79">  }</span>
+<span class="nc" id="L79">    this(List.of(), new SortOrder(List.of()));</span>
+<span class="nc" id="L80">  }</span>
 
   /**
    * Instantiates a new chunk dto.
    *
    * @param content the content
    */
-  public AbstractChunkDto(List&lt;? extends T&gt; content) {
-<span class="nc" id="L87">    this(content, null);</span>
-<span class="nc" id="L88">  }</span>
+  protected AbstractChunkDto(List&lt;? extends T&gt; content) {
+<span class="nc" id="L88">    this(content, null);</span>
+<span class="nc" id="L89">  }</span>
 
   /**
    * Instantiates a new chunk dto.
@@ -93,18 +94,18 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    * @param content the content
    * @param sort the sort
    */
-<span class="fc" id="L96">  public AbstractChunkDto(List&lt;? extends T&gt; content, SortOrder sort) {</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">    this.content = new ArrayList&lt;&gt;(nonNull(content) ? content : List.of());</span>
-<span class="fc" id="L98">    this.sort = sort;</span>
-<span class="fc" id="L99">  }</span>
+<span class="fc" id="L97">  protected AbstractChunkDto(List&lt;? extends T&gt; content, SortOrder sort) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    this.content = new ArrayList&lt;&gt;(nonNull(content) ? content : List.of());</span>
+<span class="fc" id="L99">    this.sort = sort;</span>
+<span class="fc" id="L100">  }</span>
 
   /**
    * Gets content.
    *
    * @return the content
    */
-  @Schema(description = &quot;The content of the page or slice.&quot;)
-  @XmlTransient
+  @Schema(name = &quot;content&quot;, description = &quot;The content of the page or slice.&quot;)
+  @JsonProperty(value = &quot;content&quot;)
   public abstract List&lt;T&gt; getContent();
 
   /**
@@ -113,8 +114,8 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    * @param content the content
    */
   protected void setContent(List&lt;T&gt; content) {
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">    this.content = new ArrayList&lt;&gt;(nonNull(content) ? content : List.of());</span>
-<span class="fc" id="L117">  }</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    this.content = new ArrayList&lt;&gt;(nonNull(content) ? content : List.of());</span>
+<span class="fc" id="L118">  }</span>
 
   /**
    * Indicates whether the content is present.
@@ -125,7 +126,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
   @JsonProperty(required = true)
   @XmlElement(name = &quot;contentPresent&quot;, required = true)
   public boolean isContentPresent() {
-<span class="pc bpc" id="L128" title="2 of 4 branches missed.">    return nonNull(getContent()) &amp;&amp; !getContent().isEmpty();</span>
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">    return nonNull(getContent()) &amp;&amp; !getContent().isEmpty();</span>
   }
 
   /**
@@ -135,7 +136,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    */
   protected void setContentPresent(boolean contentPresent) {
     // ignored
-<span class="fc" id="L138">  }</span>
+<span class="fc" id="L139">  }</span>
 
   /**
    * Gets sort.
@@ -144,10 +145,10 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    */
   @XmlElementRef(type = SortOrder.class)
   public SortOrder getSort() {
-<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (isNull(sort)) {</span>
-<span class="fc" id="L148">      return new SortOrder(List.of());</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    if (isNull(sort)) {</span>
+<span class="fc" id="L149">      return new SortOrder(List.of());</span>
     }
-<span class="fc" id="L150">    return sort;</span>
+<span class="fc" id="L151">    return sort;</span>
   }
 
   /**
@@ -191,7 +192,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
   @JsonProperty(required = true)
   @XmlElement(name = &quot;numberOfElements&quot;, required = true)
   public int getNumberOfElements() {
-<span class="pc bpc" id="L194" title="1 of 2 branches missed.">    return nonNull(getContent()) ? getContent().size() : 0;</span>
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">    return nonNull(getContent()) ? getContent().size() : 0;</span>
   }
 
   /**
@@ -201,7 +202,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    */
   protected void setNumberOfElements(int numberOfElements) {
     // ignored
-<span class="fc" id="L204">  }</span>
+<span class="fc" id="L205">  }</span>
 
   /**
    * Indicates whether the page or slice is the first.
@@ -212,7 +213,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
   @JsonProperty(required = true)
   @XmlElement(name = &quot;first&quot;, required = true)
   public boolean isFirst() {
-<span class="fc bfc" id="L215" title="All 2 branches covered.">    return !isPreviousAvailable();</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">    return !isPreviousAvailable();</span>
   }
 
   /**
@@ -222,7 +223,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    */
   protected void setFirst(boolean first) {
     // ignored
-<span class="fc" id="L225">  }</span>
+<span class="fc" id="L226">  }</span>
 
   /**
    * Indicates whether the page or slice is the last.
@@ -233,7 +234,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
   @JsonProperty(required = true)
   @XmlElement(name = &quot;last&quot;, required = true)
   public boolean isLast() {
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">    return !isNextAvailable();</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">    return !isNextAvailable();</span>
   }
 
   /**
@@ -243,7 +244,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    */
   protected void setLast(boolean last) {
     // ignored
-<span class="fc" id="L246">  }</span>
+<span class="fc" id="L247">  }</span>
 
   /**
    * Indicates whether a next page or slice is available.
@@ -271,7 +272,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
   @JsonProperty(required = true)
   @XmlElement(name = &quot;previousAvailable&quot;, required = true)
   public boolean isPreviousAvailable() {
-<span class="fc bfc" id="L274" title="All 2 branches covered.">    return getNumber() &gt; 0;</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">    return getNumber() &gt; 0;</span>
   }
 
   /**
@@ -281,7 +282,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    */
   protected void setPreviousAvailable(boolean previousAvailable) {
     // ignored
-<span class="fc" id="L284">  }</span>
+<span class="fc" id="L285">  }</span>
 
   /**
    * Gets pageable.
@@ -292,10 +293,10 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
   @XmlTransient
   @JsonIgnore
   public Pageable getPageable() {
-<span class="fc bfc" id="L295" title="All 2 branches covered.">    if (getSort().isEmpty()) {</span>
-<span class="fc" id="L296">      return PageRequest.of(getNumber(), getSize());</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">    if (getSort().isEmpty()) {</span>
+<span class="fc" id="L297">      return PageRequest.of(getNumber(), getSize());</span>
     }
-<span class="fc" id="L298">    return PageRequest.of(getNumber(), getSize(), SortMapper.defaultSortMapper().toSort(getSort()));</span>
+<span class="fc" id="L299">    return PageRequest.of(getNumber(), getSize(), SortMapper.defaultSortMapper().toSort(getSort()));</span>
   }
 
   /**
@@ -304,7 +305,7 @@ public abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
    * @return the slice
    */
   public Slice&lt;T&gt; toSlice() {
-<span class="fc" id="L307">    return new SliceImpl&lt;&gt;(getContent(), getPageable(), isNextAvailable());</span>
+<span class="fc" id="L308">    return new SliceImpl&lt;&gt;(getContent(), getPageable(), isNextAvailable());</span>
   }
 
 }

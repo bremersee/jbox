@@ -176,18 +176,18 @@
 <a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>   @Test
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>   <strong class="jxr_keyword">void</strong> findBadListFromRoot() {
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     assertThatExceptionOfType(ClassCastException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>         .isThrownBy(() -&gt; {
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>           List&lt;String&gt; expected = List.of(<span class="jxr_string">"one"</span>, <span class="jxr_string">"two"</span>);
-<a class="jxr_linenumber" name="L174" href="#L174">174</a> 
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>           ConcreteUnknown unknown = <strong class="jxr_keyword">new</strong> ConcreteUnknown();
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>           unknown.unknown(<span class="jxr_string">"test"</span>, expected);
-<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>           unknown.findUnknownList(<span class="jxr_string">"$.test"</span>, Integer.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>               .stream()
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>               .flatMap(Collection::stream)
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>               .forEach(System.out::println);
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>         });
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     List&lt;String&gt; expected = List.of(<span class="jxr_string">"one"</span>, <span class="jxr_string">"two"</span>);
+<a class="jxr_linenumber" name="L172" href="#L172">172</a> 
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>     ConcreteUnknown unknown = <strong class="jxr_keyword">new</strong> ConcreteUnknown();
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     unknown.unknown(<span class="jxr_string">"test"</span>, expected);
+<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     Runnable runnable = () -&gt; unknown.findUnknownList(<span class="jxr_string">"$.test"</span>, Integer.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         .stream()
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         .flatMap(Collection::stream)
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         .forEach(System.out::println);
+<a class="jxr_linenumber" name="L180" href="#L180">180</a> 
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>     assertThatExceptionOfType(ClassCastException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         .isThrownBy(runnable::run);
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>   }
 <a class="jxr_linenumber" name="L184" href="#L184">184</a> 
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> ConcreteUnknown <strong class="jxr_keyword">extends</strong> UnknownAware {
@@ -211,6 +211,6 @@
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> }
 </pre>
 <hr/>
-<div id="footer">© 2019–2025 <a href="https://bremersee.org">bremersee.org</a></div>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
 </body>
 </html>

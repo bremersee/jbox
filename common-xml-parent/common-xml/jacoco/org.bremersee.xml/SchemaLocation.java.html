@@ -17,33 +17,42 @@
 package org.bremersee.xml;
 
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.util.Assert;
 
 /**
  * The schema location.
  *
  * @author Christian Bremer
  */
-@SuppressWarnings(&quot;SameNameButDifferent&quot;)
 @EqualsAndHashCode(of = {&quot;nameSpace&quot;})
-@RequiredArgsConstructor
+@SuppressWarnings(&quot;ClassCanBeRecord&quot;)
 public final class SchemaLocation implements Comparable&lt;SchemaLocation&gt; {
 
-  @NonNull
   private final String nameSpace;
 
-  @NonNull
   private final String location;
+
+  /**
+   * Instantiates a new schema location.
+   *
+   * @param nameSpace the name space
+   * @param location the location
+   */
+<span class="fc" id="L41">  public SchemaLocation(String nameSpace, String location) {</span>
+<span class="fc" id="L42">    Assert.notNull(nameSpace, &quot;NameSpace must not be null.&quot;);</span>
+<span class="fc" id="L43">    Assert.notNull(location, &quot;Location must not be null.&quot;);</span>
+<span class="fc" id="L44">    this.nameSpace = nameSpace;</span>
+<span class="fc" id="L45">    this.location = location;</span>
+<span class="fc" id="L46">  }</span>
 
   @Override
   public String toString() {
-<span class="fc" id="L41">    return nameSpace + &quot; &quot; + location;</span>
+<span class="fc" id="L50">    return nameSpace + &quot; &quot; + location;</span>
   }
 
   @Override
   public int compareTo(SchemaLocation o) {
-<span class="fc" id="L46">    return nameSpace.compareToIgnoreCase(o.nameSpace);</span>
+<span class="fc" id="L55">    return nameSpace.compareToIgnoreCase(o.nameSpace);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

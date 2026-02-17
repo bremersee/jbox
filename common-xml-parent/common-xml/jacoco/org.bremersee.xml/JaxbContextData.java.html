@@ -19,10 +19,10 @@ package org.bremersee.xml;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Optional;
-import java.util.stream.Stream;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -32,7 +32,6 @@ import org.springframework.util.Assert;
  *
  * @author Christian Bremer
  */
-@SuppressWarnings(&quot;SameNameButDifferent&quot;)
 @EqualsAndHashCode
 public final class JaxbContextData implements JaxbContextMember, Comparable&lt;JaxbContextData&gt; {
 
@@ -56,8 +55,8 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @param clazz the class
    */
   public JaxbContextData(Class&lt;?&gt; clazz) {
-<span class="fc" id="L59">    this(clazz, null, null);</span>
-<span class="fc" id="L60">  }</span>
+<span class="fc" id="L58">    this(clazz, null, null);</span>
+<span class="fc" id="L59">  }</span>
 
   /**
    * Instantiates a new jaxb context data.
@@ -71,11 +70,11 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
       String clazzElementSchemaLocation,
       String clazzTypeSchemaLocation) {
 
-<span class="fc" id="L74">    this(validate(JaxbContextMember.byClass(clazz)</span>
-<span class="fc" id="L75">        .clazzElementSchemaLocation(clazzElementSchemaLocation)</span>
-<span class="fc" id="L76">        .clazzTypeSchemaLocation(clazzTypeSchemaLocation)</span>
-<span class="fc" id="L77">        .build()));</span>
-<span class="fc" id="L78">  }</span>
+<span class="fc" id="L73">    this(validate(JaxbContextMember.byClass(clazz)</span>
+<span class="fc" id="L74">        .clazzElementSchemaLocation(clazzElementSchemaLocation)</span>
+<span class="fc" id="L75">        .clazzTypeSchemaLocation(clazzTypeSchemaLocation)</span>
+<span class="fc" id="L76">        .build()));</span>
+<span class="fc" id="L77">  }</span>
 
   /**
    * Instantiates a new jaxb context data.
@@ -83,8 +82,8 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @param pakkage the package
    */
   public JaxbContextData(Package pakkage) {
-<span class="fc" id="L86">    this(pakkage, null);</span>
-<span class="fc" id="L87">  }</span>
+<span class="fc" id="L85">    this(pakkage, null);</span>
+<span class="fc" id="L86">  }</span>
 
   /**
    * Instantiates a new Jaxb context data.
@@ -93,13 +92,13 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @param pakkageSchemaLocation the package schema location
    */
   public JaxbContextData(Class&lt;?&gt; clazz, String pakkageSchemaLocation) {
-<span class="fc" id="L96">    this(validate(new JaxbContextMemberImpl(</span>
+<span class="fc" id="L95">    this(validate(new JaxbContextMemberImpl(</span>
         clazz,
         null,
         null,
         null,
         pakkageSchemaLocation)));
-<span class="fc" id="L102">  }</span>
+<span class="fc" id="L101">  }</span>
 
   /**
    * Instantiates a new jaxb context data.
@@ -108,68 +107,68 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @param pakkageSchemaLocation the package schema location
    */
   public JaxbContextData(Package pakkage, String pakkageSchemaLocation) {
-<span class="fc" id="L111">    this(validate(JaxbContextMember.byPackage(pakkage)</span>
-<span class="fc" id="L112">        .schemaLocation(pakkageSchemaLocation)</span>
-<span class="fc" id="L113">        .build()));</span>
-<span class="fc" id="L114">  }</span>
+<span class="fc" id="L110">    this(validate(JaxbContextMember.byPackage(pakkage)</span>
+<span class="fc" id="L111">        .schemaLocation(pakkageSchemaLocation)</span>
+<span class="fc" id="L112">        .build()));</span>
+<span class="fc" id="L113">  }</span>
 
-<span class="fc" id="L116">  JaxbContextData(JaxbContextMember jaxbContextMember) {</span>
-<span class="fc" id="L117">    JaxbContextMember validated = validate(jaxbContextMember);</span>
-<span class="fc" id="L118">    this.pakkage = validated.getPakkage();</span>
-<span class="fc" id="L119">    this.pakkageSchemaLocation = validated.getPakkageSchemaLocation();</span>
-<span class="fc" id="L120">    this.clazz = validated.getClazz();</span>
-<span class="fc" id="L121">    this.clazzElementSchemaLocation = validated.getClazzElementSchemaLocation();</span>
-<span class="fc" id="L122">    this.clazzTypeSchemaLocation = validated.getClazzTypeSchemaLocation();</span>
-<span class="fc" id="L123">  }</span>
+<span class="fc" id="L115">  JaxbContextData(JaxbContextMember jaxbContextMember) {</span>
+<span class="fc" id="L116">    JaxbContextMember validated = validate(jaxbContextMember);</span>
+<span class="fc" id="L117">    this.pakkage = validated.getPakkage();</span>
+<span class="fc" id="L118">    this.pakkageSchemaLocation = validated.getPakkageSchemaLocation();</span>
+<span class="fc" id="L119">    this.clazz = validated.getClazz();</span>
+<span class="fc" id="L120">    this.clazzElementSchemaLocation = validated.getClazzElementSchemaLocation();</span>
+<span class="fc" id="L121">    this.clazzTypeSchemaLocation = validated.getClazzTypeSchemaLocation();</span>
+<span class="fc" id="L122">  }</span>
 
   private static JaxbContextMember validate(JaxbContextMember source) {
-<span class="fc" id="L126">    Assert.notNull(source, &quot;Jaxb context member must be present.&quot;);</span>
-<span class="fc bfc" id="L127" title="All 4 branches covered.">    if (nonNull(source.getClazz()) &amp;&amp; nonNull(source.getPakkage())) {</span>
-<span class="fc" id="L128">      Assert.isTrue(source.getPakkage().equals(source.getClazz().getPackage()),</span>
+<span class="fc" id="L125">    Assert.notNull(source, &quot;Jaxb context member must be present.&quot;);</span>
+<span class="fc bfc" id="L126" title="All 4 branches covered.">    if (nonNull(source.getClazz()) &amp;&amp; nonNull(source.getPakkage())) {</span>
+<span class="fc" id="L127">      Assert.isTrue(source.getPakkage().equals(source.getClazz().getPackage()),</span>
           &quot;If package and class are present, class must be a member of the package.&quot;);
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">      if (JaxbUtils.isJaxbModelPackage(source.getPakkage())) {</span>
-<span class="nc" id="L131">        return validate(JaxbContextMember.byPackage(source.getPakkage())</span>
-<span class="nc" id="L132">            .schemaLocation(source.getPakkageSchemaLocation())</span>
-<span class="nc" id="L133">            .build());</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">      if (JaxbUtils.isJaxbModelPackage(source.getPakkage())) {</span>
+<span class="nc" id="L130">        return validate(JaxbContextMember.byPackage(source.getPakkage())</span>
+<span class="nc" id="L131">            .schemaLocation(source.getPakkageSchemaLocation())</span>
+<span class="nc" id="L132">            .build());</span>
       }
-<span class="fc" id="L135">      return validate(JaxbContextMember.byClass(source.getClazz())</span>
-<span class="fc" id="L136">          .clazzElementSchemaLocation(source.getClazzElementSchemaLocation())</span>
-<span class="fc" id="L137">          .clazzTypeSchemaLocation(source.getClazzTypeSchemaLocation())</span>
-<span class="fc" id="L138">          .build());</span>
+<span class="fc" id="L134">      return validate(JaxbContextMember.byClass(source.getClazz())</span>
+<span class="fc" id="L135">          .clazzElementSchemaLocation(source.getClazzElementSchemaLocation())</span>
+<span class="fc" id="L136">          .clazzTypeSchemaLocation(source.getClazzTypeSchemaLocation())</span>
+<span class="fc" id="L137">          .build());</span>
     }
-<span class="fc bfc" id="L140" title="All 4 branches covered.">    if (nonNull(source.getClazz()) &amp;&amp; JaxbUtils.isInJaxbModelPackage(source.getClazz())) {</span>
-<span class="fc" id="L141">      return validate(JaxbContextMember.byPackage(source.getClazz().getPackage())</span>
-<span class="fc" id="L142">          .schemaLocation(source.getPakkageSchemaLocation())</span>
-<span class="fc" id="L143">          .build());</span>
+<span class="fc bfc" id="L139" title="All 4 branches covered.">    if (nonNull(source.getClazz()) &amp;&amp; JaxbUtils.isInJaxbModelPackage(source.getClazz())) {</span>
+<span class="fc" id="L140">      return validate(JaxbContextMember.byPackage(source.getClazz().getPackage())</span>
+<span class="fc" id="L141">          .schemaLocation(source.getPakkageSchemaLocation())</span>
+<span class="fc" id="L142">          .build());</span>
     }
-<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (nonNull(source.getClazz())</span>
-<span class="fc bfc" id="L146" title="All 2 branches covered.">        &amp;&amp; (source.getClazz().isAnnotationPresent(XmlRootElement.class)</span>
-<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        || source.getClazz().isAnnotationPresent(XmlType.class))) {</span>
-<span class="fc" id="L148">      return source;</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">    } else if (nonNull(source.getClazz())) {</span>
-<span class="fc" id="L150">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L151">          String.format(</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (nonNull(source.getClazz())</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        &amp;&amp; (source.getClazz().isAnnotationPresent(XmlRootElement.class)</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        || source.getClazz().isAnnotationPresent(XmlType.class))) {</span>
+<span class="fc" id="L147">      return source;</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    } else if (nonNull(source.getClazz())) {</span>
+<span class="fc" id="L149">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L150">          String.format(</span>
               &quot;Class '%s' must be annotated with 'XmlRootElement' or 'XmlType'.&quot;,
-<span class="fc" id="L153">              source.getClazz().getName()));</span>
+<span class="fc" id="L152">              source.getClazz().getName()));</span>
     }
-<span class="pc bpc" id="L155" title="1 of 4 branches missed.">    if (nonNull(source.getPakkage()) &amp;&amp; JaxbUtils.isJaxbModelPackage(source.getPakkage())) {</span>
-<span class="fc" id="L156">      return JaxbContextMember.byPackage(source.getPakkage())</span>
-<span class="fc" id="L157">          .schemaLocation(Optional.ofNullable(source.getPakkageSchemaLocation())</span>
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">              .filter(location -&gt; !location.isBlank())</span>
-<span class="fc" id="L159">              .or(() -&gt; JaxbUtils.getSchemaLocation(source.getPakkage()))</span>
-<span class="fc" id="L160">              .orElse(null))</span>
-<span class="fc" id="L161">          .build();</span>
-<span class="pc bpc" id="L162" title="1 of 2 branches missed.">    } else if (nonNull(source.getPakkage())) {</span>
-<span class="fc" id="L163">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L164">          String.format(</span>
+<span class="pc bpc" id="L154" title="1 of 4 branches missed.">    if (nonNull(source.getPakkage()) &amp;&amp; JaxbUtils.isJaxbModelPackage(source.getPakkage())) {</span>
+<span class="fc" id="L155">      return JaxbContextMember.byPackage(source.getPakkage())</span>
+<span class="fc" id="L156">          .schemaLocation(Optional.ofNullable(source.getPakkageSchemaLocation())</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">              .filter(location -&gt; !location.isBlank())</span>
+<span class="fc" id="L158">              .or(() -&gt; JaxbUtils.getSchemaLocation(source.getPakkage()))</span>
+<span class="fc" id="L159">              .orElse(null))</span>
+<span class="fc" id="L160">          .build();</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">    } else if (nonNull(source.getPakkage())) {</span>
+<span class="fc" id="L162">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L163">          String.format(</span>
               &quot;Package '%s' does not contain 'ObjectFactory.class' or 'jaxb.index'.&quot;,
-<span class="fc" id="L166">              source.getPakkage().getName()));</span>
+<span class="fc" id="L165">              source.getPakkage().getName()));</span>
     }
-<span class="nc" id="L168">    throw new IllegalArgumentException(&quot;Class or package must be present.&quot;);</span>
+<span class="nc" id="L167">    throw new IllegalArgumentException(&quot;Class or package must be present.&quot;);</span>
   }
 
   public Package getPakkage() {
-<span class="fc bfc" id="L172" title="All 2 branches covered.">    return nonNull(pakkage) ? pakkage : requireNonNull(clazz).getPackage();</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">    return nonNull(pakkage) ? pakkage : requireNonNull(clazz).getPackage();</span>
   }
 
   /**
@@ -178,7 +177,7 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @return the key
    */
   Object getKey() {
-<span class="fc bfc" id="L181" title="All 2 branches covered.">    return nonNull(pakkage) ? pakkage : requireNonNull(clazz);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">    return nonNull(pakkage) ? pakkage : requireNonNull(clazz);</span>
   }
 
   /**
@@ -188,7 +187,7 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @return the jaxb classes
    */
   public Stream&lt;Class&lt;?&gt;&gt; getJaxbClasses(ClassLoader... classLoaders) {
-<span class="fc" id="L191">    return JaxbUtils.findJaxbClasses(getPakkage().getName(), classLoaders);</span>
+<span class="fc" id="L190">    return JaxbUtils.findJaxbClasses(getPakkage().getName(), classLoaders);</span>
   }
 
   /**
@@ -197,39 +196,39 @@ public final class JaxbContextData implements JaxbContextMember, Comparable&lt;J
    * @return the name spaces with schema locations
    */
   public Stream&lt;SchemaLocation&gt; getNameSpacesWithSchemaLocations() {
-<span class="fc" id="L200">    return Stream.of(</span>
-<span class="fc" id="L201">            Optional.ofNullable(pakkageSchemaLocation)</span>
-<span class="pc bpc" id="L202" title="1 of 2 branches missed.">                .filter(location -&gt; !location.isBlank())</span>
-<span class="fc" id="L203">                .flatMap(location -&gt; JaxbUtils.getNameSpace(pakkage)</span>
-<span class="fc" id="L204">                    .map(ns -&gt; new SchemaLocation(ns, location))),</span>
-<span class="fc" id="L205">            Optional.ofNullable(clazzElementSchemaLocation)</span>
-<span class="pc bpc" id="L206" title="1 of 2 branches missed.">                .filter(location -&gt; !location.isBlank())</span>
-<span class="fc" id="L207">                .flatMap(location -&gt; JaxbUtils.getNameSpaceOfElement(clazz)</span>
-<span class="fc" id="L208">                    .map(ns -&gt; new SchemaLocation(ns, location))),</span>
-<span class="fc" id="L209">            Optional.ofNullable(clazzTypeSchemaLocation)</span>
-<span class="pc bpc" id="L210" title="1 of 2 branches missed.">                .filter(location -&gt; !location.isBlank())</span>
-<span class="fc" id="L211">                .flatMap(location -&gt; JaxbUtils.getNameSpaceOfType(clazz)</span>
-<span class="fc" id="L212">                    .map(ns -&gt; new SchemaLocation(ns, location))))</span>
-<span class="fc" id="L213">        .flatMap(Optional::stream)</span>
-<span class="fc" id="L214">        .distinct();</span>
+<span class="fc" id="L199">    return Stream.of(</span>
+<span class="fc" id="L200">            Optional.ofNullable(pakkageSchemaLocation)</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">                .filter(location -&gt; !location.isBlank())</span>
+<span class="fc" id="L202">                .flatMap(location -&gt; JaxbUtils.getNameSpace(pakkage)</span>
+<span class="fc" id="L203">                    .map(ns -&gt; new SchemaLocation(ns, location))),</span>
+<span class="fc" id="L204">            Optional.ofNullable(clazzElementSchemaLocation)</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">                .filter(location -&gt; !location.isBlank())</span>
+<span class="fc" id="L206">                .flatMap(location -&gt; JaxbUtils.getNameSpaceOfElement(clazz)</span>
+<span class="fc" id="L207">                    .map(ns -&gt; new SchemaLocation(ns, location))),</span>
+<span class="fc" id="L208">            Optional.ofNullable(clazzTypeSchemaLocation)</span>
+<span class="pc bpc" id="L209" title="1 of 2 branches missed.">                .filter(location -&gt; !location.isBlank())</span>
+<span class="fc" id="L210">                .flatMap(location -&gt; JaxbUtils.getNameSpaceOfType(clazz)</span>
+<span class="fc" id="L211">                    .map(ns -&gt; new SchemaLocation(ns, location))))</span>
+<span class="fc" id="L212">        .flatMap(Optional::stream)</span>
+<span class="fc" id="L213">        .distinct();</span>
   }
 
   @Override
   public String toString() {
-<span class="fc" id="L219">    return &quot;JaxbContextData{&quot;</span>
-<span class="pc bpc" id="L220" title="1 of 2 branches missed.">        + &quot;clazz=&quot; + (nonNull(clazz) ? clazz.getName() : &quot;null&quot;)</span>
+<span class="fc" id="L218">    return &quot;JaxbContextData{&quot;</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        + &quot;clazz=&quot; + (nonNull(clazz) ? clazz.getName() : &quot;null&quot;)</span>
         + &quot;, clazzElementSchemaLocation='&quot; + clazzElementSchemaLocation + '\''
         + &quot;, clazzTypeSchemaLocation='&quot; + clazzTypeSchemaLocation + '\''
-<span class="pc bpc" id="L223" title="1 of 2 branches missed.">        + &quot;, pakkage=&quot; + (nonNull(pakkage) ? pakkage.getName() : &quot;null&quot;)</span>
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">        + &quot;, pakkage=&quot; + (nonNull(pakkage) ? pakkage.getName() : &quot;null&quot;)</span>
         + &quot;, pakkageSchemaLocation='&quot; + pakkageSchemaLocation + '\''
         + '}';
   }
 
   @Override
   public int compareTo(JaxbContextData o) {
-<span class="pc bpc" id="L230" title="1 of 2 branches missed.">    String a = nonNull(pakkage) ? pakkage.getName() : requireNonNull(clazz).getName();</span>
-<span class="pc bpc" id="L231" title="1 of 2 branches missed.">    String b = nonNull(o.pakkage) ? o.pakkage.getName() : requireNonNull(o.clazz).getName();</span>
-<span class="fc" id="L232">    return a.compareToIgnoreCase(b);</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">    String a = nonNull(pakkage) ? pakkage.getName() : requireNonNull(clazz).getName();</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">    String b = nonNull(o.pakkage) ? o.pakkage.getName() : requireNonNull(o.clazz).getName();</span>
+<span class="fc" id="L231">    return a.compareToIgnoreCase(b);</span>
   }
 
 }

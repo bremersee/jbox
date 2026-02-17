@@ -112,7 +112,7 @@ public enum TripTransportationMode {
    */
   @JsonCreator
   public static TripTransportationMode fromValue(String value) {
-<span class="fc bfc" id="L115" title="All 2 branches covered.">    for (TripTransportationMode e : TripTransportationMode.values()) {</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    for (TripTransportationMode e : values()) {</span>
 <span class="pc bpc" id="L116" title="1 of 4 branches missed.">      if (e.value.equalsIgnoreCase(value) || e.name().equalsIgnoreCase(value)) {</span>
 <span class="fc" id="L117">        return e;</span>
       }

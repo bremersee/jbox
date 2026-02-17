@@ -18,12 +18,12 @@ package org.bremersee.xml.http.codec;
 
 import static java.util.Objects.isNull;
 
-import java.io.OutputStream;
-import java.util.Map;
-import java.util.Set;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.MarshalException;
 import jakarta.xml.bind.Marshaller;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.Set;
 import org.bremersee.xml.JaxbContextBuilder;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.AbstractSingleValueEncoder;

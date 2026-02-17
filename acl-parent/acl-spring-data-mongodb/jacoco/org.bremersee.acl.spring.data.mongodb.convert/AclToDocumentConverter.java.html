@@ -35,38 +35,44 @@ import org.springframework.lang.NonNull;
  * @author Christian Bremer
  */
 @WritingConverter
-<span class="fc" id="L38">public class AclToDocumentConverter implements Converter&lt;Acl, Document&gt; {</span>
+public class AclToDocumentConverter implements Converter&lt;Acl, Document&gt; {
 
 <span class="fc" id="L40">  private final AceToDocumentConverter aceConverter = new AceToDocumentConverter();</span>
 
+  /**
+   * Instantiates a new acl to document converter.
+   */
+<span class="fc" id="L45">  public AclToDocumentConverter() {</span>
+<span class="fc" id="L46">  }</span>
+
   @Override
   public Document convert(@NonNull Acl source) {
-<span class="fc" id="L44">    String owner = source.getOwner();</span>
-<span class="fc" id="L45">    Map&lt;String, Document&gt; entries = source.getPermissionMap().entrySet().stream()</span>
-<span class="fc" id="L46">        .collect(Collectors.toMap(</span>
+<span class="fc" id="L50">    String owner = source.getOwner();</span>
+<span class="fc" id="L51">    Map&lt;String, Document&gt; entries = source.getPermissionMap().entrySet().stream()</span>
+<span class="fc" id="L52">        .collect(Collectors.toMap(</span>
             Entry::getKey,
-<span class="fc" id="L48">            entry -&gt; requireNonNull(aceConverter.convert(entry.getValue())),</span>
-<span class="nc" id="L49">            (a, b) -&gt; a,</span>
+<span class="fc" id="L54">            entry -&gt; requireNonNull(aceConverter.convert(entry.getValue())),</span>
+<span class="nc" id="L55">            (a, b) -&gt; a,</span>
             LinkedHashMap::new));
-<span class="fc" id="L51">    Document target = new Document();</span>
-<span class="fc" id="L52">    target.put(Acl.OWNER, owner);</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (!entries.isEmpty()) {</span>
-<span class="fc" id="L54">      target.put(Acl.ENTRIES, entries);</span>
+<span class="fc" id="L57">    Document target = new Document();</span>
+<span class="fc" id="L58">    target.put(Acl.OWNER, owner);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    if (!entries.isEmpty()) {</span>
+<span class="fc" id="L60">      target.put(Acl.ENTRIES, entries);</span>
     }
-<span class="fc" id="L56">    return target;</span>
+<span class="fc" id="L62">    return target;</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L62">      return true;</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L68">      return true;</span>
     }
-<span class="nc bnc" id="L64" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
+<span class="nc bnc" id="L70" title="All 4 branches missed.">    return o != null &amp;&amp; getClass() == o.getClass();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L69">    return Objects.hashCode(getClass());</span>
+<span class="fc" id="L75">    return Objects.hashCode(getClass());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

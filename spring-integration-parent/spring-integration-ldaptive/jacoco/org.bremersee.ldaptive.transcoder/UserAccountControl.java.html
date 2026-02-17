@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserAccountControl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.ldaptive.transcoder</a> &gt; <span class="el_source">UserAccountControl.java</span></div><h1>UserAccountControl.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.ldaptive.transcoder;
+
+import static java.util.Objects.isNull;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+/**
+ * The domain user's account control.
+ *
+ * @author Christian Bremer
+ */
+@EqualsAndHashCode
+@ToString
+@Getter
+public class UserAccountControl {
+
+  /**
+   * The bit map value of a disabled account.
+   */
+  static final int DISABLED_ACCOUNT = 1 &lt;&lt; 1;
+
+  /**
+   * The bit map value of a normal account.
+   */
+  static final int NORMAL_ACCOUNT = 1 &lt;&lt; 9;
+
+  /**
+   * The bit map value of a password that doesn't expire.
+   */
+  static final int DONT_EXPIRE_PASSWORD = 1 &lt;&lt; 16;
+
+  private int value;
+
+  /**
+   * Instantiates a new user account control.
+   */
+  public UserAccountControl() {
+<span class="fc" id="L56">    this(null);</span>
+<span class="fc" id="L57">  }</span>
+
+  /**
+   * Instantiates a new user account control.
+   *
+   * @param value the value
+   */
+<span class="fc" id="L64">  public UserAccountControl(Integer value) {</span>
+<span class="pc bpc" id="L65" title="1 of 4 branches missed.">    if (isNull(value) || value &lt; 0) {</span>
+<span class="fc" id="L66">      this.value = NORMAL_ACCOUNT;</span>
+<span class="fc" id="L67">      setEnabled(true);</span>
+<span class="fc" id="L68">      setPasswordExpirationEnabled(false);</span>
+    } else {
+<span class="fc" id="L70">      this.value = value;</span>
+    }
+<span class="fc" id="L72">  }</span>
+
+  /**
+   * Is normal account boolean.
+   *
+   * @return the boolean
+   */
+  public boolean isNormalAccount() {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    return (value &amp; NORMAL_ACCOUNT) == NORMAL_ACCOUNT;</span>
+  }
+
+  /**
+   * Sets normal account.
+   *
+   * @param isNormalAccount the is normal account
+   */
+  public void setNormalAccount(boolean isNormalAccount) {
+<span class="pc bpc" id="L89" title="1 of 4 branches missed.">    if (isNormalAccount &amp;&amp; !isNormalAccount()) {</span>
+<span class="fc" id="L90">      value = value + NORMAL_ACCOUNT;</span>
+<span class="pc bpc" id="L91" title="2 of 4 branches missed.">    } else if (!isNormalAccount &amp;&amp; isNormalAccount()) {</span>
+<span class="fc" id="L92">      value = value - NORMAL_ACCOUNT;</span>
+    }
+<span class="fc" id="L94">  }</span>
+
+  /**
+   * Is enabled boolean.
+   *
+   * @return the boolean
+   */
+  public boolean isEnabled() {
+<span class="fc bfc" id="L102" title="All 2 branches covered.">    return (value &amp; DISABLED_ACCOUNT) != DISABLED_ACCOUNT;</span>
+  }
+
+  /**
+   * Sets enabled.
+   *
+   * @param enabled the enabled
+   */
+  public void setEnabled(boolean enabled) {
+<span class="fc bfc" id="L111" title="All 4 branches covered.">    if (enabled &amp;&amp; !isEnabled()) {</span>
+<span class="fc" id="L112">      value = value - DISABLED_ACCOUNT;</span>
+<span class="pc bpc" id="L113" title="1 of 4 branches missed.">    } else if (!enabled &amp;&amp; isEnabled()) {</span>
+<span class="fc" id="L114">      value = value + DISABLED_ACCOUNT;</span>
+    }
+<span class="fc" id="L116">  }</span>
+
+  /**
+   * Is password expiration enabled boolean.
+   *
+   * @return the boolean
+   */
+  public boolean isPasswordExpirationEnabled() {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    return (value &amp; DONT_EXPIRE_PASSWORD) != DONT_EXPIRE_PASSWORD;</span>
+  }
+
+  /**
+   * Sets password expiration enabled.
+   *
+   * @param enabled the enabled
+   */
+  public void setPasswordExpirationEnabled(boolean enabled) {
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">    if (enabled &amp;&amp; !isPasswordExpirationEnabled()) {</span>
+<span class="fc" id="L134">      value = value - DONT_EXPIRE_PASSWORD;</span>
+<span class="pc bpc" id="L135" title="1 of 4 branches missed.">    } else if (!enabled &amp;&amp; isPasswordExpirationEnabled()) {</span>
+<span class="fc" id="L136">      value = value + DONT_EXPIRE_PASSWORD;</span>
+    }
+<span class="fc" id="L138">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

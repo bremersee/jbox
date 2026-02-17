@@ -16,12 +16,6 @@
 
 package org.bremersee.xml;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEventHandler;
@@ -30,6 +24,12 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.attachment.AttachmentMarshaller;
 import jakarta.xml.bind.attachment.AttachmentUnmarshaller;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 import javax.xml.validation.Schema;
 
 /**
@@ -44,16 +44,14 @@ public interface JaxbContextBuilder {
    */
 <span class="fc" id="L45">  JaxbDependenciesResolver DEFAULT_DEPENDENCIES_RESOLVER = new JaxbDependenciesResolverImpl();</span>
 
-
   /**
    * Creates a new jaxb context builder.
    *
    * @return the jaxb context builder
    */
   static JaxbContextBuilder newInstance() {
-<span class="fc" id="L54">    return new JaxbContextBuilderImpl();</span>
+<span class="fc" id="L53">    return new JaxbContextBuilderImpl();</span>
   }
-
 
   /**
    * Copy jaxb context builder.
@@ -160,9 +158,9 @@ public interface JaxbContextBuilder {
    * @return the jaxb context builder
    */
   default JaxbContextBuilder addAll(Iterable&lt;? extends JaxbContextMember&gt; data) {
-<span class="fc" id="L163">    return Optional.ofNullable(data)</span>
-<span class="fc" id="L164">        .map(d -&gt; addAll(d.iterator()))</span>
-<span class="fc" id="L165">        .orElse(this);</span>
+<span class="fc" id="L161">    return Optional.ofNullable(data)</span>
+<span class="fc" id="L162">        .map(d -&gt; addAll(d.iterator()))</span>
+<span class="fc" id="L163">        .orElse(this);</span>
   }
 
   /**
@@ -172,13 +170,13 @@ public interface JaxbContextBuilder {
    * @return the jaxb context builder
    */
   default JaxbContextBuilder addAll(Iterator&lt;? extends JaxbContextMember&gt; data) {
-<span class="fc" id="L175">    return Optional.ofNullable(data)</span>
-<span class="fc" id="L176">        .map(iter -&gt; Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED))</span>
-<span class="fc" id="L177">        .stream()</span>
-<span class="fc" id="L178">        .flatMap(split -&gt; StreamSupport.stream(split, false))</span>
-<span class="fc" id="L179">        .map(this::add)</span>
-<span class="fc" id="L180">        .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L181">        .orElse(this);</span>
+<span class="fc" id="L173">    return Optional.ofNullable(data)</span>
+<span class="fc" id="L174">        .map(iter -&gt; Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED))</span>
+<span class="fc" id="L175">        .stream()</span>
+<span class="fc" id="L176">        .flatMap(split -&gt; StreamSupport.stream(split, false))</span>
+<span class="fc" id="L177">        .map(this::add)</span>
+<span class="fc" id="L178">        .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L179">        .orElse(this);</span>
   }
 
   /**
@@ -188,9 +186,9 @@ public interface JaxbContextBuilder {
    * @return the jaxb context builder
    */
   default JaxbContextBuilder process(JaxbContextDataProvider dataProvider) {
-<span class="fc" id="L191">    return Optional.ofNullable(dataProvider)</span>
-<span class="fc" id="L192">        .map(provider -&gt; addAll(provider.getJaxbContextData()))</span>
-<span class="fc" id="L193">        .orElse(this);</span>
+<span class="fc" id="L189">    return Optional.ofNullable(dataProvider)</span>
+<span class="fc" id="L190">        .map(provider -&gt; addAll(provider.getJaxbContextData()))</span>
+<span class="fc" id="L191">        .orElse(this);</span>
   }
 
   /**
@@ -201,9 +199,9 @@ public interface JaxbContextBuilder {
    */
   default JaxbContextBuilder processAll(
       Iterable&lt;? extends JaxbContextDataProvider&gt; dataProviders) {
-<span class="fc" id="L204">    return Optional.ofNullable(dataProviders)</span>
-<span class="fc" id="L205">        .map(providers -&gt; processAll(providers.iterator()))</span>
-<span class="fc" id="L206">        .orElse(this);</span>
+<span class="fc" id="L202">    return Optional.ofNullable(dataProviders)</span>
+<span class="fc" id="L203">        .map(providers -&gt; processAll(providers.iterator()))</span>
+<span class="fc" id="L204">        .orElse(this);</span>
   }
 
   /**
@@ -214,13 +212,13 @@ public interface JaxbContextBuilder {
    */
   default JaxbContextBuilder processAll(
       Iterator&lt;? extends JaxbContextDataProvider&gt; dataProviders) {
-<span class="fc" id="L217">    return Optional.ofNullable(dataProviders)</span>
-<span class="fc" id="L218">        .map(iter -&gt; Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED))</span>
-<span class="fc" id="L219">        .stream()</span>
-<span class="fc" id="L220">        .flatMap(split -&gt; StreamSupport.stream(split, false))</span>
-<span class="fc" id="L221">        .map(this::process)</span>
-<span class="pc" id="L222">        .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L223">        .orElse(this);</span>
+<span class="fc" id="L215">    return Optional.ofNullable(dataProviders)</span>
+<span class="fc" id="L216">        .map(iter -&gt; Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED))</span>
+<span class="fc" id="L217">        .stream()</span>
+<span class="fc" id="L218">        .flatMap(split -&gt; StreamSupport.stream(split, false))</span>
+<span class="fc" id="L219">        .map(this::process)</span>
+<span class="pc" id="L220">        .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L221">        .orElse(this);</span>
   }
 
   /**
@@ -231,10 +229,10 @@ public interface JaxbContextBuilder {
    *     otherwise {@code false}
    */
   default boolean canUnmarshal(Class&lt;?&gt; clazz) {
-<span class="fc" id="L234">    return Optional.ofNullable(clazz)</span>
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        .filter(c -&gt; c.isAnnotationPresent(XmlRootElement.class)</span>
-<span class="pc bnc" id="L236" title="All 2 branches missed.">            || c.isAnnotationPresent(XmlType.class))</span>
-<span class="fc" id="L237">        .isPresent();</span>
+<span class="fc" id="L232">    return Optional.ofNullable(clazz)</span>
+<span class="pc bpc" id="L233" title="1 of 2 branches missed.">        .filter(c -&gt; c.isAnnotationPresent(XmlRootElement.class)</span>
+<span class="pc bnc" id="L234" title="All 2 branches missed.">            || c.isAnnotationPresent(XmlType.class))</span>
+<span class="fc" id="L235">        .isPresent();</span>
   }
 
   /**
@@ -245,16 +243,16 @@ public interface JaxbContextBuilder {
    *     otherwise {@code false}
    */
   default boolean canMarshal(Class&lt;?&gt; clazz) {
-<span class="fc" id="L248">    return Optional.ofNullable(clazz)</span>
-<span class="fc" id="L249">        .filter(c -&gt; c.isAnnotationPresent(XmlRootElement.class))</span>
-<span class="fc" id="L250">        .isPresent();</span>
+<span class="fc" id="L246">    return Optional.ofNullable(clazz)</span>
+<span class="fc" id="L247">        .filter(c -&gt; c.isAnnotationPresent(XmlRootElement.class))</span>
+<span class="fc" id="L248">        .isPresent();</span>
   }
 
   /**
    * Build unmarshaller for the given classes with the specified dependencies-resolver. If
    * dependency resolving is turned off, an unmarshaller of the default context (defined by the
-   * added meta-data) will be returned or one that is created with {@link
-   * jakarta.xml.bind.JAXBContext#newInstance(Class[])}*.
+   * added meta-data) will be returned or one that is created with
+   * {@link jakarta.xml.bind.JAXBContext#newInstance(Class[])}*.
    *
    * @param classes the classes that should be processed by the unmarshaller
    * @return the unmarshaller
@@ -268,7 +266,7 @@ public interface JaxbContextBuilder {
    * @return the marshaller
    */
   default Marshaller buildMarshaller() {
-<span class="fc" id="L271">    return buildMarshaller(null);</span>
+<span class="fc" id="L269">    return buildMarshaller(null);</span>
   }
 
   /**
@@ -297,7 +295,7 @@ public interface JaxbContextBuilder {
    * @return the jaxb context wrapper
    */
   default JaxbContextWrapper buildJaxbContext() {
-<span class="fc" id="L300">    return buildJaxbContext(null);</span>
+<span class="fc" id="L298">    return buildJaxbContext(null);</span>
   }
 
   /**
@@ -318,7 +316,7 @@ public interface JaxbContextBuilder {
    * @return the schema
    */
   default Schema buildSchema() {
-<span class="fc" id="L321">    return buildSchema(null);</span>
+<span class="fc" id="L319">    return buildSchema(null);</span>
   }
 
   /**

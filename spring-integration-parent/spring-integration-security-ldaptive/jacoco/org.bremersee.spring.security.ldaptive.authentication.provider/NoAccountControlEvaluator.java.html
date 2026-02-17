@@ -24,26 +24,32 @@ import org.ldaptive.LdapEntry;
  *
  * @author Christian Bremer
  */
-<span class="fc" id="L27">public class NoAccountControlEvaluator implements AccountControlEvaluator {</span>
+public class NoAccountControlEvaluator implements AccountControlEvaluator {
+
+  /**
+   * Instantiates a new no account control evaluator.
+   */
+<span class="fc" id="L32">  public NoAccountControlEvaluator() {</span>
+<span class="fc" id="L33">  }</span>
 
   @Override
   public boolean isAccountNonExpired(LdapEntry ldapEntry) {
-<span class="fc" id="L31">    return true;</span>
+<span class="fc" id="L37">    return true;</span>
   }
 
   @Override
   public boolean isAccountNonLocked(LdapEntry ldapEntry) {
-<span class="fc" id="L36">    return true;</span>
+<span class="fc" id="L42">    return true;</span>
   }
 
   @Override
   public boolean isCredentialsNonExpired(LdapEntry ldapEntry) {
-<span class="fc" id="L41">    return true;</span>
+<span class="fc" id="L47">    return true;</span>
   }
 
   @Override
   public boolean isEnabled(LdapEntry ldapEntry) {
-<span class="fc" id="L46">    return true;</span>
+<span class="fc" id="L52">    return true;</span>
   }
 
 }

@@ -17,8 +17,6 @@
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
 import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.LdaptiveAuthenticationAutoConfiguration.PropertiesMapper;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
 import org.bremersee.spring.security.ldaptive.authentication.provider.Template;
@@ -28,8 +26,13 @@ import org.bremersee.spring.security.ldaptive.authentication.provider.Template;
  *
  * @author Christian Bremer
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LdaptivePropertiesMapper {
+
+  /**
+   * Instantiates a new ldaptive properties mapper.
+   */
+  private LdaptivePropertiesMapper() {
+  }
 
   /**
    * Map ldaptive authentication properties.
@@ -38,17 +41,17 @@ public class LdaptivePropertiesMapper {
    * @return the ldaptive authentication properties
    */
   public static LdaptiveAuthenticationProperties map(AuthenticationProperties properties) {
-<span class="fc" id="L41">    LdaptiveAuthenticationProperties tmp = PropertiesMapper.INSTANCE.map(properties.getLdaptive());</span>
+<span class="fc" id="L44">    LdaptiveAuthenticationProperties tmp = PropertiesMapper.INSTANCE.map(properties.getLdaptive());</span>
     Template template;
     try {
-<span class="fc" id="L44">      template = Template.valueOf(properties.getLdaptive().getTemplate().name());</span>
-<span class="nc" id="L45">    } catch (Exception ignored) {</span>
-<span class="nc" id="L46">      template = null;</span>
-<span class="fc" id="L47">    }</span>
-<span class="fc" id="L48">    return Optional</span>
-<span class="fc" id="L49">        .ofNullable(template)</span>
-<span class="fc" id="L50">        .map(t -&gt; t.applyTemplate(tmp))</span>
-<span class="fc" id="L51">        .orElse(tmp);</span>
+<span class="fc" id="L47">      template = Template.valueOf(properties.getLdaptive().getTemplate().name());</span>
+<span class="nc" id="L48">    } catch (Exception ignored) {</span>
+<span class="nc" id="L49">      template = null;</span>
+<span class="fc" id="L50">    }</span>
+<span class="fc" id="L51">    return Optional</span>
+<span class="fc" id="L52">        .ofNullable(template)</span>
+<span class="fc" id="L53">        .map(t -&gt; t.applyTemplate(tmp))</span>
+<span class="fc" id="L54">        .orElse(tmp);</span>
   }
 
 }

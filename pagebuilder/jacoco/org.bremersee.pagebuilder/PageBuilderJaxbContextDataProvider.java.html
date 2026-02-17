@@ -18,10 +18,10 @@ package org.bremersee.pagebuilder;
 
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
+import jakarta.xml.bind.annotation.XmlSchema;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import jakarta.xml.bind.annotation.XmlSchema;
 import org.bremersee.pagebuilder.model.ObjectFactory;
 import org.bremersee.xml.JaxbContextDataProvider;
 import org.bremersee.xml.JaxbContextMember;
@@ -36,8 +36,9 @@ public class PageBuilderJaxbContextDataProvider implements JaxbContextDataProvid
   /**
    * Instantiates a new page builder jaxb context data provider.
    */
-<span class="fc" id="L39">  public PageBuilderJaxbContextDataProvider() {</span>
-<span class="fc" id="L40">  }</span>
+  public PageBuilderJaxbContextDataProvider() {
+<span class="fc" id="L40">    super();</span>
+<span class="fc" id="L41">  }</span>
 
   /**
    * Gets namespace.
@@ -45,18 +46,18 @@ public class PageBuilderJaxbContextDataProvider implements JaxbContextDataProvid
    * @return the namespace
    */
   public static String getNamespace() {
-<span class="fc" id="L48">    return Optional.ofNullable(findAnnotation(ObjectFactory.class.getPackage(), XmlSchema.class))</span>
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        .filter(xmlSchema -&gt; !xmlSchema.namespace().trim().isEmpty())</span>
-<span class="fc" id="L50">        .map(xmlSchema -&gt; xmlSchema.namespace().trim())</span>
-<span class="pc" id="L51">        .orElseThrow(() -&gt; new IllegalStateException(</span>
+<span class="fc" id="L49">    return Optional.ofNullable(findAnnotation(ObjectFactory.class.getPackage(), XmlSchema.class))</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        .filter(xmlSchema -&gt; !xmlSchema.namespace().trim().isEmpty())</span>
+<span class="fc" id="L51">        .map(xmlSchema -&gt; xmlSchema.namespace().trim())</span>
+<span class="pc" id="L52">        .orElseThrow(() -&gt; new IllegalStateException(</span>
             &quot;Page builder model is missing xml namespace.&quot;));
   }
 
   @Override
   public Collection&lt;JaxbContextMember&gt; getJaxbContextData() {
-<span class="fc" id="L57">    return List.of(JaxbContextMember</span>
-<span class="fc" id="L58">        .byPackage(org.bremersee.comparator.model.ObjectFactory.class.getPackage())</span>
-<span class="fc" id="L59">        .build());</span>
+<span class="fc" id="L58">    return List.of(JaxbContextMember</span>
+<span class="fc" id="L59">        .byPackage(org.bremersee.comparator.model.ObjectFactory.class.getPackage())</span>
+<span class="fc" id="L60">        .build());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -25,7 +25,13 @@ import org.springframework.core.convert.converter.Converter;
  *
  * @author Christian Bremer
  */
-<span class="fc" id="L28">public class AclConverters implements MongoCustomConversionsProvider {</span>
+public class AclConverters implements MongoCustomConversionsProvider {
+
+  /**
+   * Instantiates a new acl converters.
+   */
+<span class="fc" id="L33">  public AclConverters() {</span>
+<span class="fc" id="L34">  }</span>
 
   /**
    * Gets converters to register.
@@ -34,7 +40,7 @@ import org.springframework.core.convert.converter.Converter;
    */
   @Override
   public List&lt;Converter&lt;?, ?&gt;&gt; getCustomConversions() {
-<span class="fc" id="L37">    return List.of(</span>
+<span class="fc" id="L43">    return List.of(</span>
         new AceToDocumentConverter(),
         new AclToDocumentConverter(),
         new DocumentToAceConverter(),

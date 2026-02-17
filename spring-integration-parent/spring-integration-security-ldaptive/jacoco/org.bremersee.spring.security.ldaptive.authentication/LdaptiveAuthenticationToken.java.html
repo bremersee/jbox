@@ -32,6 +32,9 @@ public class LdaptiveAuthenticationToken
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The ldaptive user details.
+   */
   private final LdaptiveUserDetails userDetails;
 
   /**
@@ -40,28 +43,28 @@ public class LdaptiveAuthenticationToken
    * @param userDetails the user details
    */
   public LdaptiveAuthenticationToken(LdaptiveUserDetails userDetails) {
-<span class="fc" id="L43">    super(userDetails.getAuthorities());</span>
-<span class="fc" id="L44">    this.userDetails = userDetails;</span>
-<span class="fc" id="L45">  }</span>
+<span class="fc" id="L46">    super(userDetails.getAuthorities());</span>
+<span class="fc" id="L47">    this.userDetails = userDetails;</span>
+<span class="fc" id="L48">  }</span>
 
   @Override
   public LdaptiveUserDetails getPrincipal() {
-<span class="fc" id="L49">    return userDetails;</span>
+<span class="fc" id="L52">    return userDetails;</span>
   }
 
   @Override
   public String getName() {
-<span class="fc" id="L54">    return userDetails.getUsername();</span>
+<span class="fc" id="L57">    return userDetails.getUsername();</span>
   }
 
   @Override
   public boolean isAuthenticated() {
-<span class="fc" id="L59">    return true;</span>
+<span class="fc" id="L62">    return true;</span>
   }
 
   @Override
   public Object getCredentials() {
-<span class="nc" id="L64">    return userDetails.getPassword();</span>
+<span class="nc" id="L67">    return userDetails.getPassword();</span>
   }
 
 }

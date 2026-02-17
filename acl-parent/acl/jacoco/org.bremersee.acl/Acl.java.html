@@ -27,11 +27,10 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 import org.bremersee.acl.model.AccessControlListModifications;
 
@@ -58,7 +57,7 @@ public interface Acl {
    * @return the acl builder
    */
   static AclBuilder builder() {
-<span class="fc" id="L61">    return new AclBuilder();</span>
+<span class="fc" id="L60">    return new AclBuilder();</span>
   }
 
   /**
@@ -73,7 +72,7 @@ public interface Acl {
       String owner,
       Collection&lt;String&gt; defaultPermissions,
       Collection&lt;String&gt; adminRoles) {
-<span class="fc" id="L76">    return new AclBuilder(owner, defaultPermissions, adminRoles).build();</span>
+<span class="fc" id="L75">    return new AclBuilder(owner, defaultPermissions, adminRoles).build();</span>
   }
 
   /**
@@ -107,11 +106,11 @@ public interface Acl {
       AccessEvaluation accessEvaluation,
       Collection&lt;String&gt; permissions) {
 
-<span class="fc" id="L110">    boolean hasPermission = AccessEvaluator.of(this)</span>
-<span class="fc" id="L111">        .hasPermissions(userContext, accessEvaluation, permissions);</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">    return hasPermission</span>
-<span class="fc" id="L113">        ? Optional.of(Acl.builder().from(this).apply(mods).build())</span>
-<span class="fc" id="L114">        : Optional.empty();</span>
+<span class="fc" id="L109">    boolean hasPermission = AccessEvaluator.of(this)</span>
+<span class="fc" id="L110">        .hasPermissions(userContext, accessEvaluation, permissions);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    return hasPermission</span>
+<span class="fc" id="L112">        ? Optional.of(builder().from(this).apply(mods).build())</span>
+<span class="fc" id="L113">        : Optional.empty();</span>
   }
 
   /**
@@ -125,25 +124,25 @@ public interface Acl {
 
     private String owner;
 
-<span class="fc" id="L128">    private final Map&lt;String, Ace&gt; permissionMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L127">    private final Map&lt;String, Ace&gt; permissionMap = new HashMap&lt;&gt;();</span>
 
     /**
      * Instantiates a new acl builder.
      */
     public AclBuilder() {
-<span class="fc" id="L134">      super();</span>
-<span class="fc" id="L135">    }</span>
+<span class="fc" id="L133">      super();</span>
+<span class="fc" id="L134">    }</span>
 
     private AclBuilder(
         String owner,
         Collection&lt;String&gt; defaultPermissions,
-<span class="fc" id="L140">        Collection&lt;String&gt; adminRoles) {</span>
+<span class="fc" id="L139">        Collection&lt;String&gt; adminRoles) {</span>
 
-<span class="fc" id="L142">      owner(owner);</span>
-<span class="pc bpc" id="L143" title="1 of 2 branches missed.">      if (nonNull(defaultPermissions)) {</span>
-<span class="fc" id="L144">        defaultPermissions.forEach(permission -&gt; addRoles(permission, adminRoles));</span>
+<span class="fc" id="L141">      owner(owner);</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">      if (nonNull(defaultPermissions)) {</span>
+<span class="fc" id="L143">        defaultPermissions.forEach(permission -&gt; addRoles(permission, adminRoles));</span>
       }
-<span class="fc" id="L146">    }</span>
+<span class="fc" id="L145">    }</span>
 
     /**
      * From acl.
@@ -152,11 +151,11 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder from(Acl acl) {
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">      if (nonNull(acl)) {</span>
-<span class="fc" id="L156">        owner(acl.getOwner());</span>
-<span class="fc" id="L157">        permissionMap(acl.getPermissionMap());</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">      if (nonNull(acl)) {</span>
+<span class="fc" id="L155">        owner(acl.getOwner());</span>
+<span class="fc" id="L156">        permissionMap(acl.getPermissionMap());</span>
       }
-<span class="fc" id="L159">      return this;</span>
+<span class="fc" id="L158">      return this;</span>
     }
 
     /**
@@ -166,8 +165,8 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder owner(String owner) {
-<span class="fc" id="L169">      this.owner = owner;</span>
-<span class="fc" id="L170">      return this;</span>
+<span class="fc" id="L168">      this.owner = owner;</span>
+<span class="fc" id="L169">      return this;</span>
     }
 
     /**
@@ -177,22 +176,22 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder permissionMap(Map&lt;String, ? extends Ace&gt; permissionMap) {
-<span class="fc" id="L180">      this.permissionMap.clear();</span>
-<span class="pc bpc" id="L181" title="1 of 2 branches missed.">      if (nonNull(permissionMap)) {</span>
-<span class="fc" id="L182">        permissionMap.entrySet().stream()</span>
-<span class="pc bpc" id="L183" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry.getKey()) &amp;&amp; !entry.getKey().isBlank())</span>
-<span class="fc" id="L184">            .forEach(entry -&gt; this.permissionMap.put(entry.getKey(), entry.getValue()));</span>
-<span class="fc" id="L185">        this.permissionMap.putAll(permissionMap);</span>
+<span class="fc" id="L179">      this.permissionMap.clear();</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">      if (nonNull(permissionMap)) {</span>
+<span class="fc" id="L181">        permissionMap.entrySet().stream()</span>
+<span class="pc bpc" id="L182" title="2 of 4 branches missed.">            .filter(entry -&gt; nonNull(entry.getKey()) &amp;&amp; !entry.getKey().isBlank())</span>
+<span class="fc" id="L183">            .forEach(entry -&gt; this.permissionMap.put(entry.getKey(), entry.getValue()));</span>
+<span class="fc" id="L184">        this.permissionMap.putAll(permissionMap);</span>
       }
-<span class="fc" id="L187">      return this;</span>
+<span class="fc" id="L186">      return this;</span>
     }
 
-    private AclBuilder doWithAce(String permission, Function&lt;Ace, Ace&gt; aceFn) {
-<span class="pc bpc" id="L191" title="2 of 4 branches missed.">      if (nonNull(permission) &amp;&amp; !permission.isBlank()) {</span>
-<span class="fc" id="L192">        Ace ace = this.permissionMap.getOrDefault(permission, Ace.empty());</span>
-<span class="fc" id="L193">        this.permissionMap.put(permission, aceFn.apply(ace));</span>
+    private AclBuilder doWithAce(String permission, UnaryOperator&lt;Ace&gt; aceFn) {
+<span class="pc bpc" id="L190" title="2 of 4 branches missed.">      if (nonNull(permission) &amp;&amp; !permission.isBlank()) {</span>
+<span class="fc" id="L191">        Ace ace = this.permissionMap.getOrDefault(permission, Ace.empty());</span>
+<span class="fc" id="L192">        this.permissionMap.put(permission, aceFn.apply(ace));</span>
       }
-<span class="fc" id="L195">      return this;</span>
+<span class="fc" id="L194">      return this;</span>
     }
 
     /**
@@ -202,12 +201,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addPermissions(Collection&lt;String&gt; permissions) {
-<span class="fc" id="L205">      return Optional.ofNullable(permissions)</span>
-<span class="fc" id="L206">          .stream()</span>
-<span class="fc" id="L207">          .flatMap(Collection::stream)</span>
-<span class="fc" id="L208">          .map(permission -&gt; doWithAce(permission, ace -&gt; ace))</span>
-<span class="fc" id="L209">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L210">          .orElse(this);</span>
+<span class="fc" id="L204">      return Optional.ofNullable(permissions)</span>
+<span class="fc" id="L205">          .stream()</span>
+<span class="fc" id="L206">          .flatMap(Collection::stream)</span>
+<span class="fc" id="L207">          .map(permission -&gt; doWithAce(permission, ace -&gt; ace))</span>
+<span class="fc" id="L208">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L209">          .orElse(this);</span>
     }
 
     /**
@@ -217,10 +216,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removePermissions(Collection&lt;String&gt; permissions) {
-<span class="pc bpc" id="L220" title="1 of 2 branches missed.">      if (nonNull(permissions)) {</span>
-<span class="fc" id="L221">        permissions.forEach(this.permissionMap::remove);</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">      if (nonNull(permissions)) {</span>
+<span class="fc" id="L220">        permissions.forEach(this.permissionMap::remove);</span>
       }
-<span class="fc" id="L223">      return this;</span>
+<span class="fc" id="L222">      return this;</span>
     }
 
     /**
@@ -230,7 +229,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder guest(boolean guest) {
-<span class="fc" id="L233">      return guest(p -&gt; true, guest);</span>
+<span class="fc" id="L232">      return guest(p -&gt; true, guest);</span>
     }
 
     /**
@@ -241,12 +240,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder guest(Predicate&lt;String&gt; permissionFilter, boolean guest) {
-<span class="pc bpc" id="L244" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L245">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L246">          .filter(filter)</span>
-<span class="fc" id="L247">          .map(permission -&gt; guest(permission, guest))</span>
-<span class="fc" id="L248">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L249">          .orElse(this);</span>
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L244">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L245">          .filter(filter)</span>
+<span class="fc" id="L246">          .map(permission -&gt; guest(permission, guest))</span>
+<span class="fc" id="L247">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L248">          .orElse(this);</span>
     }
 
     /**
@@ -257,7 +256,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder guest(String permission, boolean guest) {
-<span class="fc" id="L260">      return doWithAce(permission, ace -&gt; Ace.builder().from(ace).guest(guest).build());</span>
+<span class="fc" id="L259">      return doWithAce(permission, ace -&gt; Ace.builder().from(ace).guest(guest).build());</span>
     }
 
     /**
@@ -267,7 +266,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addUsers(Collection&lt;String&gt; users) {
-<span class="fc" id="L270">      return addUsers(p -&gt; true, users);</span>
+<span class="fc" id="L269">      return addUsers(p -&gt; true, users);</span>
     }
 
     /**
@@ -278,12 +277,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addUsers(Predicate&lt;String&gt; permissionFilter, Collection&lt;String&gt; users) {
-<span class="pc bpc" id="L281" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L282">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L283">          .filter(filter)</span>
-<span class="fc" id="L284">          .map(permission -&gt; addUsers(permission, users))</span>
-<span class="fc" id="L285">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L286">          .orElse(this);</span>
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L281">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L282">          .filter(filter)</span>
+<span class="fc" id="L283">          .map(permission -&gt; addUsers(permission, users))</span>
+<span class="fc" id="L284">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L285">          .orElse(this);</span>
     }
 
     /**
@@ -294,10 +293,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addUsers(String permission, Collection&lt;String&gt; users) {
-<span class="fc bfc" id="L297" title="All 2 branches covered.">      if (nonNull(users)) {</span>
-<span class="fc" id="L298">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).addUsers(users).build());</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">      if (nonNull(users)) {</span>
+<span class="fc" id="L297">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).addUsers(users).build());</span>
       }
-<span class="fc" id="L300">      return this;</span>
+<span class="fc" id="L299">      return this;</span>
     }
 
     /**
@@ -307,7 +306,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeUsers(Collection&lt;String&gt; users) {
-<span class="fc" id="L310">      return removeUsers(p -&gt; true, users);</span>
+<span class="fc" id="L309">      return removeUsers(p -&gt; true, users);</span>
     }
 
     /**
@@ -318,12 +317,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeUsers(Predicate&lt;String&gt; permissionFilter, Collection&lt;String&gt; users) {
-<span class="pc bpc" id="L321" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L322">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L323">          .filter(filter)</span>
-<span class="fc" id="L324">          .map(permission -&gt; removeUsers(permission, users))</span>
-<span class="fc" id="L325">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L326">          .orElse(this);</span>
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L321">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L322">          .filter(filter)</span>
+<span class="fc" id="L323">          .map(permission -&gt; removeUsers(permission, users))</span>
+<span class="fc" id="L324">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L325">          .orElse(this);</span>
     }
 
     /**
@@ -334,10 +333,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeUsers(String permission, Collection&lt;String&gt; users) {
-<span class="fc bfc" id="L337" title="All 2 branches covered.">      if (nonNull(users)) {</span>
-<span class="fc" id="L338">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).removeUsers(users).build());</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">      if (nonNull(users)) {</span>
+<span class="fc" id="L337">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).removeUsers(users).build());</span>
       }
-<span class="fc" id="L340">      return this;</span>
+<span class="fc" id="L339">      return this;</span>
     }
 
     /**
@@ -347,7 +346,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addRoles(Collection&lt;String&gt; roles) {
-<span class="fc" id="L350">      return addRoles(p -&gt; true, roles);</span>
+<span class="fc" id="L349">      return addRoles(p -&gt; true, roles);</span>
     }
 
     /**
@@ -358,12 +357,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addRoles(Predicate&lt;String&gt; permissionFilter, Collection&lt;String&gt; roles) {
-<span class="pc bpc" id="L361" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L362">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L363">          .filter(filter)</span>
-<span class="fc" id="L364">          .map(permission -&gt; addRoles(permission, roles))</span>
-<span class="fc" id="L365">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L366">          .orElse(this);</span>
+<span class="pc bpc" id="L360" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L361">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L362">          .filter(filter)</span>
+<span class="fc" id="L363">          .map(permission -&gt; addRoles(permission, roles))</span>
+<span class="fc" id="L364">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L365">          .orElse(this);</span>
     }
 
     /**
@@ -374,10 +373,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addRoles(String permission, Collection&lt;String&gt; roles) {
-<span class="fc bfc" id="L377" title="All 2 branches covered.">      if (nonNull(roles)) {</span>
-<span class="fc" id="L378">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).addRoles(roles).build());</span>
+<span class="fc bfc" id="L376" title="All 2 branches covered.">      if (nonNull(roles)) {</span>
+<span class="fc" id="L377">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).addRoles(roles).build());</span>
       }
-<span class="fc" id="L380">      return this;</span>
+<span class="fc" id="L379">      return this;</span>
     }
 
     /**
@@ -387,7 +386,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeRoles(Collection&lt;String&gt; roles) {
-<span class="fc" id="L390">      return removeRoles(p -&gt; true, roles);</span>
+<span class="fc" id="L389">      return removeRoles(p -&gt; true, roles);</span>
     }
 
     /**
@@ -398,12 +397,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeRoles(Predicate&lt;String&gt; permissionFilter, Collection&lt;String&gt; roles) {
-<span class="pc bpc" id="L401" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L402">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L403">          .filter(filter)</span>
-<span class="fc" id="L404">          .map(permission -&gt; removeRoles(permission, roles))</span>
-<span class="fc" id="L405">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L406">          .orElse(this);</span>
+<span class="pc bpc" id="L400" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L401">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L402">          .filter(filter)</span>
+<span class="fc" id="L403">          .map(permission -&gt; removeRoles(permission, roles))</span>
+<span class="fc" id="L404">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L405">          .orElse(this);</span>
     }
 
     /**
@@ -414,10 +413,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeRoles(String permission, Collection&lt;String&gt; roles) {
-<span class="fc bfc" id="L417" title="All 2 branches covered.">      if (nonNull(roles)) {</span>
-<span class="fc" id="L418">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).removeRoles(roles).build());</span>
+<span class="fc bfc" id="L416" title="All 2 branches covered.">      if (nonNull(roles)) {</span>
+<span class="fc" id="L417">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).removeRoles(roles).build());</span>
       }
-<span class="fc" id="L420">      return this;</span>
+<span class="fc" id="L419">      return this;</span>
     }
 
     /**
@@ -427,7 +426,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addGroups(Collection&lt;String&gt; groups) {
-<span class="fc" id="L430">      return addGroups(p -&gt; true, groups);</span>
+<span class="fc" id="L429">      return addGroups(p -&gt; true, groups);</span>
     }
 
     /**
@@ -438,12 +437,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addGroups(Predicate&lt;String&gt; permissionFilter, Collection&lt;String&gt; groups) {
-<span class="pc bpc" id="L441" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L442">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L443">          .filter(filter)</span>
-<span class="fc" id="L444">          .map(permission -&gt; addGroups(permission, groups))</span>
-<span class="fc" id="L445">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L446">          .orElse(this);</span>
+<span class="pc bpc" id="L440" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L441">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L442">          .filter(filter)</span>
+<span class="fc" id="L443">          .map(permission -&gt; addGroups(permission, groups))</span>
+<span class="fc" id="L444">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L445">          .orElse(this);</span>
     }
 
     /**
@@ -454,10 +453,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder addGroups(String permission, Collection&lt;String&gt; groups) {
-<span class="fc bfc" id="L457" title="All 2 branches covered.">      if (nonNull(groups)) {</span>
-<span class="fc" id="L458">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).addGroups(groups).build());</span>
+<span class="fc bfc" id="L456" title="All 2 branches covered.">      if (nonNull(groups)) {</span>
+<span class="fc" id="L457">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).addGroups(groups).build());</span>
       }
-<span class="fc" id="L460">      return this;</span>
+<span class="fc" id="L459">      return this;</span>
     }
 
     /**
@@ -467,7 +466,7 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeGroups(Collection&lt;String&gt; groups) {
-<span class="fc" id="L470">      return removeGroups(p -&gt; true, groups);</span>
+<span class="fc" id="L469">      return removeGroups(p -&gt; true, groups);</span>
     }
 
     /**
@@ -478,12 +477,12 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeGroups(Predicate&lt;String&gt; permissionFilter, Collection&lt;String&gt; groups) {
-<span class="pc bpc" id="L481" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
-<span class="fc" id="L482">      return permissionMap.keySet().stream()</span>
-<span class="fc" id="L483">          .filter(filter)</span>
-<span class="fc" id="L484">          .map(permission -&gt; removeGroups(permission, groups))</span>
-<span class="fc" id="L485">          .reduce((first, second) -&gt; second)</span>
-<span class="fc" id="L486">          .orElse(this);</span>
+<span class="pc bpc" id="L480" title="1 of 2 branches missed.">      Predicate&lt;String&gt; filter = nonNull(permissionFilter) ? permissionFilter : p -&gt; true;</span>
+<span class="fc" id="L481">      return permissionMap.keySet().stream()</span>
+<span class="fc" id="L482">          .filter(filter)</span>
+<span class="fc" id="L483">          .map(permission -&gt; removeGroups(permission, groups))</span>
+<span class="fc" id="L484">          .reduce((first, second) -&gt; second)</span>
+<span class="fc" id="L485">          .orElse(this);</span>
     }
 
     /**
@@ -494,10 +493,10 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder removeGroups(String permission, Collection&lt;String&gt; groups) {
-<span class="fc bfc" id="L497" title="All 2 branches covered.">      if (nonNull(groups)) {</span>
-<span class="fc" id="L498">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).removeGroups(groups).build());</span>
+<span class="fc bfc" id="L496" title="All 2 branches covered.">      if (nonNull(groups)) {</span>
+<span class="fc" id="L497">        return doWithAce(permission, ace -&gt; Ace.builder().from(ace).removeGroups(groups).build());</span>
       }
-<span class="fc" id="L500">      return this;</span>
+<span class="fc" id="L499">      return this;</span>
     }
 
     /**
@@ -507,18 +506,18 @@ public interface Acl {
      * @return the acl builder
      */
     public AclBuilder apply(AccessControlListModifications modifications) {
-<span class="pc bpc" id="L510" title="1 of 2 branches missed.">      if (nonNull(modifications)) {</span>
-<span class="fc" id="L511">        modifications.getModificationsDistinct().forEach(aceMods -&gt; {</span>
-<span class="fc" id="L512">          guest(aceMods.getPermission(), aceMods.isGuest());</span>
-<span class="fc" id="L513">          addUsers(aceMods.getPermission(), aceMods.getAddUsers());</span>
-<span class="fc" id="L514">          removeUsers(aceMods.getPermission(), aceMods.getRemoveUsers());</span>
-<span class="fc" id="L515">          addRoles(aceMods.getPermission(), aceMods.getAddRoles());</span>
-<span class="fc" id="L516">          removeRoles(aceMods.getPermission(), aceMods.getRemoveRoles());</span>
-<span class="fc" id="L517">          addGroups(aceMods.getPermission(), aceMods.getAddGroups());</span>
-<span class="fc" id="L518">          removeGroups(aceMods.getPermission(), aceMods.getRemoveGroups());</span>
-<span class="fc" id="L519">        });</span>
+<span class="pc bpc" id="L509" title="1 of 2 branches missed.">      if (nonNull(modifications)) {</span>
+<span class="fc" id="L510">        modifications.getModificationsDistinct().forEach(aceMods -&gt; {</span>
+<span class="fc" id="L511">          guest(aceMods.getPermission(), aceMods.isGuest());</span>
+<span class="fc" id="L512">          addUsers(aceMods.getPermission(), aceMods.getAddUsers());</span>
+<span class="fc" id="L513">          removeUsers(aceMods.getPermission(), aceMods.getRemoveUsers());</span>
+<span class="fc" id="L514">          addRoles(aceMods.getPermission(), aceMods.getAddRoles());</span>
+<span class="fc" id="L515">          removeRoles(aceMods.getPermission(), aceMods.getRemoveRoles());</span>
+<span class="fc" id="L516">          addGroups(aceMods.getPermission(), aceMods.getAddGroups());</span>
+<span class="fc" id="L517">          removeGroups(aceMods.getPermission(), aceMods.getRemoveGroups());</span>
+<span class="fc" id="L518">        });</span>
       }
-<span class="fc" id="L521">      return this;</span>
+<span class="fc" id="L520">      return this;</span>
     }
 
     /**
@@ -527,7 +526,7 @@ public interface Acl {
      * @return the acl
      */
     public Acl build() {
-<span class="fc" id="L530">      return new AclImpl(owner, permissionMap);</span>
+<span class="fc" id="L529">      return new AclImpl(owner, permissionMap);</span>
     }
   }
 
@@ -536,26 +535,36 @@ public interface Acl {
    *
    * @author Christian Bremer
    */
-  @SuppressWarnings(&quot;SameNameButDifferent&quot;)
-  @Getter
   @ToString
   @EqualsAndHashCode
+  @SuppressWarnings(&quot;ClassCanBeRecord&quot;)
   class AclImpl implements Acl {
 
-    private final String owner;
+    private final String ownerName;
 
     private final SortedMap&lt;String, Ace&gt; permissionMap;
 
-<span class="fc" id="L549">    private AclImpl(String owner, Map&lt;String, Ace&gt; permissionMap) {</span>
-<span class="fc bfc" id="L550" title="All 4 branches covered.">      this.owner = nonNull(owner) &amp;&amp; !owner.isBlank() ? owner : ANONYMOUS;</span>
-<span class="fc" id="L551">      this.permissionMap = unmodifiableSortedMap(permissionMap.entrySet().stream()</span>
-<span class="pc bpc" id="L552" title="2 of 4 branches missed.">          .filter(entry -&gt; nonNull(entry.getKey()) &amp;&amp; !entry.getKey().isBlank())</span>
-<span class="fc" id="L553">          .collect(Collectors.toMap(</span>
+<span class="fc" id="L547">    private AclImpl(String owner, Map&lt;String, Ace&gt; permissionMap) {</span>
+<span class="fc bfc" id="L548" title="All 4 branches covered.">      this.ownerName = nonNull(owner) &amp;&amp; !owner.isBlank() ? owner : ANONYMOUS;</span>
+<span class="fc" id="L549">      this.permissionMap = unmodifiableSortedMap(permissionMap.entrySet().stream()</span>
+<span class="pc bpc" id="L550" title="2 of 4 branches missed.">          .filter(entry -&gt; nonNull(entry.getKey()) &amp;&amp; !entry.getKey().isBlank())</span>
+<span class="fc" id="L551">          .collect(Collectors.toMap(</span>
               Entry::getKey,
               Entry::getValue,
-<span class="nc" id="L556">              (a, b) -&gt; a,</span>
-<span class="fc" id="L557">              () -&gt; new TreeMap&lt;&gt;(String::compareToIgnoreCase))));</span>
-<span class="fc" id="L558">    }</span>
+<span class="nc" id="L554">              (a, b) -&gt; a,</span>
+<span class="fc" id="L555">              () -&gt; new TreeMap&lt;&gt;(String::compareToIgnoreCase))));</span>
+<span class="fc" id="L556">    }</span>
+
+    @Override
+    public String getOwner() {
+<span class="fc" id="L560">      return ownerName;</span>
+    }
+
+    @Override
+    public SortedMap&lt;String, Ace&gt; getPermissionMap() {
+<span class="fc" id="L565">      return permissionMap;</span>
+    }
+
   }
 
 }

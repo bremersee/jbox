@@ -119,7 +119,7 @@ public interface MinioOperations {
    * for (Bucket bucket : bucketList) {
    *   System.out.println(bucket.creationDate() + &quot;, &quot; + bucket.name());
    * }
-   * }
+   * }*
    * &lt;/pre&gt;
    *
    * @return list of bucket information
@@ -137,7 +137,7 @@ public interface MinioOperations {
    * for (Bucket bucket : bucketList) {
    *   System.out.println(bucket.creationDate() + &quot;, &quot; + bucket.name());
    * }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the list buckets arguments
@@ -158,7 +158,7 @@ public interface MinioOperations {
    * } else {
    *   System.out.println(&quot;my-bucketname does not exist&quot;);
    * }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the bucket exists arguments
@@ -192,7 +192,7 @@ public interface MinioOperations {
    *         .region(&quot;us-west-1&quot;)
    *         .objectLock(true)
    *         .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args object with bucket name, region and lock functionality
@@ -207,7 +207,7 @@ public interface MinioOperations {
    *
    * &lt;pre&gt;Example: {@code
    * minioClient.removeBucket(RemoveBucketArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the remove bucket arguments
@@ -224,7 +224,7 @@ public interface MinioOperations {
    * SseConfiguration config =
    *     minioClient.getBucketEncryption(
    *         GetBucketEncryptionArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket encryption arguments
@@ -240,7 +240,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.setBucketEncryption(
    *     SetBucketEncryptionArgs.builder().bucket(&quot;my-bucketname&quot;).config(config).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args bucket encryption arguments
@@ -256,7 +256,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteBucketEncryption(
    *     DeleteBucketEncryptionArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args delete bucket encryption arguments
@@ -273,7 +273,7 @@ public interface MinioOperations {
    * LifecycleConfiguration config =
    *     minioClient.getBucketLifecycle(
    *         GetBucketLifecycleArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket lifecycle arguments
@@ -301,7 +301,7 @@ public interface MinioOperations {
    * LifecycleConfiguration config = new LifecycleConfiguration(rules);
    * minioClient.setBucketLifecycle(
    *     SetBucketLifecycleArgs.builder().bucket(&quot;my-bucketname&quot;).config(config).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set bucket lifecycle arguments
@@ -316,7 +316,7 @@ public interface MinioOperations {
    *
    * &lt;pre&gt;Example: {@code
    * deleteBucketLifecycle(DeleteBucketLifecycleArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args {@link DeleteBucketLifecycleArgs} object.
@@ -333,7 +333,7 @@ public interface MinioOperations {
    * NotificationConfiguration config =
    *     minioClient.getBucketNotification(
    *         GetBucketNotificationArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket notification arguments
@@ -365,7 +365,7 @@ public interface MinioOperations {
    *
    * minioClient.setBucketNotification(
    *     SetBucketNotificationArgs.builder().bucket(&quot;my-bucketname&quot;).config(config).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set bucket notification arguments
@@ -381,7 +381,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteBucketNotification(
    *     DeleteBucketNotificationArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args delete bucket notification arguments
@@ -415,7 +415,7 @@ public interface MinioOperations {
    *     }
    *   }
    * }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the listen bucket notification arguments
@@ -432,7 +432,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * String config =
    *     minioClient.getBucketPolicy(GetBucketPolicyArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket policy arguments
@@ -470,7 +470,7 @@ public interface MinioOperations {
    * //
    * minioClient.setBucketPolicy(
    *     SetBucketPolicyArgs.builder().bucket(&quot;my-bucketname&quot;).config(policyJson).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set bucket policy arguments
@@ -485,7 +485,7 @@ public interface MinioOperations {
    *
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteBucketPolicy(DeleteBucketPolicyArgs.builder().bucket(&quot;my-bucketname&quot;));
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args delete bucket policy arguments
@@ -502,7 +502,7 @@ public interface MinioOperations {
    * ReplicationConfiguration config =
    *     minioClient.getBucketReplication(
    *         GetBucketReplicationArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket replication arguments
@@ -541,7 +541,7 @@ public interface MinioOperations {
    *
    * minioClient.setBucketReplication(
    *     SetBucketReplicationArgs.builder().bucket(&quot;my-bucketname&quot;).config(config).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set bucket replication arguments
@@ -557,7 +557,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteBucketReplication(
    *     DeleteBucketReplicationArgs.builder().bucket(&quot;my-bucketname&quot;));
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args delete bucket replication arguments
@@ -573,7 +573,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * Tags tags =
    *     minioClient.getBucketTags(GetBucketTagsArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket tags arguments
@@ -592,7 +592,7 @@ public interface MinioOperations {
    * map.put(&quot;User&quot;, &quot;jsmith&quot;);
    * minioClient.setBucketTags(
    *     SetBucketTagsArgs.builder().bucket(&quot;my-bucketname&quot;).tags(map).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the set bucket tags arguments
@@ -607,7 +607,7 @@ public interface MinioOperations {
    *
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteBucketTags(DeleteBucketTagsArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the delete bucket tags arguments
@@ -624,7 +624,7 @@ public interface MinioOperations {
    * VersioningConfiguration config =
    *     minioClient.getBucketVersioning(
    *         GetBucketVersioningArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get bucket version arguments
@@ -640,7 +640,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.setBucketVersioning(
    *     SetBucketVersioningArgs.builder().bucket(&quot;my-bucketname&quot;).config(config).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set bucket versioning arguments
@@ -660,7 +660,7 @@ public interface MinioOperations {
    * System.out.println(&quot;Mode: &quot; + config.mode());
    * System.out.println(
    *     &quot;Duration: &quot; + config.duration().duration() + &quot; &quot; + config.duration().unit());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get object retention configuration arguments
@@ -678,7 +678,7 @@ public interface MinioOperations {
    *     RetentionMode.COMPLIANCE, new RetentionDurationDays(100));
    * minioClient.setObjectLockConfiguration(
    *     SetObjectLockConfigurationArgs.builder().bucket(&quot;my-bucketname&quot;).config(config).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the default object retention configuration arguments
@@ -694,7 +694,7 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteObjectLockConfiguration(
    *     DeleteObjectLockConfigurationArgs.builder().bucket(&quot;my-bucketname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args delete object retention configuration arguments
@@ -706,8 +706,9 @@ public interface MinioOperations {
 
   /**
    * Lists objects information optionally with versions of a bucket. Supports both the versions 1
-   * and 2 of the S3 API. By default, the &lt;a href=&quot;https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html&quot;&gt;version
-   * 2&lt;/a&gt; API is used. &lt;br&gt;
+   * and 2 of the S3 API. By default, the &lt;a
+   * href=&quot;https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html&quot;&gt;version 2&lt;/a&gt; API
+   * is used. &lt;br&gt;
    * &lt;a href=&quot;https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjects.html&quot;&gt;Version 1&lt;/a&gt;
    * can be used by passing the optional argument {@code useVersion1} as {@code true}.
    *
@@ -740,14 +741,14 @@ public interface MinioOperations {
    *         .maxKeys(100)
    *         .includeVersions(true)
    *         .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args list objects arguments
    * @return lazy iterator contains object information
    */
   default Iterable&lt;Result&lt;Item&gt;&gt; listObjects(ListObjectsArgs args) {
-<span class="fc" id="L750">    return execute(minioClient -&gt; minioClient.listObjects(args));</span>
+<span class="fc" id="L751">    return execute(minioClient -&gt; minioClient.listObjects(args));</span>
   }
 
   // Object operations
@@ -794,14 +795,14 @@ public interface MinioOperations {
    *             inputStream, size, -1)
    *         .sse(sse)
    *         .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args put object arguments
    * @return the object write response
    */
   default ObjectWriteResponse putObject(PutObjectArgs args) {
-<span class="fc" id="L804">    return execute(minioClient -&gt; minioClient.putObject(args));</span>
+<span class="fc" id="L805">    return execute(minioClient -&gt; minioClient.putObject(args));</span>
   }
 
   /**
@@ -821,7 +822,7 @@ public interface MinioOperations {
    *         .filename(&quot;my-video.avi&quot;)
    *         .contentType(&quot;video/mp4&quot;)
    *         .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args upload object arguments
@@ -829,19 +830,19 @@ public interface MinioOperations {
    * @return the object write response
    */
   default ObjectWriteResponse uploadObject(UploadObjectArgs args, DeleteMode deleteMode) {
-<span class="fc" id="L832">    final Path file = Paths.get(args.filename());</span>
+<span class="fc" id="L833">    final Path file = Paths.get(args.filename());</span>
     try {
-<span class="fc" id="L834">      return execute(minioClient -&gt; {</span>
-<span class="fc" id="L835">        ObjectWriteResponse response = minioClient.uploadObject(args);</span>
-<span class="pc bpc" id="L836" title="1 of 2 branches missed.">        if (DeleteMode.ON_SUCCESS == deleteMode) {</span>
-<span class="nc" id="L837">          Files.delete(file);</span>
+<span class="fc" id="L835">      return execute(minioClient -&gt; {</span>
+<span class="fc" id="L836">        ObjectWriteResponse response = minioClient.uploadObject(args);</span>
+<span class="pc bpc" id="L837" title="1 of 2 branches missed.">        if (DeleteMode.ON_SUCCESS == deleteMode) {</span>
+<span class="nc" id="L838">          Files.delete(file);</span>
         }
-<span class="fc" id="L839">        return response;</span>
+<span class="fc" id="L840">        return response;</span>
       });
 
     } finally {
-<span class="pc bpc" id="L843" title="1 of 2 branches missed.">      if (DeleteMode.ALWAYS == deleteMode) {</span>
-<span class="fc" id="L844">        execute((MinioClientCallbackWithoutResult) minioClient -&gt; Files.delete(file));</span>
+<span class="pc bpc" id="L844" title="1 of 2 branches missed.">      if (DeleteMode.ALWAYS == deleteMode) {</span>
+<span class="fc" id="L845">        execute((MinioClientCallbackWithoutResult) minioClient -&gt; Files.delete(file));</span>
       }
     }
   }
@@ -857,15 +858,15 @@ public interface MinioOperations {
    *     .ssec(ssec)
    *     .fileName(&quot;my-filename&quot;)
    *     .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args download object arguments
    */
   default void downloadObject(DownloadObjectArgs args) {
-<span class="fc" id="L866">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L867">        .downloadObject(args));</span>
-<span class="fc" id="L868">  }</span>
+<span class="fc" id="L867">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L868">        .downloadObject(args));</span>
+<span class="fc" id="L869">  }</span>
 
   /**
    * Gets presigned URL of an object for HTTP method, expiry time and custom request parameters.
@@ -910,14 +911,14 @@ public interface MinioOperations {
    *            .expiry(2, TimeUnit.HOURS)
    *            .build());
    * System.out.println(url);
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get pre-signed object url arguments
    * @return the pre-signed URL
    */
   default String getPresignedObjectUrl(GetPresignedObjectUrlArgs args) {
-<span class="fc" id="L920">    return execute(minioClient -&gt; minioClient.getPresignedObjectUrl(args));</span>
+<span class="fc" id="L921">    return execute(minioClient -&gt; minioClient.getPresignedObjectUrl(args));</span>
   }
 
   /**
@@ -963,14 +964,14 @@ public interface MinioOperations {
    * } else {
    *   System.out.println(&quot;Failed to upload Pictures/avatar.png&quot;);
    * }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param policy post policy of an object
    * @return contains form-data to upload an object using POST method
    */
   default Map&lt;String, String&gt; getPresignedPostFormData(PostPolicy policy) {
-<span class="fc" id="L973">    return execute(minioClient -&gt; minioClient.getPresignedPostFormData(policy));</span>
+<span class="fc" id="L974">    return execute(minioClient -&gt; minioClient.getPresignedPostFormData(policy));</span>
   }
 
   /**
@@ -1009,14 +1010,14 @@ public interface MinioOperations {
    *             .versionId(&quot;version-id&quot;)
    *             .ssec(ssec)
    *             .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args status object arguments
    * @return populated object information and metadata
    */
   default StatObjectResponse statObject(StatObjectArgs args) {
-<span class="fc" id="L1019">    return execute(minioClient -&gt; minioClient.statObject(args));</span>
+<span class="fc" id="L1020">    return execute(minioClient -&gt; minioClient.statObject(args));</span>
   }
 
   /**
@@ -1027,12 +1028,12 @@ public interface MinioOperations {
    */
   default boolean objectExists(StatObjectArgs args) {
     try {
-<span class="pc bpc" id="L1030" title="1 of 2 branches missed.">      return statObject(args) != null;</span>
-<span class="fc" id="L1031">    } catch (MinioException e) {</span>
-<span class="pc bpc" id="L1032" title="1 of 2 branches missed.">      if (404 == e.status()) {</span>
-<span class="fc" id="L1033">        return false;</span>
+<span class="pc bpc" id="L1031" title="1 of 2 branches missed.">      return statObject(args) != null;</span>
+<span class="fc" id="L1032">    } catch (MinioException e) {</span>
+<span class="pc bpc" id="L1033" title="1 of 2 branches missed.">      if (404 == e.status()) {</span>
+<span class="fc" id="L1034">        return false;</span>
       }
-<span class="nc" id="L1035">      throw e;</span>
+<span class="nc" id="L1036">      throw e;</span>
     }
   }
 
@@ -1053,14 +1054,14 @@ public interface MinioOperations {
    * ) {
    *   // Read data from stream
    * }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the get object arguments
    * @return the input stream
    */
   default InputStream getObject(GetObjectArgs args) {
-<span class="fc" id="L1063">    return execute(minioClient -&gt; minioClient.getObject(args));</span>
+<span class="fc" id="L1064">    return execute(minioClient -&gt; minioClient.getObject(args));</span>
   }
 
   /**
@@ -1094,14 +1095,14 @@ public interface MinioOperations {
    * System.out.println(&quot;bytes returned: &quot; + stats.bytesReturned());
    *
    * stream.close();
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the select object content arguments
    * @return the select response stream
    */
   default SelectResponseStream selectObjectContent(SelectObjectContentArgs args) {
-<span class="fc" id="L1104">    return execute(minioClient -&gt; minioClient.selectObjectContent(args));</span>
+<span class="fc" id="L1105">    return execute(minioClient -&gt; minioClient.selectObjectContent(args));</span>
   }
 
   /**
@@ -1128,15 +1129,15 @@ public interface MinioOperations {
    *         .versionId(&quot;my-versionid&quot;)
    *         .bypassRetentionMode(true)
    *         .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args remove object arguments
    */
   default void removeObject(RemoveObjectArgs args) {
-<span class="fc" id="L1137">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L1138">        .removeObject(args));</span>
-<span class="fc" id="L1139">  }</span>
+<span class="fc" id="L1138">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L1139">        .removeObject(args));</span>
+<span class="fc" id="L1140">  }</span>
 
   /**
    * Removes multiple objects lazily. Its required to iterate the returned Iterable to perform
@@ -1155,14 +1156,14 @@ public interface MinioOperations {
    *   System.out.println(
    *       &quot;Error in deleting object &quot; + error.objectName() + &quot;; &quot; + error.message());
    * }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args the objects to remove
    * @return lazy iterator contains object removal status
    */
   default Iterable&lt;Result&lt;DeleteError&gt;&gt; removeObjects(RemoveObjectsArgs args) {
-<span class="fc" id="L1165">    return execute(minioClient -&gt; minioClient.removeObjects(args));</span>
+<span class="fc" id="L1166">    return execute(minioClient -&gt; minioClient.removeObjects(args));</span>
   }
 
   /**
@@ -1185,14 +1186,14 @@ public interface MinioOperations {
    *        .object(&quot;my-objectname&quot;)
    *        .sources(sourceObjectList)
    *        .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args compose object arguments
    * @return the object write response
    */
   default ObjectWriteResponse composeObject(ComposeObjectArgs args) {
-<span class="fc" id="L1195">    return execute(minioClient -&gt; minioClient.composeObject(args));</span>
+<span class="fc" id="L1196">    return execute(minioClient -&gt; minioClient.composeObject(args));</span>
   }
 
   /**
@@ -1202,7 +1203,7 @@ public interface MinioOperations {
    * @return the object write response
    */
   default ObjectWriteResponse copyObject(CopyObjectArgs args) {
-<span class="fc" id="L1205">    return execute(minioClient -&gt; minioClient.copyObject(args));</span>
+<span class="fc" id="L1206">    return execute(minioClient -&gt; minioClient.copyObject(args));</span>
   }
 
   /**
@@ -1217,14 +1218,14 @@ public interface MinioOperations {
    *        .build()););
    * System.out.println(
    *     &quot;mode: &quot; + retention.mode() + &quot;until: &quot; + retention.retainUntilDate());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get object retention arguments
    * @return object retention configuration
    */
   default Retention getObjectRetention(GetObjectRetentionArgs args) {
-<span class="fc" id="L1227">    return execute(minioClient -&gt; minioClient.getObjectRetention(args));</span>
+<span class="fc" id="L1228">    return execute(minioClient -&gt; minioClient.getObjectRetention(args));</span>
   }
 
   /**
@@ -1240,15 +1241,15 @@ public interface MinioOperations {
    *          .config(config)
    *          .bypassGovernanceMode(true)
    *          .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set object retention arguments
    */
   default void setObjectRetention(SetObjectRetentionArgs args) {
-<span class="fc" id="L1249">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L1250">        .setObjectRetention(args));</span>
-<span class="fc" id="L1251">  }</span>
+<span class="fc" id="L1250">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L1251">        .setObjectRetention(args));</span>
+<span class="fc" id="L1252">  }</span>
 
   /**
    * Gets tags of an object.
@@ -1257,14 +1258,14 @@ public interface MinioOperations {
    * Tags tags =
    *     minioClient.getObjectTags(
    *         GetObjectTagsArgs.builder().bucket(&quot;my-bucketname&quot;).object(&quot;my-objectname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args get object tags arguments
    * @return the tags
    */
   default Tags getObjectTags(GetObjectTagsArgs args) {
-<span class="fc" id="L1267">    return execute(minioClient -&gt; minioClient.getObjectTags(args));</span>
+<span class="fc" id="L1268">    return execute(minioClient -&gt; minioClient.getObjectTags(args));</span>
   }
 
   /**
@@ -1280,15 +1281,15 @@ public interface MinioOperations {
    *         .object(&quot;my-objectname&quot;)
    *         .tags((map)
    *         .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args set object tags arguments
    */
   default void setObjectTags(SetObjectTagsArgs args) {
-<span class="fc" id="L1289">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L1290">        .setObjectTags(args));</span>
-<span class="fc" id="L1291">  }</span>
+<span class="fc" id="L1290">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L1291">        .setObjectTags(args));</span>
+<span class="fc" id="L1292">  }</span>
 
   /**
    * Deletes tags of an object.
@@ -1296,15 +1297,15 @@ public interface MinioOperations {
    * &lt;pre&gt;Example: {@code
    * minioClient.deleteObjectTags(
    *     DeleteObjectTags.builder().bucket(&quot;my-bucketname&quot;).object(&quot;my-objectname&quot;).build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args delete object tags arguments
    */
   default void deleteObjectTags(DeleteObjectTagsArgs args) {
-<span class="fc" id="L1305">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L1306">        .deleteObjectTags(args));</span>
-<span class="fc" id="L1307">  }</span>
+<span class="fc" id="L1306">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L1307">        .deleteObjectTags(args));</span>
+<span class="fc" id="L1308">  }</span>
 
   /**
    * Returns true if legal hold is enabled on an object.
@@ -1322,14 +1323,14 @@ public interface MinioOperations {
    *  } else {
    *   System.out.println(&quot;Legal hold is off&quot;);
    *  }
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args is object legel hold enabled arguments
    * @return true if legal hold is enabled
    */
   default boolean isObjectLegalHoldEnabled(IsObjectLegalHoldEnabledArgs args) {
-<span class="fc" id="L1332">    return execute(minioClient -&gt; minioClient.isObjectLegalHoldEnabled(args));</span>
+<span class="fc" id="L1333">    return execute(minioClient -&gt; minioClient.isObjectLegalHoldEnabled(args));</span>
   }
 
   /**
@@ -1342,15 +1343,15 @@ public interface MinioOperations {
    *        .object(&quot;my-objectname&quot;)
    *        .versionId(&quot;object-versionId&quot;)
    *        .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args enable object legal hold arguments
    */
   default void enableObjectLegalHold(EnableObjectLegalHoldArgs args) {
-<span class="fc" id="L1351">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L1352">        .enableObjectLegalHold(args));</span>
-<span class="fc" id="L1353">  }</span>
+<span class="fc" id="L1352">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L1353">        .enableObjectLegalHold(args));</span>
+<span class="fc" id="L1354">  }</span>
 
   /**
    * Disables legal hold on an object.
@@ -1362,15 +1363,15 @@ public interface MinioOperations {
    *        .object(&quot;my-objectname&quot;)
    *        .versionId(&quot;object-versionId&quot;)
    *        .build());
-   * }*
+   * }**
    * &lt;/pre&gt;
    *
    * @param args disable object legal hold arguments
    */
   default void disableObjectLegalHold(DisableObjectLegalHoldArgs args) {
-<span class="fc" id="L1371">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
-<span class="fc" id="L1372">        .disableObjectLegalHold(args));</span>
-<span class="fc" id="L1373">  }</span>
+<span class="fc" id="L1372">    execute((MinioClientCallbackWithoutResult) minioClient -&gt; minioClient</span>
+<span class="fc" id="L1373">        .disableObjectLegalHold(args));</span>
+<span class="fc" id="L1374">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

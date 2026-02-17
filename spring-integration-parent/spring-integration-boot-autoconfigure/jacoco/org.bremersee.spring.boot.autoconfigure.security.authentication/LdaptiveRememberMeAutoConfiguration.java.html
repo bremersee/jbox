@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationProperties.RememberMeProperties;
@@ -33,11 +35,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
 
 /**
  * The ldaptive remember-me autoconfiguration.
@@ -74,7 +74,7 @@ public class LdaptiveRememberMeAutoConfiguration {
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
     String message;
-<span class="fc bfc" id="L77" title="All 2 branches covered.">    if (ObjectUtils.isEmpty(properties.getPasswordLastSetAttribute())) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">    if (isEmpty(properties.getPasswordLastSetAttribute())) {</span>
 <span class="fc" id="L78">      message = &quot;&quot;&quot;</span>
           WARNING: There is no password-last-set attribute configured.
           * Remembered users can login as long as they exist and have been correctly evaluated.
@@ -98,17 +98,6 @@ public class LdaptiveRememberMeAutoConfiguration {
 <span class="fc" id="L98">  }</span>
 
   /**
-   * Creates remember me authentication provider.
-   *
-   * @return the remember me authentication provider
-   */
-  @ConditionalOnMissingBean
-  @Bean
-  public RememberMeAuthenticationProvider rememberMeAuthenticationProvider() {
-<span class="fc" id="L108">    return new RememberMeAuthenticationProvider(rememberMeProperties.getKey());</span>
-  }
-
-  /**
    * Creates remember me services.
    *
    * @param authenticationManager the authentication manager
@@ -119,21 +108,21 @@ public class LdaptiveRememberMeAutoConfiguration {
   @Bean
   public RememberMeServices rememberMeServices(
       LdaptiveAuthenticationManager authenticationManager) {
-<span class="fc" id="L122">    LdaptiveTokenBasedRememberMeServices services = new LdaptiveTokenBasedRememberMeServices(</span>
-<span class="fc" id="L123">        rememberMeProperties.getKey(), authenticationManager);</span>
-<span class="fc" id="L124">    Optional.ofNullable(rememberMeProperties.getAlwaysRemember())</span>
-<span class="fc" id="L125">        .ifPresent(services::setAlwaysRemember);</span>
-<span class="fc" id="L126">    Optional.ofNullable(rememberMeProperties.getCookieName())</span>
-<span class="fc" id="L127">        .ifPresent(services::setCookieName);</span>
-<span class="fc" id="L128">    Optional.ofNullable(rememberMeProperties.getCookieDomain())</span>
-<span class="fc" id="L129">        .ifPresent(services::setCookieDomain);</span>
-<span class="fc" id="L130">    Optional.ofNullable(rememberMeProperties.getUseSecureCookie())</span>
-<span class="fc" id="L131">        .ifPresent(services::setUseSecureCookie);</span>
-<span class="fc" id="L132">    Optional.ofNullable(rememberMeProperties.getParameterName())</span>
-<span class="fc" id="L133">        .ifPresent(services::setParameter);</span>
-<span class="fc" id="L134">    Optional.ofNullable(rememberMeProperties.getTokenValiditySeconds())</span>
-<span class="fc" id="L135">        .ifPresent(services::setTokenValiditySeconds);</span>
-<span class="fc" id="L136">    return services;</span>
+<span class="fc" id="L111">    LdaptiveTokenBasedRememberMeServices services = new LdaptiveTokenBasedRememberMeServices(</span>
+<span class="fc" id="L112">        rememberMeProperties.getKey(), authenticationManager);</span>
+<span class="fc" id="L113">    Optional.ofNullable(rememberMeProperties.getAlwaysRemember())</span>
+<span class="fc" id="L114">        .ifPresent(services::setAlwaysRemember);</span>
+<span class="fc" id="L115">    Optional.ofNullable(rememberMeProperties.getCookieName())</span>
+<span class="fc" id="L116">        .ifPresent(services::setCookieName);</span>
+<span class="fc" id="L117">    Optional.ofNullable(rememberMeProperties.getCookieDomain())</span>
+<span class="fc" id="L118">        .ifPresent(services::setCookieDomain);</span>
+<span class="fc" id="L119">    Optional.ofNullable(rememberMeProperties.getUseSecureCookie())</span>
+<span class="fc" id="L120">        .ifPresent(services::setUseSecureCookie);</span>
+<span class="fc" id="L121">    Optional.ofNullable(rememberMeProperties.getParameterName())</span>
+<span class="fc" id="L122">        .ifPresent(services::setParameter);</span>
+<span class="fc" id="L123">    Optional.ofNullable(rememberMeProperties.getTokenValiditySeconds())</span>
+<span class="fc" id="L124">        .ifPresent(services::setTokenValiditySeconds);</span>
+<span class="fc" id="L125">    return services;</span>
   }
 
   /**
@@ -149,7 +138,7 @@ public class LdaptiveRememberMeAutoConfiguration {
   public RememberMeAuthenticationFilter rememberMeAuthenticationFilter(
       LdaptiveAuthenticationManager authenticationManager,
       RememberMeServices rememberMeServices) {
-<span class="fc" id="L152">    return new RememberMeAuthenticationFilter(authenticationManager, rememberMeServices);</span>
+<span class="fc" id="L141">    return new RememberMeAuthenticationFilter(authenticationManager, rememberMeServices);</span>
   }
 
 }

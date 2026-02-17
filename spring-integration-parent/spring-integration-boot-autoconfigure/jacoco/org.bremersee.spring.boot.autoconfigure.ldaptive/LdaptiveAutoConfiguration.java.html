@@ -22,12 +22,15 @@ import org.bremersee.ldaptive.LdaptiveOperations;
 import org.bremersee.ldaptive.LdaptiveProperties;
 import org.bremersee.ldaptive.LdaptiveProperties.ConnectionPoolProperties;
 import org.bremersee.ldaptive.LdaptiveTemplate;
+import org.bremersee.ldaptive.converter.DnToStringConverter;
+import org.bremersee.ldaptive.converter.StringToDnConverter;
 import org.bremersee.ldaptive.reactive.ReactiveLdaptiveOperations;
 import org.bremersee.ldaptive.reactive.ReactiveLdaptiveTemplate;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.DefaultConnectionFactory;
 import org.ldaptive.PooledConnectionFactory;
+import org.ldaptive.dn.Dn;
 import org.ldaptive.pool.IdlePruneStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -40,6 +43,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -54,7 +58,7 @@ import org.springframework.util.ClassUtils;
 })
 @ConditionalOnProperty(prefix = &quot;bremersee.ldaptive&quot;, name = &quot;ldap-url&quot;)
 @EnableConfigurationProperties(LdaptiveConnectionProperties.class)
-<span class="fc" id="L57">@Slf4j</span>
+<span class="fc" id="L61">@Slf4j</span>
 public class LdaptiveAutoConfiguration {
 
   private final Class&lt;? extends LdaptiveTemplate&gt; ldaptiveTemplateClass;
@@ -66,30 +70,30 @@ public class LdaptiveAutoConfiguration {
    *
    * @param properties the ldaptive connection properties
    */
-<span class="fc" id="L69">  public LdaptiveAutoConfiguration(LdaptiveConnectionProperties properties) {</span>
-<span class="fc" id="L70">    Class&lt;?&gt; cls = Objects</span>
-<span class="fc" id="L71">        .requireNonNullElse(properties.getLdaptiveTemplateClass(), LdaptiveTemplate.class);</span>
+<span class="fc" id="L73">  public LdaptiveAutoConfiguration(LdaptiveConnectionProperties properties) {</span>
+<span class="fc" id="L74">    Class&lt;?&gt; cls = Objects</span>
+<span class="fc" id="L75">        .requireNonNullElse(properties.getLdaptiveTemplateClass(), LdaptiveTemplate.class);</span>
     //noinspection unchecked
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    this.ldaptiveTemplateClass = LdaptiveTemplate.class.isAssignableFrom(cls)</span>
-<span class="fc" id="L74">        ? (Class&lt;? extends LdaptiveTemplate&gt;) cls</span>
-<span class="pc" id="L75">        : LdaptiveTemplate.class;</span>
-<span class="fc" id="L76">    this.properties = PropertiesMapper.INSTANCE.map(properties);</span>
-<span class="fc" id="L77">  }</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">    this.ldaptiveTemplateClass = LdaptiveTemplate.class.isAssignableFrom(cls)</span>
+<span class="fc" id="L78">        ? (Class&lt;? extends LdaptiveTemplate&gt;) cls</span>
+<span class="pc" id="L79">        : LdaptiveTemplate.class;</span>
+<span class="fc" id="L80">    this.properties = PropertiesMapper.INSTANCE.map(properties);</span>
+<span class="fc" id="L81">  }</span>
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-<span class="fc" id="L84">    log.info(&quot;&quot;&quot;</span>
-
+<span class="fc" id="L88">    log.info(&quot;&quot;&quot;</span>
+            
             *********************************************************************************
             * {}
             * properties = {}
             *********************************************************************************&quot;&quot;&quot;,
-<span class="fc" id="L90">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
+<span class="fc" id="L94">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
         properties);
-<span class="fc" id="L92">  }</span>
+<span class="fc" id="L96">  }</span>
 
   /**
    * Creates connection config.
@@ -99,7 +103,7 @@ public class LdaptiveAutoConfiguration {
   @ConditionalOnMissingBean(ConnectionConfig.class)
   @Bean
   public ConnectionConfig connectionConfig() {
-<span class="fc" id="L102">    return properties.createConnectionConfig();</span>
+<span class="fc" id="L106">    return properties.createConnectionConfig();</span>
   }
 
   /**
@@ -112,26 +116,26 @@ public class LdaptiveAutoConfiguration {
   @Bean(destroyMethod = &quot;close&quot;)
   public ConnectionFactory connectionFactory(ConnectionConfig connectionConfig) {
 
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    if (properties.isPooled()) {</span>
-<span class="nc" id="L116">      ConnectionPoolProperties properties = this.properties.getConnectionPool();</span>
-<span class="nc" id="L117">      PooledConnectionFactory factory = PooledConnectionFactory.builder()</span>
-<span class="nc" id="L118">          .config(connectionConfig)</span>
-<span class="nc" id="L119">          .blockWaitTime(properties.getBlockWaitTime())</span>
-<span class="nc" id="L120">          .connectOnCreate(properties.isConnectOnCreate())</span>
-<span class="nc" id="L121">          .failFastInitialize(properties.isFailFastInitialize())</span>
-<span class="nc" id="L122">          .max(properties.getMaxPoolSize())</span>
-<span class="nc" id="L123">          .min(properties.getMinPoolSize())</span>
-<span class="nc" id="L124">          .pruneStrategy(</span>
-<span class="nc" id="L125">              new IdlePruneStrategy(properties.getPrunePeriod(), properties.getIdleTime()))</span>
-<span class="nc" id="L126">          .validateOnCheckIn(properties.isValidateOnCheckIn())</span>
-<span class="nc" id="L127">          .validateOnCheckOut(properties.isValidateOnCheckOut())</span>
-<span class="nc" id="L128">          .validatePeriodically(properties.isValidatePeriodically())</span>
-<span class="nc" id="L129">          .validator(properties.getValidator().createConnectionValidator())</span>
-<span class="nc" id="L130">          .build();</span>
-<span class="nc" id="L131">      factory.initialize();</span>
-<span class="nc" id="L132">      return factory;</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">    if (properties.isPooled()) {</span>
+<span class="nc" id="L120">      ConnectionPoolProperties props = this.properties.getConnectionPool();</span>
+<span class="nc" id="L121">      PooledConnectionFactory factory = PooledConnectionFactory.builder()</span>
+<span class="nc" id="L122">          .config(connectionConfig)</span>
+<span class="nc" id="L123">          .blockWaitTime(props.getBlockWaitTime())</span>
+<span class="nc" id="L124">          .connectOnCreate(props.isConnectOnCreate())</span>
+<span class="nc" id="L125">          .failFastInitialize(props.isFailFastInitialize())</span>
+<span class="nc" id="L126">          .max(props.getMaxPoolSize())</span>
+<span class="nc" id="L127">          .min(props.getMinPoolSize())</span>
+<span class="nc" id="L128">          .pruneStrategy(</span>
+<span class="nc" id="L129">              new IdlePruneStrategy(props.getPrunePeriod(), props.getIdleTime()))</span>
+<span class="nc" id="L130">          .validateOnCheckIn(props.isValidateOnCheckIn())</span>
+<span class="nc" id="L131">          .validateOnCheckOut(props.isValidateOnCheckOut())</span>
+<span class="nc" id="L132">          .validatePeriodically(props.isValidatePeriodically())</span>
+<span class="nc" id="L133">          .validator(props.getValidator().createConnectionValidator())</span>
+<span class="nc" id="L134">          .build();</span>
+<span class="nc" id="L135">      factory.initialize();</span>
+<span class="nc" id="L136">      return factory;</span>
     }
-<span class="fc" id="L134">    return new DefaultConnectionFactory(connectionConfig);</span>
+<span class="fc" id="L138">    return new DefaultConnectionFactory(connectionConfig);</span>
   }
 
   /**
@@ -144,13 +148,13 @@ public class LdaptiveAutoConfiguration {
   @Bean
   public LdaptiveTemplate ldaptiveTemplate(ConnectionFactory connectionFactory) {
     try {
-<span class="fc" id="L147">      return ldaptiveTemplateClass</span>
-<span class="fc" id="L148">          .getConstructor(ConnectionFactory.class)</span>
-<span class="fc" id="L149">          .newInstance(connectionFactory);</span>
-<span class="nc" id="L150">    } catch (Exception e) {</span>
-<span class="nc" id="L151">      log.warn(&quot;Could not instantiate LdaptiveTemplate {}. Instantiate default template.&quot;,</span>
-<span class="nc" id="L152">          ldaptiveTemplateClass.getName(), e);</span>
-<span class="nc" id="L153">      return new LdaptiveTemplate(connectionFactory);</span>
+<span class="fc" id="L151">      return ldaptiveTemplateClass</span>
+<span class="fc" id="L152">          .getConstructor(ConnectionFactory.class)</span>
+<span class="fc" id="L153">          .newInstance(connectionFactory);</span>
+<span class="nc" id="L154">    } catch (Exception e) {</span>
+<span class="nc" id="L155">      log.warn(&quot;Could not instantiate LdaptiveTemplate {}. Instantiate default template.&quot;,</span>
+<span class="nc" id="L156">          ldaptiveTemplateClass.getName(), e);</span>
+<span class="nc" id="L157">      return new LdaptiveTemplate(connectionFactory);</span>
     }
   }
 
@@ -164,11 +168,33 @@ public class LdaptiveAutoConfiguration {
   @ConditionalOnMissingBean(ReactiveLdaptiveOperations.class)
   @Bean
   public ReactiveLdaptiveTemplate reactiveLdaptiveTemplate(ConnectionFactory connectionFactory) {
-<span class="fc" id="L167">    return new ReactiveLdaptiveTemplate(connectionFactory);</span>
+<span class="fc" id="L171">    return new ReactiveLdaptiveTemplate(connectionFactory);</span>
   }
 
   /**
-   * The interface Properties mapper.
+   * String to dn converter.
+   *
+   * @return the converter
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public Converter&lt;String, Dn&gt; stringToDnConverter() {
+<span class="nc" id="L182">    return new StringToDnConverter();</span>
+  }
+
+  /**
+   * Dn to string converter.
+   *
+   * @return the converter
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public Converter&lt;Dn, String&gt; dnToStringConverter() {
+<span class="nc" id="L193">    return new DnToStringConverter();</span>
+  }
+
+  /**
+   * The properties-mapper.
    */
   @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
   interface PropertiesMapper {
@@ -176,7 +202,7 @@ public class LdaptiveAutoConfiguration {
     /**
      * The constant INSTANCE.
      */
-<span class="fc" id="L179">    PropertiesMapper INSTANCE = Mappers.getMapper(PropertiesMapper.class);</span>
+<span class="fc" id="L205">    PropertiesMapper INSTANCE = Mappers.getMapper(PropertiesMapper.class);</span>
 
     /**
      * Map ldaptive properties.

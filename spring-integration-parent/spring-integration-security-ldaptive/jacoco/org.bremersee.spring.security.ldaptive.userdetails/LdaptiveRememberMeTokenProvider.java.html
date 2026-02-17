@@ -17,8 +17,6 @@
 package org.bremersee.spring.security.ldaptive.userdetails;
 
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.ldaptive.LdapEntry;
 
 /**
@@ -42,7 +40,7 @@ public interface LdaptiveRememberMeTokenProvider {
    * @return the ldaptive remember-me token provider
    */
   static LdaptiveRememberMeTokenProvider invalid() {
-<span class="fc" id="L45">    return InvalidRememberMeTokenProvider.getInstance();</span>
+<span class="fc" id="L43">    return new InvalidRememberMeTokenProvider();</span>
   }
 
   /**
@@ -50,23 +48,18 @@ public interface LdaptiveRememberMeTokenProvider {
    *
    * @author Christian Bremer
    */
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
   class InvalidRememberMeTokenProvider implements LdaptiveRememberMeTokenProvider {
 
-<span class="fc" id="L56">    private static final InvalidRememberMeTokenProvider INSTANCE = new InvalidRememberMeTokenProvider();</span>
-
     /**
-     * Gets instance.
-     *
-     * @return the instance
+     * Instantiates a new invalid remember me token provider.
      */
-    static InvalidRememberMeTokenProvider getInstance() {
-<span class="fc" id="L64">      return INSTANCE;</span>
-    }
+    InvalidRememberMeTokenProvider() {
+<span class="fc" id="L57">      super();</span>
+<span class="fc" id="L58">    }</span>
 
     @Override
     public final String getRememberMeToken(LdapEntry ldapEntry) {
-<span class="fc" id="L69">      return UUID.randomUUID().toString();</span>
+<span class="fc" id="L62">      return UUID.randomUUID().toString();</span>
     }
   }
 

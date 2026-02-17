@@ -16,11 +16,18 @@
 
 package org.bremersee.ldaptive.serializable;
 
+import static java.util.Objects.nonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.ToString;
 import org.ldaptive.LdapAttribute;
@@ -40,6 +47,7 @@ public class SerLdapAttr implements Serializable {
   /**
    * Attribute name.
    */
+  @JsonProperty(value = &quot;name&quot;, required = true)
   @ToString.Include
   @Getter
   private final String attributeName;
@@ -47,11 +55,13 @@ public class SerLdapAttr implements Serializable {
   /**
    * Attribute values.
    */
+  @JsonIgnore
   private final Collection&lt;byte[]&gt; attributeValues;
 
   /**
    * Whether this attribute is binary and string representations should be base64 encoded.
    */
+  @JsonProperty(value = &quot;binary&quot;, required = true)
   @ToString.Include
   @Getter
   private final boolean binary;
@@ -61,35 +71,57 @@ public class SerLdapAttr implements Serializable {
    *
    * @param ldapAttribute the ldap attribute
    */
-<span class="fc" id="L64">  public SerLdapAttr(LdapAttribute ldapAttribute) {</span>
-<span class="fc" id="L65">    this.attributeName = ldapAttribute.getName();</span>
-<span class="fc" id="L66">    this.attributeValues = ldapAttribute.getBinaryValues();</span>
-<span class="fc" id="L67">    this.binary = ldapAttribute.isBinary();</span>
-<span class="fc" id="L68">  }</span>
+<span class="fc" id="L74">  public SerLdapAttr(LdapAttribute ldapAttribute) {</span>
+<span class="fc" id="L75">    this.attributeName = ldapAttribute.getName();</span>
+<span class="fc" id="L76">    this.attributeValues = ldapAttribute.getBinaryValues();</span>
+<span class="fc" id="L77">    this.binary = ldapAttribute.isBinary();</span>
+<span class="fc" id="L78">  }</span>
+
+  /**
+   * Instantiates a new Ser ldap attr.
+   *
+   * @param name the name
+   * @param binary the binary
+   * @param values the values
+   */
+  @JsonCreator
+  public SerLdapAttr(
+      @JsonProperty(value = &quot;name&quot;, required = true) String name,
+      @JsonProperty(value = &quot;binary&quot;, required = true) boolean binary,
+<span class="fc" id="L91">      @JsonProperty(value = &quot;values&quot;) List&lt;String&gt; values) {</span>
+<span class="fc" id="L92">    this.attributeName = name;</span>
+<span class="fc" id="L93">    this.binary = binary;</span>
+<span class="fc" id="L94">    this.attributeValues = Stream.ofNullable(values)</span>
+<span class="fc" id="L95">        .flatMap(Collection::stream)</span>
+<span class="fc" id="L96">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L97">        .map(this::toByteArray)</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        .filter(bytes -&gt; bytes.length &gt; 0)</span>
+<span class="fc" id="L99">        .toList();</span>
+<span class="fc" id="L100">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="pc bpc" id="L72" title="1 of 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L73">      return true;</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L105">      return true;</span>
     }
-<span class="pc bpc" id="L75" title="2 of 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L76">      return false;</span>
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L108">      return false;</span>
     }
-<span class="fc" id="L78">    SerLdapAttr that = (SerLdapAttr) o;</span>
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">    return binary == that.binary</span>
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        &amp;&amp; Objects.equals(attributeName.toLowerCase(), that.attributeName.toLowerCase())</span>
-<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        &amp;&amp; attributeValues.size() == that.attributeValues.size()</span>
-<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        &amp;&amp; attributeValues.stream().allMatch(that::hasValue);</span>
+<span class="fc" id="L110">    SerLdapAttr that = (SerLdapAttr) o;</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">    return binary == that.binary</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        &amp;&amp; Objects.equals(attributeName.toLowerCase(), that.attributeName.toLowerCase())</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        &amp;&amp; attributeValues.size() == that.attributeValues.size()</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        &amp;&amp; attributeValues.stream().allMatch(that::hasValue);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L87">    int hash = 10223;</span>
-<span class="fc" id="L88">    int index = 1;</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">    for (byte[] b : attributeValues) {</span>
-<span class="fc" id="L90">      hash = (hash * 113 + Arrays.hashCode(b)) + index++;</span>
-<span class="fc" id="L91">    }</span>
-<span class="fc" id="L92">    return hash * 113 + Objects.hash(attributeName, binary);</span>
+<span class="fc" id="L119">    int hash = 10223;</span>
+<span class="fc" id="L120">    int index = 1;</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    for (byte[] b : attributeValues) {</span>
+<span class="fc" id="L122">      hash = hash * 113 + Arrays.hashCode(b) + index++;</span>
+<span class="fc" id="L123">    }</span>
+<span class="fc" id="L124">    return hash * 113 + Objects.hash(attributeName, binary);</span>
   }
 
   /**
@@ -98,7 +130,7 @@ public class SerLdapAttr implements Serializable {
    * @return number of values in this ldap attribute
    */
   public int size() {
-<span class="fc" id="L101">    return attributeValues.size();</span>
+<span class="fc" id="L133">    return attributeValues.size();</span>
   }
 
   /**
@@ -106,12 +138,13 @@ public class SerLdapAttr implements Serializable {
    *
    * @return single string attribute value or null if this attribute is empty
    */
+  @JsonIgnore
   public String getStringValue() {
-<span class="fc bfc" id="L110" title="All 2 branches covered.">    if (attributeValues.isEmpty()) {</span>
-<span class="fc" id="L111">      return null;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (attributeValues.isEmpty()) {</span>
+<span class="fc" id="L144">      return null;</span>
     }
-<span class="fc" id="L113">    final byte[] val = attributeValues.iterator().next();</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">    return binary ? LdapUtils.base64Encode(val) : LdapUtils.utf8Encode(val);</span>
+<span class="fc" id="L146">    final byte[] val = attributeValues.iterator().next();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    return binary ? LdapUtils.base64Encode(val) : LdapUtils.utf8Encode(val);</span>
   }
 
 
@@ -121,16 +154,17 @@ public class SerLdapAttr implements Serializable {
    *
    * @return collection of string attribute values
    */
+  @JsonProperty(value = &quot;values&quot;)
   @ToString.Include
   public Collection&lt;String&gt; getStringValues() {
-<span class="fc" id="L126">    return attributeValues.stream()</span>
-<span class="fc" id="L127">        .map(v -&gt; {</span>
-<span class="fc bfc" id="L128" title="All 2 branches covered.">          if (binary) {</span>
-<span class="fc" id="L129">            return LdapUtils.base64Encode(v);</span>
+<span class="fc" id="L160">    return attributeValues.stream()</span>
+<span class="fc" id="L161">        .map(v -&gt; {</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">          if (binary) {</span>
+<span class="fc" id="L163">            return LdapUtils.base64Encode(v);</span>
           }
-<span class="fc" id="L131">          return LdapUtils.utf8Encode(v, false);</span>
+<span class="fc" id="L165">          return LdapUtils.utf8Encode(v, false);</span>
         })
-<span class="fc" id="L133">        .toList();</span>
+<span class="fc" id="L167">        .toList();</span>
   }
 
   /**
@@ -138,18 +172,19 @@ public class SerLdapAttr implements Serializable {
    *
    * @return single byte array attribute value or null if this attribute is empty
    */
+  @JsonIgnore
   public byte[] getBinaryValue() {
-<span class="fc bfc" id="L142" title="All 2 branches covered.">    return attributeValues.isEmpty() ? null : attributeValues.iterator().next();</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    return attributeValues.isEmpty() ? null : attributeValues.iterator().next();</span>
   }
-
 
   /**
    * Returns the values of this attribute as byte arrays. The return collection cannot be modified.
    *
    * @return collection of string attribute values
    */
+  @JsonIgnore
   public Collection&lt;byte[]&gt; getBinaryValues() {
-<span class="fc" id="L152">    return attributeValues.stream().toList();</span>
+<span class="fc" id="L187">    return attributeValues.stream().toList();</span>
   }
 
   /**
@@ -158,10 +193,10 @@ public class SerLdapAttr implements Serializable {
    * @param value to find
    * @return whether value exists
    */
-  public boolean hasValue(final byte[] value) {
-<span class="fc" id="L162">    return attributeValues.stream().anyMatch(bb -&gt; Arrays.equals(bb, value));</span>
+  public boolean hasValue(byte[] value) {
+<span class="fc" id="L197">    return attributeValues.stream()</span>
+<span class="fc" id="L198">        .anyMatch(attrValueBytes -&gt; Arrays.equals(attrValueBytes, value));</span>
   }
-
 
   /**
    * Returns whether the supplied value exists in this attribute.
@@ -170,18 +205,39 @@ public class SerLdapAttr implements Serializable {
    * @return whether value exists
    */
   public boolean hasValue(String value) {
-<span class="fc" id="L173">    return attributeValues.stream().anyMatch(bb -&gt; Arrays.equals(bb, toByteArray(value)));</span>
+<span class="fc" id="L208">    return attributeValues.stream()</span>
+<span class="fc" id="L209">        .anyMatch(attrValueBytes -&gt; {</span>
+<span class="fc" id="L210">          byte[] valueBytes = toByteArray(value);</span>
+<span class="pc bpc" id="L211" title="2 of 4 branches missed.">          return valueBytes.length &gt; 0 &amp;&amp; Arrays.equals(valueBytes, attrValueBytes);</span>
+        });
+  }
+
+  /**
+   * To ldap attribute.
+   *
+   * @return the ldap attribute
+   */
+  public LdapAttribute toLdapAttribute() {
+<span class="fc" id="L221">    LdapAttribute ldapAttribute = new LdapAttribute();</span>
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">    if (nonNull(attributeName)) {</span>
+<span class="fc" id="L223">      ldapAttribute.setName(attributeName);</span>
+    }
+<span class="fc" id="L225">    ldapAttribute.setBinary(binary);</span>
+<span class="pc bpc" id="L226" title="2 of 4 branches missed.">    if (nonNull(attributeValues) &amp;&amp; !attributeValues.isEmpty()) {</span>
+<span class="fc" id="L227">      ldapAttribute.addBinaryValues(attributeValues);</span>
+    }
+<span class="fc" id="L229">    return ldapAttribute;</span>
   }
 
   private byte[] toByteArray(String value) {
-<span class="pc bpc" id="L177" title="1 of 2 branches missed.">    if (binary) {</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">    if (binary) {</span>
       try {
-<span class="nc" id="L179">        return LdapUtils.base64Decode(value);</span>
-<span class="nc" id="L180">      } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L181">        return null;</span>
+<span class="fc" id="L235">        return LdapUtils.base64Decode(value);</span>
+<span class="nc" id="L236">      } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L237">        return new byte[0];</span>
       }
     }
-<span class="fc" id="L184">    return LdapUtils.utf8Encode(value, false);</span>
+<span class="fc" id="L240">    return LdapUtils.utf8Encode(value, false);</span>
   }
 
 }

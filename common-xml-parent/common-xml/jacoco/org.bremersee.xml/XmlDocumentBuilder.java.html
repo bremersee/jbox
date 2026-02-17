@@ -16,10 +16,10 @@
 
 package org.bremersee.xml;
 
-import java.io.File;
-import java.io.InputStream;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
+import java.io.File;
+import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.Schema;
@@ -71,7 +71,7 @@ public interface XmlDocumentBuilder {
    * ignoringElementContentWhitespace = false
    * namespaceAware                   = true
    * validating                       = false
-   * xIncludeAware                    = false
+   * xmlIncludeAware                  = false
    * &lt;/pre&gt;
    *
    * @param coalescing the coalescing
@@ -80,7 +80,7 @@ public interface XmlDocumentBuilder {
    * @param ignoringElementContentWhitespace the ignoring element content whitespace
    * @param namespaceAware the namespace aware
    * @param validating the validating
-   * @param xIncludeAware the x include aware
+   * @param xmlIncludeAware the x include aware
    * @return the xml document builder
    */
   XmlDocumentBuilder configureFactory(
@@ -90,7 +90,7 @@ public interface XmlDocumentBuilder {
       Boolean ignoringElementContentWhitespace,
       Boolean namespaceAware,
       Boolean validating,
-      Boolean xIncludeAware);
+      Boolean xmlIncludeAware);
 
   /**
    * Sets the given attribute to the underlying {@link DocumentBuilderFactory}.

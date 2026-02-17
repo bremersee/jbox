@@ -27,7 +27,7 @@ import java.io.Serial;
  * @param &lt;T&gt; the exception type
  * @author Christian Bremer
  */
-<span class="fc" id="L30">public abstract class AbstractServiceExceptionBuilder&lt;T extends ServiceException&gt;</span>
+public abstract class AbstractServiceExceptionBuilder&lt;T extends ServiceException&gt;
     implements ServiceExceptionBuilder&lt;T&gt; {
 
   @Serial
@@ -53,51 +53,58 @@ import java.io.Serial;
    */
   protected Throwable cause;
 
+  /**
+   * Instantiates a new abstract service exception builder.
+   */
+  protected AbstractServiceExceptionBuilder() {
+<span class="fc" id="L60">    super();</span>
+<span class="fc" id="L61">  }</span>
+
   @Override
   public ServiceExceptionBuilder&lt;T&gt; httpStatus(int httpStatus) {
-<span class="fc" id="L58">    this.httpStatus = httpStatus;</span>
-<span class="fc" id="L59">    return this;</span>
+<span class="fc" id="L65">    this.httpStatus = httpStatus;</span>
+<span class="fc" id="L66">    return this;</span>
   }
 
   @Override
   public ServiceExceptionBuilder&lt;T&gt; errorCode(String errorCode) {
-<span class="fc" id="L64">    this.errorCode = errorCode;</span>
-<span class="fc" id="L65">    return this;</span>
+<span class="fc" id="L71">    this.errorCode = errorCode;</span>
+<span class="fc" id="L72">    return this;</span>
   }
 
   @Override
   public ServiceExceptionBuilder&lt;T&gt; reason(String reason) {
-<span class="fc" id="L70">    this.reason = reason;</span>
-<span class="fc" id="L71">    return this;</span>
+<span class="fc" id="L77">    this.reason = reason;</span>
+<span class="fc" id="L78">    return this;</span>
   }
 
   @Override
   public ServiceExceptionBuilder&lt;T&gt; cause(Throwable cause) {
-<span class="fc" id="L76">    this.cause = cause;</span>
-<span class="fc" id="L77">    return this;</span>
+<span class="fc" id="L83">    this.cause = cause;</span>
+<span class="fc" id="L84">    return this;</span>
   }
 
   @Override
   public ServiceExceptionBuilder&lt;T&gt; from(ServiceException serviceException) {
-<span class="fc" id="L82">    this.httpStatus = serviceException.status();</span>
-<span class="fc" id="L83">    this.errorCode = serviceException.getErrorCode();</span>
-<span class="fc" id="L84">    this.reason = serviceException.getMessage();</span>
-<span class="fc" id="L85">    this.cause = serviceException.getCause();</span>
-<span class="fc" id="L86">    return this;</span>
+<span class="fc" id="L89">    this.httpStatus = serviceException.status();</span>
+<span class="fc" id="L90">    this.errorCode = serviceException.getErrorCode();</span>
+<span class="fc" id="L91">    this.reason = serviceException.getMessage();</span>
+<span class="fc" id="L92">    this.cause = serviceException.getCause();</span>
+<span class="fc" id="L93">    return this;</span>
   }
 
   @Override
   public T build() {
-<span class="pc bpc" id="L91" title="1 of 6 branches missed.">    if (nonNull(reason) &amp;&amp; !reason.isBlank() &amp;&amp; nonNull(cause)) {</span>
-<span class="fc" id="L92">      return buildWith(httpStatus, errorCode, reason, cause);</span>
+<span class="pc bpc" id="L98" title="1 of 6 branches missed.">    if (nonNull(reason) &amp;&amp; !reason.isBlank() &amp;&amp; nonNull(cause)) {</span>
+<span class="fc" id="L99">      return buildWith(httpStatus, errorCode, reason, cause);</span>
     }
-<span class="pc bpc" id="L94" title="1 of 6 branches missed.">    if ((isNull(reason) || reason.isBlank()) &amp;&amp; nonNull(cause)) {</span>
-<span class="fc" id="L95">      return buildWith(httpStatus, errorCode, cause);</span>
+<span class="pc bpc" id="L101" title="1 of 6 branches missed.">    if ((isNull(reason) || reason.isBlank()) &amp;&amp; nonNull(cause)) {</span>
+<span class="fc" id="L102">      return buildWith(httpStatus, errorCode, cause);</span>
     }
-<span class="pc bpc" id="L97" title="1 of 4 branches missed.">    if (nonNull(reason) &amp;&amp; !reason.isBlank()) {</span>
-<span class="fc" id="L98">      return buildWith(httpStatus, errorCode, reason);</span>
+<span class="pc bpc" id="L104" title="1 of 4 branches missed.">    if (nonNull(reason) &amp;&amp; !reason.isBlank()) {</span>
+<span class="fc" id="L105">      return buildWith(httpStatus, errorCode, reason);</span>
     }
-<span class="fc" id="L100">    return buildWith(httpStatus, errorCode);</span>
+<span class="fc" id="L107">    return buildWith(httpStatus, errorCode);</span>
   }
 
   /**
@@ -108,7 +115,7 @@ import java.io.Serial;
    * @return the service exception
    */
   protected T buildWith(int httpStatus, String errorCode) {
-<span class="fc" id="L111">    return buildWith(httpStatus, errorCode, null, null);</span>
+<span class="fc" id="L118">    return buildWith(httpStatus, errorCode, null, null);</span>
   }
 
   /**
@@ -120,7 +127,7 @@ import java.io.Serial;
    * @return the service exception
    */
   protected T buildWith(int httpStatus, String errorCode, String reason) {
-<span class="fc" id="L123">    return buildWith(httpStatus, errorCode, reason, null);</span>
+<span class="fc" id="L130">    return buildWith(httpStatus, errorCode, reason, null);</span>
   }
 
   /**
@@ -132,7 +139,7 @@ import java.io.Serial;
    * @return the t
    */
   protected T buildWith(int httpStatus, String errorCode, Throwable cause) {
-<span class="fc" id="L135">    return buildWith(httpStatus, errorCode, null, cause);</span>
+<span class="fc" id="L142">    return buildWith(httpStatus, errorCode, null, cause);</span>
   }
 
   /**
