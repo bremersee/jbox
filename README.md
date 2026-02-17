@@ -1,6 +1,6 @@
 # jbox
 
-[![codecov](https://codecov.io/gh/bremersee/jbox/branch/develop/graph/badge.svg)](https://codecov.io/gh/bremersee/jbox)
+[![codecov](https://codecov.io/gh/bremersee/jbox/branch/main/graph/badge.svg)](https://codecov.io/gh/bremersee/jbox)
 
 A bundle of bremersee maven projects.
 
@@ -8,4 +8,4 @@ A bundle of bremersee maven projects.
 
 - [Release](https://bremersee.github.io/jbox/index.html)
 
-- [Snapshot](https://nexus.bremersee.org/repository/maven-sites/common-parent/5.0.0-SNAPSHOT/index.html)
+- [Snapshot](https://nexus.bremersee.org/repository/maven-sites/common-parent/5.0.0/index.html)

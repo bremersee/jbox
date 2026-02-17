@@ -1,7 +1,5 @@
 # Common XML Processing
 
-[![codecov](https://codecov.io/gh/bremersee/common-xml/branch/develop/graph/badge.svg)](https://codecov.io/gh/bremersee/common-xml)
-
 This library contains
 
 - some xml adapters (for java.util.Date, java.time.Duration, java.time.Instant, 
@@ -12,12 +10,6 @@ This library contains
 - a JAXB context builder (`JaxbContextBuilder`) which is able to generate a JAXB context on runtime,
 - a schema builder (`SchemaBuilder`)
 - and a xml document builder (`XmlDocumentBuilder`).
-
-#### Maven Site
-
-- [Release](https://bremersee.github.io/common-xml/index.html)
-
-- [Snapshot](https://nexus.bremersee.org/repository/maven-sites/common-xml/5.0.0-SNAPSHOT/index.html)
 
 ## Usage of JaxbContextBuilder
 
