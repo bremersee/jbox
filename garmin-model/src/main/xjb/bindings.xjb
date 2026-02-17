@@ -1,0 +1,356 @@
+<?xml version="1.0" ?>
+<bindings version="3.0"
+  xmlns="https://jakarta.ee/xml/ns/jaxb"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
+  extensionBindingPrefixes="xjc inheritance">
+
+  <globalBindings>
+    <xjc:simple />
+    <serializable uid="1" />
+  </globalBindings>
+
+  <bindings schemaLocation="../xsd/AccelerationExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.acceleration.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ActiveItemExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.activeitem.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ActivityExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.activity.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ActivityExtensionv2.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.activity.v2.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ActivityGoalsExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.activitygoals.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/AdventuresExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.adventures.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/CalorieBurnDataV1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.calorieburndata.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/clientprofilev1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.clientprofile.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ConverterPluginv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.converterplugin.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/CourseExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.course.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/CreationTimeExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.creationtime.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/DataTypeLocationExtension1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.datatypelocation.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/DeviceDownloadV1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.devicedownload.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/DirectoryListingV1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.directorylisting.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/Eulav1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.eula.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/PowerExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.power.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/PressureExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.pressure.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/TripMetaDataExtensionsv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.tripmetadata.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ViaPointTransportationModeExtensionsv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.viapointtransportationmode.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+  
+  <bindings schemaLocation="../xsd/GarminMobileAppPathExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garminmobileapppath.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GpxExtensionsv3.xsd" node="/xsd:schema">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.gpx.v3.model.ext"/>
+    </schemaBindings>
+    <bindings node="//xsd:complexType[@name='Address_t']">
+      <class/>
+      <inheritance:implements>org.bremersee.garmin.model.CommonAddressT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:complexType[@name='Categories_t']">
+      <class/>
+      <inheritance:implements>org.bremersee.garmin.model.CommonCategoriesT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:simpleType[@name='DisplayMode_t']">
+      <inheritance:implements>org.bremersee.garmin.model.CommonDisplayModeT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:complexType[@name='PhoneNumber_t']">
+      <class/>
+      <inheritance:implements>org.bremersee.garmin.model.CommonPhoneNumberT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:complexType[@name='WaypointExtension_t']">
+      <inheritance:implements>org.bremersee.garmin.model.CommonWaypointExtension</inheritance:implements>
+    </bindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/TrackPointExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.trackpoint.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/TripExtensionsv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.trip.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/VideoExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.video.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/WaypointExtensionv1.xsd" node="/xsd:schema">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.waypoint.v1.model.ext"/>
+    </schemaBindings>
+    <bindings node="//xsd:complexType[@name='Address_t']">
+      <class/>
+      <inheritance:implements>org.bremersee.garmin.model.CommonAddressT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:complexType[@name='Categories_t']">
+      <class/>
+      <inheritance:implements>org.bremersee.garmin.model.CommonCategoriesT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:simpleType[@name='DisplayMode_t']">
+      <inheritance:implements>org.bremersee.garmin.model.CommonDisplayModeT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:complexType[@name='PhoneNumber_t']">
+      <class/>
+      <inheritance:implements>org.bremersee.garmin.model.CommonPhoneNumberT</inheritance:implements>
+    </bindings>
+    <bindings node="//xsd:complexType[@name='WaypointExtension_t']">
+      <inheritance:implements>org.bremersee.garmin.model.CommonWaypointExtension</inheritance:implements>
+    </bindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/WebLinkExtensionsv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.weblink.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+  
+  <bindings schemaLocation="../xsd/fatcalorieextensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.fatcalorie.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/FitnessDeviceLimitsv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.fitnessdevicelimits.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/FlightPlanv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.flightplan.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ForerunnerLogbookv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.forerunnerlogbook.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GarminDeviceExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garmindevice.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GarminDeviceExtensionv2.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garmindevice.v2.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GarminDevicev1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garmindevice.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GarminDevicev2.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garmindevice.v2.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GarminOEMDeviceExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garminoemdevice.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GarminTextTranslationv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.garmintexttranslation.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/ggz.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.ggz.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GpxExtensionsv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.gpx.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/GpxExtensionsv2.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.gpx.v2.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/HardwareVersionExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.hardwareversion.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/HistoryDatabasev1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.historydatabase.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/iFixExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.ifix.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/MobileExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.mobile.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/TrackPointExtensionv2.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.trackpoint.v2.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/TrackStatsExtension.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.trackstats.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/UserAccountsExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.useraccounts.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/UserProfileExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.userprofile.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+  
+  <bindings schemaLocation="../xsd/UserProfileExtensionv2.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.userprofile.v2.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/UserProfilePowerExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.userprofilepower.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/WorkoutDatabasev1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.workout.v1.model"/>
+    </schemaBindings>
+  </bindings>
+
+  <bindings schemaLocation="../xsd/WorkoutExtensionv1.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.garmin.workout.v1.model.ext"/>
+    </schemaBindings>
+  </bindings>
+  
+</bindings>

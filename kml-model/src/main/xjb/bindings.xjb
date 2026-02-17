@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<bindings version="3.0"
+  xmlns="https://jakarta.ee/xml/ns/jaxb"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  xmlns:kml="http://www.opengis.net/kml/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  extensionBindingPrefixes="xjc inheritance">
+
+  <globalBindings>
+    <xjc:simple/>
+    <serializable uid="1"/>
+  </globalBindings>
+
+  <bindings schemaLocation="../xsd/ogckml22.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.opengis.kml.v22"/>
+    </schemaBindings>
+  </bindings>
+  <bindings schemaLocation="../xsd/kml22gx.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.google.kml.v22.ext"/>
+    </schemaBindings>
+  </bindings>
+  <bindings schemaLocation="../xsd/atom-author-link.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.w3c.atom"/>
+    </schemaBindings>
+  </bindings>
+  <bindings schemaLocation="../xsd/xAL.xsd">
+    <schemaBindings>
+      <package name="org.bremersee.oasis.xal"/>
+    </schemaBindings>
+  </bindings>
+  <bindings scd="kml:scale">
+    <class name="scaleliteral"/>
+  </bindings>
+  <bindings scd="kml:snippet">
+    <class name="snippetliteral"/>
+  </bindings>
+  <bindings scd="kml:Snippet">
+    <property name="snippetDeprecated"/>
+  </bindings>
+  <bindings scd="atom:link">
+    <property name="atomLink"/>
+  </bindings>
+</bindings>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.bremersee</groupId>
+    <artifactId>common-parent</artifactId>
+    <version>5.0.0</version>
+  </parent>
+
+  <artifactId>common-exception-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Common Exception Parent Module</name>
+  <description>Common Exception Project</description>
+  <inceptionYear>2022</inceptionYear>
+  <url>https://bremersee.github.io/jbox/common-exception-parent/index.html</url>
+
+  <modules>
+    <module>common-exception</module>
+    <module>common-exception-model</module>
+    <module>common-exception-spring-web</module>
+    <module>common-exception-spring-webmvc</module>
+    <module>common-exception-spring-webflux</module>
+    <module>common-exception-feign</module>
+    <module>common-exception-spring-boot-autoconfigure</module>
+    <module>common-exception-spring-boot-web-starter</module>
+    <module>common-exception-spring-boot-webflux-starter</module>
+  </modules>
+
+  <developers>
+    <developer>
+      <id>bremersee</id>
+      <name>Christian Bremer</name>
+      <organization>bremersee.org</organization>
+      <organizationUrl>https://bremersee.org</organizationUrl>
+      <email>christian@bremersee.org</email>
+      <timezone>Europe/Berlin</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <organization>
+    <name>bremersee.org</name>
+    <url>https://bremersee.org</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+</project>

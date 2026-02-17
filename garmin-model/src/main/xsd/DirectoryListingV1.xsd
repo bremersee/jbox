@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+
+<xsd:schema xmlns="http://www.garmin.com/xmlschemas/DirectoryListing/v1"
+		    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://www.garmin.com/xmlschemas/DirectoryListing/v1"
+			elementFormDefault="qualified">
+
+  <xsd:element name="DirectoryListing" type="DirectoryListing_t">
+    <xsd:annotation>
+      <xsd:documentation>
+        A directory listing for a Garmin Mass-Storage mode device.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+               
+  <xsd:complexType name="DirectoryListing_t">
+    <xsd:sequence>
+      <xsd:element name="File" type="File_t" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+            A file is a node in a compound directory listing which can be either a directory
+            containing other files or directories or an actual file.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="UnitId" type="xsd:unsignedInt" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>A globally unique identifier for this device. Same as Id in GarminDevice.xml</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="VolumePrefix" type="xsd:string" use="required">
+      <xsd:annotation>
+        <xsd:documentation>such as G:/ on the PC or /Volumes/ on the Mac</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="RequestedPath" type="xsd:anyURI" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The relative path of the original request. (This may be a search path.)</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  
+  <xsd:complexType name="File_t">
+    <xsd:annotation><xsd:documentation>
+        A node in a directory listing which represents either a file or directory.
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="CreationTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+            The creation time from FIT header. If the creation time is not available in the 
+            FIT header or if the file is not FIT type, provides file creation time.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FitId" type="FITDeviceGlobalUniqueIdentifier_t" minOccurs="0" >
+        <xsd:annotation>
+          <xsd:documentation>
+            Values that uniquely identify a FIT activity. This value will only be available for 
+            FIT file type.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="File" type="File_t" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="Path" type="xsd:anyURI" use="required" >
+      <xsd:annotation>
+        <xsd:documentation>
+          The path of the file relative to the VolumePrefix of the device
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="IsDirectory" type="xsd:boolean" use="required" />
+    <xsd:attribute name="Size" type="xsd:unsignedLong" use="optional" >
+      <xsd:annotation>
+        <xsd:documentation>
+          The MD5 checksum as a hex string. This attribute is only present if the file
+          is not a directory.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="MD5Sum" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+           The MD5 checksum as a hex string. This attribute is only present if the file
+           is not a directory, and the client has asked for message digest verification when
+           the directory listing was requested.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+	</xsd:complexType>
+
+  <xsd:complexType name="FITDeviceGlobalUniqueIdentifier_t">
+    <xsd:sequence>
+      <xsd:element name="Id" type="xsd:unsignedInt" minOccurs="0"/>
+      <xsd:element name="FileType" type="xsd:unsignedByte"/>
+      <xsd:element name="Manufacturer" type="xsd:unsignedShort" minOccurs="0"/>
+      <xsd:element name="Product" type="xsd:unsignedShort" minOccurs="0"/>
+      <xsd:element name="SerialNumber" type="xsd:unsignedInt" minOccurs="0"/>
+      <xsd:element name="FileNumber" type="xsd:unsignedShort" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+
+

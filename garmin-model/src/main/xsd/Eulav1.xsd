@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+	xmlns="http://www.garmin.com/xmlschemas/Eula/v1" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.garmin.com/xmlschemas/Eula/v1" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+	
+	<xsd:element name="Eulas" type="Eulas_t"/>
+	<xsd:complexType name="Eulas_t">
+		<xsd:sequence>
+			<xsd:element name="Eula" type="Eula_t" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Extensions" type="Extensions_t" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Eula_t">
+		<xsd:sequence>
+			<xsd:element name="PartNumber" type="PartNumber_t"/>
+			<xsd:element name="Version" type="Version_t"/>
+			<xsd:element name="Acknowledged" type="xsd:boolean"/>
+			<xsd:element name="Title" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Extensions" type="Extensions_t" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Version_t">
+		<xsd:sequence>
+			<xsd:element name="Major" type="xsd:unsignedShort"/>
+			<xsd:element name="Minor" type="xsd:unsignedShort"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="PartNumber_t">
+		<xsd:annotation>
+			<xsd:documentation>The formatted XXX-XXXXX-XX part number of the eula.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[\p{Lu}\d]{3}-[\p{Lu}\d]{5}-[\p{Lu}\d]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="Extensions_t">
+		<xsd:annotation>
+			<xsd:documentation>This type provides the ability to extend any data type that includes it.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+</xsd:schema>

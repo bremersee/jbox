@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns="http://www.garmin.com/xmlschemas/FitnessDeviceLimits/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fdl1="http://www.garmin.com/xmlschemas/FitnessDeviceLimits/v1" targetNamespace="http://www.garmin.com/xmlschemas/FitnessDeviceLimits/v1" elementFormDefault="qualified">
+	<xsd:element name="WorkoutLimits" type="WorkoutLimits_t"/>
+	<xsd:element name="CourseLimits" type="CourseLimits_t"/>
+	<xsd:complexType name="WorkoutLimits_t">
+		<xsd:sequence>
+			<xsd:element name="MaxWorkouts" type="xsd:unsignedInt"/>
+			<xsd:element name="MaxUnscheduledWorkouts" type="xsd:unsignedInt"/>
+			<xsd:element name="MaxOccurrences" type="xsd:unsignedInt"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CourseLimits_t">
+		<xsd:sequence>
+			<xsd:element name="MaxCourses" type="xsd:unsignedInt"/>
+			<xsd:element name="MaxCourseLaps" type="xsd:unsignedInt"/>
+			<xsd:element name="MaxCoursePoints" type="xsd:unsignedInt"/>
+			<xsd:element name="MaxCourseTrackPoints" type="xsd:unsignedInt"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
