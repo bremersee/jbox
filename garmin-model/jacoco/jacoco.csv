@@ -109,8 +109,8 @@ Garmin Model,org.bremersee.garmin.converterplugin.v1.model,ConverterPlugin.Outpu
 Garmin Model,org.bremersee.garmin.converterplugin.v1.model,ExtensionsT,14,0,2,0,4,0,3,0,2,0
 Garmin Model,org.bremersee.garmin.converterplugin.v1.model,ConverterPlugin,70,0,2,0,28,0,19,0,18,0
 Garmin Model,org.bremersee.garmin.power.v1.model.ext,ObjectFactory,11,7,0,0,3,1,2,1,2,1
-Garmin Model,org.bremersee.garmin.garmindevice.v2.model,UnlockCodeT,17,0,0,0,7,0,5,0,5,0
 Garmin Model,org.bremersee.garmin.garmindevice.v2.model,InputToUnitT,17,0,0,0,7,0,5,0,5,0
+Garmin Model,org.bremersee.garmin.garmindevice.v2.model,UnlockCodeT,17,0,0,0,7,0,5,0,5,0
 Garmin Model,org.bremersee.garmin.garmindevice.v2.model,DataTypeT,28,0,2,0,10,0,7,0,6,0
 Garmin Model,org.bremersee.garmin.garmindevice.v2.model,ExtensionsT,14,0,2,0,4,0,3,0,2,0
 Garmin Model,org.bremersee.garmin.garmindevice.v2.model,AppProtocolT,21,0,2,0,7,0,5,0,4,0
@@ -176,8 +176,8 @@ Garmin Model,org.bremersee.garmin.workout.v1.model.ext,UserInitiatedT,3,0,0,0,1,
 Garmin Model,org.bremersee.garmin.workout.v1.model.ext,HeartRateAsPercentOfMaxT,10,0,0,0,4,0,3,0,3,0
 Garmin Model,org.bremersee.garmin.workout.v1.model.ext,IntensityT,31,25,4,0,5,6,4,2,2,2
 Garmin Model,org.bremersee.garmin.workout.v1.model.ext,PowerAsPercentOfFTPT,10,0,0,0,4,0,3,0,3,0
-Garmin Model,org.bremersee.garmin.workout.v1.model.ext,StepT,38,0,0,0,16,0,11,0,11,0
 Garmin Model,org.bremersee.garmin.workout.v1.model.ext,CaloriesBurnedT,10,0,0,0,4,0,3,0,3,0
+Garmin Model,org.bremersee.garmin.workout.v1.model.ext,StepT,38,0,0,0,16,0,11,0,11,0
 Garmin Model,org.bremersee.garmin.garminoemdevice.v1.model,ExtensionsT,14,0,2,0,4,0,3,0,2,0
 Garmin Model,org.bremersee.garmin.garminoemdevice.v1.model,OEMUpdateFileT,52,0,0,0,22,0,15,0,15,0
 Garmin Model,org.bremersee.garmin.garminoemdevice.v1.model,TransferDirectionT,31,32,4,0,5,7,4,2,2,2

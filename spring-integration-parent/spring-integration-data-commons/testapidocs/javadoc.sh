@@ -1,1 +1,1 @@
-/Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/javadoc -J-Duser.language= -J-Duser.country= @options @packages
+/usr/lib/jvm/java-21-openjdk-amd64/bin/javadoc -J-Duser.language= -J-Duser.country= @options @packages
