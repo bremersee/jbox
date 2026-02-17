@@ -5,7 +5,7 @@ pipeline {
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
     TEST = true
-    DEPLOY = true
+    DEPLOY = false
     SNAPSHOT_SITE = true
     RELEASE_SITE = true
     DEPLOY_FEATURE = false
