@@ -61,12 +61,12 @@ import org.testcontainers.utility.DockerImageName;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(SoftAssertionsExtension.class)
 @Slf4j
-public class MongoIntegrationTest {
+class MongoIntegrationTest {
 
   @Container
   @ServiceConnection
   static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName
-      .parse("mongo:4.0.10"));
+      .parse("mongo:latest"));
 
   /**
    * The Mongo template.

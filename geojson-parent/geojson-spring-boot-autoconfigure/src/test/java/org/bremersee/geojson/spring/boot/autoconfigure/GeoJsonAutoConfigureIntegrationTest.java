@@ -71,12 +71,12 @@ import reactor.core.publisher.Mono;
 @EnableMongoRepositories(basePackageClasses = {GeometryEntityRepository.class})
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GeoJsonAutoConfigureIntegrationTest {
+class GeoJsonAutoConfigureIntegrationTest {
 
   @Container
   @ServiceConnection
   static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName
-      .parse("mongo:4.0.10"));
+      .parse("mongo:latest"));
 
   /**
    * The Geometry factory.
