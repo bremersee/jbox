@@ -26,9 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -38,13 +36,27 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public abstract class UnknownAware {
 
   @Schema(description = "Unknown properties.", hidden = true)
   @JsonIgnore
   private Map<String, Object> unknown;
+
+  /**
+   * Instantiates a new unknown aware.
+   */
+  protected UnknownAware() {
+    super();
+  }
+
+  /**
+   * Instantiates a new unknown aware.
+   *
+   * @param unknown the unknown
+   */
+  protected UnknownAware(Map<String, Object> unknown) {
+    this.unknown = unknown;
+  }
 
   /**
    * Gets the unknown json properties (can be {@code null}).
@@ -115,9 +127,9 @@ public abstract class UnknownAware {
       if (value == null) {
         break;
       }
-      if (value instanceof Map && tokenizer.hasMoreTokens()) {
+      if (value instanceof Map map && tokenizer.hasMoreTokens()) {
         try {
-          tmpUnknown = (Map) value;
+          tmpUnknown = map;
         } catch (Exception e) {
           return Optional.empty();
         }
@@ -147,8 +159,8 @@ public abstract class UnknownAware {
       return Optional.empty();
     }
     try {
-      return findUnknown(jsonPath, List.class).map(
-          list -> Collections.unmodifiableList(list));
+      return findUnknown(jsonPath, List.class)
+          .map(list -> Collections.unmodifiableList(list));
 
     } catch (RuntimeException ignored) {
       return Optional.empty();
@@ -159,8 +171,8 @@ public abstract class UnknownAware {
    * Find a map / json object from the unknown map.
    *
    * @param jsonPath the json path, e. g. {@code $.firstKey.secondKey.thirdKey}
-   * @return an empty optional if the map / json object was not found or can not be cast,
-   *     otherwise the map / json object
+   * @return an empty optional if the map / json object was not found or can not be cast, otherwise
+   *     the map / json object
    */
   public Optional<Map<String, Object>> findUnknownMap(String jsonPath) {
     try {

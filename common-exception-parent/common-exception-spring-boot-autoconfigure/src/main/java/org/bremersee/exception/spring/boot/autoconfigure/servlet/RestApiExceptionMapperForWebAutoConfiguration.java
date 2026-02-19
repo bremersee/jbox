@@ -16,7 +16,8 @@
 
 package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionMapper;
 import org.bremersee.exception.RestApiExceptionMapperForWeb;
 import org.bremersee.exception.spring.boot.autoconfigure.RestApiExceptionMapperBootProperties;
@@ -44,8 +45,10 @@ import org.springframework.util.ClassUtils;
 })
 @AutoConfiguration
 @EnableConfigurationProperties({RestApiExceptionMapperBootProperties.class})
-@Slf4j
 public class RestApiExceptionMapperForWebAutoConfiguration {
+
+  private static final Log log = LogFactory
+      .getLog(RestApiExceptionMapperForWebAutoConfiguration.class);
 
   private final String applicationName;
 
@@ -69,17 +72,17 @@ public class RestApiExceptionMapperForWebAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * applicationName = {}
-            * properties = {}
+            * applicationName = %s
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
         applicationName,
-        properties);
+        properties));
   }
 
   /**

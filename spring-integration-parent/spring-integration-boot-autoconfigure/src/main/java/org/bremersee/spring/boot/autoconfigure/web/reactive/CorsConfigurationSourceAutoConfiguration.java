@@ -16,7 +16,8 @@
 
 package org.bremersee.spring.boot.autoconfigure.web.reactive;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.web.CorsProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -41,8 +42,9 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 })
 @EnableConfigurationProperties(CorsProperties.class)
 @AutoConfiguration
-@Slf4j
 public class CorsConfigurationSourceAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(CorsConfigurationSourceAutoConfiguration.class);
 
   private final CorsProperties corsProperties;
 
@@ -60,14 +62,14 @@ public class CorsConfigurationSourceAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
-            * properties = {}
+            * %s
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        corsProperties);
+        corsProperties));
   }
 
   /**

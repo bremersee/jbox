@@ -27,6 +27,13 @@ import org.ldaptive.ResultCode;
  */
 public class DefaultLdaptiveErrorHandler extends AbstractLdaptiveErrorHandler {
 
+  /**
+   * Instantiates a new default ldaptive error handler.
+   */
+  public DefaultLdaptiveErrorHandler() {
+    super();
+  }
+
   @Override
   public LdaptiveException map(LdapException ldapException) {
     return LdaptiveException.builder()

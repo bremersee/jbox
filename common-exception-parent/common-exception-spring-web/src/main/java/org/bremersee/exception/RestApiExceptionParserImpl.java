@@ -26,7 +26,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.model.RestApiException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,8 +41,9 @@ import org.springframework.util.ObjectUtils;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public class RestApiExceptionParserImpl implements RestApiExceptionParser {
+
+  private static final Log log = LogFactory.getLog(RestApiExceptionParserImpl.class);
 
   private final ObjectMapper objectMapper;
 
@@ -175,7 +177,8 @@ public class RestApiExceptionParserImpl implements RestApiExceptionParser {
           try {
             return Optional.of(om.readValue(res, RestApiException.class));
           } catch (Exception ignored) {
-            log.debug("Response is not a 'RestApiException' as {}.", responseType.name());
+            log.debug(String
+                .format("Response is not a 'RestApiException' as %s.", responseType.name()));
             return Optional.empty();
           }
         }))
@@ -287,7 +290,7 @@ public class RestApiExceptionParserImpl implements RestApiExceptionParser {
       try {
         time = OffsetDateTime.parse(value, RestApiExceptionConstants.TIMESTAMP_FORMATTER);
       } catch (Exception e) {
-        log.debug("Parsing timestamp failed, timestamp = '{}'.", value);
+        log.debug(String.format("Parsing timestamp failed, timestamp = '%s'.", value));
       }
     }
     return time;

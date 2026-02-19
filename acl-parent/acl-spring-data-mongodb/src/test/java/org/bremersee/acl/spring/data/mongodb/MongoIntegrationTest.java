@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.acl.AccessEvaluation;
@@ -60,13 +59,12 @@ import org.testcontainers.utility.DockerImageName;
     webEnvironment = WebEnvironment.NONE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@Slf4j
-public class MongoIntegrationTest {
+class MongoIntegrationTest {
 
   @Container
   @ServiceConnection
   static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName
-      .parse("mongo:4.0.10"));
+      .parse("mongo:latest"));
 
   /**
    * The Mongo template.
@@ -106,7 +104,7 @@ public class MongoIntegrationTest {
   void reIndex() {
     AclIndexOperations aclIndexOperations = new AclIndexOperations(mongoTemplate);
     List<String> permissions = List.of(PermissionConstants.ADMINISTRATION);
-    aclIndexOperations.ensureAclIndexes(
+    aclIndexOperations.createAclIndexes(
         "alc-example-collection",
         ExampleEntity.ACL,
         permissions,

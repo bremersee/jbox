@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>spring-integration-parent</artifactId>
-    <version>5.0.1-SNAPSHOT</version>
+    <version>5.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>spring-integration-boot-autoconfigure</artifactId>
@@ -109,12 +109,6 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-minio</artifactId>
-      <version>${jbox.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.bremersee</groupId>
-      <artifactId>spring-integration-thymeleaf</artifactId>
       <version>${jbox.version}</version>
       <optional>true</optional>
     </dependency>

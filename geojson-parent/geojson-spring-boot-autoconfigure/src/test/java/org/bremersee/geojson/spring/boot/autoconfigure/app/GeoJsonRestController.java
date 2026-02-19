@@ -23,7 +23,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.geojson.GeoJsonFeature;
 import org.bremersee.geojson.GeoJsonFeatureCollection;
 import org.bremersee.geojson.model.Feature;
@@ -45,8 +46,9 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @Tag(name = "geo-controller", description = "The GeoJSON API.")
-@Slf4j
 public class GeoJsonRestController {
+
+  private static final Log log = LogFactory.getLog(GeoJsonRestController.class);
 
   @Autowired
   private GeometryEntityRepository repository;
@@ -82,10 +84,10 @@ public class GeoJsonRestController {
       @RequestParam(name = "geometry") @Parameter(hidden = true) Geometry geometry,
       @RequestParam(name = "withBoundingBox") boolean withBoundingBox) {
 
-    log.info("Got geometry: {}", geometry.toText());
+    log.info(String.format("Got geometry: %s", geometry.toText()));
     GeoJsonFeature<Geometry, Object> feature = new GeoJsonFeature<>(
         id, geometry, withBoundingBox, null);
-    log.info("Transformed feature: {}", feature);
+    log.info(String.format("Transformed feature: %s", feature));
     return Mono.just(feature);
   }
 

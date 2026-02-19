@@ -16,7 +16,8 @@
 
 package org.bremersee.geojson.spring.boot.autoconfigure;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -33,20 +34,28 @@ import org.springframework.util.ClassUtils;
  */
 @ConditionalOnClass(name = {"org.bremersee.geojson.GeoJsonGeometryFactory"})
 @AutoConfiguration
-@Slf4j
 public class GeoJsonGeometryFactoryAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(GeoJsonGeometryFactoryAutoConfiguration.class);
+
+  /**
+   * Instantiates a new GeoJSON geometry factory autoconfiguration.
+   */
+  public GeoJsonGeometryFactoryAutoConfiguration() {
+    super();
+  }
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
 
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   /**

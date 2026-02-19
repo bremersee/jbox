@@ -34,7 +34,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
 import org.bremersee.exception.model.RestApiException;
@@ -48,8 +49,9 @@ import org.springframework.util.FileCopyUtils;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public class FeignClientExceptionErrorDecoder implements ErrorDecoder {
+
+  private static final Log log = LogFactory.getLog(FeignClientExceptionErrorDecoder.class);
 
   private final RestApiExceptionParser parser;
 
@@ -73,7 +75,7 @@ public class FeignClientExceptionErrorDecoder implements ErrorDecoder {
   public Exception decode(String methodKey, Response response) {
 
     if (log.isDebugEnabled()) {
-      log.debug("Decoding feign exception at {}", methodKey);
+      log.debug(String.format("Decoding feign exception at %s", methodKey));
     }
     Map<String, Collection<String>> headers = Objects
         .requireNonNullElseGet(response.headers(), Map::of);

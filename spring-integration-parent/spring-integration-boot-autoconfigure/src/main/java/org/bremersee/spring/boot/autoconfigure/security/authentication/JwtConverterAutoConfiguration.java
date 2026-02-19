@@ -18,7 +18,8 @@ package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
 import static java.util.Objects.isNull;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationProperties.JwtConverterProperties;
 import org.bremersee.spring.security.core.authority.mapping.CaseTransformation;
 import org.bremersee.spring.security.core.authority.mapping.NormalizedGrantedAuthoritiesMapper;
@@ -59,8 +60,9 @@ import org.springframework.util.ClassUtils;
     prefix = "spring.security.oauth2.resourceserver.jwt",
     name = "jwk-set-uri")
 @EnableConfigurationProperties(AuthenticationProperties.class)
-@Slf4j
 public class JwtConverterAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(JwtConverterAutoConfiguration.class);
 
   private final JwtConverterProperties properties;
 
@@ -78,14 +80,14 @@ public class JwtConverterAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
-            * properties = {}
+            * %s
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        properties);
+        properties));
   }
 
   /**

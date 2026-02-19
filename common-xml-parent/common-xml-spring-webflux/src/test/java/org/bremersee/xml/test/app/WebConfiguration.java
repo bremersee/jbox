@@ -17,7 +17,6 @@
 package org.bremersee.xml.test.app;
 
 import java.util.ServiceLoader;
-import lombok.extern.slf4j.Slf4j;
 import org.bremersee.xml.JaxbContextBuilder;
 import org.bremersee.xml.JaxbContextDataProvider;
 import org.bremersee.xml.http.codec.ReactiveJaxbDecoder;
@@ -39,7 +38,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableAutoConfiguration(exclude = {ReactiveSecurityAutoConfiguration.class})
 @EnableWebFlux
 @ComponentScan(basePackageClasses = {WebConfiguration.class})
-@Slf4j
 public class WebConfiguration implements WebFluxConfigurer {
 
   private final JaxbContextBuilder jaxbContextBuilder;

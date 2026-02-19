@@ -37,6 +37,13 @@ public class GpxJaxbContextDataProvider implements JaxbContextDataProvider {
   @SuppressWarnings({"WeakerAccess", "unused"})
   public static final String NAMESPACE = "http://www.topografix.com/GPX/1/1";
 
+  /**
+   * Instantiates a new GPX jaxb context data provider.
+   */
+  public GpxJaxbContextDataProvider() {
+    super();
+  }
+
   @Override
   public Collection<JaxbContextMember> getJaxbContextData() {
     return List.of(

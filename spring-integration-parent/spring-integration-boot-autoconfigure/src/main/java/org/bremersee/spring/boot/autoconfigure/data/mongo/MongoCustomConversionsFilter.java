@@ -26,7 +26,8 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -42,8 +43,9 @@ public interface MongoCustomConversionsFilter extends Predicate<Converter<?, ?>>
   /**
    * The default filter.
    */
-  @Slf4j
   class DefaultFilter implements MongoCustomConversionsFilter {
+
+    private static final Log log = LogFactory.getLog(DefaultFilter.class);
 
     private final boolean readWriteAnnotationRequired;
 
@@ -74,22 +76,24 @@ public interface MongoCustomConversionsFilter extends Predicate<Converter<?, ?>>
       Class<?> cls = ClassUtils.getUserClass(converter);
       String className = cls.getName();
       if (readWriteAnnotationRequired && isNotReadWriteAnnotationPresent(cls)) {
-        log.info("Custom mongo conversions: '{}' is ignored, because it is not annotated with "
-            + "'@ReadingConverter' or '@WritingConverter'.", className);
+        log.info(String.format("Custom mongo conversions: '%s' is ignored, because it is not "
+            + "annotated with '@ReadingConverter' or '@WritingConverter'.", className));
         return false;
       }
       if (allowAllClassNames) {
-        log.info("Custom mongo conversions: '{}' is added to the registry.", className);
+        log.info(String
+            .format("Custom mongo conversions: '%s' is added to the registry.", className));
         return true;
       }
       boolean isAllowed = allowClassNames
           .stream()
           .anyMatch(pattern -> pattern.matcher(className).matches());
       if (isAllowed) {
-        log.info("Custom mongo conversions: '{}' is added to the registry.", className);
+        log.info(String
+            .format("Custom mongo conversions: '%s' is added to the registry.", className));
       } else {
-        log.info("Custom mongo conversions: '{}' is ignored, because it is not allowed by "
-            + "configuration.", className);
+        log.info(String.format("Custom mongo conversions: '%s' is ignored, because it is not "
+            + "allowed by configuration.", className));
       }
       return isAllowed;
     }

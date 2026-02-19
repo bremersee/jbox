@@ -16,7 +16,8 @@
 
 package org.bremersee.minio;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.NonNull;
 
 /**
@@ -24,8 +25,16 @@ import org.springframework.lang.NonNull;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public abstract class AbstractMinioErrorHandler implements MinioErrorHandler {
+
+  private static final Log log = LogFactory.getLog(AbstractMinioErrorHandler.class);
+
+  /**
+   * Instantiates a new abstract minio error handler.
+   */
+  protected AbstractMinioErrorHandler() {
+    super();
+  }
 
   @Override
   public void handleError(@NonNull Throwable t) {

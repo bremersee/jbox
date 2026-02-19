@@ -144,7 +144,7 @@ public class Jaxb2HttpMessageConverter extends AbstractXmlHttpMessageConverter<O
       Marshaller marshaller) throws PropertyException {
 
     if (contentType != null && contentType.getCharset() != null) {
-      marshaller.setProperty("jaxb.encoding", contentType.getCharset().name());
+      marshaller.setProperty(Marshaller.JAXB_ENCODING, contentType.getCharset().name());
     }
   }
 

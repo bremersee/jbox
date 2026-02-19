@@ -118,12 +118,13 @@ import io.minio.messages.VersioningConfiguration;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -134,12 +135,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -161,8 +163,9 @@ import org.springframework.util.FileCopyUtils;
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS) // allows us to use @BeforeAll with a non-static method
-@Slf4j
-public class MinioTemplateTest {
+class MinioTemplateTest {
+
+  private static final Log log = LogFactory.getLog(MinioTemplateTest.class);
 
   private static final SimpleDateFormat SDF = new SimpleDateFormat(
       "yyyy-MM-dd-HH-mm-ss", Locale.GERMANY);
@@ -187,7 +190,7 @@ public class MinioTemplateTest {
     String testExecutor = System.getProperty(
         "org.bremersee.test.executor",
         "NOT_SPECIFIED");
-    log.info("JUnit test executor is {}", testExecutor);
+    log.info(String.format("JUnit test executor is %s", testExecutor));
     if ("BUILD_SYSTEM".equals(testExecutor)) {
       log.info("Test executor is build system, so mocked minio client will be used.");
       playMinioEnabled = false;
@@ -218,7 +221,6 @@ public class MinioTemplateTest {
    */
   @AfterAll
   void afterAll() {
-    // embeddedMinio.removeBucket(RemoveBucketArgs.builder().bucket(DEFAULT_BUCKET).build());
     if (playMinioEnabled
         && playMinio.bucketExists(BucketExistsArgs.builder().bucket(DEFAULT_BUCKET).build())) {
       playMinio.removeBucket(RemoveBucketArgs.builder().bucket(DEFAULT_BUCKET).build());
@@ -240,10 +242,10 @@ public class MinioTemplateTest {
 
   private MinioTemplate minioTemplate(String methodName, MockMinioClientConfigurator config) {
     if (playMinioEnabled) {
-      log.info("Running '{}' with play.min.io", methodName);
+      log.info(String.format("Running '%s' with play.min.io", methodName));
       return playMinio;
     }
-    log.info("Running '{}' with mocked minio client", methodName);
+    log.info(String.format("Running '%s' with mocked minio client", methodName));
     Optional.ofNullable(config)
         .ifPresent(c -> c.configureMock(mockClient));
     return mockMinio;
@@ -272,16 +274,24 @@ public class MinioTemplateTest {
       Bucket bucket = Mockito.mock(Bucket.class);
       when(bucket.name()).thenReturn(bucketName);
       when(bucket.creationDate()).thenReturn(ZonedDateTime.now());
-      when(mock.listBuckets(any(ListBucketsArgs.class))).thenReturn(List.of(bucket));
+      when(mock.listBuckets(any(ListBucketsArgs.class))).thenReturn(List.of(new Result<>(bucket)));
     });
 
     minio.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
     assertTrue(minio.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build()));
 
-    List<Bucket> buckets = minio.listBuckets(ListBucketsArgs.builder().build());
+    Iterable<Result<Bucket>> buckets = minio.listBuckets(ListBucketsArgs.builder().build());
     assertNotNull(buckets);
-    assertFalse(buckets.isEmpty());
-    assertTrue(buckets.stream().anyMatch(bucket -> bucket.name().equals(bucketName)));
+    List<Bucket> bucketList = new ArrayList<>();
+    for (Result<Bucket> result : buckets) {
+      try {
+        bucketList.add(result.get());
+      } catch (Exception e) {
+        // ignored
+      }
+    }
+    assertFalse(bucketList.isEmpty());
+    assertTrue(bucketList.stream().anyMatch(bucket -> bucket.name().equals(bucketName)));
 
     minio.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
     if (playMinioEnabled) {
@@ -400,7 +410,7 @@ public class MinioTemplateTest {
       assertTrue(optionalConfig.isPresent());
       LifecycleConfiguration readConfig = optionalConfig.get();
       assertFalse(readConfig.rules().isEmpty());
-      LifecycleRule readRule0 = readConfig.rules().get(0);
+      LifecycleRule readRule0 = readConfig.rules().getFirst();
       assertEquals(Status.ENABLED, readRule0.status());
 
       minio.deleteBucketLifecycle(DeleteBucketLifecycleArgs.builder()
@@ -777,7 +787,7 @@ public class MinioTemplateTest {
           .build());
       assertNotNull(url);
       if (playMinioEnabled) {
-        try (InputStream in = new URL(url).openStream()) {
+        try (InputStream in = new URI(url).toURL().openStream()) {
           byte[] readBytes = FileCopyUtils.copyToByteArray(in);
           assertArrayEquals(value, readBytes);
         }
@@ -899,7 +909,7 @@ public class MinioTemplateTest {
           .build());
       assertNotNull(url);
       if (playMinioEnabled) {
-        try (InputStream in = new URL(url).openStream()) {
+        try (InputStream in = new URI(url).toURL().openStream()) {
           byte[] readBytes = FileCopyUtils.copyToByteArray(in);
           assertArrayEquals(value, readBytes);
         }
@@ -1225,7 +1235,7 @@ public class MinioTemplateTest {
           .build());
       assertNotNull(url);
       if (playMinioEnabled) {
-        try (InputStream in = new URL(url).openStream()) {
+        try (InputStream in = new URI(url).toURL().openStream()) {
           byte[] readBytes = FileCopyUtils.copyToByteArray(in);
           assertEquals(2 * size, readBytes.length);
         }
@@ -1334,10 +1344,11 @@ public class MinioTemplateTest {
       assertFalse(hasError);
 
       if (playMinioEnabled) {
-        assertThrows(MinioException.class, () -> minio.statObject(StatObjectArgs.builder()
+        StatObjectArgs statObject = StatObjectArgs.builder()
             .bucket(destBucket)
             .object(destObjectName)
-            .build()));
+            .build();
+        assertThrows(MinioException.class, () -> minio.statObject(statObject));
       }
       destObjectExists = false;
 

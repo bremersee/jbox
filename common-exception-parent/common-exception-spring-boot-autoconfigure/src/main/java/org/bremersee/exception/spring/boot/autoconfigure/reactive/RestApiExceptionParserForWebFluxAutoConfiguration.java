@@ -17,7 +17,8 @@
 package org.bremersee.exception.spring.boot.autoconfigure.reactive;
 
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
 import org.springframework.beans.factory.ObjectProvider;
@@ -44,13 +45,16 @@ import org.springframework.util.ClassUtils;
     "org.bremersee.exception.RestApiExceptionParserImpl"
 })
 @AutoConfiguration
-@Slf4j
 public class RestApiExceptionParserForWebFluxAutoConfiguration {
+
+  private static final Log log = LogFactory
+      .getLog(RestApiExceptionParserForWebFluxAutoConfiguration.class);
 
   /**
    * Instantiates a new rest api exception parser for web flux autoconfiguration.
    */
   public RestApiExceptionParserForWebFluxAutoConfiguration() {
+    super();
   }
 
   /**
@@ -58,12 +62,12 @@ public class RestApiExceptionParserForWebFluxAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   /**

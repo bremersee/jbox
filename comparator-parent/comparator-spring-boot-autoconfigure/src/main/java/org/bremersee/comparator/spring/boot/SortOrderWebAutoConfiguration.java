@@ -18,7 +18,8 @@ package org.bremersee.comparator.spring.boot;
 
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.comparator.model.SortOrderTextSeparators;
 import org.bremersee.comparator.spring.web.SortOrderHandlerMethodArgumentResolver;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -45,8 +46,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 })
 @AutoConfiguration
 @EnableConfigurationProperties(SortOrderConverterProperties.class)
-@Slf4j
 public class SortOrderWebAutoConfiguration implements WebMvcConfigurer {
+
+  private static final Log log = LogFactory.getLog(SortOrderWebAutoConfiguration.class);
 
   private final SortOrderTextSeparators separators;
 
@@ -72,12 +74,12 @@ public class SortOrderWebAutoConfiguration implements WebMvcConfigurer {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   @Override

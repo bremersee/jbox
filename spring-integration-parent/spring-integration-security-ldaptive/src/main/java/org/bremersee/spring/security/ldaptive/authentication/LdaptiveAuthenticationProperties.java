@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.bremersee.spring.security.core.authority.mapping.CaseTransformation;
 import org.ldaptive.SearchScope;
 import org.springframework.util.ObjectUtils;
@@ -38,7 +37,6 @@ import org.springframework.util.ObjectUtils;
  * @author Christian Bremer
  */
 @Data
-@NoArgsConstructor
 public class LdaptiveAuthenticationProperties implements Serializable {
 
   @Serial
@@ -192,6 +190,13 @@ public class LdaptiveAuthenticationProperties implements Serializable {
    * The string replacements for roles.
    */
   protected List<StringReplacement> roleStringReplacements;
+
+  /**
+   * Instantiates new ldaptive authentication properties.
+   */
+  public LdaptiveAuthenticationProperties() {
+    super();
+  }
 
   /**
    * To role mappings map.

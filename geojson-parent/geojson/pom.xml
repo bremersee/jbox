@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>geojson-parent</artifactId>
-    <version>5.0.1-SNAPSHOT</version>
+    <version>5.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>geojson</artifactId>
 
-  <name>GeoJSON for JTS Topology Suite</name>
+  <name>GeoJSON with JTS Topology Suite</name>
   <description>
     This project contains GeoJSON for the JTS Topology Suite.
   </description>

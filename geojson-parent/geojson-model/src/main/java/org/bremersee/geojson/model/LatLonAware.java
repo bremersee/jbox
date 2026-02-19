@@ -141,6 +141,13 @@ public interface LatLonAware {
 
     private BigDecimal longitude;
 
+    /**
+     * Instantiates a new builder.
+     */
+    BuilderImpl() {
+      super();
+    }
+
     @Override
     public Builder from(LatLonAware latLonAware) {
       if (latLonAware != null) {

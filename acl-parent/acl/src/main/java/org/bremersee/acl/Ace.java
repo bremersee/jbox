@@ -118,6 +118,13 @@ public interface Ace {
     private final TreeSet<String> groups = new TreeSet<>(String::compareToIgnoreCase);
 
     /**
+     * Instantiates a new ace builder.
+     */
+    public AceBuilder() {
+      super();
+    }
+
+    /**
      * From ace builder.
      *
      * @param ace the ace

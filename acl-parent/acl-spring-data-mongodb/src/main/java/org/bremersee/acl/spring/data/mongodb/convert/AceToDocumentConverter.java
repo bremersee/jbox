@@ -35,6 +35,7 @@ public class AceToDocumentConverter implements Converter<Ace, Document> {
    * Instantiates a new ace to document converter.
    */
   public AceToDocumentConverter() {
+    super();
   }
 
   @Override

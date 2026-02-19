@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.bremersee.acl.AccessEvaluation;
 import org.bremersee.acl.Ace;
 import org.bremersee.acl.Acl;
@@ -189,7 +188,7 @@ public class AclCriteriaAndUpdateBuilder {
 
     List<Criteria> permissionCriteriaList = Set.copyOf(permissions).stream()
         .map(permission -> createAccessCriteria(userContext, permission))
-        .collect(Collectors.toList());
+        .toList();
     Criteria permissionCriteria = accessEvaluation.isAnyPermission()
         ? new Criteria().orOperator(permissionCriteriaList)
         : new Criteria().andOperator(permissionCriteriaList);
