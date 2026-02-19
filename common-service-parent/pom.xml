@@ -18,20 +18,14 @@
   <url>https://bremersee.github.io/jbox/common-service-parent/index.html</url>
 
   <properties>
-    <!-- Higher versions of dockerfile maven plugin cause errors (tested to version 1.4.10) -->
-    <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version> <!-- TODO test 1.4.13 -->
-    <dockerfile.skip>true</dockerfile.skip>
-    <dockerfile.tag></dockerfile.tag>
-    <dockerfile.image>${project.artifactId}</dockerfile.image>
-    <dockerfile.repository>docker.io/bremersee/${dockerfile.image}</dockerfile.repository>
-
     <openapi.skip>true</openapi.skip>
+    <openapi.jvmArguments>-Dspring.application.admin.enabled=true</openapi.jvmArguments>
     <openapi.attachArtifact>false</openapi.attachArtifact>
-    <openapi.apiDocsUrl>http://localhost:8080/v3/api-docs</openapi.apiDocsUrl>
+    <openapi.apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</openapi.apiDocsUrl>
     <openapi.outputDir>${project.build.directory}</openapi.outputDir><!-- not starting with / -->
-    <openapi.outputFileName>openapi.json</openapi.outputFileName>
+    <openapi.outputFileName>openapi.yaml</openapi.outputFileName>
 
-    <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
+    <springdoc-openapi-maven-plugin.version>1.5</springdoc-openapi-maven-plugin.version>
   </properties>
 
   <developers>
@@ -104,29 +98,6 @@
           <artifactId>springdoc-openapi-maven-plugin</artifactId>
           <version>${springdoc-openapi-maven-plugin.version}</version>
         </plugin>
-        <plugin>
-          <groupId>com.spotify</groupId>
-          <artifactId>dockerfile-maven-plugin</artifactId>
-          <version>${dockerfile-maven-plugin.version}</version>
-          <executions>
-            <execution>
-              <id>default</id>
-              <goals>
-                <goal>build</goal>
-                <goal>push</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <skip>${dockerfile.skip}</skip>
-            <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-            <repository>${dockerfile.repository}</repository>
-            <tag>${dockerfile.tag}</tag>
-            <buildArgs>
-              <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-            </buildArgs>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -135,21 +106,10 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-      </plugin>
     </plugins>
   </build>
 
   <profiles>
-    <profile>
-      <id>dockerfile</id>
-      <properties>
-        <dockerfile.skip>false</dockerfile.skip>
-      </properties>
-    </profile>
-
     <!-- start with 'mvn -P openapi verify' -->
     <!--
       generate, deploy to documentation repo, build clients etc.
@@ -166,7 +126,7 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
             <version>${spring-boot.version}</version>
             <configuration>
-              <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+              <jvmArguments>${openapi.jvmArguments}</jvmArguments>
             </configuration>
             <executions>
               <execution>
@@ -196,18 +156,11 @@
               </execution>
             </executions>
             <configuration>
-              <kip>${openapi.skip}</kip>
+              <skip>${openapi.skip}</skip>
               <attachArtifact>${openapi.attachArtifact}</attachArtifact>
               <apiDocsUrl>${openapi.apiDocsUrl}</apiDocsUrl>
               <outputFileName>${openapi.outputFileName}</outputFileName>
               <outputDir>${openapi.outputDir}</outputDir>
-              <skip>false</skip>
-              <!--
-              <headers>
-                <header1key>header1value</header1key>
-                <header2key>header2value</header2key>
-              </headers>
-              -->
             </configuration>
           </plugin>
         </plugins>
