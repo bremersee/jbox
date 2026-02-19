@@ -19,7 +19,8 @@ package org.bremersee.spring.boot.autoconfigure.security.authentication;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration;
 import org.bremersee.spring.security.core.EmailToUsernameResolver;
@@ -72,8 +73,9 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnProperty(prefix = "bremersee.authentication.ldaptive", name = "user-base-dn")
 @AutoConfigureAfter({LdaptiveAutoConfiguration.class})
 @EnableConfigurationProperties(AuthenticationProperties.class)
-@Slf4j
 public class LdaptiveAuthenticationAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(LdaptiveAuthenticationAutoConfiguration.class);
 
   private final LdaptiveAuthenticationProperties properties;
 
@@ -94,14 +96,14 @@ public class LdaptiveAuthenticationAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
-            * properties = {}
+            * %s
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        properties);
+        properties));
   }
 
   /**

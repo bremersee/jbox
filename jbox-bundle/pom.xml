@@ -261,16 +261,6 @@
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
-        <artifactId>spring-integration-test-api-comparator</artifactId>
-        <version>${jbox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bremersee</groupId>
-        <artifactId>spring-integration-thymeleaf</artifactId>
-        <version>${jbox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-web</artifactId>
         <version>${jbox.version}</version>
       </dependency>

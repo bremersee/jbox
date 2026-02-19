@@ -19,7 +19,8 @@ package org.bremersee.xml.spring.boot.http.converter;
 import java.util.AbstractCollection;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.xml.JaxbContextBuilder;
 import org.bremersee.xml.http.converter.Jaxb2HttpMessageConverter;
 import org.bremersee.xml.spring.boot.JaxbContextBuilderAutoConfiguration;
@@ -46,8 +47,10 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnClass(JaxbContextBuilder.class)
 @AutoConfigureAfter(JaxbContextBuilderAutoConfiguration.class)
 @AutoConfiguration
-@Slf4j
 public class Jaxb2HttpMessageConverterAutoConfiguration {
+
+  private static final Log log = LogFactory
+      .getLog(Jaxb2HttpMessageConverterAutoConfiguration.class);
 
   /**
    * Instantiates a new jaxb 2 http message converter auto configuration.
@@ -61,12 +64,12 @@ public class Jaxb2HttpMessageConverterAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
 
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   /**
@@ -95,10 +98,11 @@ public class Jaxb2HttpMessageConverterAutoConfiguration {
             HashSet::new,
             (a, b) -> a.addAll(b.getIgnoreWritingClasses()),
             AbstractCollection::addAll);
-    log.info("Creating bean {} with ignoreReadingClasses ({}) and ignoreWritingClasses ({}).",
+    log.info(String.format(
+        "Creating bean %s with ignoreReadingClasses (%s) and ignoreWritingClasses (%s).",
         Jaxb2HttpMessageConverter.class.getSimpleName(),
         ignoreReadingClasses,
-        ignoreWritingClasses);
+        ignoreWritingClasses));
     return new Jaxb2HttpMessageConverter(
         jaxbContextBuilder,
         ignoreReadingClasses,

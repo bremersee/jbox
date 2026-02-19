@@ -17,7 +17,8 @@
 package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionMapper;
 import org.bremersee.exception.servlet.ApiExceptionResolver;
 import org.bremersee.exception.servlet.HttpServletRequestIdProvider;
@@ -51,8 +52,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 })
 @AutoConfiguration
 @EnableConfigurationProperties({RestApiExceptionMapperBootProperties.class})
-@Slf4j
 public class ApiExceptionResolverAutoConfiguration implements WebMvcConfigurer {
+
+  private static final Log log = LogFactory
+      .getLog(ApiExceptionResolverAutoConfiguration.class);
 
   private final RestApiExceptionMapperBootProperties properties;
 
@@ -90,21 +93,21 @@ public class ApiExceptionResolverAutoConfiguration implements WebMvcConfigurer {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * apiPaths = {}
+            * apiPaths = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        properties.getApiPaths());
+        properties.getApiPaths()));
   }
 
   @Override
   public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-    log.info("Adding exception resolver [{}] to registry.",
-        ClassUtils.getUserClass(apiExceptionResolver).getSimpleName());
+    log.info(String.format("Adding exception resolver [%s] to registry.",
+        ClassUtils.getUserClass(apiExceptionResolver).getSimpleName()));
     exceptionResolvers.add(0, apiExceptionResolver);
   }
 

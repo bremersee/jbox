@@ -16,7 +16,8 @@
 
 package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
 import org.bremersee.exception.feign.FeignClientExceptionErrorDecoder;
@@ -46,8 +47,10 @@ import org.springframework.util.ClassUtils;
     RestApiExceptionParserForWebAutoConfiguration.class
 })
 @AutoConfiguration
-@Slf4j
 public class FeignClientExceptionErrorDecoderAutoConfiguration {
+
+  private static final Log log = LogFactory
+      .getLog(FeignClientExceptionErrorDecoderAutoConfiguration.class);
 
   /**
    * Instantiates a new feign client exception error decoder auto configuration.
@@ -61,12 +64,12 @@ public class FeignClientExceptionErrorDecoderAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   /**

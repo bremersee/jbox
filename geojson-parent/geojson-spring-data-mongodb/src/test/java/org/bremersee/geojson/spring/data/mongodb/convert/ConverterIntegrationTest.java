@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
@@ -73,8 +74,9 @@ import org.testcontainers.utility.DockerImageName;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@Slf4j
 class ConverterIntegrationTest {
+
+  private static final Log log = LogFactory.getLog(ConverterIntegrationTest.class);
 
   private static final GeoJsonGeometryFactory factory = new GeoJsonGeometryFactory();
 
@@ -137,7 +139,7 @@ class ConverterIntegrationTest {
         new Coordinate(6., 7.)));
     GeometryCollection geometry = factory.createGeometryCollection(List.of(model0, model1));
     GeometryCollectionEntity entity = colRepository.save(new GeometryCollectionEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryCollectionEntity::getId)
@@ -159,7 +161,7 @@ class ConverterIntegrationTest {
         new Coordinate(2., 3.),
         new Coordinate(6., 7.)));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -187,7 +189,7 @@ class ConverterIntegrationTest {
         model0,
         model1));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -209,7 +211,7 @@ class ConverterIntegrationTest {
     Point model1 = factory.createPoint(17., 18.);
     MultiPoint geometry = factory.createMultiPoint(Arrays.asList(model0, model1));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -241,7 +243,7 @@ class ConverterIntegrationTest {
     Polygon model1 = factory.createPolygon(ring1);
     MultiPolygon geometry = factory.createMultiPolygon(Arrays.asList(model0, model1));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -261,7 +263,7 @@ class ConverterIntegrationTest {
   void testPoint(SoftAssertions softly) {
     Point geometry = factory.createPoint(2., 4.);
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -286,7 +288,7 @@ class ConverterIntegrationTest {
         new Coordinate(2., 3.)));
     Polygon geometry = factory.createPolygon(ring);
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)

@@ -23,7 +23,8 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Collection;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.comparator.model.SortOrder;
 import org.bremersee.comparator.spring.mapper.SortMapper;
 import org.springframework.data.domain.PageRequest;
@@ -40,9 +41,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Christian Bremer
  */
-@Slf4j
 @RestController
 public class TestRestController {
+
+  private static final Log log = LogFactory.getLog(TestRestController.class);
 
   private final SortMapper sortMapper = SortMapper.defaultSortMapper();
 
@@ -63,7 +65,7 @@ public class TestRestController {
       @Parameter(array = @ArraySchema(schema = @Schema(type = "string")))
       @RequestParam(name = "sort", required = false) List<SortOrder> sort) {
 
-    log.info("Received sort orders {}", sort);
+    log.info(String.format("Received sort orders %s", sort));
     SortOrder sortOrder = new SortOrder(sort.stream()
         .map(SortOrder::getItems)
         .flatMap(Collection::stream)
@@ -94,7 +96,7 @@ public class TestRestController {
       @Parameter(hidden = true)
       @PageableDefault(page = 1, size = 20, sort = "somethingElse,desc") Pageable pageRequest) {
 
-    log.info("Pageable = {}", pageRequest);
+    log.info(String.format("Pageable = %s", pageRequest));
     // We can't pass ignore case as url parameter value, so we set it here
     Sort sort = sortMapper
         .applyDefaults(pageRequest.getSort(), null, true, null);

@@ -16,7 +16,8 @@
 
 package org.bremersee.geojson.spring.boot.autoconfigure.jackson;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.bremersee.geojson.GeoJsonObjectMapperModule;
 import org.bremersee.geojson.spring.boot.autoconfigure.GeoJsonGeometryFactoryAutoConfiguration;
@@ -46,9 +47,11 @@ import org.springframework.util.ClassUtils;
 @AutoConfiguration
 @AutoConfigureAfter(GeoJsonGeometryFactoryAutoConfiguration.class)
 @EnableConfigurationProperties(GeoJsonProperties.class)
-@Slf4j
 public class GeoJsonJackson2ObjectMapperBuilderCustomizer
     implements Jackson2ObjectMapperBuilderCustomizer {
+
+  private static final Log log = LogFactory
+      .getLog(GeoJsonJackson2ObjectMapperBuilderCustomizer.class);
 
   private final GeoJsonProperties properties;
 
@@ -72,14 +75,14 @@ public class GeoJsonJackson2ObjectMapperBuilderCustomizer
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * properties = {}
+            * properties = %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName(), properties);
+        ClassUtils.getUserClass(getClass()).getSimpleName(), properties));
   }
 
   @Override

@@ -27,8 +27,6 @@
     <module>spring-integration-minio</module>
     <module>spring-integration-security</module>
     <module>spring-integration-security-ldaptive</module>
-    <module>spring-integration-test-api-comparator</module>
-    <module>spring-integration-thymeleaf</module>
     <module>spring-integration-web</module>
     <module>spring-integration-webflux</module>
     <module>spring-integration-boot-autoconfigure</module>

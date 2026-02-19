@@ -18,7 +18,8 @@ package org.bremersee.ldaptive;
 
 import java.util.Objects;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.ServiceException;
 import org.ldaptive.AddOperation;
 import org.ldaptive.AddRequest;
@@ -55,8 +56,9 @@ import org.ldaptive.handler.ResultPredicate;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public class LdaptiveTemplate implements LdaptiveOperations {
+
+  private static final Log log = LogFactory.getLog(LdaptiveTemplate.class);
 
   private static final ResultPredicate NOT_COMPARE_RESULT = result -> !result.isSuccess()
       && result.getResultCode() != ResultCode.COMPARE_TRUE

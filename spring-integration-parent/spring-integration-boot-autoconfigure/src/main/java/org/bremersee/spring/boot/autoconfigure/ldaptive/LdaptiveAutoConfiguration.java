@@ -17,7 +17,8 @@
 package org.bremersee.spring.boot.autoconfigure.ldaptive;
 
 import java.util.Objects;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.ldaptive.LdaptiveOperations;
 import org.bremersee.ldaptive.LdaptiveProperties;
 import org.bremersee.ldaptive.LdaptiveProperties.ConnectionPoolProperties;
@@ -58,8 +59,9 @@ import org.springframework.util.ClassUtils;
 })
 @ConditionalOnProperty(prefix = "bremersee.ldaptive", name = "ldap-url")
 @EnableConfigurationProperties(LdaptiveConnectionProperties.class)
-@Slf4j
 public class LdaptiveAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(LdaptiveAutoConfiguration.class);
 
   private final Class<? extends LdaptiveTemplate> ldaptiveTemplateClass;
 
@@ -85,14 +87,14 @@ public class LdaptiveAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
-            * properties = {}
+            * %s
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        properties);
+        properties));
   }
 
   /**
@@ -152,8 +154,9 @@ public class LdaptiveAutoConfiguration {
           .getConstructor(ConnectionFactory.class)
           .newInstance(connectionFactory);
     } catch (Exception e) {
-      log.warn("Could not instantiate LdaptiveTemplate {}. Instantiate default template.",
-          ldaptiveTemplateClass.getName(), e);
+      log.warn(String.format(
+          "Could not instantiate LdaptiveTemplate %s. Instantiate default template.",
+          ldaptiveTemplateClass.getName()), e);
       return new LdaptiveTemplate(connectionFactory);
     }
   }

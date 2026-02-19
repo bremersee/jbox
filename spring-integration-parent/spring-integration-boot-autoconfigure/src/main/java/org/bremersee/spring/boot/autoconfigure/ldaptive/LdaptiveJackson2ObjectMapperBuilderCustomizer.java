@@ -1,6 +1,7 @@
 package org.bremersee.spring.boot.autoconfigure.ldaptive;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.ldaptive.LdaptiveObjectMapperModule;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -20,9 +21,11 @@ import org.springframework.util.ClassUtils;
     "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
     "com.fasterxml.jackson.databind.ObjectMapper"})
 @AutoConfiguration
-@Slf4j
 public class LdaptiveJackson2ObjectMapperBuilderCustomizer
     implements Jackson2ObjectMapperBuilderCustomizer {
+
+  private static final Log log = LogFactory
+      .getLog(LdaptiveJackson2ObjectMapperBuilderCustomizer.class);
 
   /**
    * Instantiates a new ldaptive jackson 2 object mapper builder customizer.
@@ -36,12 +39,12 @@ public class LdaptiveJackson2ObjectMapperBuilderCustomizer
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   @Override

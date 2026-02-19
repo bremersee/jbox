@@ -17,7 +17,8 @@
 package org.bremersee.ldaptive;
 
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ldaptive.LdapException;
 
 /**
@@ -25,8 +26,9 @@ import org.ldaptive.LdapException;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public abstract class AbstractLdaptiveErrorHandler implements LdaptiveErrorHandler {
+
+  private static final Log log = LogFactory.getLog(AbstractLdaptiveErrorHandler.class);
 
   /**
    * Instantiates a new abstract ldaptive error handler.

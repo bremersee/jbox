@@ -114,12 +114,6 @@
     </dependency>
     <dependency>
       <groupId>org.bremersee</groupId>
-      <artifactId>spring-integration-thymeleaf</artifactId>
-      <version>${jbox.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-web</artifactId>
       <version>${jbox.version}</version>
       <optional>true</optional>

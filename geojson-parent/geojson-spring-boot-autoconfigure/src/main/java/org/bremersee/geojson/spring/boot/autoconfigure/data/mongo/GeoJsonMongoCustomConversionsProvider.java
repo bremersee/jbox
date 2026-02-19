@@ -17,7 +17,8 @@
 package org.bremersee.geojson.spring.boot.autoconfigure.data.mongo;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.bremersee.geojson.spring.boot.autoconfigure.GeoJsonGeometryFactoryAutoConfiguration;
 import org.bremersee.geojson.spring.data.mongodb.convert.GeoJsonConverters;
@@ -39,8 +40,9 @@ import org.springframework.core.convert.converter.Converter;
 })
 @AutoConfigureAfter(GeoJsonGeometryFactoryAutoConfiguration.class)
 @AutoConfiguration
-@Slf4j
 public class GeoJsonMongoCustomConversionsProvider implements MongoCustomConversionsProvider {
+
+  private static final Log log = LogFactory.getLog(GeoJsonMongoCustomConversionsProvider.class);
 
   private final GeoJsonGeometryFactory geometryFactory;
 

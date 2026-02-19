@@ -20,7 +20,8 @@ import java.util.AbstractCollection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.xml.JaxbContextBuilder;
 import org.bremersee.xml.http.codec.ReactiveJaxbDecoder;
 import org.bremersee.xml.http.codec.ReactiveJaxbEncoder;
@@ -50,8 +51,9 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @ConditionalOnBean(JaxbContextBuilder.class)
 @AutoConfigureAfter(JaxbContextBuilderAutoConfiguration.class)
 @AutoConfiguration
-@Slf4j
 public class Jaxb2HttpMessageCodecAutoConfiguration implements WebFluxConfigurer {
+
+  private static final Log log = LogFactory.getLog(Jaxb2HttpMessageCodecAutoConfiguration.class);
 
   private final JaxbContextBuilder jaxbContextBuilder;
 
@@ -88,17 +90,17 @@ public class Jaxb2HttpMessageCodecAutoConfiguration implements WebFluxConfigurer
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
 
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * jaxbContextBuilder = {}
-            * ignoreReadingClasses = {}
-            * ignoreWritingClasses = {}
+            * jaxbContextBuilder = %s
+            * ignoreReadingClasses = %s
+            * ignoreWritingClasses = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        jaxbContextBuilder, ignoreReadingClasses, ignoreWritingClasses);
+        jaxbContextBuilder, ignoreReadingClasses, ignoreWritingClasses));
   }
 
   @Override
