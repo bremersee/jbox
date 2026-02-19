@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>comparator-spring-boot-webflux-starter</artifactId>
-  <name>Comparator Spring Boot Web Starter</name>
+  <name>Comparator Spring Boot WebFlux Starter</name>
   <description>A general object comparator (spring boot web starter)</description>
 
   <developers>

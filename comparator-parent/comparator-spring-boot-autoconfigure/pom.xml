@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>comparator-spring-boot-autoconfigure</artifactId>
-  <name>Comparator Spring Boot Autoconfigure</name>
+  <name>Comparator Spring Boot Autoconfiguration</name>
   <description>A general object comparator (spring boot autoconfigure)</description>
 
   <developers>

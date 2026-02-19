@@ -11,7 +11,7 @@
 
   <artifactId>geojson</artifactId>
 
-  <name>GeoJSON for JTS Topology Suite</name>
+  <name>GeoJSON with JTS Topology Suite</name>
   <description>
     This project contains GeoJSON for the JTS Topology Suite.
   </description>

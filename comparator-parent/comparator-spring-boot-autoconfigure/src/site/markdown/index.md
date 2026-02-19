@@ -1,1 +1,1 @@
-# Bremersee Comparator Spring Boot Autoconfigure
+# Comparator Spring Boot Autoconfiguration
