@@ -43,6 +43,7 @@ public class AclToDocumentConverter implements Converter<Acl, Document> {
    * Instantiates a new acl to document converter.
    */
   public AclToDocumentConverter() {
+    super();
   }
 
   @Override

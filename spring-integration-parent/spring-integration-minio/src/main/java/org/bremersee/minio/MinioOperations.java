@@ -98,8 +98,6 @@ import java.util.Optional;
  */
 public interface MinioOperations {
 
-  // DO NOT USE GENERATE JAVA DOCS!
-
   /**
    * Execute minio callback.
    *
@@ -116,7 +114,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * List<Bucket> bucketList = minioOperations.listBuckets();
+   * List&lt;Bucket&gt; bucketList = minioOperations.listBuckets();
    * for (Bucket bucket : bucketList) {
    *   System.out.println(bucket.creationDate() + ", " + bucket.name());
    * }
@@ -133,9 +131,9 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * Iterable<Result<Bucket>> results = minioClient
+   * Iterable&lt;Result&lt;Bucket&gt;&gt; results = minioClient
    *     .listBuckets(ListBucketsArgs.builder().extraHeaders(headers).build());
-   * for (Result<Bucket> result : results) {
+   * for (Result&lt;Bucket&gt; result : results) {
    *   System.out.println(result.get().creationDate() + ", " + result.get().name());
    * }
    * </pre>
@@ -288,7 +286,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * List<LifecycleRule> rules = new LinkedList<>();
+   * List&lt;LifecycleRule&gt; rules = new LinkedList&lt;&gt;();
    * rules.add(
    *     new LifecycleRule(
    *         Status.ENABLED,
@@ -348,7 +346,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * List<EventType> eventList = new LinkedList<>();
+   * List&lt;EventType&gt; eventList = new LinkedList&lt;&gt;();
    * eventList.add(EventType.OBJECT_CREATED_PUT);
    * eventList.add(EventType.OBJECT_CREATED_COPY);
    *
@@ -358,7 +356,7 @@ public interface MinioOperations {
    * queueConfiguration.setPrefixRule("images");
    * queueConfiguration.setSuffixRule("pg");
    *
-   * List<QueueConfiguration> queueConfigurationList = new LinkedList<>();
+   * List&lt;QueueConfiguration&gt; queueConfigurationList = new LinkedList&lt;&gt;();
    * queueConfigurationList.add(queueConfiguration);
    *
    * NotificationConfiguration config = new NotificationConfiguration();
@@ -399,7 +397,7 @@ public interface MinioOperations {
    * <p>Example:
    * <pre>
    * String[] events = {"s3:ObjectCreated:*", "s3:ObjectAccessed:*"};
-   * try (CloseableIterator<Result<NotificationRecords>> ci =
+   * try (CloseableIterator&lt;Result&lt;NotificationRecords&gt;&gt; ci =
    *     minioClient.listenBucketNotification(
    *         ListenBucketNotificationArgs.builder()
    *             .bucket("bucketName")
@@ -517,7 +515,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * Map<String, String> tags = new HashMap<>();
+   * Map&lt;String, String&gt; tags = new HashMap&lt;&gt;();
    * tags.put("key1", "value1");
    * tags.put("key2", "value2");
    *
@@ -534,7 +532,7 @@ public interface MinioOperations {
    *         null,
    *         Status.ENABLED);
    *
-   * List<ReplicationRule> rules = new LinkedList<>();
+   * List&lt;ReplicationRule&gt; rules = new LinkedList&lt;&gt;();
    * rules.add(rule);
    *
    * ReplicationConfiguration config =
@@ -588,7 +586,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * Map<String, String> map = new HashMap<>();
+   * Map&lt;String, String&gt; map = new HashMap&lt;&gt;();
    * map.put("Project", "Project One");
    * map.put("User", "jsmith");
    * minioClient.setBucketTags(
@@ -715,16 +713,16 @@ public interface MinioOperations {
    * <p>Example:
    * <pre>
    * // Lists objects information.
-   * Iterable<Result<Item>> results = minioClient.listObjects(
+   * Iterable&lt;Result&lt;Item&gt;&gt; results = minioClient.listObjects(
    *     ListObjectsArgs.builder().bucket("my-bucketname").build());
    *
    * // Lists objects information recursively.
-   * Iterable<Result<Item>> results = minioClient.listObjects(
+   * Iterable&lt;Result&lt;Item&gt;&gt; results = minioClient.listObjects(
    *     ListObjectsArgs.builder().bucket("my-bucketname").recursive(true).build());
    *
    * // Lists maximum 100 objects information those names starts with 'E' and after
    * // 'ExampleGuide.pdf'.
-   * Iterable<Result<Item>> results = minioClient.listObjects(
+   * Iterable&lt;Result&lt;Item&gt;&gt; results = minioClient.listObjects(
    *     ListObjectsArgs.builder()
    *         .bucket("my-bucketname")
    *         .startAfter("ExampleGuide.pdf")
@@ -734,7 +732,7 @@ public interface MinioOperations {
    *
    * // Lists maximum 100 objects information with version those names starts with 'E' and after
    * // 'ExampleGuide.pdf'.
-   * Iterable<Result<Item>> results = minioClient.listObjects(
+   * Iterable&lt;Result&lt;Item&gt;&gt; results = minioClient.listObjects(
    *     ListObjectsArgs.builder()
    *         .bucket("my-bucketname")
    *         .startAfter("ExampleGuide.pdf")
@@ -779,9 +777,9 @@ public interface MinioOperations {
    *         .build());
    *
    * // Upload input stream with headers and user metadata.
-   * Map<String, String> headers = new HashMap<>();
+   * Map&lt;String, String&gt; headers = new HashMap&lt;&gt;();
    * headers.put("X-Amz-Storage-Class", "REDUCED_REDUNDANCY");
-   * Map<String, String> userMetadata = new HashMap<>();
+   * Map&lt;String, String&gt; userMetadata = new HashMap&lt;&gt;();
    * userMetadata.put("My-Project", "Project One");
    * minioClient.putObject(
    *     PutObjectArgs.builder().bucket("my-bucketname").object("my-objectname").stream(
@@ -887,7 +885,7 @@ public interface MinioOperations {
    *
    * // Get presigned URL string to upload 'my-objectname' in 'my-bucketname'
    * // with response-content-type as application/json and life time as one day.
-   * Map<String, String> reqParams = new HashMap<String, String>();
+   * Map&lt;String, String&gt; reqParams = new HashMap&lt;String, String&gt;();
    * reqParams.put("response-content-type", "application/json");
    *
    * String url =
@@ -938,12 +936,12 @@ public interface MinioOperations {
    * // Add condition that 'content-length-range' is between 64kiB to 10MiB.
    * policy.addContentLengthRangeCondition(64 * 1024, 10 * 1024 * 1024);
    *
-   * Map<String, String> formData = minioClient.getPresignedPostFormData(policy);
+   * Map&lt;String, String&gt; formData = minioClient.getPresignedPostFormData(policy);
    *
    * // Upload an image using POST object with form-data.
    * MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
    * multipartBuilder.setType(MultipartBody.FORM);
-   * for (Map.Entry<String, String> entry : formData.entrySet()) {
+   * for (Map.Entry&lt;String, String&gt; entry : formData.entrySet()) {
    *   multipartBuilder.addFormDataPart(entry.getKey(), entry.getValue());
    * }
    * multipartBuilder.addFormDataPart("key", "my-objectname");
@@ -1145,14 +1143,14 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * List<DeleteObject> objects = new LinkedList<>();
+   * List&lt;DeleteObject&gt; objects = new LinkedList&lt;&gt;();
    * objects.add(new DeleteObject("my-objectname1"));
    * objects.add(new DeleteObject("my-objectname2"));
    * objects.add(new DeleteObject("my-objectname3"));
-   * Iterable<Result<DeleteError>> results =
+   * Iterable&lt;Result&lt;DeleteError&gt;&gt; results =
    *     minioClient.removeObjects(
    *         RemoveObjectsArgs.builder().bucket("my-bucketname").objects(objects).build());
-   * for (Result<DeleteError> result : results) {
+   * for (Result&lt;DeleteError&gt; result : results) {
    *   DeleteError error = errorResult.get();
    *   System.out.println(
    *       "Error in deleting object " + error.objectName() + "; " + error.message());
@@ -1171,7 +1169,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * List<ComposeSource> sourceObjectList = new ArrayList<ComposeSource>();
+   * List&lt;ComposeSource&gt; sourceObjectList = new ArrayList&lt;ComposeSource&gt;();
    *
    * sourceObjectList.add(
    *    ComposeSource.builder().bucket("my-job-bucket").object("my-objectname-part-one").build());
@@ -1273,7 +1271,7 @@ public interface MinioOperations {
    *
    * <p>Example:
    * <pre>
-   * Map<String, String> map = new HashMap<>();
+   * Map&lt;String, String&gt; map = new HashMap&lt;&gt;();
    * map.put("Project", "Project One");
    * map.put("User", "jsmith");
    * minioClient.setObjectTags(

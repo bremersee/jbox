@@ -21,7 +21,7 @@ import org.bremersee.spring.data.mongodb.core.convert.MongoCustomConversionsProv
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * The type Acl converters.
+ * The acl converters.
  *
  * @author Christian Bremer
  */
@@ -31,6 +31,7 @@ public class AclConverters implements MongoCustomConversionsProvider {
    * Instantiates a new acl converters.
    */
   public AclConverters() {
+    super();
   }
 
   /**

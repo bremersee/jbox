@@ -35,6 +35,7 @@ import org.w3c.dom.Element;
 public abstract class GpxJaxbContextHelper {
 
   private GpxJaxbContextHelper() {
+    super();
   }
 
   /**
@@ -207,7 +208,7 @@ public abstract class GpxJaxbContextHelper {
       final Map<Class<?>, List<Object>> parsedExtensions) {
 
     final List<T> list = findExtensions(cls, instancesOf, parsedExtensions);
-    return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+    return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
   }
 
   /**
@@ -229,7 +230,7 @@ public abstract class GpxJaxbContextHelper {
       final JAXBContext jaxbContext) {
 
     final List<T> list = findExtensions(cls, instancesOf, extensions, jaxbContext);
-    return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+    return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
   }
 
   /**
@@ -251,7 +252,7 @@ public abstract class GpxJaxbContextHelper {
       final Unmarshaller unmarshaller) {
 
     final List<T> list = findExtensions(cls, instancesOf, extensions, unmarshaller);
-    return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+    return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
   }
 
 }

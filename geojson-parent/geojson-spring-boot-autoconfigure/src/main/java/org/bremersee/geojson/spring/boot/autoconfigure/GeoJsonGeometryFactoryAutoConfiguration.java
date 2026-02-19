@@ -39,6 +39,13 @@ public class GeoJsonGeometryFactoryAutoConfiguration {
   private static final Log log = LogFactory.getLog(GeoJsonGeometryFactoryAutoConfiguration.class);
 
   /**
+   * Instantiates a new GeoJSON geometry factory autoconfiguration.
+   */
+  public GeoJsonGeometryFactoryAutoConfiguration() {
+    super();
+  }
+
+  /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)

@@ -32,6 +32,7 @@ public class StringToTimeZoneConverter implements Converter<String, TimeZone> {
    * Instantiates a new string to time zone converter.
    */
   public StringToTimeZoneConverter() {
+    super();
   }
 
   @Override

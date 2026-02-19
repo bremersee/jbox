@@ -29,6 +29,13 @@ public abstract class AbstractMinioErrorHandler implements MinioErrorHandler {
 
   private static final Log log = LogFactory.getLog(AbstractMinioErrorHandler.class);
 
+  /**
+   * Instantiates a new abstract minio error handler.
+   */
+  protected AbstractMinioErrorHandler() {
+    super();
+  }
+
   @Override
   public void handleError(@NonNull Throwable t) {
     MinioException minioException = map(t);

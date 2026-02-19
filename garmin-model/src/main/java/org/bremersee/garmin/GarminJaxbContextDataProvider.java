@@ -51,6 +51,13 @@ public class GarminJaxbContextDataProvider implements JaxbContextDataProvider {
       "http://www.garmin.com/xmlschemas/VideoExtension/v1"
   };
 
+  /**
+   * Instantiates a new garmin jaxb context data provider.
+   */
+  public GarminJaxbContextDataProvider() {
+    super();
+  }
+
   @Override
   public Collection<JaxbContextMember> getJaxbContextData() {
     return List.of(

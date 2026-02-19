@@ -104,7 +104,7 @@ class MongoIntegrationTest {
   void reIndex() {
     AclIndexOperations aclIndexOperations = new AclIndexOperations(mongoTemplate);
     List<String> permissions = List.of(PermissionConstants.ADMINISTRATION);
-    aclIndexOperations.ensureAclIndexes(
+    aclIndexOperations.createAclIndexes(
         "alc-example-collection",
         ExampleEntity.ACL,
         permissions,

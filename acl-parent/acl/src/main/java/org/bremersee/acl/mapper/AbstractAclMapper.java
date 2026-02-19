@@ -57,7 +57,7 @@ public abstract class AbstractAclMapper<T extends Acl> implements AclMapper<T> {
    * @param hideAdminRoles the hide admin roles
    * @param adminRoles the admin roles
    */
-  public AbstractAclMapper(
+  protected AbstractAclMapper(
       String[] defaultPermissions,
       boolean hideAdminRoles,
       Set<String> adminRoles) {

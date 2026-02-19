@@ -32,6 +32,13 @@ import org.ldaptive.LdapEntry;
  */
 public class ActiveDirectoryAccountControlEvaluator implements AccountControlEvaluator {
 
+  /**
+   * Instantiates a new active directory account control evaluator.
+   */
+  public ActiveDirectoryAccountControlEvaluator() {
+    super();
+  }
+
   @Override
   public boolean isAccountNonExpired(LdapEntry ldapEntry) {
     var valueTranscoder = ValueTranscoderFactory.getFileTimeToOffsetDateTimeValueTranscoder();
