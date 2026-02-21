@@ -21,7 +21,6 @@ import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.provider.ActiveDirectoryTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.provider.OpenLdapTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.provider.UserContainsGroupsTemplate;
-import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUser;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetailsService;
 import org.junit.jupiter.api.Test;
@@ -376,50 +375,73 @@ class LdaptiveAuthenticationManagerTest {
    */
   @Test
   void checkAccountControl(SoftAssertions softly) {
+    LdaptiveAuthenticationManager target = getLdaptiveAuthenticationManager();
+
+    LdapEntry user = createUser();
+
+    LdaptiveUserDetails d0 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(false)
+        .accountNonLocked(true)
+        .credentialsNonExpired(true)
+        .enabled(true)
+        .build();
+    softly.assertThatExceptionOfType(AccountExpiredException.class)
+        .isThrownBy(() -> target.checkAccountControl(d0));
+
+    LdaptiveUserDetails d1 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(true)
+        .accountNonLocked(false)
+        .credentialsNonExpired(true)
+        .enabled(true)
+        .build();
+    softly.assertThatExceptionOfType(LockedException.class)
+        .isThrownBy(() -> target.checkAccountControl(d1));
+
+    LdaptiveUserDetails d2 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(true)
+        .accountNonLocked(true)
+        .credentialsNonExpired(false)
+        .enabled(true)
+        .build();
+    softly.assertThatExceptionOfType(CredentialsExpiredException.class)
+        .isThrownBy(() -> target.checkAccountControl(d2));
+
+    LdaptiveUserDetails d3 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(true)
+        .accountNonLocked(true)
+        .credentialsNonExpired(true)
+        .enabled(false)
+        .build();
+    softly.assertThatExceptionOfType(DisabledException.class)
+        .isThrownBy(() -> target.checkAccountControl(d3));
+  }
+
+  private static LdaptiveAuthenticationManager getLdaptiveAuthenticationManager() {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = new LdaptiveTemplate(connectionFactory);
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
-    LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties, REMEMBER_ME_KEY);
-
-    LdapEntry user = createUser();
-
-    LdaptiveUserDetails d0 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        false, true, true, true);
-    softly.assertThatExceptionOfType(AccountExpiredException.class)
-        .isThrownBy(() -> target.checkAccountControl(d0));
-
-    LdaptiveUserDetails d1 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        true, false, true, true);
-    softly.assertThatExceptionOfType(LockedException.class)
-        .isThrownBy(() -> target.checkAccountControl(d1));
-
-    LdaptiveUserDetails d2 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        true, true, false, true);
-    softly.assertThatExceptionOfType(CredentialsExpiredException.class)
-        .isThrownBy(() -> target.checkAccountControl(d2));
-
-    LdaptiveUserDetails d3 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        true, true, true, false);
-    softly.assertThatExceptionOfType(DisabledException.class)
-        .isThrownBy(() -> target.checkAccountControl(d3));
+    return new LdaptiveAuthenticationManager(ldaptiveTemplate, properties, REMEMBER_ME_KEY);
   }
 
-  private void assertActual(LdaptiveAuthentication authentication, SoftAssertions softly) {
+  private static void assertActual(LdaptiveAuthentication authentication, SoftAssertions softly) {
     List<GrantedAuthority> actualAuthorities = new ArrayList<>(authentication.getAuthorities());
     List<GrantedAuthority> expectedAuthorities = List.of(new SimpleGrantedAuthority("ROLE_tester"));
     softly

@@ -162,38 +162,38 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
     LdapEntry ldapEntry = findUser(username)
         .orElseThrow(() -> new UsernameNotFoundException(String.format("%s not found.", username)));
     Collection<? extends GrantedAuthority> authorities = getAuthorities(ldapEntry);
-    return new LdaptiveUser(
-        ldapEntry,
-        Optional.ofNullable(getAuthenticationProperties().getUsernameAttribute())
+    var userDetailsBuilder = LdaptiveUserDetails.builder()
+        .dn(ldapEntry.getDn())
+        .username(Optional.ofNullable(getAuthenticationProperties().getUsernameAttribute())
             .map(ldapEntry::getAttribute)
             .map(LdapAttribute::getStringValue)
-            .orElse(username),
-        Optional.ofNullable(getAuthenticationProperties().getFirstNameAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(null),
-        Optional.ofNullable(getAuthenticationProperties().getLastNameAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(null),
-        Optional.ofNullable(getAuthenticationProperties().getEmailAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(null),
-        authorities,
-        getRememberMeTokenProvider().getRememberMeToken(ldapEntry),
-        getAccountControlEvaluator().isAccountNonExpired(ldapEntry),
-        getAccountControlEvaluator().isAccountNonLocked(ldapEntry),
-        getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry),
-        getAccountControlEvaluator().isEnabled(ldapEntry)
-    );
+            .orElse(username))
+        .password(getRememberMeTokenProvider().getRememberMeToken(ldapEntry))
+        .accountNonExpired(getAccountControlEvaluator().isAccountNonExpired(ldapEntry))
+        .accountNonLocked(getAccountControlEvaluator().isAccountNonLocked(ldapEntry))
+        .credentialsNonExpired(getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry))
+        .enabled(getAccountControlEvaluator().isEnabled(ldapEntry))
+        .authorities(authorities);
+    Optional.ofNullable(getAuthenticationProperties().getFirstNameAttribute())
+        .map(ldapEntry::getAttribute)
+        .map(LdapAttribute::getStringValue)
+        .ifPresent(userDetailsBuilder::firstName);
+    Optional.ofNullable(getAuthenticationProperties().getLastNameAttribute())
+        .map(ldapEntry::getAttribute)
+        .map(LdapAttribute::getStringValue)
+        .ifPresent(userDetailsBuilder::lastName);
+    Optional.ofNullable(getAuthenticationProperties().getEmailAttribute())
+        .map(ldapEntry::getAttribute)
+        .map(LdapAttribute::getStringValue)
+        .ifPresent(userDetailsBuilder::email);
+    return userDetailsBuilder.build();
   }
 
   /**
-   * Is dn boolean.
+   * Determines whether the given username is a distinguished name or not.
    *
    * @param username the username
-   * @return the boolean
+   * @return {@code true} if the username is a distinguished name, otherwise {@code false}
    */
   protected boolean isDn(String username) {
     try {

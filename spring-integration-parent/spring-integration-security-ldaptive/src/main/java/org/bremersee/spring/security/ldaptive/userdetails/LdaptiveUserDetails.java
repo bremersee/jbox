@@ -16,7 +16,13 @@
 
 package org.bremersee.spring.security.ldaptive.userdetails;
 
+import java.util.Collection;
+import java.util.List;
 import org.bremersee.spring.security.core.NormalizedPrincipal;
+import org.immutables.serial.Serial;
+import org.immutables.value.Value;
+import org.springframework.lang.Nullable;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -24,6 +30,14 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  * @author Christian Bremer
  */
+@Value.Style(
+    visibility = Value.Style.ImplementationVisibility.PACKAGE,
+    overshadowImplementation = true,
+    depluralize = true,
+    jdk9Collections = true,
+    get = {"get*", "is*"})
+@Value.Immutable
+@Serial.Version(1L)
 public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
 
   /**
@@ -32,5 +46,68 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
    * @return the distinguished name
    */
   String getDn();
+
+  @Value.Default
+  @Override
+  default Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of();
+  }
+
+  @Nullable
+  @Override
+  String getPassword();
+
+  @Override
+  String getUsername();
+
+  @Value.Default
+  @Override
+  default boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Value.Default
+  @Override
+  default boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Value.Default
+  @Override
+  default boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Value.Default
+  @Override
+  default boolean isEnabled() {
+    return true;
+  }
+
+  @Value.Lazy
+  @Override
+  default String getName() {
+    return getUsername();
+  }
+
+  @Nullable
+  @Override
+  String getFirstName();
+
+  @Nullable
+  @Override
+  String getLastName();
+
+  @Nullable
+  @Override
+  String getEmail();
+
+  static Builder builder() {
+    return new Builder();
+  }
+
+  class Builder extends ImmutableLdaptiveUserDetails.Builder {
+
+  }
 
 }
