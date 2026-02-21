@@ -23,7 +23,6 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.bremersee.ldaptive.serializable.SerLdapEntry;
 import org.ldaptive.LdapEntry;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -34,12 +33,16 @@ import org.springframework.security.core.GrantedAuthority;
  */
 @Getter
 @ToString(exclude = {"password"})
-@EqualsAndHashCode(callSuper = true, exclude = {"password"})
-public class LdaptiveUser extends SerLdapEntry
-    implements LdaptiveUserDetails {
+@EqualsAndHashCode(exclude = {"password"})
+public class LdaptiveUser implements LdaptiveUserDetails {
 
   @Serial
   private static final long serialVersionUID = 1L;
+
+  /**
+   * The distinguished name of the user.
+   */
+  private final String dn;
 
   /**
    * The username.
@@ -106,7 +109,7 @@ public class LdaptiveUser extends SerLdapEntry
    * @param credentialsNonExpired the credentials non expired
    * @param enabled the enabled
    */
-  public LdaptiveUser(
+  public LdaptiveUser( // TODO immutable
       LdapEntry ldapEntry,
       String username,
       String firstName,
@@ -118,7 +121,7 @@ public class LdaptiveUser extends SerLdapEntry
       boolean accountNonLocked,
       boolean credentialsNonExpired,
       boolean enabled) {
-    super(ldapEntry);
+    this.dn = ldapEntry.getDn();
     this.username = username;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -130,6 +133,11 @@ public class LdaptiveUser extends SerLdapEntry
     this.accountNonLocked = accountNonLocked;
     this.credentialsNonExpired = credentialsNonExpired;
     this.enabled = enabled;
+  }
+
+  @Override
+  public String getDn() {
+    return dn;
   }
 
   @Override

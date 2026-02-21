@@ -29,20 +29,22 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bremersee.ldaptive.LdaptiveException;
+import org.bremersee.ldaptive.DefaultLdaptiveErrorHandler;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.security.core.EmailToUsernameResolver;
 import org.bremersee.spring.security.ldaptive.authentication.provider.NoAccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetailsService;
-import org.ldaptive.BindConnectionInitializer;
+import org.ldaptive.BindOperation;
+import org.ldaptive.BindResponse;
 import org.ldaptive.CompareRequest;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.DefaultConnectionFactory;
 import org.ldaptive.LdapException;
-import org.ldaptive.ResultCode;
+import org.ldaptive.SimpleBindRequest;
+import org.ldaptive.SingleConnectionFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -83,6 +85,9 @@ public class LdaptiveAuthenticationManager
   @Getter(AccessLevel.PROTECTED)
   private final LdaptiveAuthenticationProperties authenticationProperties;
 
+  /**
+   * The remember-me key.
+   */
   @Getter(AccessLevel.PROTECTED)
   private final String rememberMeKey;
 
@@ -97,12 +102,6 @@ public class LdaptiveAuthenticationManager
    */
   @Getter(AccessLevel.PROTECTED)
   private EmailToUsernameResolver emailToUsernameResolver;
-
-  /**
-   * The username to bind-dn converter.
-   */
-  @Getter(AccessLevel.PROTECTED)
-  private UsernameToBindDnConverter usernameToBindDnConverter;
 
   /**
    * The password encoder.
@@ -138,6 +137,9 @@ public class LdaptiveAuthenticationManager
   @Setter
   private Converter<LdaptiveUserDetails, LdaptiveAuthentication> tokenConverter;
 
+  /**
+   * The message source.
+   */
   @Getter(AccessLevel.PROTECTED)
   private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
@@ -191,12 +193,6 @@ public class LdaptiveAuthenticationManager
     setEmailToUsernameResolver(new EmailToUsernameResolverByLdapAttribute(
         getAuthenticationProperties(), getApplicationLdaptiveTemplate()));
 
-    // usernameToBindDnConverter
-    Assert.notNull(getAuthenticationProperties().getUsernameToBindDnConverter(),
-        "Username to bind dn converter is required.");
-    setUsernameToBindDnConverter(getAuthenticationProperties().getUsernameToBindDnConverter()
-        .apply(getAuthenticationProperties()));
-
     // accountControlEvaluator
     if (isNull(getAuthenticationProperties().getAccountControlEvaluator())) {
       setAccountControlEvaluator(new NoAccountControlEvaluator());
@@ -214,18 +210,6 @@ public class LdaptiveAuthenticationManager
       EmailToUsernameResolver emailToUsernameResolver) {
     if (nonNull(emailToUsernameResolver)) {
       this.emailToUsernameResolver = emailToUsernameResolver;
-    }
-  }
-
-  /**
-   * Sets username to bind dn converter.
-   *
-   * @param usernameToBindDnConverter the username to bind dn converter
-   */
-  public void setUsernameToBindDnConverter(
-      UsernameToBindDnConverter usernameToBindDnConverter) {
-    if (nonNull(usernameToBindDnConverter)) {
-      this.usernameToBindDnConverter = usernameToBindDnConverter;
     }
   }
 
@@ -250,7 +234,7 @@ public class LdaptiveAuthenticationManager
    * Init.
    */
   public void init() {
-    if (!bindWithAuthentication() && isNull(getPasswordEncoder())) {
+    if (!isSimpleBindAuthentication() && isNull(getPasswordEncoder())) {
       throw new IllegalStateException(String.format("A password attribute is set (%s) but no "
               + "password encoder is present. Either delete the password attribute to perform a "
               + "bind to authenticate or set a password encoder.",
@@ -282,20 +266,28 @@ public class LdaptiveAuthenticationManager
   }
 
   @Override
-  public LdaptiveAuthentication authenticate(Authentication authentication)
+  public Authentication authenticate(Authentication authentication)
       throws AuthenticationException {
+
     if (!supports(authentication.getClass())) {
       logger.debug(String.format("Authentication [%s] is not supported.",
           authentication.getClass().getName()));
       return null;
     }
-    if (authentication instanceof RememberMeAuthenticationToken rma && !rememberMeKeyMatches(rma)) {
-      throw new BadCredentialsException(getMessages().getMessage(
-          "RememberMeAuthenticationProvider.incorrectKey",
-          "The presented RememberMeAuthenticationToken does not contain the expected key"));
+    if (authentication instanceof RememberMeAuthenticationToken rma) {
+      if (!rememberMeKeyMatches(rma)) {
+        throw new BadCredentialsException(getMessages().getMessage(
+            "RememberMeAuthenticationProvider.incorrectKey",
+            "The presented RememberMeAuthenticationToken does not contain the expected key"));
+      }
+      return rma;
     }
+
     String name = getName(authentication);
     logger.debug("Authenticating user '" + name + "' ...");
+    String password = Optional.ofNullable(authentication.getCredentials())
+        .map(String::valueOf)
+        .orElseThrow(() -> new BadCredentialsException("Password is required."));
     String username = getEmailToUsernameResolver()
         .getUsernameByEmail(name)
         .orElse(name);
@@ -303,13 +295,11 @@ public class LdaptiveAuthenticationManager
       throw new DisabledException(String
           .format("Username '%s' is refused by configuration.", username));
     }
-    String password = Optional.ofNullable(authentication.getCredentials())
-        .map(String::valueOf)
-        .orElse(null);
-    LdaptiveTemplate ldaptiveTemplate = getLdapTemplate(username, password);
-    LdaptiveUserDetails userDetails = getUserDetails(ldaptiveTemplate, username);
-    checkPassword(ldaptiveTemplate, userDetails, password);
+
+    LdaptiveUserDetails userDetails = getUserDetailsService().loadUserByUsername(username);
+    checkPassword(userDetails, password);
     checkAccountControl(userDetails);
+
     if (nonNull(getTokenConverter())) {
       return getTokenConverter().convert(userDetails);
     }
@@ -347,130 +337,84 @@ public class LdaptiveAuthenticationManager
   }
 
   /**
-   * Determines whether to bind with username and password or with the application ldaptive
-   * template.
-   *
-   * @return the boolean
-   */
-  protected boolean bindWithAuthentication() {
-    return isNull(getAuthenticationProperties().getPasswordAttribute())
-        || getAuthenticationProperties().getPasswordAttribute().isBlank();
-  }
-
-  /**
-   * Gets ldap template.
-   *
-   * @param username the username
-   * @param password the password
-   * @return the ldap template
-   */
-  protected LdaptiveTemplate getLdapTemplate(String username, String password) {
-    if (bindWithAuthentication()) {
-      if (isNull(password)) {
-        throw new BadCredentialsException("Password is required.");
-      }
-      ConnectionConfig authConfig = ConnectionConfig
-          .copy(getApplicationLdaptiveTemplate().getConnectionFactory().getConnectionConfig());
-      String bindDn = getUsernameToBindDnConverter().convert(username);
-      authConfig.setConnectionInitializers(BindConnectionInitializer.builder()
-          .dn(bindDn)
-          .credential(password)
-          .build());
-      return new LdaptiveTemplate(new DefaultConnectionFactory(authConfig));
-    }
-    return getApplicationLdaptiveTemplate();
-  }
-
-  /**
-   * Gets user details.
-   *
-   * @param ldaptiveTemplate the ldaptive template
-   * @param username the username
-   * @return the user details
-   */
-  protected LdaptiveUserDetails getUserDetails(LdaptiveTemplate ldaptiveTemplate, String username) {
-    try {
-      return getUserDetailsService(ldaptiveTemplate).loadUserByUsername(username);
-    } catch (LdaptiveException le) {
-      throw getBindException(le);
-    }
-  }
-
-  /**
    * Gets user details service.
    *
    * @return the user details service
    */
   public LdaptiveUserDetailsService getUserDetailsService() {
-    return getUserDetailsService(getApplicationLdaptiveTemplate());
-  }
-
-  /**
-   * Gets user details service.
-   *
-   * @param ldaptiveTemplate the ldaptive template
-   * @return the user details service
-   */
-  protected LdaptiveUserDetailsService getUserDetailsService(LdaptiveTemplate ldaptiveTemplate) {
     LdaptiveUserDetailsService userDetailsService = new LdaptiveUserDetailsService(
-        getAuthenticationProperties(), ldaptiveTemplate);
+        getAuthenticationProperties(), getApplicationLdaptiveTemplate());
     userDetailsService.setAccountControlEvaluator(getAccountControlEvaluator());
     userDetailsService.setGrantedAuthoritiesMapper(getGrantedAuthoritiesMapper());
     userDetailsService.setRememberMeTokenProvider(getPasswordProvider());
     return userDetailsService;
   }
 
-  private RuntimeException getBindException(LdaptiveException exception) {
-    BadCredentialsException badCredentials = new BadCredentialsException("Password doesn't match.");
-    if (isInvalidCredentialsException(exception.getLdapException())) {
-      return badCredentials;
-    }
-    return exception;
-  }
-
-  private boolean isInvalidCredentialsException(LdapException exception) {
-    if (isNull(exception)) {
-      return false;
-    }
-    if (ResultCode.INVALID_CREDENTIALS.equals(exception.getResultCode())) {
-      return true;
-    }
-    String message = Optional.ofNullable(exception.getMessage())
-        .map(String::toLowerCase)
-        .orElse("");
-    String text = ("resultCode=" + ResultCode.INVALID_CREDENTIALS).toLowerCase();
-    if (ResultCode.CONNECT_ERROR.equals(exception.getResultCode()) && message.contains(text)) {
-      return true;
-    }
-    if (exception.getCause() instanceof LdapException cause) {
-      return isInvalidCredentialsException(cause);
-    }
-    return false;
+  /**
+   * Determines whether to bind with username and password or to compare the passwords.
+   *
+   * @return the boolean
+   */
+  protected boolean isSimpleBindAuthentication() {
+    return isNull(getAuthenticationProperties().getPasswordAttribute())
+        || getAuthenticationProperties().getPasswordAttribute().isBlank();
   }
 
   /**
    * Check password.
    *
-   * @param ldaptiveTemplate the ldaptive template
    * @param user the user
    * @param password the password
    */
-  protected void checkPassword(
-      LdaptiveTemplate ldaptiveTemplate,
-      LdaptiveUserDetails user,
-      String password) {
+  protected void checkPassword(LdaptiveUserDetails user, String password) {
+    if (isSimpleBindAuthentication()) {
+      checkPasswordWithSimpleBind(user, password);
+    } else {
+      checkPasswordWithCompareRequest(user, password);
+    }
+  }
 
-    if (!bindWithAuthentication()) {
-      Assert.notNull(getPasswordEncoder(), "No password encoder is present.");
-      boolean matches = ldaptiveTemplate.compare(CompareRequest.builder()
+  protected void checkPasswordWithCompareRequest(LdaptiveUserDetails user, String password) {
+    Assert.notNull(getPasswordEncoder(), "No password encoder is present.");
+    boolean matches = getApplicationLdaptiveTemplate().compare(CompareRequest.builder()
+        .dn(user.getDn())
+        .name(getAuthenticationProperties().getPasswordAttribute())
+        .value(getPasswordEncoder().encode(password))
+        .build());
+    if (!matches) {
+      throw new BadCredentialsException("Password doesn't match.");
+    }
+  }
+
+  protected void checkPasswordWithSimpleBind(LdaptiveUserDetails user, String password) {
+    SingleConnectionFactory connectionFactory = getSingleConnectionFactory();
+    try {
+      connectionFactory.initialize();
+      BindOperation bind = getBindOperation(connectionFactory);
+      BindResponse response = bind.execute(SimpleBindRequest.builder()
           .dn(user.getDn())
-          .name(getAuthenticationProperties().getPasswordAttribute())
-          .value(getPasswordEncoder().encode(password))
+          .password(password)
           .build());
-      if (!matches) {
+      if (!response.isSuccess()) {
         throw new BadCredentialsException("Password doesn't match.");
       }
+
+    } catch (LdapException ldapException) {
+      new DefaultLdaptiveErrorHandler().handleError(ldapException);
+    } finally {
+      connectionFactory.close();
     }
+  }
+
+  SingleConnectionFactory getSingleConnectionFactory() {
+    ConnectionConfig connectionConfig = ConnectionConfig
+        .copy(getApplicationLdaptiveTemplate().getConnectionFactory().getConnectionConfig());
+    connectionConfig.setConnectionInitializers();
+    return new SingleConnectionFactory(connectionConfig);
+  }
+
+  BindOperation getBindOperation(SingleConnectionFactory cf) {
+    return new BindOperation(cf);
   }
 
   /**

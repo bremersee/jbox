@@ -226,11 +226,6 @@ public class AuthenticationProperties {
     private Template template = Template.ACTIVE_DIRECTORY;
 
     /**
-     * The username to bind dn converter property.
-     */
-    private UsernameToBindDnConverterProperty usernameToBindDnConverter;
-
-    /**
      * The user base dn (like 'ou=people,dc=example,dc=org'). This value is always required.
      */
     private String userBaseDn;
@@ -251,12 +246,6 @@ public class AuthenticationProperties {
      * contains a default.
      */
     private String usernameAttribute;
-
-    /**
-     * Applies only for simple bind. The rdn attribute of the user. This is normally the same as the
-     * username attribute.
-     */
-    private String userRdnAttribute;
 
     /**
      * The password attribute of the user (like 'userPassword'). If it is empty, a simple user bind
@@ -406,22 +395,6 @@ public class AuthenticationProperties {
        * Subordinate subtree search. See draft-sermersheim-ldap-subordinate-scope.
        */
       SUBORDINATE
-    }
-
-    /**
-     * The username to bind dn converter property.
-     */
-    public enum UsernameToBindDnConverterProperty {
-
-      /**
-       * By user rdn attribute username to bind dn converter property.
-       */
-      BY_USER_RDN_ATTRIBUTE,
-
-      /**
-       * By domain email username to bind dn converter property.
-       */
-      BY_DOMAIN_EMAIL
     }
 
     /**

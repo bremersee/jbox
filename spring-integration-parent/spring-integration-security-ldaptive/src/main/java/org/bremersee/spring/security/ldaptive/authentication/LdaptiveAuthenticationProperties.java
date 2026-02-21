@@ -43,11 +43,6 @@ public class LdaptiveAuthenticationProperties implements Serializable {
   private static final long serialVersionUID = 1L;
 
   /**
-   * The username (like 'anna') to bind dn (like 'cn=anna,ou=people,dc=example,dc=org') converter.
-   */
-  protected UsernameToBindDnConverterProperty usernameToBindDnConverter;
-
-  /**
    * The user base dn (like 'ou=people,dc=example,dc=org'). This value is always required.
    */
   protected String userBaseDn;
@@ -67,12 +62,6 @@ public class LdaptiveAuthenticationProperties implements Serializable {
    * contains a default.
    */
   protected String usernameAttribute;
-
-  /**
-   * Applies only for simple bind. The rdn attribute of the user. This is normally the same as the
-   * username attribute.
-   */
-  protected String userRdnAttribute;
 
   /**
    * The password attribute of the user (like 'userPassword'). If it is empty, a simple user bind
@@ -242,8 +231,6 @@ public class LdaptiveAuthenticationProperties implements Serializable {
     public WithDefaults() {
       refusedUsernames = new ArrayList<>();
 
-      usernameToBindDnConverter = UsernameToBindDnConverterProperty.BY_USER_RDN_ATTRIBUTE;
-
       userObjectClass = "inetOrgPerson";
       usernameAttribute = "uid";
 
@@ -262,19 +249,6 @@ public class LdaptiveAuthenticationProperties implements Serializable {
       defaultRoles = new ArrayList<>();
       roleStringReplacements = new ArrayList<>();
       roleCaseTransformation = CaseTransformation.NONE;
-    }
-
-    /**
-     * Get user rdn attribute.
-     *
-     * @return the user rdn attribute
-     */
-    @Override
-    public String getUserRdnAttribute() {
-      if (ObjectUtils.isEmpty(userRdnAttribute)) {
-        return usernameAttribute;
-      }
-      return userRdnAttribute;
     }
 
     /**
