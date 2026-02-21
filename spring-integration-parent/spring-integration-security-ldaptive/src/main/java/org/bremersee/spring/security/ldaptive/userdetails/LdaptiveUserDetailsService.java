@@ -31,6 +31,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bremersee.ldaptive.LdaptiveAttribute;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
@@ -164,9 +165,8 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
     Collection<? extends GrantedAuthority> authorities = getAuthorities(ldapEntry);
     var userDetailsBuilder = LdaptiveUserDetails.builder()
         .dn(ldapEntry.getDn())
-        .username(Optional.ofNullable(getAuthenticationProperties().getUsernameAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
+        .username(LdaptiveAttribute.define(getAuthenticationProperties().getUsernameAttribute())
+            .getValue(ldapEntry)
             .orElse(username))
         .password(getRememberMeTokenProvider().getRememberMeToken(ldapEntry))
         .accountNonExpired(getAccountControlEvaluator().isAccountNonExpired(ldapEntry))
@@ -174,17 +174,14 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
         .credentialsNonExpired(getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry))
         .enabled(getAccountControlEvaluator().isEnabled(ldapEntry))
         .authorities(authorities);
-    Optional.ofNullable(getAuthenticationProperties().getFirstNameAttribute())
-        .map(ldapEntry::getAttribute)
-        .map(LdapAttribute::getStringValue)
+    LdaptiveAttribute.define(getAuthenticationProperties().getFirstNameAttribute())
+        .getValue(ldapEntry)
         .ifPresent(userDetailsBuilder::firstName);
-    Optional.ofNullable(getAuthenticationProperties().getLastNameAttribute())
-        .map(ldapEntry::getAttribute)
-        .map(LdapAttribute::getStringValue)
+    LdaptiveAttribute.define(getAuthenticationProperties().getLastNameAttribute())
+        .getValue(ldapEntry)
         .ifPresent(userDetailsBuilder::lastName);
-    Optional.ofNullable(getAuthenticationProperties().getEmailAttribute())
-        .map(ldapEntry::getAttribute)
-        .map(LdapAttribute::getStringValue)
+    LdaptiveAttribute.define(getAuthenticationProperties().getEmailAttribute())
+        .getValue(ldapEntry)
         .ifPresent(userDetailsBuilder::email);
     return userDetailsBuilder.build();
   }
