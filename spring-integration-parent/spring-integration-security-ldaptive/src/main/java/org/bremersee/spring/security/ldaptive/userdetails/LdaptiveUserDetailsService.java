@@ -159,9 +159,10 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
 
   @Override
   public LdaptiveUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    logger.debug("Loading user '" + username + "' ...");
+    logger.debug(String.format("Loading user '%s' ...", username));
     LdapEntry ldapEntry = findUser(username)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format("%s not found.", username)));
+        .orElseThrow(() -> new UsernameNotFoundException(String
+            .format("User '%s' was  not found.", username)));
     Collection<? extends GrantedAuthority> authorities = getAuthorities(ldapEntry);
     var userDetailsBuilder = LdaptiveUserDetails.builder()
         .dn(ldapEntry.getDn())
