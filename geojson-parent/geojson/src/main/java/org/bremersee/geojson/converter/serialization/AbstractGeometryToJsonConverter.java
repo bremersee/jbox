@@ -67,7 +67,7 @@ abstract class AbstractGeometryToJsonConverter<S extends Geometry> implements Se
     map.put(GeoJsonConstants.TYPE, requireNonNull(getGeometryType()));
     if (withBoundingBox) {
       Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))
-          .map(bbox -> Arrays.stream(bbox).boxed().collect(Collectors.toList()))
+          .map(bbox -> Arrays.stream(bbox).boxed().toList())
           .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
     }
     map.put(GeoJsonConstants.COORDINATES, getGeometryJsonValue(source));

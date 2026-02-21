@@ -167,6 +167,7 @@ public final class JaxbContextData implements JaxbContextMember, Comparable<Jaxb
     throw new IllegalArgumentException("Class or package must be present.");
   }
 
+  @Override
   public Package getPakkage() {
     return nonNull(pakkage) ? pakkage : requireNonNull(clazz).getPackage();
   }

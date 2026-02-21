@@ -50,6 +50,8 @@ public class MinioMultipartFileImpl implements MinioMultipartFile {
 
   private final MinioOperations minioOperations;
 
+  private static final String MINIO_OPERATIONS_NOT_NULL_MSG = "Minio operations must not be null.";
+
   /**
    * The region.
    */
@@ -86,7 +88,7 @@ public class MinioMultipartFileImpl implements MinioMultipartFile {
       MinioOperations minioOperations,
       MinioObjectInfo minioObjectInfo) {
 
-    Assert.notNull(minioOperations, "Minio operations must not be null.");
+    Assert.notNull(minioOperations, MINIO_OPERATIONS_NOT_NULL_MSG);
     Assert.notNull(minioObjectInfo, "Object info must not be null.");
     Assert.hasText(minioObjectInfo.getBucket(), "Bucket must not be null.");
     this.minioOperations = minioOperations;
@@ -108,7 +110,7 @@ public class MinioMultipartFileImpl implements MinioMultipartFile {
       String region,
       StatObjectResponse objectStatus) {
 
-    Assert.notNull(minioOperations, "Minio operations must not be null.");
+    Assert.notNull(minioOperations, MINIO_OPERATIONS_NOT_NULL_MSG);
     Assert.notNull(objectStatus, "Object status must not be null.");
     this.minioOperations = minioOperations;
     this.region = region;
@@ -134,7 +136,7 @@ public class MinioMultipartFileImpl implements MinioMultipartFile {
       String bucket,
       Item item) {
 
-    Assert.notNull(minioOperations, "Minio operations must not be null.");
+    Assert.notNull(minioOperations, MINIO_OPERATIONS_NOT_NULL_MSG);
     Assert.hasText(bucket, "Bucket must be present.");
     Assert.notNull(item, "Item must not be null.");
     this.minioOperations = minioOperations;

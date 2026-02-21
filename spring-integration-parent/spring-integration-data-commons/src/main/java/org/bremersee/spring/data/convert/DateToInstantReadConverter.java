@@ -36,6 +36,7 @@ public class DateToInstantReadConverter implements Converter<Date, Instant> {
    * Instantiates a new date to instant read converter.
    */
   public DateToInstantReadConverter() {
+    super();
   }
 
   @Override

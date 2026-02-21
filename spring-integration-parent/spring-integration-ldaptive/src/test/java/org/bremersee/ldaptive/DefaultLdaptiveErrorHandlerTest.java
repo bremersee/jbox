@@ -63,6 +63,7 @@ class DefaultLdaptiveErrorHandlerTest {
     LdapException ldapException = new LdapException(ResultCode.NO_SUCH_OBJECT, "Not found.");
     assertThrows(LdaptiveException.class, () -> errorHandler.handleError(ldapException));
 
-    assertThrows(LdaptiveException.class, () -> errorHandler.handleError(new Exception()));
+    Exception exception = new Exception();
+    assertThrows(LdaptiveException.class, () -> errorHandler.handleError(exception));
   }
 }

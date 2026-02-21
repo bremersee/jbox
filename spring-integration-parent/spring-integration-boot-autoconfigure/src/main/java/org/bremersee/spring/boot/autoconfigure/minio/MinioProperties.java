@@ -69,5 +69,6 @@ public class MinioProperties {
    * Instantiates new minio properties.
    */
   public MinioProperties() {
+    super();
   }
 }

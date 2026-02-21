@@ -35,6 +35,7 @@ public class DurationXmlAdapter extends XmlAdapter<String, Duration> {
    * Instantiates a new duration xml adapter.
    */
   public DurationXmlAdapter() {
+    super();
   }
 
   @Override

@@ -23,6 +23,8 @@ import static org.mockito.Mockito.mock;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -96,8 +98,9 @@ class SchemaBuilderTest {
         .withErrorHandler(null)
         .withFeature(null, false)
         .withProperty(null, "false")
-        .buildSchema(
-            new URL("http://bremersee.github.io/xmlschemas/common-xml-test-model-1.xsd"));
+        .buildSchema(URI
+            .create("http://bremersee.github.io/xmlschemas/common-xml-test-model-1.xsd")
+            .toURL());
     assertThat(schema)
         .isNotNull();
   }
@@ -159,10 +162,10 @@ class SchemaBuilderTest {
    */
   @Test
   void createSchemaFactoryWthIllegalProperty() {
+    SchemaBuilder schemaBuilder = SchemaBuilder.newInstance()
+        .withProperty("foo", "bar");
     assertThatExceptionOfType(XmlRuntimeException.class)
-        .isThrownBy(() -> SchemaBuilder.newInstance()
-            .withProperty("foo", "bar")
-            .buildSchema());
+        .isThrownBy(schemaBuilder::buildSchema);
   }
 
   /**
@@ -170,19 +173,20 @@ class SchemaBuilderTest {
    */
   @Test
   void fetchSchemaSourcesThatDoesNotExist() {
+    SchemaBuilder schemaBuilder = SchemaBuilder.newInstance();
     assertThatExceptionOfType(XmlRuntimeException.class)
-        .isThrownBy(() -> SchemaBuilder.newInstance()
-            .fetchSchemaSources("classpath:/nothing.xsd"));
+        .isThrownBy(() -> schemaBuilder.fetchSchemaSources("classpath:/nothing.xsd"));
   }
 
   /**
    * Build schema with illegal url.
    */
   @Test
-  void buildSchemaWithIllegalUrl() {
+  void buildSchemaWithIllegalUrl() throws MalformedURLException {
+    SchemaBuilder schemaBuilder = SchemaBuilder.newInstance();
+    URL url = URI.create("http://localhost/" + UUID.randomUUID() + ".xsd").toURL();
     assertThatExceptionOfType(XmlRuntimeException.class)
-        .isThrownBy(() -> SchemaBuilder.newInstance()
-            .buildSchema(new URL("http://localhost/" + UUID.randomUUID() + ".xsd")));
+        .isThrownBy(() -> schemaBuilder.buildSchema(url));
   }
 
   /**
@@ -195,9 +199,9 @@ class SchemaBuilderTest {
     File file = File.createTempFile("junit", ".test",
         new File(System.getProperty("java.io.tmpdir")));
     file.deleteOnExit();
+    SchemaBuilder schemaBuilder = SchemaBuilder.newInstance();
     assertThatExceptionOfType(XmlRuntimeException.class)
-        .isThrownBy(() -> SchemaBuilder.newInstance()
-            .buildSchema(file));
+        .isThrownBy(() -> schemaBuilder.buildSchema(file));
   }
 
   /**
@@ -210,9 +214,10 @@ class SchemaBuilderTest {
     File file = File.createTempFile("junit", ".test",
         new File(System.getProperty("java.io.tmpdir")));
     file.deleteOnExit();
+    SchemaBuilder schemaBuilder = SchemaBuilder.newInstance();
+    StreamSource source = new StreamSource(file);
     assertThatExceptionOfType(XmlRuntimeException.class)
-        .isThrownBy(() -> SchemaBuilder.newInstance()
-            .buildSchema(new StreamSource(file)));
+        .isThrownBy(() -> schemaBuilder.buildSchema(source));
   }
 
   /**
@@ -222,11 +227,14 @@ class SchemaBuilderTest {
    */
   @Test
   void buildSchemaWithNull(SoftAssertions softly) {
-    softly.assertThat(SchemaBuilder.newInstance().buildSchema((URL) null))
+    softly
+        .assertThat(SchemaBuilder.newInstance().buildSchema((URL) null))
         .isNotNull();
-    softly.assertThat(SchemaBuilder.newInstance().buildSchema((File) null))
+    softly
+        .assertThat(SchemaBuilder.newInstance().buildSchema((File) null))
         .isNotNull();
-    softly.assertThat(SchemaBuilder.newInstance().buildSchema((Source) null))
+    softly
+        .assertThat(SchemaBuilder.newInstance().buildSchema((Source) null))
         .isNotNull();
   }
 

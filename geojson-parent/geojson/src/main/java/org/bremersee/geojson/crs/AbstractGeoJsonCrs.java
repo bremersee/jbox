@@ -68,6 +68,7 @@ public class AbstractGeoJsonCrs implements Serializable {
    * Instantiates a new Abstract geo json crs.
    */
   public AbstractGeoJsonCrs() {
+    super();
   }
 
   /**

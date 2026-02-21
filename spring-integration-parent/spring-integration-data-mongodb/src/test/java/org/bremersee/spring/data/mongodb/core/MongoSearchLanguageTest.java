@@ -18,7 +18,7 @@ class MongoSearchLanguageTest {
   @Test
   void testToString() {
     assertThat(target.toString())
-        .isEqualTo("de");
+        .hasToString("de");
   }
 
   /**

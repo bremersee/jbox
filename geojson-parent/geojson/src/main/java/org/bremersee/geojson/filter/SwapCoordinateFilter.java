@@ -32,6 +32,7 @@ public class SwapCoordinateFilter implements CoordinateFilter {
    * Instantiates a new swap coordinate filter.
    */
   public SwapCoordinateFilter() {
+    super();
   }
 
   @Override

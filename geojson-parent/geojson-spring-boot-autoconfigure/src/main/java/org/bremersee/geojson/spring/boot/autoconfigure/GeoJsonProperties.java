@@ -17,7 +17,6 @@
 package org.bremersee.geojson.spring.boot.autoconfigure;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

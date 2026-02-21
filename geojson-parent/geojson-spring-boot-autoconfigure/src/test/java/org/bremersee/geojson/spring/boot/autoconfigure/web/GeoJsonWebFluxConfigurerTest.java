@@ -44,20 +44,12 @@ class GeoJsonWebFluxConfigurerTest {
   }
 
   /**
-   * Init.
-   */
-  @Test
-  void init() {
-    GeoJsonWebFluxConfigurer target = newInstance();
-    target.init();
-  }
-
-  /**
    * Add formatters.
    */
   @Test
   void addFormatters() {
     GeoJsonWebFluxConfigurer target = newInstance();
+    target.init();
     FormatterRegistry formatterRegistry = mock(FormatterRegistry.class);
     target.addFormatters(formatterRegistry);
     int wantedNumberOfInvocations = GeometryConverters

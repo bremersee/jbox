@@ -256,9 +256,9 @@ class MinioTemplateTest {
    */
   @Order(1)
   @Test
-  void cloneMinioTemplate() {
-    assertNotNull(mockMinio.clone());
-    assertNotNull(mockMinio.clone(new DefaultMinioErrorHandler()));
+  void copyMinioTemplate() {
+    assertNotNull(mockMinio.copy());
+    assertNotNull(mockMinio.copy(new DefaultMinioErrorHandler()));
   }
 
   /**

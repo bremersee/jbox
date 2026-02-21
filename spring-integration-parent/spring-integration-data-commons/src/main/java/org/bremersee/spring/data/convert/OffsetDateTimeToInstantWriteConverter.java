@@ -36,6 +36,7 @@ public class OffsetDateTimeToInstantWriteConverter implements Converter<OffsetDa
    * Instantiates a new offset date time to instant write converter.
    */
   public OffsetDateTimeToInstantWriteConverter() {
+    super();
   }
 
   @Override

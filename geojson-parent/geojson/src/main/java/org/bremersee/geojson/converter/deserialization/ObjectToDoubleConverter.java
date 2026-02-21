@@ -39,8 +39,8 @@ class ObjectToDoubleConverter implements Serializable {
    * @return the double
    */
   double convert(Object source) {
-    if (source instanceof Number) {
-      return ((Number) source).doubleValue();
+    if (source instanceof Number number) {
+      return number.doubleValue();
     }
     return isNull(source)
         ? Double.NaN

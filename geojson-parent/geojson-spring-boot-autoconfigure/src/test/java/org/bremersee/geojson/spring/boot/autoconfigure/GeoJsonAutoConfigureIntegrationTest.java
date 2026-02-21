@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.bremersee.geojson.GeoJsonFeature;
 import org.bremersee.geojson.GeoJsonFeatureCollection;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
@@ -175,14 +174,13 @@ class GeoJsonAutoConfigureIntegrationTest {
   private Mono<GeoJsonFeatureCollection<Geometry, Object>> save(List<Geometry> geometries) {
     return repository.saveAll(geometries.stream()
             .map(GeometryEntity::new)
-            .collect(Collectors.toList()))
+            .toList())
         .map(entity -> new GeoJsonFeature<>(entity.getId(), entity.getGeometry(), false, null))
         .collect(
             () -> new GeoJsonFeatureCollection<>(
                 true,
                 (o1, o2) -> o1.getId().compareToIgnoreCase(o2.getId())),
             GeoJsonFeatureCollection::add);
-
   }
 
 }

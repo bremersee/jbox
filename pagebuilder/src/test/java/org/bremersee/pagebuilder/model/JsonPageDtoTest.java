@@ -153,7 +153,7 @@ class JsonPageDtoTest {
     AddressPage page = new AddressPage(content, 0, 4, 10L);
     Pageable actual = page.getPageable();
     assertThat(actual.getPageNumber())
-        .isEqualTo(0);
+        .isZero();
     assertThat(actual.getPageSize())
         .isEqualTo(4);
     assertThat(actual.getSort().isUnsorted())
@@ -173,7 +173,7 @@ class JsonPageDtoTest {
         SortOrder.by(SortOrderItem.by("city").with(CaseHandling.SENSITIVE)));
     Pageable actual = page.getPageable();
     assertThat(actual.getPageNumber())
-        .isEqualTo(0);
+        .isZero();
     assertThat(actual.getPageSize())
         .isEqualTo(4);
     assertThat(actual.getSort().isSorted())

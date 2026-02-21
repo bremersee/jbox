@@ -102,11 +102,26 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
   @Override
   String getEmail();
 
+  /**
+   * Gets builder.
+   *
+   * @return the builder
+   */
   static Builder builder() {
     return new Builder();
   }
 
+  /**
+   * The immutable builder.
+   */
   class Builder extends ImmutableLdaptiveUserDetails.Builder {
+
+    /**
+     * Instantiates a new builder.
+     */
+    public Builder() {
+      super();
+    }
 
   }
 

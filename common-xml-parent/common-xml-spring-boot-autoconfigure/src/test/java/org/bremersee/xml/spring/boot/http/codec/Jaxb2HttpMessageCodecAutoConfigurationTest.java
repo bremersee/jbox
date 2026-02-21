@@ -43,22 +43,13 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 class Jaxb2HttpMessageCodecAutoConfigurationTest {
 
   /**
-   * Init.
-   */
-  @Test
-  void init() {
-    Jaxb2HttpMessageCodecAutoConfiguration target = new Jaxb2HttpMessageCodecAutoConfiguration(
-        jaxbContextBuilder(JaxbContextBuilder.newInstance()), readWriteConfigurers());
-    target.init();
-  }
-
-  /**
    * Configure http message codecs.
    */
   @Test
   void configureHttpMessageCodecs() {
     Jaxb2HttpMessageCodecAutoConfiguration target = new Jaxb2HttpMessageCodecAutoConfiguration(
         jaxbContextBuilder(JaxbContextBuilder.newInstance()), readWriteConfigurers());
+    target.init();
 
     ServerCodecConfigurer configurer = mock(ServerCodecConfigurer.class);
     CustomCodecs customCodecs = mock(CustomCodecs.class);

@@ -2,6 +2,7 @@ package org.bremersee.ldaptive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.ldaptive.BindRequest;
 import org.ldaptive.ConnectionFactory;
@@ -34,7 +36,9 @@ class LdaptiveSambaTemplateTest {
    */
   @Test
   void setPasswordGenerator() {
-    target.setPasswordGenerator(() -> UUID.randomUUID().toString());
+    Supplier<String> generator = () -> UUID.randomUUID().toString();
+    assertThatNoException()
+        .isThrownBy(() -> target.setPasswordGenerator(generator));
   }
 
   /**
@@ -64,7 +68,11 @@ class LdaptiveSambaTemplateTest {
   void modifyUserPassword() {
     configureClonedLdaptiveSambaTemplate();
     doReturn(true).when(target).bind(any(BindRequest.class));
-    target.modifyUserPassword("cn=foobar,cn=users,dc=example,dc=org", "old", "new");
+    String dn = "cn=foobar,cn=users,dc=example,dc=org";
+    String oldPwd = "old";
+    String newPwd = "new";
+    assertThatNoException()
+        .isThrownBy(() -> target.modifyUserPassword(dn, oldPwd, newPwd));
   }
 
   /**

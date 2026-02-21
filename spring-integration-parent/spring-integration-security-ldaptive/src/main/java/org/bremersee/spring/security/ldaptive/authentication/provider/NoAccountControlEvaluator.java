@@ -30,6 +30,7 @@ public class NoAccountControlEvaluator implements AccountControlEvaluator {
    * Instantiates a new no account control evaluator.
    */
   public NoAccountControlEvaluator() {
+    super();
   }
 
   @Override

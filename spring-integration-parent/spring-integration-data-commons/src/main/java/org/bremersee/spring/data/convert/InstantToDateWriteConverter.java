@@ -37,6 +37,7 @@ public class InstantToDateWriteConverter implements Converter<Instant, Date> {
    * Instantiates a new instant to date write converter.
    */
   public InstantToDateWriteConverter() {
+    super();
   }
 
   @Override

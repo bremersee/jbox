@@ -128,28 +128,28 @@ public class GeometryToJsonConverter implements Serializable {
     if (isNull(source)) {
       return null;
     }
-    if (source instanceof Point) {
-      return pointConverter.convert((Point) source);
+    if (source instanceof Point point) {
+      return pointConverter.convert(point);
     }
 
-    if (source instanceof LineString) {
-      return lineStringConverter.convert((LineString) source);
+    if (source instanceof LineString lineString) {
+      return lineStringConverter.convert(lineString);
     }
 
-    if (source instanceof Polygon) {
-      return polygonConverter.convert((Polygon) source);
+    if (source instanceof Polygon polygon) {
+      return polygonConverter.convert(polygon);
     }
 
-    if (source instanceof MultiPoint) {
-      return multiPointConverter.convert((MultiPoint) source);
+    if (source instanceof MultiPoint multiPoint) {
+      return multiPointConverter.convert(multiPoint);
     }
 
-    if (source instanceof MultiLineString) {
-      return multiLineStringConverter.convert((MultiLineString) source);
+    if (source instanceof MultiLineString multiLineString) {
+      return multiLineStringConverter.convert(multiLineString);
     }
 
-    if (source instanceof MultiPolygon) {
-      return multiPolygonConverter.convert((MultiPolygon) source);
+    if (source instanceof MultiPolygon multiPolygon) {
+      return multiPolygonConverter.convert(multiPolygon);
     }
 
     if (source instanceof GeometryCollection) {
@@ -161,7 +161,7 @@ public class GeometryToJsonConverter implements Serializable {
       map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);
       if (withBoundingBox) {
         Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))
-            .map(bbox -> Arrays.stream(bbox).boxed().collect(Collectors.toList()))
+            .map(bbox -> Arrays.stream(bbox).boxed().toList())
             .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
       }
       map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));

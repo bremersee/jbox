@@ -103,8 +103,9 @@ class JaxbContextDataTest {
    */
   @Test
   void withIllegalPackage() {
+    Package pakkage = DateXmlAdapter.class.getPackage();
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new JaxbContextData(DateXmlAdapter.class.getPackage()));
+        .isThrownBy(() -> new JaxbContextData(pakkage));
   }
 
   /**

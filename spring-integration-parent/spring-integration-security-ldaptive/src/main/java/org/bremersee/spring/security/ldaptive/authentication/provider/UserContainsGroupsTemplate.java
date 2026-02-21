@@ -33,5 +33,6 @@ public class UserContainsGroupsTemplate extends WithDefaults {
    * Instantiates a new user contains groups template.
    */
   public UserContainsGroupsTemplate() {
+    super();
   }
 }

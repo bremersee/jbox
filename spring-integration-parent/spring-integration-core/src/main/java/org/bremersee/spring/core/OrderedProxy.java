@@ -44,7 +44,7 @@ public abstract class OrderedProxy {
    *     of these interfaces,     otherwise it must be {@link Ordered}
    */
   public static <T> T create(Object target, int orderedValue) {
-    if (target instanceof Ordered && ((Ordered) target).getOrder() == orderedValue) {
+    if (target instanceof Ordered ordered && ordered.getOrder() == orderedValue) {
       //noinspection unchecked
       return (T) target;
     }

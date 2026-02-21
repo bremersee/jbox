@@ -34,6 +34,8 @@ public class ServiceException extends RuntimeException
   @Serial
   private static final long serialVersionUID = 2L;
 
+  private static final String ENTITY = "Entity";
+
   /**
    * Default error code for an 'already exists exception'.
    */
@@ -263,7 +265,7 @@ public class ServiceException extends RuntimeException
    * @return the service exception
    */
   public static ServiceException notFound(Object entityName) {
-    return notFound("Entity", entityName);
+    return notFound(ENTITY, entityName);
   }
 
   /**
@@ -287,7 +289,7 @@ public class ServiceException extends RuntimeException
   public static ServiceException notFoundWithErrorCode(
       Object entityName,
       String errorCode) {
-    return notFoundWithErrorCode("Entity", entityName, errorCode);
+    return notFoundWithErrorCode(ENTITY, entityName, errorCode);
   }
 
   /**
@@ -323,7 +325,7 @@ public class ServiceException extends RuntimeException
    */
   public static ServiceException alreadyExists(
       Object entityName) {
-    return alreadyExistsWithErrorCode("Entity", entityName, null);
+    return alreadyExistsWithErrorCode(ENTITY, entityName, null);
   }
 
   /**
@@ -349,7 +351,7 @@ public class ServiceException extends RuntimeException
   public static ServiceException alreadyExistsWithErrorCode(
       Object entityName,
       String errorCode) {
-    return alreadyExistsWithErrorCode("Entity", entityName, errorCode);
+    return alreadyExistsWithErrorCode(ENTITY, entityName, errorCode);
   }
 
   /**

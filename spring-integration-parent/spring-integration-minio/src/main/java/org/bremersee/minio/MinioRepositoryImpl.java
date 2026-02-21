@@ -162,8 +162,7 @@ public class MinioRepositoryImpl implements MinioRepository {
               .build());
         }
         break;
-      case SUSPENDED:
-      case OFF:
+      case SUSPENDED, OFF:
         if (enableVersioning) {
           minio.setBucketVersioning(SetBucketVersioningArgs.builder()
               .region(region)
