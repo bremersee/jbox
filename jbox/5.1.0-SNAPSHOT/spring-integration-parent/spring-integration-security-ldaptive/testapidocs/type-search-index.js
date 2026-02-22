@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.spring.security.ldaptive.app","l":"WebSecurityConfiguration.ExampleRestController"},{"p":"org.bremersee.spring.security.ldaptive.app","l":"TestConfiguration"},{"p":"org.bremersee.spring.security.ldaptive.app","l":"WebSecurityConfiguration"}];updateSearchResults();

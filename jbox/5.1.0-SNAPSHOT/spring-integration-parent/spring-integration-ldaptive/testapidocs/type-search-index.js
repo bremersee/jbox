@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.ldaptive.app","l":"Group"},{"p":"org.bremersee.ldaptive.app","l":"GroupMapper"},{"p":"org.bremersee.ldaptive.app","l":"Person"},{"p":"org.bremersee.ldaptive.app","l":"PersonMapper"},{"p":"org.bremersee.ldaptive.app","l":"TestConfiguration"}];updateSearchResults();

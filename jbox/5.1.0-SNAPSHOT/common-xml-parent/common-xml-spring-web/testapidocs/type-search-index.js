@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.xml.model6","l":"StandaloneModel"}];updateSearchResults();

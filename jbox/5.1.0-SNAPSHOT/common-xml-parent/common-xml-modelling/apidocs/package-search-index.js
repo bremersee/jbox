@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.bremersee.xml"},{"l":"org.bremersee.xml.adapter"}];updateSearchResults();

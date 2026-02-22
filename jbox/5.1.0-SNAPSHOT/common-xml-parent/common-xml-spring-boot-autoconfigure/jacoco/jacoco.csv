@@ -1,5 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Common Xml Spring Boot Autoconfiguration,org.bremersee.xml.spring.boot,JaxbContextBuilderAutoConfiguration,0,57,0,0,0,14,0,6,0,6
-Common Xml Spring Boot Autoconfiguration,org.bremersee.xml.spring.boot.http.converter,Jaxb2HttpMessageConverterAutoConfiguration,0,75,0,0,0,18,0,6,0,6
-Common Xml Spring Boot Autoconfiguration,org.bremersee.xml.spring.boot.http,JaxbReadWriteConfigurer,4,0,0,0,2,0,2,0,2,0
-Common Xml Spring Boot Autoconfiguration,org.bremersee.xml.spring.boot.http.codec,Jaxb2HttpMessageCodecAutoConfiguration,0,99,0,2,0,24,0,7,0,6

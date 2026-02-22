@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.exception.webclient","l":"DefaultWebClientErrorDecoder"},{"p":"org.bremersee.exception","l":"RestApiExceptionMapperForWebFlux"},{"p":"org.bremersee.exception.webclient","l":"WebClientErrorDecoder"}];updateSearchResults();

@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.bremersee.gpx"},{"l":"org.bremersee.gpx.model"}];updateSearchResults();
