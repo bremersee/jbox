@@ -859,10 +859,11 @@
             <version>${maven-site-plugin.version}</version>
             <configuration>
               <generateReports>true</generateReports>
-              <stagingDirectory>${gh-pages-staging-dir}</stagingDirectory>
+              <stagingDirectory>${gh-pages-staging-dir}/${project.version}</stagingDirectory>
             </configuration>
           </plugin>
           <plugin>
+            <!-- Cause error, because too many arguments. Now, site generation and deployment is done by jenkins. -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-scm-publish-plugin</artifactId>
             <version>${maven-scm-publish-plugin.version}</version>
