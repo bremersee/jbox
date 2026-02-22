@@ -16,12 +16,14 @@
 
 package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
+import org.bremersee.exception.feign.FeignClientExceptionErrorDecoder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
@@ -51,5 +53,8 @@ class FeignClientExceptionErrorDecoderAutoConfigurationTest {
     //noinspection unchecked
     ObjectProvider<RestApiExceptionParser> parser = mock(ObjectProvider.class);
     when(parser.getIfAvailable()).thenReturn(new RestApiExceptionParserImpl());
+    FeignClientExceptionErrorDecoder actual = target.feignClientExceptionErrorDecoder(parser);
+    assertThat(actual)
+        .isNotNull();
   }
 }

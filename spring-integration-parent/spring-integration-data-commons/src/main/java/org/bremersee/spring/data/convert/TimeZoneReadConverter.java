@@ -36,5 +36,6 @@ public class TimeZoneReadConverter extends StringToTimeZoneConverter
    * Instantiates a new time zone read converter.
    */
   public TimeZoneReadConverter() {
+    super();
   }
 }

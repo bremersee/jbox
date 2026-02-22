@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,7 +31,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bremersee.ldaptive.LdaptiveEntryMapper;
+import org.bremersee.ldaptive.LdaptiveAttribute;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
@@ -40,6 +41,8 @@ import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.SearchRequest;
 import org.ldaptive.dn.Dn;
+import org.ldaptive.dn.NameValue;
+import org.ldaptive.dn.RDn;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -156,42 +159,39 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
 
   @Override
   public LdaptiveUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    logger.debug("Loading user '" + username + "' ...");
+    logger.debug(String.format("Loading user '%s' ...", username));
     LdapEntry ldapEntry = findUser(username)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format("%s not found.", username)));
+        .orElseThrow(() -> new UsernameNotFoundException(String
+            .format("User '%s' was  not found.", username)));
     Collection<? extends GrantedAuthority> authorities = getAuthorities(ldapEntry);
-    return new LdaptiveUser(
-        ldapEntry,
-        Optional.ofNullable(getAuthenticationProperties().getUsernameAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(username),
-        Optional.ofNullable(getAuthenticationProperties().getFirstNameAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(null),
-        Optional.ofNullable(getAuthenticationProperties().getLastNameAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(null),
-        Optional.ofNullable(getAuthenticationProperties().getEmailAttribute())
-            .map(ldapEntry::getAttribute)
-            .map(LdapAttribute::getStringValue)
-            .orElse(null),
-        authorities,
-        getRememberMeTokenProvider().getRememberMeToken(ldapEntry),
-        getAccountControlEvaluator().isAccountNonExpired(ldapEntry),
-        getAccountControlEvaluator().isAccountNonLocked(ldapEntry),
-        getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry),
-        getAccountControlEvaluator().isEnabled(ldapEntry)
-    );
+    var userDetailsBuilder = LdaptiveUserDetails.builder()
+        .dn(ldapEntry.getDn())
+        .username(LdaptiveAttribute.define(getAuthenticationProperties().getUsernameAttribute())
+            .getValue(ldapEntry)
+            .orElse(username))
+        .password(getRememberMeTokenProvider().getRememberMeToken(ldapEntry))
+        .accountNonExpired(getAccountControlEvaluator().isAccountNonExpired(ldapEntry))
+        .accountNonLocked(getAccountControlEvaluator().isAccountNonLocked(ldapEntry))
+        .credentialsNonExpired(getAccountControlEvaluator().isCredentialsNonExpired(ldapEntry))
+        .enabled(getAccountControlEvaluator().isEnabled(ldapEntry))
+        .authorities(authorities);
+    LdaptiveAttribute.define(getAuthenticationProperties().getFirstNameAttribute())
+        .getValue(ldapEntry)
+        .ifPresent(userDetailsBuilder::firstName);
+    LdaptiveAttribute.define(getAuthenticationProperties().getLastNameAttribute())
+        .getValue(ldapEntry)
+        .ifPresent(userDetailsBuilder::lastName);
+    LdaptiveAttribute.define(getAuthenticationProperties().getEmailAttribute())
+        .getValue(ldapEntry)
+        .ifPresent(userDetailsBuilder::email);
+    return userDetailsBuilder.build();
   }
 
   /**
-   * Is dn boolean.
+   * Determines whether the given username is a distinguished name or not.
    *
    * @param username the username
-   * @return the boolean
+   * @return {@code true} if the username is a distinguished name, otherwise {@code false}
    */
   protected boolean isDn(String username) {
     try {
@@ -233,7 +233,7 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @param user the user
    * @return the authorities
    */
-  public Collection<? extends GrantedAuthority> getAuthorities(LdapEntry user) {
+  public Collection<GrantedAuthority> getAuthorities(LdapEntry user) {
 
     return switch (getAuthenticationProperties().getGroupFetchStrategy()) {
       case NONE -> Set.of();
@@ -248,17 +248,37 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @param user the user
    * @return the roles by groups in user
    */
-  protected Collection<? extends GrantedAuthority> getAuthoritiesByGroupsInUser(LdapEntry user) {
-    Collection<? extends GrantedAuthority> authorities = Stream.ofNullable(user)
+  protected Collection<GrantedAuthority> getAuthoritiesByGroupsInUser(LdapEntry user) {
+    Collection<GrantedAuthority> authorities = Stream.ofNullable(user)
         .map(entry -> entry.getAttribute(getAuthenticationProperties().getMemberAttribute()))
         .filter(Objects::nonNull)
         .map(LdapAttribute::getStringValues)
         .filter(Objects::nonNull)
         .flatMap(Collection::stream)
-        .map(LdaptiveEntryMapper::getRdn)
+        .flatMap(memberOfValue -> getGroupName(memberOfValue).stream())
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toSet());
-    return getGrantedAuthoritiesMapper().mapAuthorities(authorities);
+    return Set.copyOf(getGrantedAuthoritiesMapper().mapAuthorities(authorities));
+  }
+
+  private static Optional<String> getGroupName(String groupNameOrGroupDn) {
+    return getDn(groupNameOrGroupDn)
+        .map(Dn::getRDn)
+        .map(RDn::getNameValue)
+        .map(NameValue::getStringValue)
+        .or(() -> Optional.ofNullable(groupNameOrGroupDn))
+        .filter(Predicate.not(String::isBlank));
+  }
+
+  private static Optional<Dn> getDn(String dn) {
+    if (isEmpty(dn)) {
+      return Optional.empty();
+    }
+    try {
+      return Optional.of(new Dn(dn));
+    } catch (RuntimeException e) {
+      return Optional.empty();
+    }
   }
 
   /**
@@ -267,8 +287,8 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    * @param user the user
    * @return the roles by groups with user
    */
-  protected Collection<? extends GrantedAuthority> getAuthoritiesByGroupsWithUser(LdapEntry user) {
-    Collection<? extends GrantedAuthority> authorities = getLdaptiveTemplate()
+  protected Collection<GrantedAuthority> getAuthoritiesByGroupsWithUser(LdapEntry user) {
+    Collection<GrantedAuthority> authorities = getLdaptiveTemplate()
         .findAll(
             SearchRequest.builder()
                 .dn(getAuthenticationProperties().getGroupBaseDn())
@@ -281,7 +301,7 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
         .map(this::getAuthorityName)
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toSet());
-    return getGrantedAuthoritiesMapper().mapAuthorities(authorities);
+    return Set.copyOf(getGrantedAuthoritiesMapper().mapAuthorities(authorities));
   }
 
   /**
@@ -315,7 +335,7 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
    */
   protected String getAuthorityName(LdapEntry group) {
     String groupIdAttribute = getAuthenticationProperties().getGroupIdAttribute();
-    String fallback = LdaptiveEntryMapper.getRdn(group.getDn());
+    String fallback = getGroupName(group.getDn()).orElse(null);
     if (isEmpty(groupIdAttribute)) {
       return fallback;
     }

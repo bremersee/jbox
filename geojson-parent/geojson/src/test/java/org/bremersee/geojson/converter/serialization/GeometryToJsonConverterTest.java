@@ -47,7 +47,7 @@ class GeometryToJsonConverterTest {
      *
      * @param factory the geometry factory
      */
-    private IllegalGeometry(GeometryFactory factory) {
+    protected IllegalGeometry(GeometryFactory factory) {
       super(factory);
     }
   }

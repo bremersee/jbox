@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -683,8 +684,9 @@ class GeoJsonGeometryFactoryTest {
    */
   @Test
   void createGeometryFromWellKnownTextWithNonsenseReader() {
+    StringReader reader = new StringReader("nonsense");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> target.createGeometryFromWellKnownText(new StringReader("nonsense")));
+        .isThrownBy(() -> target.createGeometryFromWellKnownText(reader));
   }
 
   /**
@@ -692,10 +694,9 @@ class GeoJsonGeometryFactoryTest {
    */
   @Test
   void createGeometryFromWellKnownTextWithNonsenseInputStream() {
+    InputStream in = new ByteArrayInputStream("nonsense".getBytes(StandardCharsets.UTF_8));
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> target.createGeometryFromWellKnownText(
-            new ByteArrayInputStream("nonsense".getBytes(StandardCharsets.UTF_8)),
-            StandardCharsets.UTF_8));
+        .isThrownBy(() -> target.createGeometryFromWellKnownText(in, StandardCharsets.UTF_8));
   }
 
   /**

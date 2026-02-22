@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @author Christian Bremer
  */
 @ExtendWith(SoftAssertionsExtension.class)
-public class AclHolderTest {
+class AclHolderTest {
 
   /**
    * Path.

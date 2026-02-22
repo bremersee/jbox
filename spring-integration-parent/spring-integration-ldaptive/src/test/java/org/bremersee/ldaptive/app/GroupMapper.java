@@ -16,18 +16,17 @@
 
 package org.bremersee.ldaptive.app;
 
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.createDn;
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.getAttributeValue;
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.getAttributeValuesAsSet;
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.setAttribute;
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.setAttributes;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.bremersee.ldaptive.LdaptiveAttribute;
 import org.bremersee.ldaptive.LdaptiveEntryMapper;
 import org.ldaptive.AttributeModification;
 import org.ldaptive.LdapEntry;
-import org.ldaptive.transcode.StringValueTranscoder;
+import org.ldaptive.dn.Dn;
+import org.ldaptive.dn.NameValue;
+import org.ldaptive.dn.RDn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -39,8 +38,6 @@ import org.springframework.util.StringUtils;
  */
 @Component
 public class GroupMapper implements LdaptiveEntryMapper<Group> {
-
-  private static final StringValueTranscoder STRING_TRANSCODER = new StringValueTranscoder();
 
   @Value("${spring.ldap.embedded.base-dn}")
   private String baseDn;
@@ -59,7 +56,11 @@ public class GroupMapper implements LdaptiveEntryMapper<Group> {
     if (group == null || !StringUtils.hasText(group.getCn())) {
       return null;
     }
-    return createDn("cn", group.getCn(), getBaseDn());
+    return Dn.builder()
+        .add(new RDn(new NameValue("cn", group.getCn())))
+        .add(new Dn(getBaseDn()))
+        .build()
+        .format();
   }
 
   @Override
@@ -74,21 +75,25 @@ public class GroupMapper implements LdaptiveEntryMapper<Group> {
 
   @Override
   public void map(LdapEntry ldapEntry, Group group) {
-    group.setCn(getAttributeValue(ldapEntry,
-        "cn", STRING_TRANSCODER, null));
-    group.setOu(getAttributeValue(ldapEntry,
-        "ou", STRING_TRANSCODER, null));
-    group.setMembers(getAttributeValuesAsSet(ldapEntry,
-        "uniqueMember", STRING_TRANSCODER));
+    LdaptiveAttribute.define("cn").getValue(ldapEntry)
+        .ifPresent(group::setCn);
+    LdaptiveAttribute.define("ou").getValue(ldapEntry)
+        .ifPresent(group::setOu);
+    Set<String> members = LdaptiveAttribute.define("uniqueMember")
+        .getValues(ldapEntry)
+        .collect(Collectors.toSet());
+    group.setMembers(members);
   }
 
   @Override
   public AttributeModification[] mapAndComputeModifications(Group source, LdapEntry destination) {
     List<AttributeModification> modifications = new ArrayList<>();
-    setAttribute(destination, "cn", source.getCn(), false, STRING_TRANSCODER, modifications);
-    setAttribute(destination, "ou", source.getOu(), false, STRING_TRANSCODER, modifications);
-    setAttributes(destination, "uniqueMember", source.getMembers(), false, STRING_TRANSCODER,
-        modifications);
+    LdaptiveAttribute.define("cn").setValue(destination, source.getCn())
+        .ifPresent(modifications::add);
+    LdaptiveAttribute.define("ou").setValue(destination, source.getOu())
+        .ifPresent(modifications::add);
+    LdaptiveAttribute.define("uniqueMember").setValues(destination, source.getMembers())
+        .ifPresent(modifications::add);
     return modifications.toArray(new AttributeModification[0]);
   }
 

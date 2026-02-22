@@ -92,8 +92,8 @@ class FileAwareMultipartFileTest {
         "junit",
         ".txt",
         new File(System.getProperty("java.io.tmpdir")));
-    try {
-      FileCopyUtils.copy("Hello", new FileWriter(file));
+    try(FileWriter fileWriter = new FileWriter(file)) {
+      FileCopyUtils.copy("Hello", fileWriter);
       MultipartFile multipartFile = new FileAwareMultipartFile(
           file,
           "foo",

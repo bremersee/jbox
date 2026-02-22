@@ -31,15 +31,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 class JaxbContextBuilderAutoConfigurationTest {
 
   /**
-   * Init.
-   */
-  @Test
-  void init() {
-    JaxbContextBuilderAutoConfiguration target = new JaxbContextBuilderAutoConfiguration();
-    target.init();
-  }
-
-  /**
    * Jaxb context builder.
    *
    * @param softly the soft assertions
@@ -47,6 +38,7 @@ class JaxbContextBuilderAutoConfigurationTest {
   @Test
   void jaxbContextBuilder(SoftAssertions softly) {
     JaxbContextBuilderAutoConfiguration target = new JaxbContextBuilderAutoConfiguration();
+    target.init();
     softly.assertThat(target.jaxbContextBuilder(null))
         .isNotNull();
     softly

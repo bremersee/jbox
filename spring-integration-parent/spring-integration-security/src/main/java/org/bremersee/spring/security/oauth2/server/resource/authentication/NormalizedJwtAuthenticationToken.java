@@ -17,6 +17,7 @@
 package org.bremersee.spring.security.oauth2.server.resource.authentication;
 
 import java.util.Collection;
+import lombok.EqualsAndHashCode;
 import org.bremersee.spring.security.core.NormalizedAuthentication;
 import org.bremersee.spring.security.core.NormalizedPrincipal;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +31,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
  * @author Christian Bremer
  */
 @Transient
+@EqualsAndHashCode(callSuper = true)
 public class NormalizedJwtAuthenticationToken extends JwtAuthenticationToken
     implements NormalizedAuthentication {
 

@@ -34,6 +34,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.log.LogFormatUtils;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -80,7 +81,8 @@ public class ReactiveJaxbEncoder extends AbstractSingleValueEncoder<Object> {
       JaxbContextBuilder jaxbContextBuilder,
       Set<Class<?>> ignoreWritingClasses) {
 
-    super(MimeTypeUtils.APPLICATION_XML, MimeTypeUtils.TEXT_XML);
+    super(MimeTypeUtils.APPLICATION_XML, MimeTypeUtils.TEXT_XML,
+        new MediaType("application", "*+xml"));
     Assert.notNull(jaxbContextBuilder, "JaxbContextBuilder must be present.");
     this.jaxbContextBuilder = jaxbContextBuilder;
     this.ignoreWritingClasses = isNull(ignoreWritingClasses) ? Set.of() : ignoreWritingClasses;

@@ -19,7 +19,8 @@ package org.bremersee.spring.boot.autoconfigure.security.authentication;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration;
 import org.bremersee.spring.security.core.EmailToUsernameResolver;
@@ -29,7 +30,6 @@ import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticat
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
 import org.bremersee.spring.security.ldaptive.authentication.ReactiveLdaptiveAuthenticationManager;
-import org.bremersee.spring.security.ldaptive.authentication.UsernameToBindDnConverter;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveEvaluatedRememberMeTokenProvider;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptivePwdLastSetRememberMeTokenProvider;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
@@ -72,8 +72,9 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnProperty(prefix = "bremersee.authentication.ldaptive", name = "user-base-dn")
 @AutoConfigureAfter({LdaptiveAutoConfiguration.class})
 @EnableConfigurationProperties(AuthenticationProperties.class)
-@Slf4j
 public class LdaptiveAuthenticationAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(LdaptiveAuthenticationAutoConfiguration.class);
 
   private final LdaptiveAuthenticationProperties properties;
 
@@ -94,14 +95,14 @@ public class LdaptiveAuthenticationAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
-            * properties = {}
+            * %s
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        properties);
+        properties));
   }
 
   /**
@@ -144,7 +145,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
    * @param ldaptivePasswordEncoderProvider the ldaptive password encoder provider
    * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
    * @param emailToUsernameResolver the email to username resolver
-   * @param usernameToBindDnConverter the username to bind dn provider
    * @param accountControlEvaluator the account control evaluator
    * @param grantedAuthoritiesMapper the granted authorities mapper
    * @param tokenConverter the token converter
@@ -159,7 +159,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
       LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider,
       LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider,
       ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver,
-      ObjectProvider<UsernameToBindDnConverter> usernameToBindDnConverter,
       ObjectProvider<AccountControlEvaluator> accountControlEvaluator,
       ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper,
       ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter) {
@@ -171,7 +170,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
     manager.setPasswordEncoder(ldaptivePasswordEncoderProvider.get());
     manager.setPasswordProvider(ldaptiveRememberMeTokenProvider);
     emailToUsernameResolver.ifAvailable(manager::setEmailToUsernameResolver);
-    usernameToBindDnConverter.ifAvailable(manager::setUsernameToBindDnConverter);
     accountControlEvaluator.ifAvailable(manager::setAccountControlEvaluator);
     manager.setGrantedAuthoritiesMapper(getGrantedAuthoritiesMapper(grantedAuthoritiesMapper));
     tokenConverter.ifAvailable(manager::setTokenConverter);
@@ -187,7 +185,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
    * @param ldaptivePasswordEncoderProvider the ldaptive password encoder provider
    * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
    * @param emailToUsernameResolver the email to username resolver
-   * @param usernameToBindDnConverter the username to bind dn converter
    * @param accountControlEvaluator the account control evaluator
    * @param grantedAuthoritiesMapper the granted authorities mapper
    * @param tokenConverter the token converter
@@ -202,7 +199,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
       LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider,
       LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider,
       ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver,
-      ObjectProvider<UsernameToBindDnConverter> usernameToBindDnConverter,
       ObjectProvider<AccountControlEvaluator> accountControlEvaluator,
       ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper,
       ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter) {
@@ -214,7 +210,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
             ldaptivePasswordEncoderProvider,
             ldaptiveRememberMeTokenProvider,
             emailToUsernameResolver,
-            usernameToBindDnConverter,
             accountControlEvaluator,
             grantedAuthoritiesMapper,
             tokenConverter));

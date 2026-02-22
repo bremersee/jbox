@@ -41,9 +41,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({SoftAssertionsExtension.class})
 class ConverterUtilsTest {
 
-  private static final String xmlCalStrZ = "2019-03-27T17:41:31.687Z";
+  private static final String XML_CAL_STR_Z = "2019-03-27T17:41:31.687Z";
 
-  private static final String xmlCalStrNewYork = "2019-03-27T13:45:44.157-04:00";
+  private static final String XML_CAL_STR_NEW_YORK = "2019-03-27T13:45:44.157-04:00";
 
   private static XMLGregorianCalendar xmlCalZ;
 
@@ -59,15 +59,15 @@ class ConverterUtilsTest {
   @BeforeAll
   static void setup() {
     try {
-      xmlCalZ = DatatypeFactory.newInstance().newXMLGregorianCalendar(xmlCalStrZ);
-      xmlCalNewYork = DatatypeFactory.newInstance().newXMLGregorianCalendar(xmlCalStrNewYork);
+      xmlCalZ = DatatypeFactory.newInstance().newXMLGregorianCalendar(XML_CAL_STR_Z);
+      xmlCalNewYork = DatatypeFactory.newInstance().newXMLGregorianCalendar(XML_CAL_STR_NEW_YORK);
 
     } catch (DatatypeConfigurationException e) {
       throw new RuntimeException("Creating XMLGregorianCalendar failed.", e);
     }
-    dateTimeZ = OffsetDateTime.parse(xmlCalStrZ, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    dateTimeZ = OffsetDateTime.parse(XML_CAL_STR_Z, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     dateTimeNewYork = OffsetDateTime
-        .parse(xmlCalStrNewYork, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        .parse(XML_CAL_STR_NEW_YORK, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
   }
 
   /**
@@ -148,12 +148,12 @@ class ConverterUtilsTest {
     GregorianCalendar cal = ConverterUtils.xmlCalendarToCalendar(xmlCalZ);
     softly.assertThat(cal).isNotNull();
     softly.assertThat(ConverterUtils.calendarToXmlCalendar(cal).toXMLFormat())
-        .isEqualTo(xmlCalStrZ);
+        .isEqualTo(XML_CAL_STR_Z);
 
     cal = ConverterUtils.xmlCalendarToCalendar(xmlCalNewYork);
     softly.assertThat(cal).isNotNull();
     softly.assertThat(ConverterUtils.calendarToXmlCalendar(cal).toXMLFormat())
-        .isEqualTo(xmlCalStrNewYork);
+        .isEqualTo(XML_CAL_STR_NEW_YORK);
 
     softly.assertThat(ConverterUtils.xmlCalendarToCalendar(null)).isNull();
     softly.assertThat(ConverterUtils.calendarToXmlCalendar(null)).isNull();
@@ -170,13 +170,13 @@ class ConverterUtilsTest {
     softly.assertThat(dateTime)
         .isNotNull();
     softly.assertThat(ConverterUtils.offsetDateTimeToXmlCalendar(dateTime).toXMLFormat())
-        .isEqualTo(xmlCalStrZ);
+        .isEqualTo(XML_CAL_STR_Z);
 
     dateTime = ConverterUtils.xmlCalendarToOffsetDateTime(xmlCalNewYork);
     softly.assertThat(dateTime)
         .isNotNull();
     softly.assertThat(ConverterUtils.offsetDateTimeToXmlCalendar(dateTime).toXMLFormat())
-        .isEqualTo(xmlCalStrNewYork);
+        .isEqualTo(XML_CAL_STR_NEW_YORK);
 
     softly.assertThat(ConverterUtils.xmlCalendarToOffsetDateTime(null)).isNull();
     softly.assertThat(ConverterUtils.offsetDateTimeToXmlCalendar(null)).isNull();
@@ -220,7 +220,7 @@ class ConverterUtilsTest {
     softly.assertThat(cal.toGregorianCalendar().getTime())
         .isEqualTo(date);
     softly.assertThat(cal.toXMLFormat())
-        .isEqualTo(xmlCalStrZ);
+        .isEqualTo(XML_CAL_STR_Z);
 
     date = ConverterUtils.xmlCalendarToDate(xmlCalNewYork);
     softly.assertThat(date)
@@ -232,7 +232,7 @@ class ConverterUtilsTest {
     softly.assertThat(cal.toGregorianCalendar().getTime())
         .isEqualTo(date);
     softly.assertThat(cal.toXMLFormat())
-        .isEqualTo(xmlCalStrNewYork);
+        .isEqualTo(XML_CAL_STR_NEW_YORK);
 
     softly.assertThat(ConverterUtils.xmlCalendarToDate(null)).isNull();
     softly.assertThat(ConverterUtils.dateToXmlCalendar(null)).isNull();
@@ -257,7 +257,7 @@ class ConverterUtilsTest {
     softly.assertThat(cal.toGregorianCalendar().getTime().toInstant())
         .isEqualTo(instant);
     softly.assertThat(cal.toXMLFormat())
-        .isEqualTo(xmlCalStrZ);
+        .isEqualTo(XML_CAL_STR_Z);
 
     instant = ConverterUtils.xmlCalendarToInstant(xmlCalNewYork);
     softly.assertThat(instant)
@@ -270,7 +270,7 @@ class ConverterUtilsTest {
     softly.assertThat(cal.toGregorianCalendar().getTime().toInstant())
         .isEqualTo(instant);
     softly.assertThat(cal.toXMLFormat())
-        .isEqualTo(xmlCalStrNewYork);
+        .isEqualTo(XML_CAL_STR_NEW_YORK);
 
     softly.assertThat(ConverterUtils.xmlCalendarToInstant(null)).isNull();
     softly.assertThat(ConverterUtils.instantToXmlCalendar(null)).isNull();
@@ -294,7 +294,7 @@ class ConverterUtilsTest {
     softly.assertThat(cal)
         .isNotNull()
         .extracting(XMLGregorianCalendar::toXMLFormat)
-        .isEqualTo(xmlCalStrZ);
+        .isEqualTo(XML_CAL_STR_Z);
     softly.assertThat(cal)
         .isNotNull()
         .extracting(XMLGregorianCalendar::toGregorianCalendar)
@@ -310,7 +310,7 @@ class ConverterUtilsTest {
     softly.assertThat(cal)
         .isNotNull()
         .extracting(XMLGregorianCalendar::toXMLFormat)
-        .isEqualTo(xmlCalStrNewYork);
+        .isEqualTo(XML_CAL_STR_NEW_YORK);
     softly.assertThat(cal)
         .isNotNull()
         .extracting(XMLGregorianCalendar::toGregorianCalendar)

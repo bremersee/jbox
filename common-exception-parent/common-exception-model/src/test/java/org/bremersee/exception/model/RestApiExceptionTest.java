@@ -392,7 +392,6 @@ class RestApiExceptionTest {
     objectMapper.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
 
     String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(model);
-    // System.out.println(json);
 
     RestApiException actualModel = objectMapper.readValue(json, RestApiException.class);
     softly.assertThat(actualModel).isEqualTo(model);

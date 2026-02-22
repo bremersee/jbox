@@ -179,13 +179,6 @@ class ExtensionsTypeBuilderTest {
   }
 
   /**
-   * Build.
-   */
-  @Test
-  void build() {
-  }
-
-  /**
    * Builder with elements.
    *
    * @param softly the soft assertions

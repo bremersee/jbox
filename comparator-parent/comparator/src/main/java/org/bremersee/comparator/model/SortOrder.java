@@ -62,6 +62,9 @@ public class SortOrder implements Serializable {
    */
   public static final String DEFAULT_SEPARATOR = ";";
 
+  /**
+   * The items of the sort order.
+   */
   @Schema(description = "The sort order items.")
   @XmlElementRef
   private final List<SortOrderItem> items = new ArrayList<>();
@@ -234,6 +237,11 @@ public class SortOrder implements Serializable {
         .orElseGet(SortOrder::new);
   }
 
+  /**
+   * Unsorted sort order.
+   *
+   * @return the unsorted sort order
+   */
   public static SortOrder unsorted() {
     return new SortOrder();
   }

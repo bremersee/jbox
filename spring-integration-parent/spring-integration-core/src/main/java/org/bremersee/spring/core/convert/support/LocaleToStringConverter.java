@@ -32,6 +32,7 @@ public class LocaleToStringConverter implements Converter<Locale, String> {
    * Instantiates a new locale to string converter.
    */
   public LocaleToStringConverter() {
+    super();
   }
 
   @Override

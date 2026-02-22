@@ -40,6 +40,7 @@ public class DocumentToAclConverter implements Converter<Document, Acl> {
    * Instantiates a new document to acl converter.
    */
   public DocumentToAclConverter() {
+    super();
   }
 
   @Override
@@ -53,8 +54,8 @@ public class DocumentToAclConverter implements Converter<Document, Acl> {
       for (Map.Entry<String, Object> entry : entryMap.entrySet()) {
         String permission = entry.getKey();
         Object aceObj = entry.getValue();
-        if (aceObj instanceof Ace) {
-          permissionMap.put(permission, (Ace) aceObj);
+        if (aceObj instanceof Ace ace) {
+          permissionMap.put(permission, ace);
         } else if (aceObj instanceof Map) {
           //noinspection unchecked
           Map<String, Object> aceMap = (Map<String, Object>) aceObj;

@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
   </parent>
 
   <artifactId>spring-integration-parent</artifactId>
@@ -27,8 +27,6 @@
     <module>spring-integration-minio</module>
     <module>spring-integration-security</module>
     <module>spring-integration-security-ldaptive</module>
-    <module>spring-integration-test-api-comparator</module>
-    <module>spring-integration-thymeleaf</module>
     <module>spring-integration-web</module>
     <module>spring-integration-webflux</module>
     <module>spring-integration-boot-autoconfigure</module>

@@ -17,7 +17,6 @@
 package org.bremersee.geojson.spring.boot.autoconfigure;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -27,7 +26,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "bremersee.geojson")
 @Data
-@NoArgsConstructor
 public class GeoJsonProperties {
 
   /**
@@ -42,4 +40,10 @@ public class GeoJsonProperties {
    */
   private boolean withBoundingBox = false;
 
+  /**
+   * Instantiates a new GeoJSON properties.
+   */
+  public GeoJsonProperties() {
+    super();
+  }
 }

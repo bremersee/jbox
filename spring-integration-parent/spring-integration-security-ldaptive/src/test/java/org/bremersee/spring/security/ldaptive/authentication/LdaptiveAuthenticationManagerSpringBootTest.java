@@ -93,7 +93,7 @@ class LdaptiveAuthenticationManagerSpringBootTest {
             .authenticate(new UsernamePasswordAuthenticationToken("anna", "secret")));
 
     // authenticate successfully
-    LdaptiveAuthentication authenticationToken = authenticationManager
+    LdaptiveAuthentication authenticationToken = (LdaptiveAuthentication) authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(
             "anna.livia@bremersee.org", "topsecret"));
 

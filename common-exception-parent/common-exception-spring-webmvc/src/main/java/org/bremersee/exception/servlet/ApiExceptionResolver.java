@@ -32,7 +32,8 @@ import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionConstants;
 import org.bremersee.exception.RestApiExceptionMapper;
 import org.bremersee.exception.RestApiResponseType;
@@ -58,8 +59,9 @@ import org.springframework.web.util.WebUtils;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public class ApiExceptionResolver implements HandlerExceptionResolver {
+
+  private static final Log log = LogFactory.getLog(ApiExceptionResolver.class);
 
   /**
    * The constant MODEL_KEY.
@@ -206,8 +208,8 @@ public class ApiExceptionResolver implements HandlerExceptionResolver {
     if (isEmpty(handler)) {
       return false;
     }
-    Class<?> cls = handler instanceof HandlerMethod
-        ? ((HandlerMethod) handler).getBean().getClass()
+    Class<?> cls = handler instanceof HandlerMethod handlerMethod
+        ? handlerMethod.getBean().getClass()
         : handler.getClass();
     boolean result = !isEmpty(findAnnotation(cls, RestController.class));
     if (log.isDebugEnabled()) {

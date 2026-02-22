@@ -61,7 +61,7 @@ public class ExampleEntityRepositoryImpl implements ExampleEntityRepositoryCusto
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    new AclIndexOperations(this.mongoTemplate).ensureAclIndexes(
+    new AclIndexOperations(this.mongoTemplate).createAclIndexes(
         ExampleEntity.class,
         PermissionConstants.getAll(),
         false);

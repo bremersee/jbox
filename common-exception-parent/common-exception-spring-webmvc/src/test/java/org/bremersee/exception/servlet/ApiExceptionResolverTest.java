@@ -96,10 +96,10 @@ class ApiExceptionResolverTest {
     when(request.getRequestURI()).thenReturn("/api/resource");
     when(request.getHeaderNames())
         .thenReturn(Collections.enumeration(List.of(HttpHeaders.ACCEPT)));
-    when(request.getHeaders(eq(HttpHeaders.ACCEPT)))
+    when(request.getHeaders(HttpHeaders.ACCEPT))
         .thenReturn(Collections.enumeration(List.of(MediaType.APPLICATION_JSON_VALUE)));
 
-    when(request.getAttribute(eq(WebUtils.INCLUDE_REQUEST_URI_ATTRIBUTE)))
+    when(request.getAttribute(WebUtils.INCLUDE_REQUEST_URI_ATTRIBUTE))
         .thenReturn(true);
 
     RestApiException expected = RestApiException.builder()
@@ -141,10 +141,10 @@ class ApiExceptionResolverTest {
     when(request.getRequestURI()).thenReturn("/api/resource");
     when(request.getHeaderNames())
         .thenReturn(Collections.enumeration(List.of(HttpHeaders.ACCEPT)));
-    when(request.getHeaders(eq(HttpHeaders.ACCEPT)))
+    when(request.getHeaders(HttpHeaders.ACCEPT))
         .thenReturn(Collections.enumeration(List.of(MediaType.APPLICATION_XML_VALUE)));
 
-    when(request.getAttribute(eq(WebUtils.INCLUDE_REQUEST_URI_ATTRIBUTE)))
+    when(request.getAttribute(WebUtils.INCLUDE_REQUEST_URI_ATTRIBUTE))
         .thenReturn(null);
 
     RestApiException expected = RestApiException.builder()

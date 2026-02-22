@@ -152,7 +152,7 @@ class JsonSliceDtoTest {
     AddressSlice slice = new AddressSlice(content, 0, 4, false);
     Pageable actual = slice.getPageable();
     assertThat(actual.getPageNumber())
-        .isEqualTo(0);
+        .isZero();
     assertThat(actual.getPageSize())
         .isEqualTo(4);
     assertThat(actual.getSort().isUnsorted())
@@ -172,7 +172,7 @@ class JsonSliceDtoTest {
         SortOrder.by(SortOrderItem.by("city").with(CaseHandling.SENSITIVE)));
     Pageable actual = slice.getPageable();
     assertThat(actual.getPageNumber())
-        .isEqualTo(0);
+        .isZero();
     assertThat(actual.getPageSize())
         .isEqualTo(4);
     assertThat(actual.getSort().isSorted())

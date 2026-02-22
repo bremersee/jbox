@@ -51,6 +51,13 @@ public class KmlJaxbContextDataProvider implements JaxbContextDataProvider {
    */
   public static final String ATOM_NS = "http://www.w3.org/2005/Atom";
 
+  /**
+   * Instantiates a new KML jaxb context data provider.
+   */
+  public KmlJaxbContextDataProvider() {
+    super();
+  }
+
   @Override
   public Collection<JaxbContextMember> getJaxbContextData() {
     return List.of(

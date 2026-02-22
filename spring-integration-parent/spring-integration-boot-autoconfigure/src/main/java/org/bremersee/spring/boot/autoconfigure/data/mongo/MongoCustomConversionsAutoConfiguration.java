@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.data.mongo.MongoCustomConversionsFilter.DefaultFilter;
 import org.bremersee.spring.data.mongodb.core.convert.MongoCustomConversionsProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -54,8 +54,9 @@ import org.springframework.util.ClassUtils;
     "org.bremersee.spring.data.mongodb.core.convert.MongoCustomConversionsProvider",
     "org.springframework.data.mongodb.core.convert.MongoCustomConversions"})
 @AutoConfiguration
-@Slf4j
 public class MongoCustomConversionsAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(MongoCustomConversionsAutoConfiguration.class);
 
   private final MongoProperties.CustomConversionsProperties properties;
 
@@ -74,14 +75,14 @@ public class MongoCustomConversionsAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * properties = {}
+            * properties = %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName(), properties);
+        ClassUtils.getUserClass(getClass()).getSimpleName(), properties));
   }
 
   /**
@@ -123,7 +124,7 @@ public class MongoCustomConversionsAutoConfiguration {
         .distinct()
         .sorted(Comparator.comparing(c -> c.getClass().getName()))
         .filter(mongoCustomConversionsFilter)
-        .collect(Collectors.toList());
+        .toList();
     return new MongoCustomConversions(converters);
   }
 

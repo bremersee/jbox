@@ -1,13 +1,14 @@
 pipeline {
   agent {
-    label 'maven'
+    label 'jdk21&&maven&&docker&&AVX'
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
     TEST = true
-    DEPLOY = true
-    SNAPSHOT_SITE = true
-    RELEASE_SITE = true
+    DEPLOY = false
+    SITE = true
+    SNAPSHOT_SITE = false
+    RELEASE_SITE = false
     DEPLOY_FEATURE = false
   }
   tools {
@@ -54,6 +55,34 @@ pipeline {
       }
       steps {
         sh 'mvn -B -P build-system,deploy deploy'
+      }
+    }
+    stage('Site') {
+      when {
+        allOf {
+          environment name: 'SITE', value: 'true'
+          anyOf {
+            branch 'develop'
+            branch 'main'
+            branch 'feature/*'
+            branch 'bugfix/*'
+          }
+        }
+      }
+      steps {
+        sh '''
+          mvn -B -P build-system,gh-pages-site site site:stage
+          git clone -b gh-pages git@github.com:bremersee/jbox.git target/gh-pages
+          cp -rf target/staging/* target/gh-pages
+          git -C target/gh-pages add .
+          git -C target/gh-pages commit -m "Maven site"
+          git -C target/gh-pages push
+        '''
+      }
+      post {
+        always {
+          sh 'curl -s https://codecov.io/bash | bash -s - -t ${CODECOV_TOKEN}'
+        }
       }
     }
     stage('Snapshot Site') {

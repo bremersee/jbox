@@ -46,5 +46,6 @@ public class UploadProperties {
    * Instantiates new upload properties.
    */
   public UploadProperties() {
+    super();
   }
 }

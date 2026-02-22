@@ -57,7 +57,6 @@ class LdaptiveUserDetailsServiceTest {
   void loadNotExistingUser() {
     LdaptiveAuthenticationProperties properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
-    properties.setUserRdnAttribute("uid");
     LdaptiveUserDetailsService target = init(properties);
 
     doReturn(Optional.empty()).when(ldaptiveTemplate).findOne(any());
@@ -75,7 +74,6 @@ class LdaptiveUserDetailsServiceTest {
   void loadUserWithGroupsByUsername(SoftAssertions softly) {
     LdaptiveAuthenticationProperties properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
-    properties.setUserRdnAttribute("uid");
     LdaptiveUserDetailsService target = init(properties);
 
     LdapEntry user = createUser();
@@ -97,8 +95,7 @@ class LdaptiveUserDetailsServiceTest {
     LdaptiveAuthenticationProperties properties = new GroupContainsUsersTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
     properties.setGroupBaseDn(USER_BASE_DN);
-    properties.setUserRdnAttribute("uid");
-    properties.setGroupIdAttribute("uid"); // doesn't exist -> use rdn
+    properties.setGroupIdAttribute("uid");
     properties.setGroupMemberFormat("${username}");
 
     LdaptiveUserDetailsService target = init(properties);

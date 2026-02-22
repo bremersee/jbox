@@ -24,7 +24,7 @@ import org.springframework.util.ErrorHandler;
  *
  * @author Christian Bremer
  */
-public class MinioTemplate implements MinioOperations, Cloneable {
+public class MinioTemplate implements MinioOperations {
 
   private final MinioClient client;
 
@@ -50,19 +50,22 @@ public class MinioTemplate implements MinioOperations, Cloneable {
     }
   }
 
-  @SuppressWarnings("MethodDoesntCallSuperMethod")
-  @Override
-  public MinioTemplate clone() {
-    return clone(null);
+  /**
+   * Copies minio template.
+   *
+   * @return the minio template
+   */
+  public MinioTemplate copy() {
+    return copy(null);
   }
 
   /**
-   * Clone minio template.
+   * Copies minio template.
    *
    * @param errorHandler the error handler
    * @return the minio template
    */
-  public MinioTemplate clone(ErrorHandler errorHandler) {
+  public MinioTemplate copy(ErrorHandler errorHandler) {
     MinioTemplate clone = new MinioTemplate(client);
     clone.setErrorHandler(errorHandler);
     return clone;

@@ -20,25 +20,23 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import lombok.Builder;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.ldaptive.AttributeModification;
-import org.ldaptive.AttributeModification.Type;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.ModifyRequest;
+import org.ldaptive.dn.Dn;
+import org.ldaptive.dn.NameValue;
+import org.ldaptive.dn.RDn;
 import org.ldaptive.transcode.ByteArrayValueTranscoder;
-import org.ldaptive.transcode.StringValueTranscoder;
 import org.springframework.util.StringUtils;
 
 /**
@@ -48,458 +46,30 @@ import org.springframework.util.StringUtils;
  */
 class LdaptiveEntryMapperTest {
 
-  private static final StringValueTranscoder STRING_TRANSCODER = new StringValueTranscoder();
-
-  private static final ByteArrayValueTranscoder BYTE_TRANSCODER = new ByteArrayValueTranscoder();
-
   private static final PersonMapper mapper = new PersonMapper();
 
   /**
-   * Gets attribute value.
+   * Gets object classes.
    */
   @Test
-  void getAttributeValue() {
-    assertNull(LdaptiveEntryMapper
-        .getAttributeValue(null, "foo", null, null));
-
-    String expected = "bar";
-    assertEquals(expected, LdaptiveEntryMapper
-        .getAttributeValue(null, "foo", null, "bar"));
-
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("foo", expected));
-    String actual = LdaptiveEntryMapper
-        .getAttributeValue(entry, "foo", STRING_TRANSCODER, null);
-    assertEquals(expected, actual);
-
-    actual = LdaptiveEntryMapper
-        .getAttributeValue(entry, LdaptiveAttribute.define("foo"), null);
-    assertEquals(expected, actual);
-
-    actual = LdaptiveEntryMapper
-        .getAttributeValue(entry, "na", STRING_TRANSCODER, "bar");
-    assertEquals(expected, actual);
-    assertNull(LdaptiveEntryMapper
-        .getAttributeValue(entry, "na", STRING_TRANSCODER, null));
+  void getObjectClasses() {
+    assertArrayEquals(new String[0], mapper.getObjectClasses());
   }
 
   /**
-   * Gets attribute values.
+   * Gets mapped attribute names.
    */
   @Test
-  void getAttributeValues() {
-    assertTrue(LdaptiveEntryMapper
-        .getAttributeValues(null, "foo", STRING_TRANSCODER).isEmpty());
-
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("key", "foo", "bar"));
-    assertTrue(LdaptiveEntryMapper
-        .getAttributeValues(entry, "foo", STRING_TRANSCODER).isEmpty());
-
-    Collection<String> actual = LdaptiveEntryMapper
-        .getAttributeValues(entry, "key", STRING_TRANSCODER);
-    assertTrue(actual.contains("foo"));
-    assertTrue(actual.contains("bar"));
-
-    actual = LdaptiveEntryMapper
-        .getAttributeValues(entry, LdaptiveAttribute.define("key"));
-    assertTrue(actual.contains("foo"));
-    assertTrue(actual.contains("bar"));
+  void getMappedAttributeNames() {
+    assertArrayEquals(new String[0], mapper.getMappedAttributeNames());
   }
 
   /**
-   * Gets attribute values as set.
+   * Gets binary attribute names.
    */
   @Test
-  void getAttributeValuesAsSet() {
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("key", "foo", "bar"));
-    Set<String> actual = LdaptiveEntryMapper
-        .getAttributeValuesAsSet(entry, "key", STRING_TRANSCODER);
-    assertTrue(actual.contains("foo"));
-    assertTrue(actual.contains("bar"));
-
-    actual = LdaptiveEntryMapper
-        .getAttributeValuesAsSet(entry, LdaptiveAttribute.define("key"));
-    assertTrue(actual.contains("foo"));
-    assertTrue(actual.contains("bar"));
-  }
-
-  /**
-   * Gets attribute values as list.
-   */
-  @Test
-  void getAttributeValuesAsList() {
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("key", "foo", "bar"));
-    List<String> actual = LdaptiveEntryMapper
-        .getAttributeValuesAsList(entry, "key", STRING_TRANSCODER);
-    assertTrue(actual.contains("foo"));
-    assertTrue(actual.contains("bar"));
-
-    actual = LdaptiveEntryMapper
-        .getAttributeValuesAsList(entry, LdaptiveAttribute.define("key"));
-    assertTrue(actual.contains("foo"));
-    assertTrue(actual.contains("bar"));
-  }
-
-  /**
-   * Sets attribute.
-   */
-  @Test
-  void setAttribute() {
-    List<AttributeModification> modifications = new ArrayList<>();
-    LdapEntry entry = new LdapEntry();
-
-    // set value
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", "bar", false, STRING_TRANSCODER, modifications);
-    assertEquals("bar", entry.getAttribute("foo").getStringValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // set value with ldaptive attribute
-    entry = new LdapEntry();
-    LdaptiveEntryMapper.setAttribute(
-        entry, LdaptiveAttribute.define("foo"), "bar", modifications);
-    assertEquals("bar", entry.getAttribute("foo").getStringValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // change value
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", "no-bar", false, STRING_TRANSCODER, modifications);
-    assertEquals("no-bar", entry.getAttribute("foo").getStringValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // once again with the same value
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", "no-bar", false, STRING_TRANSCODER, modifications);
-    assertEquals("no-bar", entry.getAttribute("foo").getStringValue());
-    assertEquals(0, modifications.size()); // no modifications!
-
-    // delete value = remove attribute
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", null, false, STRING_TRANSCODER, modifications);
-    assertNull(entry.getAttribute("foo"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.DELETE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // set bytes
-    byte[] bytes = "bar".getBytes(StandardCharsets.UTF_8);
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", bytes, true, BYTE_TRANSCODER, modifications);
-    assertArrayEquals(bytes, entry.getAttribute("foo").getBinaryValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // change bytes
-    bytes = "no-bar".getBytes(StandardCharsets.UTF_8);
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", bytes, true, BYTE_TRANSCODER, modifications);
-    assertArrayEquals(bytes, entry.getAttribute("foo").getBinaryValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // once again with the same value
-    LdaptiveEntryMapper.setAttribute(
-        entry, "foo", bytes, true, BYTE_TRANSCODER, modifications);
-    assertArrayEquals(bytes, entry.getAttribute("foo").getBinaryValue());
-    assertEquals(0, modifications.size()); // no modifications!
-  }
-
-  /**
-   * Sets attributes.
-   */
-  @Test
-  void setAttributes() {
-    List<AttributeModification> modifications = new ArrayList<>();
-    List<String> expected = Arrays.asList("anna", "livia");
-    LdapEntry entry = new LdapEntry();
-
-    // set values
-    LdaptiveEntryMapper.setAttributes(
-        entry, "foo", expected, false, STRING_TRANSCODER, modifications);
-    assertTrue(entry.getAttribute("foo").getStringValues().containsAll(expected));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // set values with ldaptive attribute
-    entry = new LdapEntry();
-    LdaptiveEntryMapper.setAttributes(
-        entry, LdaptiveAttribute.define("foo"), expected, modifications);
-    assertTrue(entry.getAttribute("foo").getStringValues().containsAll(expected));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // change values
-    expected = Arrays.asList("hans", "castorp");
-    LdaptiveEntryMapper.setAttributes(
-        entry, "foo", expected, false, STRING_TRANSCODER, modifications);
-    assertTrue(entry.getAttribute("foo").getStringValues().containsAll(expected));
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("anna"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-  }
-
-  /**
-   * Add attribute.
-   */
-  @Test
-  void addAttribute() {
-    List<AttributeModification> modifications = new ArrayList<>();
-    LdapEntry entry = new LdapEntry();
-
-    // add value
-    LdaptiveEntryMapper.addAttribute(
-        entry, "foo", "anna", false, STRING_TRANSCODER, modifications);
-    assertEquals("anna", entry.getAttribute("foo").getStringValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // add value with ldaptive attribute
-    entry = new LdapEntry();
-    LdaptiveEntryMapper.addAttribute(
-        entry, LdaptiveAttribute.define("foo"), "anna", modifications);
-    assertEquals("anna", entry.getAttribute("foo").getStringValue());
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // add another value
-    LdaptiveEntryMapper.addAttribute(
-        entry, "foo", "livia", false, STRING_TRANSCODER, modifications);
-    assertTrue(entry.getAttribute("foo").getStringValues()
-        .containsAll(Arrays.asList("anna", "livia")));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // add null
-    LdaptiveEntryMapper.addAttribute(
-        entry, "foo", null, false, STRING_TRANSCODER, modifications);
-    assertTrue(entry.getAttribute("foo").getStringValues()
-        .containsAll(Arrays.asList("anna", "livia")));
-    assertEquals(0, modifications.size());
-    modifications.clear();
-  }
-
-  /**
-   * Add attributes.
-   */
-  @Test
-  void addAttributes() {
-    byte[] annaBytes = "anna".getBytes(StandardCharsets.UTF_8);
-    byte[] liviaBytes = "livia".getBytes(StandardCharsets.UTF_8);
-    List<byte[]> bytes = new ArrayList<>();
-    bytes.add(annaBytes);
-    bytes.add(liviaBytes);
-
-    List<AttributeModification> modifications = new ArrayList<>();
-    LdapEntry entry = new LdapEntry();
-
-    // add attributes
-    LdaptiveEntryMapper.addAttributes(
-        entry, "foo", bytes, true, BYTE_TRANSCODER, modifications);
-    List<byte[]> actual = new ArrayList<>(entry.getAttribute("foo").getBinaryValues());
-    assertArrayEquals(annaBytes, actual.get(0));
-    assertArrayEquals(liviaBytes, actual.get(1));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // add attributes with ldaptive attribute
-    entry = new LdapEntry();
-    LdaptiveEntryMapper.addAttributes(
-        entry, LdaptiveAttribute.define("foo", true, BYTE_TRANSCODER), bytes, modifications);
-    actual = new ArrayList<>(entry.getAttribute("foo").getBinaryValues());
-    assertArrayEquals(annaBytes, actual.get(0));
-    assertArrayEquals(liviaBytes, actual.get(1));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.ADD,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    byte[] hansBytes = "hans".getBytes(StandardCharsets.UTF_8);
-    byte[] castorpBytes = "castorp".getBytes(StandardCharsets.UTF_8);
-    bytes = new ArrayList<>();
-    bytes.add(hansBytes);
-    bytes.add(castorpBytes);
-    LdaptiveEntryMapper.addAttributes(
-        entry, "foo", bytes, true, BYTE_TRANSCODER, modifications);
-    assertTrue(entry.getAttribute("foo").getBinaryValues()
-        .stream().anyMatch(value -> Arrays.equals(value, annaBytes)));
-    assertTrue(entry.getAttribute("foo").getBinaryValues()
-        .stream().anyMatch(value -> Arrays.equals(value, liviaBytes)));
-    assertTrue(entry.getAttribute("foo").getBinaryValues()
-        .stream().anyMatch(value -> Arrays.equals(value, hansBytes)));
-    assertTrue(entry.getAttribute("foo").getBinaryValues()
-        .stream().anyMatch(value -> Arrays.equals(value, castorpBytes)));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-  }
-
-  /**
-   * Remove attribute.
-   */
-  @Test
-  void removeAttribute() {
-    List<AttributeModification> modifications = new ArrayList<>();
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("foo", "anna", "livia"));
-
-    // remove
-    LdaptiveEntryMapper.removeAttribute(entry, "foo", modifications);
-    assertNull(entry.getAttribute("foo"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.DELETE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // remove value
-    entry.addAttributes(new LdapAttribute("foo", "anna", "livia"));
-    LdaptiveEntryMapper
-        .removeAttribute(entry, "foo", "anna", STRING_TRANSCODER, modifications);
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("anna"));
-    assertTrue(entry.getAttribute("foo").getStringValues().contains("livia"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    // remove value with ldaptive attribute
-    entry.addAttributes(new LdapAttribute("foo", "anna", "livia"));
-    LdaptiveEntryMapper
-        .removeAttribute(entry, LdaptiveAttribute.define("foo"), "anna", modifications);
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("anna"));
-    assertTrue(entry.getAttribute("foo").getStringValues().contains("livia"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-
-    LdaptiveEntryMapper
-        .removeAttribute(entry, "foo", "livia", STRING_TRANSCODER, modifications);
-    assertNull(entry.getAttribute("foo"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.DELETE,
-        modifications.get(0).getOperation());
-    modifications.clear();
-  }
-
-  /**
-   * Remove attributes.
-   */
-  @Test
-  void removeAttributes() {
-    List<AttributeModification> modifications = new ArrayList<>();
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("foo", "anna", "livia", "hans", "castorp"));
-
-    LdaptiveEntryMapper.removeAttributes(
-        entry,
-        "foo",
-        Arrays.asList("livia", "castorp"),
-        STRING_TRANSCODER,
-        modifications);
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("livia"));
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("castorp"));
-    assertTrue(entry.getAttribute("foo").getStringValues().contains("anna"));
-    assertTrue(entry.getAttribute("foo").getStringValues().contains("hans"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-  }
-
-  /**
-   * Remove attributes with ldaptive attribute.
-   */
-  @Test
-  void removeAttributesWithLdaptiveAttribute() {
-    List<AttributeModification> modifications = new ArrayList<>();
-    LdapEntry entry = new LdapEntry();
-    entry.addAttributes(new LdapAttribute("foo", "anna", "livia", "hans", "castorp"));
-
-    LdaptiveEntryMapper.removeAttributes(
-        entry,
-        LdaptiveAttribute.define("foo"),
-        Arrays.asList("livia", "castorp"),
-        modifications);
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("livia"));
-    assertFalse(entry.getAttribute("foo").getStringValues().contains("castorp"));
-    assertTrue(entry.getAttribute("foo").getStringValues().contains("anna"));
-    assertTrue(entry.getAttribute("foo").getStringValues().contains("hans"));
-    assertEquals(1, modifications.size());
-    assertEquals(
-        Type.REPLACE,
-        modifications.get(0).getOperation());
-  }
-
-  /**
-   * Create dn.
-   */
-  @Test
-  void createDn() {
-    assertEquals(
-        "cn=anna,cn=users,dc=example,dc=org",
-        LdaptiveEntryMapper.createDn("cn", "anna", "cn=users,dc=example,dc=org"));
-  }
-
-  /**
-   * Gets rdn.
-   */
-  @Test
-  void getRdn() {
-    assertNull(LdaptiveEntryMapper.getRdn(null));
-    assertEquals("anna", LdaptiveEntryMapper.getRdn("cn=anna,cn=users,dc=example,dc=org"));
-    assertEquals("no-real-dn", LdaptiveEntryMapper.getRdn("no-real-dn"));
-    assertEquals("", LdaptiveEntryMapper.getRdn(""));
+  void getBinaryAttributeNames() {
+    assertArrayEquals(new String[0], mapper.getBinaryAttributeNames());
   }
 
   /**
@@ -595,17 +165,21 @@ class LdaptiveEntryMapperTest {
       if (person == null || !StringUtils.hasText(person.getName())) {
         return null;
       }
-      return LdaptiveEntryMapper.createDn("cn", person.getName(), "dc=example,dc=org");
+      return Dn.builder()
+          .add(new RDn(new NameValue("cn", person.getName())))
+          .add(new Dn("dc=example,dc=org"))
+          .build()
+          .format();
     }
 
     @Override
     public void map(LdapEntry ldapEntry, Person person) {
-      person.setMailAddresses(LdaptiveEntryMapper
-          .getAttributeValuesAsList(ldapEntry, "mail", STRING_TRANSCODER));
-      person.setName(LdaptiveEntryMapper
-          .getAttributeValue(ldapEntry, "name", STRING_TRANSCODER, null));
-      person.setPhoto(LdaptiveEntryMapper
-          .getAttributeValue(ldapEntry, "photo", BYTE_TRANSCODER, null));
+      person.setMailAddresses(LdaptiveAttribute.define("mail").getValues(ldapEntry).toList());
+      LdaptiveAttribute.define("name").getValue(ldapEntry)
+          .ifPresent(person::setName);
+      LdaptiveAttribute.define("photo", true, new ByteArrayValueTranscoder())
+          .getValue(ldapEntry)
+          .ifPresent(person::setPhoto);
     }
 
     @Override
@@ -623,12 +197,13 @@ class LdaptiveEntryMapperTest {
         Person source,
         LdapEntry destination) {
       List<AttributeModification> modifications = new ArrayList<>();
-      LdaptiveEntryMapper.setAttribute(destination,
-          "name", source.getName(), false, STRING_TRANSCODER, modifications);
-      LdaptiveEntryMapper.setAttributes(destination,
-          "mail", source.getMailAddresses(), false, STRING_TRANSCODER, modifications);
-      LdaptiveEntryMapper.setAttribute(destination,
-          "photo", source.getPhoto(), true, BYTE_TRANSCODER, modifications);
+      LdaptiveAttribute.define("name").setValue(destination, source.getName())
+          .ifPresent(modifications::add);
+      LdaptiveAttribute.define("mail").setValues(destination, source.getMailAddresses())
+          .ifPresent(modifications::add);
+      LdaptiveAttribute.define("photo", true, new ByteArrayValueTranscoder())
+          .setValue(destination, source.getPhoto())
+          .ifPresent(modifications::add);
       return modifications.toArray(new AttributeModification[0]);
     }
   }

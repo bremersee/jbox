@@ -17,17 +17,17 @@ import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.bremersee.ldaptive.DefaultLdaptiveErrorHandler;
-import org.bremersee.ldaptive.LdaptiveException;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.provider.ActiveDirectoryTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.provider.OpenLdapTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.provider.UserContainsGroupsTemplate;
-import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUser;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.ldaptive.BindOperation;
+import org.ldaptive.BindRequest;
+import org.ldaptive.BindResponse;
 import org.ldaptive.CompareRequest;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.ConnectionFactory;
@@ -35,7 +35,7 @@ import org.ldaptive.DefaultConnectionFactory;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.LdapException;
-import org.ldaptive.ResultCode;
+import org.ldaptive.SingleConnectionFactory;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -78,7 +78,6 @@ class LdaptiveAuthenticationManagerTest {
 
     target.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
     target.setEmailToUsernameResolver(null); // has no effect
-    target.setUsernameToBindDnConverter(null); // has no effect
     target.setAccountControlEvaluator(null); // has no effect
     target.init();
   }
@@ -113,7 +112,8 @@ class LdaptiveAuthenticationManagerTest {
         REMEMBER_ME_KEY);
     target.init();
     boolean actual = target.isRefusedUsername("junit");
-    softly.assertThat(actual).isTrue();actual = target.isRefusedUsername("");
+    softly.assertThat(actual).isTrue();
+    actual = target.isRefusedUsername("");
     softly.assertThat(actual).isTrue();
     actual = target.isRefusedUsername("not-refused");
     softly.assertThat(actual).isFalse();
@@ -121,11 +121,9 @@ class LdaptiveAuthenticationManagerTest {
 
   /**
    * Gets ldaptive template.
-   *
-   * @param softly the softly
    */
   @Test
-  void getLdaptiveTemplate(SoftAssertions softly) {
+  void getLdaptiveTemplate() {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = new LdaptiveTemplate(connectionFactory);
@@ -133,14 +131,9 @@ class LdaptiveAuthenticationManagerTest {
         ldaptiveTemplate,
         new ActiveDirectoryTemplate(),
         REMEMBER_ME_KEY);
-    target.setUsernameToBindDnConverter(username -> username);
     target.init();
-    softly
-        .assertThat(target.getApplicationLdaptiveTemplate())
+    assertThat(target.getApplicationLdaptiveTemplate())
         .isEqualTo(ldaptiveTemplate);
-    softly
-        .assertThat(target.getLdapTemplate("junit", "secret"))
-        .isNotNull();
   }
 
   /**
@@ -157,12 +150,12 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
-   * Authenticate with application ldaptive template.
+   * Authenticate with password comparison.
    *
    * @param softly the softly
    */
   @Test
-  void authenticateWithApplicationLdaptiveTemplate(SoftAssertions softly) {
+  void authenticateWithPasswordComparison(SoftAssertions softly) {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
@@ -192,7 +185,7 @@ class LdaptiveAuthenticationManagerTest {
         .when(ldaptiveTemplate)
         .compare(compareCaptor.capture());
 
-    LdaptiveAuthentication actual = target
+    LdaptiveAuthentication actual = (LdaptiveAuthentication) target
         .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret"));
 
     softly
@@ -204,10 +197,10 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
-   * Authenticate with application ldaptive template and bad credentials.
+   * Authenticate with password comparison and bad credentials.
    */
   @Test
-  void authenticateWithApplicationLdaptiveTemplateAndBadCredentials() {
+  void authenticateWithPasswordComparisonAndBadCredentials() {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
@@ -240,12 +233,12 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
-   * Authenticate with user ldaptive template.
+   * Authenticate with simple bind.
    *
    * @param softly the softly
    */
   @Test
-  void authenticateWithUserLdaptiveTemplate(SoftAssertions softly) {
+  void authenticateWithSimpleBind(SoftAssertions softly) throws LdapException {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
@@ -256,16 +249,28 @@ class LdaptiveAuthenticationManagerTest {
 
     target.init();
 
-    doReturn(ldaptiveTemplate)
-        .when(target)
-        .getLdapTemplate("junit", "secret");
-
     LdapEntry user = createUser();
     doReturn(Optional.of(user))
         .when(ldaptiveTemplate)
         .findOne(any());
 
-    LdaptiveAuthentication actual = target
+    SingleConnectionFactory cf = mock(SingleConnectionFactory.class);
+    doReturn(cf)
+        .when(target)
+        .getSingleConnectionFactory();
+    BindOperation bindOperation = mock(BindOperation.class);
+    doReturn(bindOperation)
+        .when(target)
+        .getBindOperation(any());
+    BindResponse bindResponse = mock(BindResponse.class);
+    doReturn(true)
+        .when(bindResponse)
+        .isSuccess();
+    doReturn(bindResponse)
+        .when(bindOperation)
+        .execute(any(BindRequest.class));
+
+    LdaptiveAuthentication actual = (LdaptiveAuthentication) target
         .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret"));
 
     verify(target)
@@ -274,10 +279,10 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
-   * Authenticate with user ldaptive template and username not found.
+   * Authenticate with simple bind and username not found.
    */
   @Test
-  void authenticateWithUserLdaptiveTemplateAndUsernameNotFound() {
+  void authenticateWithSimpleBindAndUsernameNotFound() {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
@@ -288,16 +293,13 @@ class LdaptiveAuthenticationManagerTest {
 
     target.init();
 
-    doReturn(ldaptiveTemplate)
-        .when(target)
-        .getLdapTemplate("junit", "secret");
     LdaptiveUserDetailsService userDetailsService = mock(LdaptiveUserDetailsService.class);
     doThrow(new UsernameNotFoundException("junit not found"))
         .when(userDetailsService)
         .loadUserByUsername(anyString());
     doReturn(userDetailsService)
         .when(target)
-        .getUserDetailsService(any());
+        .getUserDetailsService();
 
     var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(UsernameNotFoundException.class)
@@ -305,10 +307,10 @@ class LdaptiveAuthenticationManagerTest {
   }
 
   /**
-   * Authenticate with user ldaptive template and bad credentials with result code.
+   * Authenticate with simple bind and bad credentials.
    */
   @Test
-  void authenticateWithUserLdaptiveTemplateAndBadCredentialsWithResultCode() {
+  void authenticateWithSimpleBindAndBadCredentials() throws LdapException {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
@@ -319,44 +321,26 @@ class LdaptiveAuthenticationManagerTest {
 
     target.init();
 
-    doReturn(ldaptiveTemplate)
-        .when(target)
-        .getLdapTemplate("junit", "secret");
-    LdaptiveException ldaptiveException = new DefaultLdaptiveErrorHandler()
-        .map(new LdapException(ResultCode.INVALID_CREDENTIALS, "Bad credentials"));
-    doThrow(ldaptiveException)
+    LdapEntry user = createUser();
+    doReturn(Optional.of(user))
         .when(ldaptiveTemplate)
         .findOne(any());
 
-    var token = new UsernamePasswordAuthenticationToken("junit", "secret");
-    assertThatExceptionOfType(BadCredentialsException.class)
-        .isThrownBy(() -> target.authenticate(token));
-  }
-
-  /**
-   * Authenticate with user ldaptive template and bad credentials with message.
-   */
-  @Test
-  void authenticateWithUserLdaptiveTemplateAndBadCredentialsWithMessage() {
-    ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
-    ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
-    LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
-    UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
-    properties.setUserBaseDn(USER_BASE_DN);
-    LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties, REMEMBER_ME_KEY));
-
-    target.init();
-
-    doReturn(ldaptiveTemplate)
+    SingleConnectionFactory cf = mock(SingleConnectionFactory.class);
+    doReturn(cf)
         .when(target)
-        .getLdapTemplate("junit", "secret");
-    LdaptiveException ldaptiveException = new DefaultLdaptiveErrorHandler()
-        .map(new LdapException(ResultCode.CONNECT_ERROR,
-            "resultCode=" + ResultCode.INVALID_CREDENTIALS));
-    doThrow(ldaptiveException)
-        .when(ldaptiveTemplate)
-        .findOne(any());
+        .getSingleConnectionFactory();
+    BindOperation bindOperation = mock(BindOperation.class);
+    doReturn(bindOperation)
+        .when(target)
+        .getBindOperation(any());
+    BindResponse bindResponse = mock(BindResponse.class);
+    doReturn(false)
+        .when(bindResponse)
+        .isSuccess();
+    doReturn(bindResponse)
+        .when(bindOperation)
+        .execute(any(BindRequest.class));
 
     var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(BadCredentialsException.class)
@@ -367,7 +351,7 @@ class LdaptiveAuthenticationManagerTest {
    * Authenticate with user ldaptive template and refused username.
    */
   @Test
-  void authenticateWithUserLdaptiveTemplateAndRefusedUsername() {
+  void authenticateWithRefusedUsername() {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = spy(new LdaptiveTemplate(connectionFactory));
@@ -391,50 +375,73 @@ class LdaptiveAuthenticationManagerTest {
    */
   @Test
   void checkAccountControl(SoftAssertions softly) {
+    LdaptiveAuthenticationManager target = getLdaptiveAuthenticationManager();
+
+    LdapEntry user = createUser();
+
+    LdaptiveUserDetails d0 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(false)
+        .accountNonLocked(true)
+        .credentialsNonExpired(true)
+        .enabled(true)
+        .build();
+    softly.assertThatExceptionOfType(AccountExpiredException.class)
+        .isThrownBy(() -> target.checkAccountControl(d0));
+
+    LdaptiveUserDetails d1 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(true)
+        .accountNonLocked(false)
+        .credentialsNonExpired(true)
+        .enabled(true)
+        .build();
+    softly.assertThatExceptionOfType(LockedException.class)
+        .isThrownBy(() -> target.checkAccountControl(d1));
+
+    LdaptiveUserDetails d2 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(true)
+        .accountNonLocked(true)
+        .credentialsNonExpired(false)
+        .enabled(true)
+        .build();
+    softly.assertThatExceptionOfType(CredentialsExpiredException.class)
+        .isThrownBy(() -> target.checkAccountControl(d2));
+
+    LdaptiveUserDetails d3 = LdaptiveUserDetails.builder()
+        .dn(user.getDn())
+        .username("junit")
+        .password("secret")
+        .authorities(List.of(new SimpleGrantedAuthority("ROLE_tester")))
+        .accountNonExpired(true)
+        .accountNonLocked(true)
+        .credentialsNonExpired(true)
+        .enabled(false)
+        .build();
+    softly.assertThatExceptionOfType(DisabledException.class)
+        .isThrownBy(() -> target.checkAccountControl(d3));
+  }
+
+  private static LdaptiveAuthenticationManager getLdaptiveAuthenticationManager() {
     ConnectionConfig connectionConfig = new ConnectionConfig("ldap://localhost:389");
     ConnectionFactory connectionFactory = new DefaultConnectionFactory(connectionConfig);
     LdaptiveTemplate ldaptiveTemplate = new LdaptiveTemplate(connectionFactory);
     UserContainsGroupsTemplate properties = new UserContainsGroupsTemplate();
     properties.setUserBaseDn(USER_BASE_DN);
-    LdaptiveAuthenticationManager target = new LdaptiveAuthenticationManager(
-        ldaptiveTemplate, properties, REMEMBER_ME_KEY);
-
-    LdapEntry user = createUser();
-
-    LdaptiveUserDetails d0 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        false, true, true, true);
-    softly.assertThatExceptionOfType(AccountExpiredException.class)
-        .isThrownBy(() -> target.checkAccountControl(d0));
-
-    LdaptiveUserDetails d1 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        true, false, true, true);
-    softly.assertThatExceptionOfType(LockedException.class)
-        .isThrownBy(() -> target.checkAccountControl(d1));
-
-    LdaptiveUserDetails d2 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        true, true, false, true);
-    softly.assertThatExceptionOfType(CredentialsExpiredException.class)
-        .isThrownBy(() -> target.checkAccountControl(d2));
-
-    LdaptiveUserDetails d3 = new LdaptiveUser(
-        user, "junit", null, null, null,
-        List.of(new SimpleGrantedAuthority("ROLE_tester")),
-        "secret",
-        true, true, true, false);
-    softly.assertThatExceptionOfType(DisabledException.class)
-        .isThrownBy(() -> target.checkAccountControl(d3));
+    return new LdaptiveAuthenticationManager(ldaptiveTemplate, properties, REMEMBER_ME_KEY);
   }
 
-  private void assertActual(LdaptiveAuthentication authentication, SoftAssertions softly) {
+  private static void assertActual(LdaptiveAuthentication authentication, SoftAssertions softly) {
     List<GrantedAuthority> actualAuthorities = new ArrayList<>(authentication.getAuthorities());
     List<GrantedAuthority> expectedAuthorities = List.of(new SimpleGrantedAuthority("ROLE_tester"));
     softly

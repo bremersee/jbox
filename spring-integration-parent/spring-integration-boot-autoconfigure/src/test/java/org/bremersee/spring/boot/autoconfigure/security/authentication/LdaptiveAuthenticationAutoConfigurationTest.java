@@ -8,7 +8,6 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.spring.security.core.EmailToUsernameResolver;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthentication;
-import org.bremersee.spring.security.ldaptive.authentication.UsernameToBindDnConverter;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +60,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
     ConnectionConfig connectionConfig = ConnectionConfig.builder().build();
     //ObjectProvider<>
     ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver = mock();
-    ObjectProvider<UsernameToBindDnConverter> usernameToBindDnConverter = mock();
     ObjectProvider<AccountControlEvaluator> accountControlEvaluator = mock();
     ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper = mock();
     ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter = mock();
@@ -73,7 +71,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
             target.ldaptivePasswordEncoderProvider(),
             LdaptiveRememberMeTokenProvider.invalid(),
             emailToUsernameResolver,
-            usernameToBindDnConverter,
             accountControlEvaluator,
             grantedAuthoritiesMapper,
             tokenConverter))
@@ -87,7 +84,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
   void reactiveLdaptiveAuthenticationManager() {
     ConnectionConfig connectionConfig = ConnectionConfig.builder().build();
     ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver = mock();
-    ObjectProvider<UsernameToBindDnConverter> usernameToBindDnConverter = mock();
     ObjectProvider<AccountControlEvaluator> accountControlEvaluator = mock();
     ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper = mock();
     ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter = mock();
@@ -99,7 +95,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
             target.ldaptivePasswordEncoderProvider(),
             LdaptiveRememberMeTokenProvider.invalid(),
             emailToUsernameResolver,
-            usernameToBindDnConverter,
             accountControlEvaluator,
             grantedAuthoritiesMapper,
             tokenConverter))

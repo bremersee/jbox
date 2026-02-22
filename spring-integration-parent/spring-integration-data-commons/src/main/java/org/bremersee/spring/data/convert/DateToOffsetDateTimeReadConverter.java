@@ -37,6 +37,7 @@ public class DateToOffsetDateTimeReadConverter implements Converter<Date, Offset
    * Instantiates a new date to offset date time read converter.
    */
   public DateToOffsetDateTimeReadConverter() {
+    super();
   }
 
   @Override

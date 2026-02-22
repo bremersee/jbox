@@ -98,8 +98,8 @@ public class FileAwareMultipartFile implements MultipartFile {
       if (multipartFile.isEmpty()) {
         this.file = null;
       } else {
-        if (multipartFile instanceof FileAwareMultipartFile) {
-          this.file = ((FileAwareMultipartFile) multipartFile).file;
+        if (multipartFile instanceof FileAwareMultipartFile fileAwareMultipartFile) {
+          this.file = fileAwareMultipartFile.file;
         } else {
           this.file = getTmpFile(getTmpDir(tmpDir));
           FileCopyUtils.copy(

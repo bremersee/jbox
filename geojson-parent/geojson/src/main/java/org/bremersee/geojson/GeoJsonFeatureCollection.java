@@ -35,7 +35,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.bremersee.geojson.model.UnknownAware;
 import org.locationtech.jts.geom.Geometry;
 
@@ -286,6 +285,6 @@ public class GeoJsonFeatureCollection<G extends Geometry, P> extends UnknownAwar
         .flatMap(Collection::stream)
         .map(obj -> ((GeoJsonFeature<Geometry, ?>) obj).getGeometry())
         .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+        .toList();
   }
 }

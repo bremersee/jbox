@@ -69,19 +69,19 @@ class MinioRepositoryImplTest {
 
   private static MinioRepository repository;
 
-  private static final MinioOperations minioOperations = mock(MinioOperations.class);
+  private static final MinioOperations MINIO_OPERATIONS = mock(MinioOperations.class);
 
-  private static final String bucket = "testbucket";
+  private static final String BUCKET = "testbucket";
 
-  private static final String name = "test.txt";
+  private static final String NAME = "test.txt";
 
-  private static final String etag = "1234";
+  private static final String ETAG = "1234";
 
-  private static final String versionId = "5678";
+  private static final String VERSION_ID = "5678";
 
-  private static final long size = 15L;
+  private static final long SIZE = 15L;
 
-  private static final ZonedDateTime time = ZonedDateTime.now();
+  private static final ZonedDateTime TIME = ZonedDateTime.now();
 
   /**
    * Sets up.
@@ -99,49 +99,49 @@ class MinioRepositoryImplTest {
         false,
         Duration.ofDays(1L));
 
-    when(minioOperations.bucketExists(any(BucketExistsArgs.class))).thenReturn(false);
+    when(MINIO_OPERATIONS.bucketExists(any(BucketExistsArgs.class))).thenReturn(false);
 
-    when(minioOperations.getBucketVersioning(any(GetBucketVersioningArgs.class)))
+    when(MINIO_OPERATIONS.getBucketVersioning(any(GetBucketVersioningArgs.class)))
         .thenReturn(new VersioningConfiguration(Status.SUSPENDED, false));
 
-    when(minioOperations.putObject(any(PutObjectArgs.class)))
+    when(MINIO_OPERATIONS.putObject(any(PutObjectArgs.class)))
         .thenReturn(new ObjectWriteResponse(
-            Headers.of(Collections.emptyMap()), bucket, null, name, etag, versionId));
+            Headers.of(Collections.emptyMap()), BUCKET, null, NAME, ETAG, VERSION_ID));
 
-    when(minioOperations.objectExists(any(StatObjectArgs.class))).thenReturn(true);
+    when(MINIO_OPERATIONS.objectExists(any(StatObjectArgs.class))).thenReturn(true);
 
     Map<String, String> headers = new LinkedHashMap<>();
     headers.put("Content-Type", MediaType.TEXT_PLAIN_VALUE);
-    headers.put("Last-Modified", time.format(Time.HTTP_HEADER_DATE_FORMAT));
-    headers.put("Content-Length", String.valueOf(size));
-    headers.put("ETag", etag);
-    when(minioOperations.statObject(any(StatObjectArgs.class))).thenReturn(new StatObjectResponse(
-        Headers.of(headers), bucket, null, name
+    headers.put("Last-Modified", TIME.format(Time.HTTP_HEADER_DATE_FORMAT));
+    headers.put("Content-Length", String.valueOf(SIZE));
+    headers.put("ETag", ETAG);
+    when(MINIO_OPERATIONS.statObject(any(StatObjectArgs.class))).thenReturn(new StatObjectResponse(
+        Headers.of(headers), BUCKET, null, NAME
     ));
 
     Item item = mock(Item.class);
-    when(item.etag()).thenReturn(etag);
+    when(item.etag()).thenReturn(ETAG);
     when(item.isDeleteMarker()).thenReturn(false);
     when(item.isDir()).thenReturn(false);
     when(item.isLatest()).thenReturn(true);
     when(item.lastModified()).thenReturn(ZonedDateTime.now());
-    when(item.objectName()).thenReturn(name);
-    when(item.size()).thenReturn(size);
-    when(item.versionId()).thenReturn(versionId);
+    when(item.objectName()).thenReturn(NAME);
+    when(item.size()).thenReturn(SIZE);
+    when(item.versionId()).thenReturn(VERSION_ID);
 
-    when(minioOperations.listObjects(any(ListObjectsArgs.class)))
+    when(MINIO_OPERATIONS.listObjects(any(ListObjectsArgs.class)))
         .thenReturn(Collections.singletonList(new Result<>(item)));
 
-    when(minioOperations.removeObjects(any(RemoveObjectsArgs.class)))
+    when(MINIO_OPERATIONS.removeObjects(any(RemoveObjectsArgs.class)))
         .thenReturn(Collections.singletonList(new Result<>(new DeleteError())));
 
-    when(minioOperations.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
+    when(MINIO_OPERATIONS.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
         .thenReturn("https://example.org/somewhere");
 
     repository = new MinioRepositoryImpl(
-        minioOperations,
+        MINIO_OPERATIONS,
         null,
-        bucket,
+        BUCKET,
         true,
         true,
         Duration.ofDays(1L));
@@ -197,13 +197,13 @@ class MinioRepositoryImplTest {
         "file",
         "a.txt",
         MediaType.TEXT_PLAIN_VALUE);
-    response = repository.save(MinioObjectId.from(name), multipartFile, DeleteMode.ALWAYS);
+    response = repository.save(MinioObjectId.from(NAME), multipartFile, DeleteMode.ALWAYS);
     assertTrue(response.isPresent());
     ObjectWriteResponse obj = response.get();
-    assertEquals(name, obj.object());
-    assertEquals(versionId, obj.versionId());
-    assertEquals(etag, obj.etag());
-    verify(minioOperations).putObject(any(PutObjectArgs.class));
+    assertEquals(NAME, obj.object());
+    assertEquals(VERSION_ID, obj.versionId());
+    assertEquals(ETAG, obj.etag());
+    verify(MINIO_OPERATIONS).putObject(any(PutObjectArgs.class));
   }
 
   /**
@@ -211,8 +211,8 @@ class MinioRepositoryImplTest {
    */
   @Test
   void exists() {
-    assertTrue(repository.exists(MinioObjectId.from(name, versionId)));
-    verify(minioOperations).objectExists(any(StatObjectArgs.class));
+    assertTrue(repository.exists(MinioObjectId.from(NAME, VERSION_ID)));
+    verify(MINIO_OPERATIONS).objectExists(any(StatObjectArgs.class));
   }
 
   /**
@@ -220,14 +220,14 @@ class MinioRepositoryImplTest {
    */
   @Test
   void findOne() {
-    Optional<MinioMultipartFile> response = repository.findOne(MinioObjectId.from(name));
+    Optional<MinioMultipartFile> response = repository.findOne(MinioObjectId.from(NAME));
     assertTrue(response.isPresent());
     MinioMultipartFile file = response.get();
-    assertEquals(name, file.getName());
-    assertEquals(bucket, file.getBucket());
-    assertEquals(etag, file.getEtag());
-    assertEquals(size, file.getSize());
-    verify(minioOperations).statObject(any(StatObjectArgs.class));
+    assertEquals(NAME, file.getName());
+    assertEquals(BUCKET, file.getBucket());
+    assertEquals(ETAG, file.getEtag());
+    assertEquals(SIZE, file.getSize());
+    verify(MINIO_OPERATIONS).statObject(any(StatObjectArgs.class));
   }
 
   /**
@@ -237,7 +237,7 @@ class MinioRepositoryImplTest {
   void findAll() {
     List<MinioMultipartFile> files = repository.findAll();
     assertNotNull(files);
-    verify(minioOperations).listObjects(any(ListObjectsArgs.class));
+    verify(MINIO_OPERATIONS).listObjects(any(ListObjectsArgs.class));
   }
 
   /**
@@ -245,8 +245,8 @@ class MinioRepositoryImplTest {
    */
   @Test
   void delete() {
-    repository.delete(MinioObjectId.from(name, versionId));
-    verify(minioOperations).removeObject(any(RemoveObjectArgs.class));
+    repository.delete(MinioObjectId.from(NAME, VERSION_ID));
+    verify(MINIO_OPERATIONS).removeObject(any(RemoveObjectArgs.class));
   }
 
   /**
@@ -255,9 +255,9 @@ class MinioRepositoryImplTest {
   @Test
   void deleteAll() {
     List<DeleteError> results = repository
-        .deleteAll(Collections.singletonList(MinioObjectId.from(name)));
+        .deleteAll(Collections.singletonList(MinioObjectId.from(NAME)));
     assertNotNull(results);
-    verify(minioOperations).removeObjects(any(RemoveObjectsArgs.class));
+    verify(MINIO_OPERATIONS).removeObjects(any(RemoveObjectsArgs.class));
   }
 
   /**
@@ -265,8 +265,8 @@ class MinioRepositoryImplTest {
    */
   @Test
   void getPresignedObjectUrl() {
-    String url = repository.getPresignedObjectUrl(MinioObjectId.from(name), Method.GET);
+    String url = repository.getPresignedObjectUrl(MinioObjectId.from(NAME), Method.GET);
     assertNotNull(url);
-    verify(minioOperations).getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class));
+    verify(MINIO_OPERATIONS).getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class));
   }
 }

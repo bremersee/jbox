@@ -44,20 +44,12 @@ class GeoJsonWebMvcConfigurerTest {
   }
 
   /**
-   * Init.
-   */
-  @Test
-  void init() {
-    GeoJsonWebMvcConfigurer target = newInstance();
-    target.init();
-  }
-
-  /**
    * Add formatters.
    */
   @Test
   void addFormatters() {
     GeoJsonWebMvcConfigurer target = newInstance();
+    target.init();
     FormatterRegistry formatterRegistry = mock(FormatterRegistry.class);
     target.addFormatters(formatterRegistry);
     int wantedNumberOfInvocations = GeometryConverters

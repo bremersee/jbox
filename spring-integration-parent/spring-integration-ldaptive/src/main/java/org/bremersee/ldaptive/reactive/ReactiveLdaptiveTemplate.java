@@ -21,7 +21,8 @@ import static org.ldaptive.handler.ResultPredicate.NOT_SUCCESS;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.ServiceException;
 import org.bremersee.ldaptive.DefaultLdaptiveErrorHandler;
 import org.bremersee.ldaptive.LdaptiveEntryMapper;
@@ -61,8 +62,9 @@ import reactor.core.publisher.Mono;
  *
  * @author Christian Bremer
  */
-@Slf4j
 public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations {
+
+  private static final Log log = LogFactory.getLog(ReactiveLdaptiveTemplate.class);
 
   private static final ResultPredicate NOT_COMPARE_RESULT = result -> !result.isSuccess()
       && result.getResultCode() != ResultCode.COMPARE_TRUE

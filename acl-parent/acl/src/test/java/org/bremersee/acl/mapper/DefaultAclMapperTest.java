@@ -129,7 +129,7 @@ class DefaultAclMapperTest {
     AccessControlList actual = target.map(source);
 
     assertThat(actual.toString())
-        .isEqualTo(expected.toString());
+        .hasToString(expected.toString());
   }
 
   /**
@@ -218,7 +218,7 @@ class DefaultAclMapperTest {
     AccessControlList actual = target.map(source);
 
     assertThat(actual.toString())
-        .isEqualTo(expected.toString());
+        .hasToString(expected.toString());
   }
 
 }

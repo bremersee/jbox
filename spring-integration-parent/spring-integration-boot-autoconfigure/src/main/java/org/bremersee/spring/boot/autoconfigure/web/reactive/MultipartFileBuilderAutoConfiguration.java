@@ -16,7 +16,8 @@
 
 package org.bremersee.spring.boot.autoconfigure.web.reactive;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.web.UploadProperties;
 import org.bremersee.spring.web.reactive.multipart.MultipartFileBuilder;
 import org.bremersee.spring.web.reactive.multipart.MultipartFileBuilderImpl;
@@ -40,8 +41,9 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnClass(MultipartFileBuilder.class)
 @EnableConfigurationProperties(UploadProperties.class)
 @AutoConfiguration
-@Slf4j
 public class MultipartFileBuilderAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(MultipartFileBuilderAutoConfiguration.class);
 
   private final UploadProperties properties;
 
@@ -59,14 +61,14 @@ public class MultipartFileBuilderAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * properties = {}
+            * properties = %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName(), properties);
+        ClassUtils.getUserClass(getClass()).getSimpleName(), properties));
   }
 
   /**

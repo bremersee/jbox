@@ -31,6 +31,7 @@ public class GeometryToStringConverter implements Converter<Geometry, String> {
    * Instantiates a new geometry to string converter.
    */
   public GeometryToStringConverter() {
+    super();
   }
 
   @Override

@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.bremersee.xml.JaxbContextBuilder;
 import org.bremersee.xml.http.converter.Jaxb2HttpMessageConverter;
 import org.bremersee.xml.spring.boot.http.JaxbReadWriteConfigurer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.ObjectProvider;
@@ -44,8 +45,8 @@ class Jaxb2HttpMessageConverterAutoConfigurationTest {
   /**
    * Init.
    */
-  @Test
-  void init() {
+  @BeforeAll
+  static void init() {
     target.init();
   }
 

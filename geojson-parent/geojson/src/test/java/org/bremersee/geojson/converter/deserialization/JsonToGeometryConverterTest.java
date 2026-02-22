@@ -57,7 +57,8 @@ class JsonToGeometryConverterTest {
   @Test
   void convertAndExpectIllegalArgumentException() {
     JsonToGeometryConverter target = new JsonToGeometryConverter();
+    Map<String, Object> map = Map.of("IllegalGeometry", new Object());
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> target.convert(Map.of("IllegalGeometry", new Object())));
+        .isThrownBy(() -> target.convert(map));
   }
 }

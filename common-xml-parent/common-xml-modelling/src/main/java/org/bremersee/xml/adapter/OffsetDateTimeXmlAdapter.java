@@ -36,6 +36,7 @@ public class OffsetDateTimeXmlAdapter extends XmlAdapter<String, OffsetDateTime>
    * Instantiates a new offset date time xml adapter.
    */
   public OffsetDateTimeXmlAdapter() {
+    super();
   }
 
   @Override

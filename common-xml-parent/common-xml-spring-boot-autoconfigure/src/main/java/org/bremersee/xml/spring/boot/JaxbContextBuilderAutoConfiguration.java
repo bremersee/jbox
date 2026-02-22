@@ -19,7 +19,8 @@ package org.bremersee.xml.spring.boot;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.xml.JaxbContextBuilder;
 import org.bremersee.xml.JaxbContextDataProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -37,20 +38,28 @@ import org.springframework.util.ClassUtils;
  */
 @ConditionalOnClass(JaxbContextBuilder.class)
 @AutoConfiguration
-@Slf4j
 public class JaxbContextBuilderAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(JaxbContextBuilderAutoConfiguration.class);
+
+  /**
+   * Instantiates a new jaxb context builder autoconfiguration.
+   */
+  public JaxbContextBuilderAutoConfiguration() {
+    super();
+  }
 
   /**
    * Init.
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   /**
@@ -62,8 +71,8 @@ public class JaxbContextBuilderAutoConfiguration {
   @ConditionalOnMissingBean(JaxbContextBuilder.class)
   @Bean
   public JaxbContextBuilder jaxbContextBuilder(List<JaxbContextBuilderConfigurer> configurers) {
-    log.info("Creating bean {} with configurers {}",
-        JaxbContextBuilder.class.getSimpleName(), configurers);
+    log.info(String.format("Creating bean %s with configurers %s",
+        JaxbContextBuilder.class.getSimpleName(), configurers));
     JaxbContextBuilder jaxbContextBuilder = JaxbContextBuilder.newInstance()
         .processAll(ServiceLoader.load(JaxbContextDataProvider.class));
     Optional.ofNullable(configurers)

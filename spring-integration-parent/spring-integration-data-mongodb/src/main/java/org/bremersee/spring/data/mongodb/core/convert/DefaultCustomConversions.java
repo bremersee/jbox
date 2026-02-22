@@ -28,11 +28,18 @@ import org.bremersee.spring.data.convert.TimeZoneWriteConverter;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * The type DefaultCustomConversions.
+ * The default custom conversions.
  *
  * @author Christian Bremer
  */
 public class DefaultCustomConversions implements MongoCustomConversionsProvider {
+
+  /**
+   * Instantiates new default custom conversions.
+   */
+  public DefaultCustomConversions() {
+    super();
+  }
 
   @Override
   public List<Converter<?, ?>> getCustomConversions() {

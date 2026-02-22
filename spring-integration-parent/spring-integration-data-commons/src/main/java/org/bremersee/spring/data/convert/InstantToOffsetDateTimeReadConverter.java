@@ -38,6 +38,7 @@ public class InstantToOffsetDateTimeReadConverter implements Converter<Instant, 
    * Instantiates a new instant to offset date time read converter.
    */
   public InstantToOffsetDateTimeReadConverter() {
+    super();
   }
 
   @Override

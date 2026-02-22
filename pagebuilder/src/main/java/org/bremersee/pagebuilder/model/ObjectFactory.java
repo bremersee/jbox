@@ -31,6 +31,7 @@ public class ObjectFactory {
    * Instantiates a new object factory.
    */
   public ObjectFactory() {
+    super();
   }
 
   /**

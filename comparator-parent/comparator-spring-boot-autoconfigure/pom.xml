@@ -6,11 +6,11 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>comparator-parent</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
   </parent>
 
   <artifactId>comparator-spring-boot-autoconfigure</artifactId>
-  <name>Comparator Spring Boot Autoconfigure</name>
+  <name>Comparator Spring Boot Autoconfiguration</name>
   <description>A general object comparator (spring boot autoconfigure)</description>
 
   <developers>

@@ -17,6 +17,7 @@
 package org.bremersee.spring.security.ldaptive.authentication;
 
 import java.io.Serial;
+import lombok.EqualsAndHashCode;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
@@ -25,6 +26,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
  *
  * @author Christian Bremer
  */
+@EqualsAndHashCode(callSuper = true)
 public class LdaptiveAuthenticationToken
     extends AbstractAuthenticationToken
     implements LdaptiveAuthentication {

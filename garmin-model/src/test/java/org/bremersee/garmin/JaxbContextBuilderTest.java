@@ -36,7 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @author Christian Bremer
  */
 @ExtendWith(SoftAssertionsExtension.class)
-public class JaxbContextBuilderTest {
+class JaxbContextBuilderTest {
 
   private static JaxbContextBuilder jaxbContextBuilder;
 
@@ -59,7 +59,7 @@ public class JaxbContextBuilderTest {
    * @throws Exception the exception
    */
   @Test
-  public void testXml(SoftAssertions softly) throws Exception {
+  void testXml(SoftAssertions softly) throws Exception {
     TrackExtension model = new TrackExtension();
     model.setDisplayColor(DisplayColorT.CYAN);
 

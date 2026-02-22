@@ -38,6 +38,7 @@ public class LocaleReadConverter implements Converter<String, Locale> {
    * Instantiates a new locale read converter.
    */
   public LocaleReadConverter() {
+    super();
   }
 
   @Override

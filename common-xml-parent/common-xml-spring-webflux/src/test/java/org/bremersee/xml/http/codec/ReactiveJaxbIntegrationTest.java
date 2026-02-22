@@ -19,7 +19,6 @@ package org.bremersee.xml.http.codec;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import lombok.extern.slf4j.Slf4j;
 import org.bremersee.xml.test.app.WebConfiguration;
 import org.bremersee.xml.test.model.xml1.Person;
 import org.bremersee.xml.test.model.xml2.Vehicle;
@@ -44,8 +43,7 @@ import org.springframework.web.reactive.function.BodyInserters;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {"security.basic.enabled=false"})
 @AutoConfigureWebTestClient
-@Slf4j
-public class ReactiveJaxbIntegrationTest {
+class ReactiveJaxbIntegrationTest {
 
   @Autowired
   private WebTestClient webClient;

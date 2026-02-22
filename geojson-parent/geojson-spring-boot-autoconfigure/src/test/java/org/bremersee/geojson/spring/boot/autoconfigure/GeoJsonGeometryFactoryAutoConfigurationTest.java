@@ -28,20 +28,12 @@ import org.junit.jupiter.api.Test;
 class GeoJsonGeometryFactoryAutoConfigurationTest {
 
   /**
-   * Init.
-   */
-  @Test
-  void init() {
-    GeoJsonGeometryFactoryAutoConfiguration target = new GeoJsonGeometryFactoryAutoConfiguration();
-    target.init();
-  }
-
-  /**
    * Geo json geometry factory.
    */
   @Test
   void geoJsonGeometryFactory() {
     GeoJsonGeometryFactoryAutoConfiguration target = new GeoJsonGeometryFactoryAutoConfiguration();
+    target.init();
     assertThat(target.geoJsonGeometryFactory())
         .isNotNull();
   }

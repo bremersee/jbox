@@ -18,7 +18,6 @@ package org.bremersee.spring.security.ldaptive.authentication.provider;
 
 import java.io.Serial;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluatorProperty;
-import org.bremersee.spring.security.ldaptive.authentication.UsernameToBindDnConverterProperty;
 import org.ldaptive.SearchScope;
 
 /**
@@ -36,10 +35,8 @@ public class ActiveDirectoryTemplate
    * Instantiates a new Active directory template.
    */
   public ActiveDirectoryTemplate() {
-    setUsernameToBindDnConverter(UsernameToBindDnConverterProperty.BY_DOMAIN_EMAIL);
     setUserObjectClass("user");
     setUsernameAttribute("sAMAccountName");
-    setUserRdnAttribute("cn");
     setPasswordAttribute(""); // userPassword
     setFirstNameAttribute("givenName");
     setLastNameAttribute("sn");

@@ -4,8 +4,4 @@
 
 A bundle of bremersee maven projects.
 
-#### Maven Site
-
-- [Release](https://bremersee.github.io/jbox/index.html)
-
-- [Snapshot](https://nexus.bremersee.org/repository/maven-sites/common-parent/5.0.0/index.html)
+[Maven-Site](https://bremersee.github.io/jbox/5.1.0/index.html)

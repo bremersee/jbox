@@ -36,6 +36,7 @@ public class OffsetDateTimeToDateWriteConverter implements Converter<OffsetDateT
    * Instantiates a new offset date time to date write converter.
    */
   public OffsetDateTimeToDateWriteConverter() {
+    super();
   }
 
   @Override

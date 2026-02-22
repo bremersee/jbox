@@ -35,6 +35,7 @@ public class LocaleWriteConverter implements Converter<Locale, String> {
    * Instantiates a new locale write converter.
    */
   public LocaleWriteConverter() {
+    super();
   }
 
   @Override

@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
   </parent>
 
   <artifactId>jbox-bundle</artifactId>
@@ -257,16 +257,6 @@
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-security-ldaptive</artifactId>
-        <version>${jbox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bremersee</groupId>
-        <artifactId>spring-integration-test-api-comparator</artifactId>
-        <version>${jbox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bremersee</groupId>
-        <artifactId>spring-integration-thymeleaf</artifactId>
         <version>${jbox.version}</version>
       </dependency>
       <dependency>

@@ -337,7 +337,7 @@ public class PageBuilder<S, T> {
     final List<T> content = target.stream()
         .skip(pageable.getOffset())
         .limit(pageable.getPageSize())
-        .collect(Collectors.toList());
+        .toList();
     return new PageImpl<>(content, pageable, target.size());
   }
 

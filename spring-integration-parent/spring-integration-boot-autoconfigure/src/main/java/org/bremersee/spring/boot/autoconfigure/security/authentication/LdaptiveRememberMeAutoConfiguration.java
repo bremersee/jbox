@@ -19,7 +19,8 @@ package org.bremersee.spring.boot.autoconfigure.security.authentication;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationProperties.RememberMeProperties;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
@@ -51,8 +52,9 @@ import org.springframework.util.ClassUtils;
     type = "org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager")
 @AutoConfigureAfter({LdaptiveAuthenticationAutoConfiguration.class})
 @EnableConfigurationProperties(AuthenticationProperties.class)
-@Slf4j
 public class LdaptiveRememberMeAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(LdaptiveRememberMeAutoConfiguration.class);
 
   private final RememberMeProperties rememberMeProperties;
 
@@ -85,16 +87,16 @@ public class LdaptiveRememberMeAutoConfiguration {
       message = String.format("OK: Using '%s' as password-last-set attribute.",
           properties.getPasswordLastSetAttribute());
     }
-    log.info("""
+    log.info(String.format("""
             
             *********************************************************************************
-            * {}
-            * {}
-            * {}
+            * %s
+            * %s
+            * %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
         rememberMeProperties,
-        message);
+        message));
   }
 
   /**

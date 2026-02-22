@@ -16,16 +16,15 @@
 
 package org.bremersee.ldaptive.app;
 
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.createDn;
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.getAttributeValue;
-import static org.bremersee.ldaptive.LdaptiveEntryMapper.setAttribute;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.bremersee.ldaptive.LdaptiveAttribute;
 import org.bremersee.ldaptive.LdaptiveEntryMapper;
 import org.ldaptive.AttributeModification;
 import org.ldaptive.LdapEntry;
-import org.ldaptive.transcode.StringValueTranscoder;
+import org.ldaptive.dn.Dn;
+import org.ldaptive.dn.NameValue;
+import org.ldaptive.dn.RDn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -37,8 +36,6 @@ import org.springframework.util.StringUtils;
  */
 @Component
 public class PersonMapper implements LdaptiveEntryMapper<Person> {
-
-  private static final StringValueTranscoder STRING_TRANSCODER = new StringValueTranscoder();
 
   @Value("${spring.ldap.embedded.base-dn}")
   private String baseDn;
@@ -57,7 +54,11 @@ public class PersonMapper implements LdaptiveEntryMapper<Person> {
     if (person == null || !StringUtils.hasText(person.getUid())) {
       return null;
     }
-    return createDn("uid", person.getUid(), getBaseDn());
+    return Dn.builder()
+        .add(new RDn(new NameValue("uid", person.getUid())))
+        .add(new Dn(getBaseDn()))
+        .build()
+        .format();
   }
 
   @Override
@@ -72,12 +73,12 @@ public class PersonMapper implements LdaptiveEntryMapper<Person> {
 
   @Override
   public void map(LdapEntry ldapEntry, Person person) {
-    person.setCn(getAttributeValue(ldapEntry,
-        "cn", STRING_TRANSCODER, null));
-    person.setUid(getAttributeValue(ldapEntry,
-        "uid", STRING_TRANSCODER, null));
-    person.setSn(getAttributeValue(ldapEntry,
-        "sn", STRING_TRANSCODER, null));
+    LdaptiveAttribute.define("cn").getValue(ldapEntry)
+        .ifPresent(person::setCn);
+    LdaptiveAttribute.define("uid").getValue(ldapEntry)
+        .ifPresent(person::setUid);
+    LdaptiveAttribute.define("sn").getValue(ldapEntry)
+        .ifPresent(person::setSn);
   }
 
   @Override
@@ -85,9 +86,12 @@ public class PersonMapper implements LdaptiveEntryMapper<Person> {
       Person source,
       LdapEntry destination) {
     List<AttributeModification> modifications = new ArrayList<>();
-    setAttribute(destination, "uid", source.getUid(), false, STRING_TRANSCODER, modifications);
-    setAttribute(destination, "cn", source.getCn(), false, STRING_TRANSCODER, modifications);
-    setAttribute(destination, "sn", source.getSn(), false, STRING_TRANSCODER, modifications);
+    LdaptiveAttribute.define("cn").setValue(destination, source.getCn())
+        .ifPresent(modifications::add);
+    LdaptiveAttribute.define("uid").setValue(destination, source.getUid())
+        .ifPresent(modifications::add);
+    LdaptiveAttribute.define("sn").setValue(destination, source.getSn())
+        .ifPresent(modifications::add);
     return modifications.toArray(new AttributeModification[0]);
   }
 

@@ -16,10 +16,14 @@
 
 package org.bremersee.geojson.spring.data.mongodb.convert;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
@@ -41,13 +45,12 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.IndexResolver;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
@@ -71,15 +74,16 @@ import org.testcontainers.utility.DockerImageName;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@Slf4j
-public class ConverterIntegrationTest {
+class ConverterIntegrationTest {
+
+  private static final Log log = LogFactory.getLog(ConverterIntegrationTest.class);
 
   private static final GeoJsonGeometryFactory factory = new GeoJsonGeometryFactory();
 
   @Container
   @ServiceConnection
   static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName
-      .parse("mongo:4.0.10"));
+      .parse("mongo:latest"));
 
   /**
    * The repository.
@@ -114,7 +118,12 @@ public class ConverterIntegrationTest {
   void createIndex() {
     IndexOperations indexOps = mongoTemplate.indexOps(GeometryEntity.class);
     IndexResolver resolver = new MongoPersistentEntityIndexResolver(mongoMappingContext);
-    resolver.resolveIndexFor(GeometryEntity.class).forEach(indexOps::ensureIndex);
+    List<String> indexNames = new ArrayList<>();
+    for (IndexDefinition indexDefinition : resolver.resolveIndexFor(GeometryEntity.class)) {
+      String name = indexOps.createIndex(indexDefinition);
+      indexNames.add(name);
+    }
+    assertThat(indexNames).isNotEmpty();
   }
 
   /**
@@ -130,7 +139,7 @@ public class ConverterIntegrationTest {
         new Coordinate(6., 7.)));
     GeometryCollection geometry = factory.createGeometryCollection(List.of(model0, model1));
     GeometryCollectionEntity entity = colRepository.save(new GeometryCollectionEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryCollectionEntity::getId)
@@ -152,7 +161,7 @@ public class ConverterIntegrationTest {
         new Coordinate(2., 3.),
         new Coordinate(6., 7.)));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -180,7 +189,7 @@ public class ConverterIntegrationTest {
         model0,
         model1));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -202,7 +211,7 @@ public class ConverterIntegrationTest {
     Point model1 = factory.createPoint(17., 18.);
     MultiPoint geometry = factory.createMultiPoint(Arrays.asList(model0, model1));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -234,7 +243,7 @@ public class ConverterIntegrationTest {
     Polygon model1 = factory.createPolygon(ring1);
     MultiPolygon geometry = factory.createMultiPolygon(Arrays.asList(model0, model1));
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -254,7 +263,7 @@ public class ConverterIntegrationTest {
   void testPoint(SoftAssertions softly) {
     Point geometry = factory.createPoint(2., 4.);
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)
@@ -279,7 +288,7 @@ public class ConverterIntegrationTest {
         new Coordinate(2., 3.)));
     Polygon geometry = factory.createPolygon(ring);
     GeometryEntity entity = repository.save(new GeometryEntity(geometry));
-    log.info("Saved: {}", entity);
+    log.info(String.format("Saved: %s", entity));
     softly.assertThat(entity)
         .isNotNull()
         .extracting(GeometryEntity::getId)

@@ -39,6 +39,7 @@ public class MongoProperties {
    * Instantiates new mongo properties.
    */
   public MongoProperties() {
+    super();
   }
 
   /**
@@ -69,6 +70,7 @@ public class MongoProperties {
      * Instantiates new custom conversions properties.
      */
     public CustomConversionsProperties() {
+      super();
     }
   }
 

@@ -148,11 +148,11 @@ public class MultipartFileBuilderImpl implements MultipartFileBuilder {
 
   @Override
   public Mono<MultipartFile> build(Part part) {
-    if (part instanceof FilePart) {
-      return build((FilePart) part);
+    if (part instanceof FilePart filePart) {
+      return build(filePart);
     }
-    if (part instanceof FormFieldPart) {
-      return build((FormFieldPart) part);
+    if (part instanceof FormFieldPart formFieldPart) {
+      return build(formFieldPart);
     }
     return Mono.just(FileAwareMultipartFile.empty());
   }

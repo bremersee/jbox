@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.bremersee.acl.Ace;
 import org.bremersee.acl.Acl;
 import org.bremersee.acl.annotation.AclHolder;
@@ -42,6 +41,8 @@ import org.springframework.util.Assert;
  * @author Christian Bremer
  */
 public class AclIndexOperations {
+
+  private static final String ENTITY_NOT_NULL_MSG = "Entity class must be present.";
 
   private final MongoOperations mongoOperations;
 
@@ -62,7 +63,7 @@ public class AclIndexOperations {
    * @return the acl index info
    */
   public List<IndexInfo> getAclIndexInfo(Class<?> entityClass) {
-    Assert.notNull(entityClass, "Entity class must be present.");
+    Assert.notNull(entityClass, ENTITY_NOT_NULL_MSG);
     String aclPath = getAclPath(entityClass);
     return getAclIndexInfo(entityClass, aclPath);
   }
@@ -75,7 +76,7 @@ public class AclIndexOperations {
    * @return the acl index info
    */
   public List<IndexInfo> getAclIndexInfo(Class<?> entityClass, String aclPath) {
-    Assert.notNull(entityClass, "Entity class must be present.");
+    Assert.notNull(entityClass, ENTITY_NOT_NULL_MSG);
     return getAclIndexInfo(mongoOperations.indexOps(entityClass), aclPath);
   }
 
@@ -101,42 +102,42 @@ public class AclIndexOperations {
     return indexOps.getIndexInfo()
         .stream()
         .filter(indexInfo -> pattern.matcher(indexInfo.getName()).matches())
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
-   * Ensure acl indexes.
+   * Create acl indexes.
    *
    * @param entityClass the entity class
    * @param possiblePermissions the possible permissions
    * @param dropIndexesOfOtherPermissions the drop indexes of other permissions
    */
-  public void ensureAclIndexes(
+  public void createAclIndexes(
       Class<?> entityClass,
       Collection<String> possiblePermissions,
       boolean dropIndexesOfOtherPermissions) {
 
-    Assert.notNull(entityClass, "Entity class must be present.");
+    Assert.notNull(entityClass, ENTITY_NOT_NULL_MSG);
     String aclPath = getAclPath(entityClass);
-    ensureAclIndexes(entityClass, aclPath, possiblePermissions, dropIndexesOfOtherPermissions);
+    createAclIndexes(entityClass, aclPath, possiblePermissions, dropIndexesOfOtherPermissions);
   }
 
   /**
-   * Ensure acl indexes.
+   * Create acl indexes.
    *
    * @param entityClass the entity class
    * @param aclPath the acl path
    * @param possiblePermissions the possible permissions
    * @param dropIndexesOfOtherPermissions the drop indexes of other permissions
    */
-  public void ensureAclIndexes(
+  public void createAclIndexes(
       Class<?> entityClass,
       String aclPath,
       Collection<String> possiblePermissions,
       boolean dropIndexesOfOtherPermissions) {
 
-    Assert.notNull(entityClass, "Entity class must be present.");
-    ensureAclIndexes(
+    Assert.notNull(entityClass, ENTITY_NOT_NULL_MSG);
+    createAclIndexes(
         mongoOperations.indexOps(entityClass),
         aclPath,
         possiblePermissions,
@@ -144,28 +145,28 @@ public class AclIndexOperations {
   }
 
   /**
-   * Ensure acl indexes.
+   * Create acl indexes.
    *
    * @param collectionName the collection name
    * @param aclPath the acl path
    * @param possiblePermissions the possible permissions
    * @param dropIndexesOfOtherPermissions the drop indexes of other permissions
    */
-  public void ensureAclIndexes(
+  public void createAclIndexes(
       String collectionName,
       String aclPath,
       Collection<String> possiblePermissions,
       boolean dropIndexesOfOtherPermissions) {
 
     Assert.hasLength(collectionName, "Collection name must be present.");
-    ensureAclIndexes(
+    createAclIndexes(
         mongoOperations.indexOps(collectionName.trim()),
         aclPath,
         possiblePermissions,
         dropIndexesOfOtherPermissions);
   }
 
-  private void ensureAclIndexes(
+  private void createAclIndexes(
       IndexOperations indexOps,
       String aclPath,
       Collection<String> possiblePermissions,
@@ -176,13 +177,13 @@ public class AclIndexOperations {
     }
 
     String validAclPath = isEmpty(aclPath) ? "" : aclPath.trim();
-    indexOps.ensureIndex(new Index()
+    indexOps.createIndex(new Index()
         .on(path(validAclPath, Acl.OWNER), Direction.ASC));
     if (!isEmpty(possiblePermissions)) {
       List.of(Ace.GUEST, Ace.USERS, Ace.ROLES, Ace.GROUPS)
           .forEach(field -> Set.copyOf(possiblePermissions)
               .forEach(permission -> indexOps
-                  .ensureIndex(new Index()
+                  .createIndex(new Index()
                       .on(path(validAclPath, Acl.ENTRIES, permission, field),
                           Direction.ASC))));
     }

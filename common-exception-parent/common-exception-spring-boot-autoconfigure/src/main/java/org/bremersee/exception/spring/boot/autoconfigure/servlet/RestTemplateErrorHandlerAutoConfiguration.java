@@ -16,7 +16,6 @@
 
 package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
-import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
 import org.bremersee.exception.RestApiResponseErrorHandler;
@@ -45,7 +44,6 @@ import org.springframework.web.client.RestTemplate;
 })
 @AutoConfiguration
 @Order(100)
-@Slf4j
 public class RestTemplateErrorHandlerAutoConfiguration implements RestTemplateCustomizer {
 
   private final RestApiExceptionParser restApiExceptionParser;

@@ -17,6 +17,7 @@
 package org.bremersee.spring.security.ldaptive.authentication.provider;
 
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -49,9 +50,9 @@ public enum Template {
    */
   GROUP_CONTAINS_USERS(TemplateMapper.INSTANCE::toGroupUser);
 
-  private final Function<LdaptiveAuthenticationProperties, LdaptiveAuthenticationProperties> mapFn;
+  private final UnaryOperator<LdaptiveAuthenticationProperties> mapFn;
 
-  Template(Function<LdaptiveAuthenticationProperties, LdaptiveAuthenticationProperties> mapFn) {
+  Template(UnaryOperator<LdaptiveAuthenticationProperties> mapFn) {
     this.mapFn = mapFn;
   }
 

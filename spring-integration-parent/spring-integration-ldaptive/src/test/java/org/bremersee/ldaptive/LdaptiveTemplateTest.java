@@ -29,7 +29,8 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.ServiceException;
 import org.bremersee.ldaptive.app.Group;
 import org.bremersee.ldaptive.app.GroupMapper;
@@ -70,8 +71,9 @@ import org.springframework.test.util.TestSocketUtils;
         "spring.ldap.embedded.ldif=classpath:schema.ldif",
         "spring.ldap.embedded.validation.enabled=false"
     })
-@Slf4j
 class LdaptiveTemplateTest {
+
+  private static final Log log = LogFactory.getLog(LdaptiveTemplateTest.class);
 
   @Value("${spring.ldap.embedded.base-dn}")
   private String baseDn;
@@ -107,8 +109,8 @@ class LdaptiveTemplateTest {
 
     // without mapper
     Collection<LdapEntry> entries = ldaptiveTemplate.findAll(searchRequest);
-    entries.forEach(ldapEntry -> log.info("Ldap entry found with cn = {}",
-        ldapEntry.getAttribute("cn").getStringValue()));
+    entries.forEach(ldapEntry -> log.info(String.format("Ldap entry found with cn = %s",
+        ldapEntry.getAttribute("cn").getStringValue())));
     assertTrue(entries.stream()
         .anyMatch(entry -> "Anna Livia Plurabelle"
             .equalsIgnoreCase(entry.getAttribute("cn").getStringValue())));
@@ -144,8 +146,8 @@ class LdaptiveTemplateTest {
 
     // without mapper
     Collection<LdapEntry> entries = ldaptiveTemplate.findAll(searchRequest);
-    entries.forEach(ldapEntry -> log.info("Ldap entry found with cn = {}",
-        ldapEntry.getAttribute("cn").getStringValue()));
+    entries.forEach(ldapEntry -> log.info(String.format("Ldap entry found with cn = %s",
+        ldapEntry.getAttribute("cn").getStringValue())));
     assertTrue(entries.stream()
         .anyMatch(entry -> "developers"
             .equalsIgnoreCase(entry.getAttribute("cn").getStringValue())));
@@ -455,7 +457,7 @@ class LdaptiveTemplateTest {
     p2.setUid("person2");
 
     ldaptiveTemplate.saveAll(Arrays.asList(p0, p1, p2), personMapper)
-        .forEach(person -> log.info("New person: {}", person));
+        .forEach(person -> log.info(String.format("New person: %s", person)));
     assertTrue(ldaptiveTemplate.exists(p0, personMapper));
     assertTrue(ldaptiveTemplate.exists(p1, personMapper));
     assertTrue(ldaptiveTemplate.exists(p2, personMapper));

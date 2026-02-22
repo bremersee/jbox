@@ -16,7 +16,8 @@
 
 package org.bremersee.geojson.spring.boot.autoconfigure.web;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.bremersee.geojson.converter.GeometryConverters;
 import org.bremersee.geojson.spring.boot.autoconfigure.GeoJsonGeometryFactoryAutoConfiguration;
@@ -42,8 +43,9 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @ConditionalOnWebApplication(type = Type.REACTIVE)
 @AutoConfiguration
 @AutoConfigureAfter(GeoJsonGeometryFactoryAutoConfiguration.class)
-@Slf4j
 public class GeoJsonWebFluxConfigurer implements WebFluxConfigurer {
+
+  private static final Log log = LogFactory.getLog(GeoJsonWebFluxConfigurer.class);
 
   private final GeoJsonGeometryFactory geometryFactory;
 
@@ -61,12 +63,12 @@ public class GeoJsonWebFluxConfigurer implements WebFluxConfigurer {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************""",
-        ClassUtils.getUserClass(getClass()).getSimpleName());
+        ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
   @Override

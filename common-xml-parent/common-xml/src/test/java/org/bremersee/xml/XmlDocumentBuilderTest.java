@@ -268,9 +268,10 @@ class XmlDocumentBuilderTest {
    */
   @Test
   void buildDocumentFromIllegalUri() {
+    XmlDocumentBuilder documentBuilder = XmlDocumentBuilder.newInstance();
+    String uri = "http://localhost/" + UUID.randomUUID() + ".xml";
     assertThatExceptionOfType(XmlRuntimeException.class)
-        .isThrownBy(() -> XmlDocumentBuilder.newInstance()
-            .buildDocument("http://localhost/" + UUID.randomUUID() + ".xml"));
+        .isThrownBy(() -> documentBuilder.buildDocument(uri));
   }
 
   /**
@@ -301,8 +302,9 @@ class XmlDocumentBuilderTest {
    */
   @Test
   void buildDocumentFromFileAndExpectException() {
+    XmlDocumentBuilder documentBuilder = XmlDocumentBuilder.newInstance();
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> XmlDocumentBuilder.newInstance().buildDocument((File) null));
+        .isThrownBy(() -> documentBuilder.buildDocument((File) null));
   }
 
   /**
@@ -357,21 +359,21 @@ class XmlDocumentBuilderTest {
     person.setFirstName("Anna Livia");
     person.setLastName("Plurabelle");
 
-    JaxbContextBuilder jaxbContextBuilder = JaxbContextBuilder
+    JaxbContextBuilder contextBuilder = JaxbContextBuilder
         .newInstance()
         .processAll(ServiceLoader.load(JaxbContextDataProvider.class));
 
     Document document = XmlDocumentBuilder.newInstance()
-        .buildDocument(person, jaxbContextBuilder.buildMarshaller());
+        .buildDocument(person, contextBuilder.buildMarshaller());
     softly.assertThat(document)
         .isNotNull();
 
     softly.assertThat(XmlDocumentBuilder.newInstance()
-            .buildDocument(null, jaxbContextBuilder.buildMarshaller()))
+            .buildDocument(null, contextBuilder.buildMarshaller()))
         .isNull();
 
     softly.assertThatThrownBy(() -> XmlDocumentBuilder.newInstance()
-            .buildDocument("", jaxbContextBuilder.buildMarshaller()))
+            .buildDocument("", contextBuilder.buildMarshaller()))
         .extracting(Object::getClass)
         .isEqualTo(JaxbRuntimeException.class);
   }
@@ -393,21 +395,21 @@ class XmlDocumentBuilderTest {
     ctxData.add(new JaxbContextData(
         org.bremersee.xml.model2.ObjectFactory.class.getPackage()));
 
-    JaxbContextBuilder jaxbContextBuilder = JaxbContextBuilder
+    JaxbContextBuilder contextBuilder = JaxbContextBuilder
         .newInstance()
         .addAll(ctxData.iterator());
 
     Document document = XmlDocumentBuilder.newInstance()
-        .buildDocument(person, jaxbContextBuilder.buildJaxbContext());
+        .buildDocument(person, contextBuilder.buildJaxbContext());
     softly.assertThat(document)
         .isNotNull();
 
     softly.assertThat(XmlDocumentBuilder.newInstance()
-            .buildDocument(null, jaxbContextBuilder.buildJaxbContext()))
+            .buildDocument(null, contextBuilder.buildJaxbContext()))
         .isNull();
 
     softly.assertThatThrownBy(() -> XmlDocumentBuilder.newInstance()
-            .buildDocument("no-xml", jaxbContextBuilder.buildJaxbContext()))
+            .buildDocument("no-xml", contextBuilder.buildJaxbContext()))
         .extracting(Object::getClass)
         .isEqualTo(JaxbRuntimeException.class);
   }
@@ -417,10 +419,12 @@ class XmlDocumentBuilderTest {
    */
   @Test
   void configureFactoryAttribute() {
+    XmlDocumentBuilder documentBuilder = XmlDocumentBuilder.newInstance();
+    String name = "don't know";
+    Object obj = new Object();
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> XmlDocumentBuilder.newInstance()
-            .configureFactoryAttribute("don't know", new Object())
-            .buildDocumentBuilder());
+        .isThrownBy(() -> documentBuilder
+            .configureFactoryAttribute(name, obj));
   }
 
 }

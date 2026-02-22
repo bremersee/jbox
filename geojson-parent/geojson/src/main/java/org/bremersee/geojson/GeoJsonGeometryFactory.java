@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.bremersee.geojson.model.LatLon;
 import org.bremersee.geojson.model.LatLonAware;
@@ -363,8 +363,8 @@ public class GeoJsonGeometryFactory extends GeometryFactory {
     if (g1 == g2) {
       return true;
     }
-    if (g1 instanceof GeometryCollection && g2 instanceof GeometryCollection) {
-      return equals((GeometryCollection) g1, (GeometryCollection) g2);
+    if (g1 instanceof GeometryCollection gc1 && g2 instanceof GeometryCollection gc2) {
+      return equals(gc1, gc2);
     }
     if (g1 instanceof GeometryCollection || g2 instanceof GeometryCollection) {
       return false;
@@ -408,7 +408,7 @@ public class GeoJsonGeometryFactory extends GeometryFactory {
    */
   public static double[] getBoundingBox(Geometry geometry) {
     return Optional.ofNullable(geometry)
-        .map(g -> getBoundingBox(Collections.singletonList(g)))
+        .map(g -> getBoundingBox(List.of(g)))
         .orElse(null);
   }
 

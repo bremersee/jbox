@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Christian Bremer
  */
-public class XmlSchemaTest {
+class XmlSchemaTest {
 
   private static JAXBContext jaxbContext;
 

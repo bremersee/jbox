@@ -16,7 +16,8 @@
 
 package org.bremersee.xml.test.app;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.xml.test.model.xml1.Person;
 import org.bremersee.xml.test.model.xml2.Vehicle;
 import org.bremersee.xml.test.model.xml2.Vehicles;
@@ -34,8 +35,9 @@ import reactor.core.publisher.Flux;
  * @author Christian Bremer
  */
 @RestController
-@Slf4j
 public class XmlController {
+
+  private static final Log log = LogFactory.getLog(XmlController.class);
 
   /**
    * Post person flux.
@@ -48,7 +50,7 @@ public class XmlController {
       consumes = MediaType.APPLICATION_XML_VALUE,
       produces = MediaType.APPLICATION_XML_VALUE)
   public Flux<Person> postPerson(@RequestBody Person model) {
-    log.info("Echo person = {}", model);
+    log.info(String.format("Echo person = %s", model));
     return Flux.just(model);
   }
 
@@ -63,7 +65,7 @@ public class XmlController {
       consumes = MediaType.APPLICATION_XML_VALUE,
       produces = MediaType.APPLICATION_XML_VALUE)
   public Flux<Vehicle> postVehicle(@RequestBody Vehicle model) {
-    log.info("Echo vehicle = {}", model);
+    log.info(String.format("Echo vehicle = %s", model));
     return Flux.just(model);
   }
 
@@ -78,7 +80,7 @@ public class XmlController {
       consumes = MediaType.APPLICATION_XML_VALUE,
       produces = MediaType.APPLICATION_XML_VALUE)
   public Flux<Vehicles> postVehicles(@RequestBody Vehicles model) {
-    log.info("Echo vehicles = {}", model);
+    log.info(String.format("Echo vehicles = %s", model));
     return Flux.just(model);
   }
 
@@ -93,7 +95,7 @@ public class XmlController {
       consumes = MediaType.APPLICATION_XML_VALUE,
       produces = MediaType.APPLICATION_XML_VALUE)
   public Flux<Company> postCompany(@RequestBody Company model) {
-    log.info("Echo company = {}", model);
+    log.info(String.format("Echo company = %s", model));
     return Flux.just(model);
   }
 
@@ -108,7 +110,7 @@ public class XmlController {
       consumes = MediaType.APPLICATION_XML_VALUE,
       produces = MediaType.APPLICATION_XML_VALUE)
   public Flux<Address> postAddress(@RequestBody Address model) {
-    log.info("Echo address = {}", model);
+    log.info(String.format("Echo address = %s", model));
     return Flux.just(model);
   }
 

@@ -26,7 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.bremersee.exception.ServiceException;
 import org.bremersee.ldaptive.app.Group;
 import org.bremersee.ldaptive.app.GroupMapper;
@@ -72,7 +71,6 @@ import reactor.test.StepVerifier;
         "spring.ldap.embedded.ldif=classpath:schema.ldif",
         "spring.ldap.embedded.validation.enabled=false"
     })
-@Slf4j
 class ReactiveLdaptiveTemplateTest {
 
   @Value("${spring.ldap.embedded.base-dn}")

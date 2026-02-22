@@ -36,5 +36,6 @@ public class TimeZoneWriteConverter extends TimeZoneToStringConverter
    * Instantiates a new time zone write converter.
    */
   public TimeZoneWriteConverter() {
+    super();
   }
 }

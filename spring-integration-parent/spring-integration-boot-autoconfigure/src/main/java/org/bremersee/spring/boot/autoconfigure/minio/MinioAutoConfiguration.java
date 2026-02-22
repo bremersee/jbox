@@ -17,8 +17,9 @@
 package org.bremersee.spring.boot.autoconfigure.minio;
 
 import io.minio.MinioClient;
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bremersee.minio.MinioErrorHandler;
 import org.bremersee.minio.MinioOperations;
 import org.bremersee.minio.MinioTemplate;
@@ -47,8 +48,9 @@ import org.springframework.util.ClassUtils;
     prefix = "bremersee.minio",
     name = {"url", "access-key", "secret-key"})
 @EnableConfigurationProperties(MinioProperties.class)
-@Slf4j
 public class MinioAutoConfiguration {
+
+  private static final Log log = LogFactory.getLog(MinioAutoConfiguration.class);
 
   private final MinioProperties properties;
 
@@ -66,15 +68,15 @@ public class MinioAutoConfiguration {
    */
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    log.info("""
-
+    log.info(String.format("""
+            
             *********************************************************************************
-            * {}
+            * %s
             *********************************************************************************
-            * properties = {}
+            * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(),
-        properties);
+        properties));
   }
 
   /**
