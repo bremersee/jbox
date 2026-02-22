@@ -11,7 +11,7 @@
 
   <name>Common Parent</name>
   <description>Common parent module of bremersee maven projects.</description>
-  <url>https://bremersee.github.io/jbox/index.html</url>
+  <url>https://github.com/bremersee/jbox</url>
   <inceptionYear>2019</inceptionYear>
 
   <modules>
@@ -53,7 +53,7 @@
     <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine> <!-- BUILD_SYSTEM -->
 
     <jbox.version>5.1.0-SNAPSHOT</jbox.version>
-    <spring-boot.version>3.5.10</spring-boot.version>
+    <spring-boot.version>3.5.11</spring-boot.version>
     <spring-boot-admin.version>3.5.7</spring-boot-admin.version>
     <spring-cloud.version>2025.0.1</spring-cloud.version>
     <testcontainers.version>1.21.4</testcontainers.version>
