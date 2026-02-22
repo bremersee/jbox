@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Geometry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GeoJSON Simple Model</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.geojson.model</a> &gt; <span class="el_source">Geometry.java</span></div><h1>Geometry.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2018-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.geojson.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.bremersee.geojson.GeoJsonConstants;
+
+/**
+ * GeoJSON Geometry.
+ *
+ * @author Christian Bremer
+ */
+@Schema(description = &quot;GeoJSON Geometry.&quot;)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = GeoJsonConstants.TYPE, visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = GeometryCollection.class,
+        name = GeoJsonConstants.GEOMETRY_COLLECTION),
+    @JsonSubTypes.Type(value = MultiPoint.class, name = GeoJsonConstants.MULTI_POINT),
+    @JsonSubTypes.Type(value = MultiLineString.class, name = GeoJsonConstants.MULTI_LINESTRING),
+    @JsonSubTypes.Type(value = LineString.class, name = GeoJsonConstants.LINESTRING),
+    @JsonSubTypes.Type(value = MultiPolygon.class, name = GeoJsonConstants.MULTI_POLYGON),
+    @JsonSubTypes.Type(value = Point.class, name = GeoJsonConstants.POINT),
+    @JsonSubTypes.Type(value = Polygon.class, name = GeoJsonConstants.POLYGON),
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+public abstract class Geometry implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * The type.
+   */
+  @Setter(AccessLevel.PROTECTED)
+  @Hidden
+  @JsonIgnore
+  TypeEnum type;
+
+  /**
+   * The bounding box.
+   */
+  @Setter
+  @Schema(description = &quot;The bounding box.&quot;)
+  @JsonProperty(GeoJsonConstants.BBOX)
+  @JsonInclude(Include.NON_EMPTY)
+  BoundingBox bbox;
+
+  /**
+   * Instantiates a new geometry.
+   *
+   * @param bbox the bbox
+   */
+<span class="fc" id="L95">  protected Geometry(BoundingBox bbox) {</span>
+<span class="fc" id="L96">    this.bbox = bbox;</span>
+<span class="fc" id="L97">  }</span>
+
+  /**
+   * To json map.
+   *
+   * @return the map
+   */
+  public Map&lt;String, Object&gt; toJson() {
+<span class="fc" id="L105">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L106">    map.put(GeoJsonConstants.TYPE, getType().getGeometryType());</span>
+<span class="fc" id="L107">    Optional.ofNullable(getBbox())</span>
+<span class="fc" id="L108">        .map(BoundingBox::toDoubleArray)</span>
+<span class="fc" id="L109">        .map(bb -&gt; Arrays.stream(bb).boxed().collect(Collectors.toList()))</span>
+<span class="fc" id="L110">        .ifPresent(bb -&gt; map.put(GeoJsonConstants.BBOX, bb));</span>
+<span class="fc" id="L111">    map.put(getType().geometryJsonValueAttribute, getGeometryJsonValue());</span>
+<span class="fc" id="L112">    return Collections.unmodifiableMap(map);</span>
+  }
+
+  /**
+   * Gets geometry json value for json attribute 'coordinates' or 'geometries'
+   * (GeometryCollection).
+   *
+   * @return the geometry json value
+   */
+  @Schema(hidden = true)
+  @JsonIgnore
+  abstract Object getGeometryJsonValue();
+
+  /**
+   * The geometry type.
+   */
+<span class="fc" id="L128">  @Getter</span>
+  public enum TypeEnum {
+
+    /**
+     * Point type enum.
+     */
+<span class="fc" id="L134">    POINT(GeoJsonConstants.POINT, GeoJsonConstants.COORDINATES),</span>
+
+    /**
+     * Multipoint type enum.
+     */
+<span class="fc" id="L139">    MULTIPOINT(GeoJsonConstants.MULTI_POINT, GeoJsonConstants.COORDINATES),</span>
+
+    /**
+     * Linestring type enum.
+     */
+<span class="fc" id="L144">    LINESTRING(GeoJsonConstants.LINESTRING, GeoJsonConstants.COORDINATES),</span>
+
+    /**
+     * Multilinestring type enum.
+     */
+<span class="fc" id="L149">    MULTILINESTRING(GeoJsonConstants.MULTI_LINESTRING, GeoJsonConstants.COORDINATES),</span>
+
+    /**
+     * Polygon type enum.
+     */
+<span class="fc" id="L154">    POLYGON(GeoJsonConstants.POLYGON, GeoJsonConstants.COORDINATES),</span>
+
+    /**
+     * Multipolygon type enum.
+     */
+<span class="fc" id="L159">    MULTIPOLYGON(GeoJsonConstants.MULTI_POLYGON, GeoJsonConstants.COORDINATES),</span>
+
+    /**
+     * Geometrycollection type enum.
+     */
+<span class="fc" id="L164">    GEOMETRYCOLLECTION(GeoJsonConstants.GEOMETRY_COLLECTION, GeoJsonConstants.GEOMETRIES);</span>
+
+    private final String geometryType;
+
+    private final String geometryJsonValueAttribute;
+
+<span class="fc" id="L170">    TypeEnum(String geometryType, String geometryJsonValueAttribute) {</span>
+<span class="fc" id="L171">      this.geometryType = geometryType;</span>
+<span class="fc" id="L172">      this.geometryJsonValueAttribute = geometryJsonValueAttribute;</span>
+<span class="fc" id="L173">    }</span>
+
+    @Override
+    @JsonValue
+    public String toString() {
+<span class="fc" id="L178">      return getGeometryType();</span>
+    }
+
+    /**
+     * From value type enum.
+     *
+     * @param geometryType the geometry type
+     * @return the type enum
+     */
+    @JsonCreator
+    public static TypeEnum fromGeometryType(String geometryType) {
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      for (TypeEnum b : values()) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (String.valueOf(b.geometryType).equals(geometryType)) {</span>
+<span class="fc" id="L191">          return b;</span>
+        }
+      }
+<span class="fc" id="L194">      return null;</span>
+    }
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

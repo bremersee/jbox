@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActiveDirectoryAccountControlEvaluator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Security Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.security.ldaptive.authentication.provider</a> &gt; <span class="el_source">ActiveDirectoryAccountControlEvaluator.java</span></div><h1>ActiveDirectoryAccountControlEvaluator.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.security.ldaptive.authentication.provider;
+
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import org.bremersee.ldaptive.transcoder.UserAccountControl;
+import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
+import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
+import org.ldaptive.LdapAttribute;
+import org.ldaptive.LdapEntry;
+
+/**
+ * Evaluator of the ldap attributes {@code userAccountControl} and {@code accountExpires} of an
+ * Active Directory.
+ *
+ * @author Christian Bremer
+ */
+<span class="fc" id="L33">public class ActiveDirectoryAccountControlEvaluator implements AccountControlEvaluator {</span>
+
+  @Override
+  public boolean isAccountNonExpired(LdapEntry ldapEntry) {
+<span class="fc" id="L37">    var valueTranscoder = ValueTranscoderFactory.getFileTimeToOffsetDateTimeValueTranscoder();</span>
+<span class="fc" id="L38">    return Optional.ofNullable(ldapEntry)</span>
+<span class="fc" id="L39">        .map(entry -&gt; entry.getAttribute(&quot;accountExpires&quot;))</span>
+<span class="fc" id="L40">        .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L41">        .map(valueTranscoder::decodeStringValue)</span>
+<span class="pc" id="L42">        .map(dateTime -&gt; dateTime.isAfter(OffsetDateTime.now()))</span>
+<span class="fc" id="L43">        .orElse(true);</span>
+  }
+
+  @Override
+  public boolean isAccountNonLocked(LdapEntry ldapEntry) {
+<span class="fc" id="L48">    return true;</span>
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired(LdapEntry ldapEntry) {
+<span class="fc" id="L53">    return true;</span>
+  }
+
+  @Override
+  public boolean isEnabled(LdapEntry ldapEntry) {
+<span class="fc" id="L58">    var valueTranscoder = ValueTranscoderFactory.getUserAccountControlValueTranscoder();</span>
+<span class="fc" id="L59">    return Optional.ofNullable(ldapEntry)</span>
+<span class="fc" id="L60">        .map(entry -&gt; entry.getAttribute(&quot;userAccountControl&quot;))</span>
+<span class="fc" id="L61">        .map(LdapAttribute::getStringValue)</span>
+<span class="fc" id="L62">        .map(valueTranscoder::decodeStringValue)</span>
+<span class="fc" id="L63">        .map(UserAccountControl::isEnabled)</span>
+<span class="fc" id="L64">        .orElse(true);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

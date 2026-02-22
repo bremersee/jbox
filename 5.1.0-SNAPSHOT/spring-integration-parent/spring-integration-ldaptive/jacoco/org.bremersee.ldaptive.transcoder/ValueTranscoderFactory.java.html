@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValueTranscoderFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.ldaptive.transcoder</a> &gt; <span class="el_source">ValueTranscoderFactory.java</span></div><h1>ValueTranscoderFactory.java</h1><pre class="source lang-java linenums">package org.bremersee.ldaptive.transcoder;
+
+import org.ldaptive.ad.transcode.DeltaTimeValueTranscoder;
+import org.ldaptive.ad.transcode.FileTimeValueTranscoder;
+import org.ldaptive.ad.transcode.UnicodePwdValueTranscoder;
+import org.ldaptive.dn.DefaultAttributeValueEscaper;
+import org.ldaptive.dn.DefaultRDnNormalizer;
+import org.ldaptive.schema.transcode.AttributeTypeValueTranscoder;
+import org.ldaptive.transcode.BigIntegerValueTranscoder;
+import org.ldaptive.transcode.BooleanValueTranscoder;
+import org.ldaptive.transcode.ByteArrayValueTranscoder;
+import org.ldaptive.transcode.DoubleValueTranscoder;
+import org.ldaptive.transcode.FloatValueTranscoder;
+import org.ldaptive.transcode.GeneralizedTimeValueTranscoder;
+import org.ldaptive.transcode.IntegerValueTranscoder;
+import org.ldaptive.transcode.LongValueTranscoder;
+import org.ldaptive.transcode.ShortValueTranscoder;
+import org.ldaptive.transcode.StringValueTranscoder;
+import org.ldaptive.transcode.UUIDValueTranscoder;
+
+/**
+ * The value transcoder factory.
+ */
+public abstract class ValueTranscoderFactory {
+
+  private static AttributeTypeValueTranscoder attributeTypeValueTranscoder;
+
+  private static BigIntegerValueTranscoder bigIntegerValueTranscoder;
+
+  private static BooleanValueTranscoder booleanValueTranscoder;
+
+  private static BooleanValueTranscoder booleanPrimitiveValueTranscoder;
+
+  private static ByteArrayValueTranscoder byteArrayValueTranscoder;
+
+  private static DeltaTimeValueTranscoder deltaTimeValueTranscoder;
+
+  private static DnValueTranscoder dnValueTranscoder;
+
+  private static DnValueTranscoder dnValueTranscoderCaseSensitive;
+
+  private static DoubleValueTranscoder doubleValueTranscoder;
+
+  private static DoubleValueTranscoder doublePrimitiveValueTranscoder;
+
+  private static FileTimeValueTranscoder fileTimeValueTranscoder;
+
+  private static FileTimeToOffsetDateTimeValueTranscoder fileTimeToOffsetDateTimeValueTranscoder;
+
+  private static FloatValueTranscoder floatValueTranscoder;
+
+  private static FloatValueTranscoder floatPrimitiveValueTranscoder;
+
+  private static GeneralizedTimeValueTranscoder generalizedTimeValueTranscoder;
+
+  private static GeneralizedTimeToOffsetDateTimeValueTranscoder
+      generalizedTimeToOffsetDateTimeValueTranscoder;
+
+  private static IntegerValueTranscoder integerValueTranscoder;
+
+  private static IntegerValueTranscoder integerPrimitiveValueTranscoder;
+
+  private static LongValueTranscoder longValueTranscoder;
+
+  private static LongValueTranscoder longValuePrimitiveTranscoder;
+
+  private static ShortValueTranscoder shortValueTranscoder;
+
+  private static ShortValueTranscoder shortPrimitiveValueTranscoder;
+
+  private static StringValueTranscoder stringValueTranscoder;
+
+  private static UserAccountControlValueTranscoder userAccountControlValueTranscoder;
+
+  private static UUIDValueTranscoder uuidValueTranscoder;
+
+  private static UnicodePwdValueTranscoder unicodePwdValueTranscoder;
+
+  /**
+   * Instantiates a new value transcoder factory.
+   */
+  private ValueTranscoderFactory() {
+    super();
+  }
+
+  /**
+   * Gets attribute type value transcoder.
+   *
+   * @return the attribute type value transcoder
+   */
+  public static AttributeTypeValueTranscoder getAttributeTypeValueTranscoder() {
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">    if (attributeTypeValueTranscoder == null) {</span>
+<span class="fc" id="L93">      attributeTypeValueTranscoder = new AttributeTypeValueTranscoder();</span>
+    }
+<span class="fc" id="L95">    return attributeTypeValueTranscoder;</span>
+  }
+
+  /**
+   * Gets big integer value transcoder.
+   *
+   * @return the big integer value transcoder
+   */
+  public static BigIntegerValueTranscoder getBigIntegerValueTranscoder() {
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">    if (bigIntegerValueTranscoder == null) {</span>
+<span class="fc" id="L105">      bigIntegerValueTranscoder = new BigIntegerValueTranscoder();</span>
+    }
+<span class="fc" id="L107">    return bigIntegerValueTranscoder;</span>
+  }
+
+  /**
+   * Gets boolean value transcoder.
+   *
+   * @return the boolean value transcoder
+   */
+  public static BooleanValueTranscoder getBooleanValueTranscoder() {
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">    if (booleanValueTranscoder == null) {</span>
+<span class="fc" id="L117">      booleanValueTranscoder = new BooleanValueTranscoder(false);</span>
+    }
+<span class="fc" id="L119">    return booleanValueTranscoder;</span>
+  }
+
+  /**
+   * Gets boolean primitive value transcoder.
+   *
+   * @return the boolean primitive value transcoder
+   */
+  public static BooleanValueTranscoder getBooleanPrimitiveValueTranscoder() {
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">    if (booleanPrimitiveValueTranscoder == null) {</span>
+<span class="fc" id="L129">      booleanPrimitiveValueTranscoder = new BooleanValueTranscoder(true);</span>
+    }
+<span class="fc" id="L131">    return booleanPrimitiveValueTranscoder;</span>
+  }
+
+  /**
+   * Gets byte array value transcoder.
+   *
+   * @return the byte array value transcoder
+   */
+  public static ByteArrayValueTranscoder getByteArrayValueTranscoder() {
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">    if (byteArrayValueTranscoder == null) {</span>
+<span class="fc" id="L141">      byteArrayValueTranscoder = new ByteArrayValueTranscoder();</span>
+    }
+<span class="fc" id="L143">    return byteArrayValueTranscoder;</span>
+  }
+
+  /**
+   * Gets delta time value transcoder.
+   *
+   * @return the delta time value transcoder
+   */
+  public static DeltaTimeValueTranscoder getDeltaTimeValueTranscoder() {
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    if (deltaTimeValueTranscoder == null) {</span>
+<span class="fc" id="L153">      deltaTimeValueTranscoder = new DeltaTimeValueTranscoder();</span>
+    }
+<span class="fc" id="L155">    return deltaTimeValueTranscoder;</span>
+  }
+
+  /**
+   * Gets dn value transcoder.
+   *
+   * @return the dn value transcoder
+   */
+  public static DnValueTranscoder getDnValueTranscoder() {
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    if (dnValueTranscoder == null) {</span>
+<span class="fc" id="L165">      dnValueTranscoder = new DnValueTranscoder();</span>
+    }
+<span class="fc" id="L167">    return dnValueTranscoder;</span>
+  }
+
+  /**
+   * Gets dn value transcoder case sensitive.
+   *
+   * @return the dn value transcoder case-sensitive
+   */
+  public static DnValueTranscoder getDnValueTranscoderCaseSensitive() {
+<span class="fc bfc" id="L176" title="All 2 branches covered.">    if (dnValueTranscoderCaseSensitive == null) {</span>
+<span class="fc" id="L177">      dnValueTranscoderCaseSensitive = new DnValueTranscoder(</span>
+          new DefaultRDnNormalizer(
+              new DefaultAttributeValueEscaper(),
+<span class="fc" id="L180">              name -&gt; name,</span>
+<span class="fc" id="L181">              value -&gt; value));</span>
+    }
+<span class="fc" id="L183">    return dnValueTranscoderCaseSensitive;</span>
+  }
+
+  /**
+   * Gets double value transcoder.
+   *
+   * @return the double value transcoder
+   */
+  public static DoubleValueTranscoder getDoubleValueTranscoder() {
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">    if (doubleValueTranscoder == null) {</span>
+<span class="fc" id="L193">      doubleValueTranscoder = new DoubleValueTranscoder(false);</span>
+    }
+<span class="fc" id="L195">    return doubleValueTranscoder;</span>
+  }
+
+  /**
+   * Gets double primitive value transcoder.
+   *
+   * @return the double primitive value transcoder
+   */
+  public static DoubleValueTranscoder getDoublePrimitiveValueTranscoder() {
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">    if (doublePrimitiveValueTranscoder == null) {</span>
+<span class="fc" id="L205">      doublePrimitiveValueTranscoder = new DoubleValueTranscoder(true);</span>
+    }
+<span class="fc" id="L207">    return doublePrimitiveValueTranscoder;</span>
+  }
+
+  /**
+   * Gets file time value transcoder.
+   *
+   * @return the file time value transcoder
+   */
+  public static FileTimeValueTranscoder getFileTimeValueTranscoder() {
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">    if (fileTimeValueTranscoder == null) {</span>
+<span class="fc" id="L217">      fileTimeValueTranscoder = new FileTimeValueTranscoder();</span>
+    }
+<span class="fc" id="L219">    return fileTimeValueTranscoder;</span>
+  }
+
+  /**
+   * Gets file time to offset date time value transcoder.
+   *
+   * @return the file time to offset date time value transcoder
+   */
+  public static FileTimeToOffsetDateTimeValueTranscoder
+  getFileTimeToOffsetDateTimeValueTranscoder() {
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">    if (fileTimeToOffsetDateTimeValueTranscoder == null) {</span>
+<span class="fc" id="L230">      fileTimeToOffsetDateTimeValueTranscoder = new FileTimeToOffsetDateTimeValueTranscoder();</span>
+    }
+<span class="fc" id="L232">    return fileTimeToOffsetDateTimeValueTranscoder;</span>
+  }
+
+  /**
+   * Gets float value transcoder.
+   *
+   * @return the float value transcoder
+   */
+  public static FloatValueTranscoder getFloatValueTranscoder() {
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">    if (floatValueTranscoder == null) {</span>
+<span class="fc" id="L242">      floatValueTranscoder = new FloatValueTranscoder(false);</span>
+    }
+<span class="fc" id="L244">    return floatValueTranscoder;</span>
+  }
+
+  /**
+   * Gets float primitive value transcoder.
+   *
+   * @return the float primitive value transcoder
+   */
+  public static FloatValueTranscoder getFloatPrimitiveValueTranscoder() {
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">    if (floatPrimitiveValueTranscoder == null) {</span>
+<span class="fc" id="L254">      floatPrimitiveValueTranscoder = new FloatValueTranscoder(true);</span>
+    }
+<span class="fc" id="L256">    return floatPrimitiveValueTranscoder;</span>
+  }
+
+  /**
+   * Gets generalized time value transcoder.
+   *
+   * @return the generalized time value transcoder
+   */
+  public static GeneralizedTimeValueTranscoder getGeneralizedTimeValueTranscoder() {
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">    if (generalizedTimeValueTranscoder == null) {</span>
+<span class="fc" id="L266">      generalizedTimeValueTranscoder = new GeneralizedTimeValueTranscoder();</span>
+    }
+<span class="fc" id="L268">    return generalizedTimeValueTranscoder;</span>
+  }
+
+  /**
+   * Gets generalized time to offset date time value transcoder.
+   *
+   * @return the generalized time to offset date time value transcoder
+   */
+  public static GeneralizedTimeToOffsetDateTimeValueTranscoder
+  getGeneralizedTimeToOffsetDateTimeValueTranscoder() {
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">    if (generalizedTimeToOffsetDateTimeValueTranscoder == null) {</span>
+<span class="fc" id="L279">      generalizedTimeToOffsetDateTimeValueTranscoder</span>
+          = new GeneralizedTimeToOffsetDateTimeValueTranscoder();
+    }
+<span class="fc" id="L282">    return generalizedTimeToOffsetDateTimeValueTranscoder;</span>
+  }
+
+  /**
+   * Gets integer value transcoder.
+   *
+   * @return the integer value transcoder
+   */
+  public static IntegerValueTranscoder getIntegerValueTranscoder() {
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">    if (integerValueTranscoder == null) {</span>
+<span class="fc" id="L292">      integerValueTranscoder = new IntegerValueTranscoder(false);</span>
+    }
+<span class="fc" id="L294">    return integerValueTranscoder;</span>
+  }
+
+  /**
+   * Gets integer primitive value transcoder.
+   *
+   * @return the integer primitive value transcoder
+   */
+  public static IntegerValueTranscoder getIntegerPrimitiveValueTranscoder() {
+<span class="pc bpc" id="L303" title="1 of 2 branches missed.">    if (integerPrimitiveValueTranscoder == null) {</span>
+<span class="fc" id="L304">      integerPrimitiveValueTranscoder = new IntegerValueTranscoder(true);</span>
+    }
+<span class="fc" id="L306">    return integerPrimitiveValueTranscoder;</span>
+  }
+
+  /**
+   * Gets long value transcoder.
+   *
+   * @return the long value transcoder
+   */
+  public static LongValueTranscoder getLongValueTranscoder() {
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">    if (longValueTranscoder == null) {</span>
+<span class="fc" id="L316">      longValueTranscoder = new LongValueTranscoder(false);</span>
+    }
+<span class="fc" id="L318">    return longValueTranscoder;</span>
+  }
+
+  /**
+   * Gets long primitive value transcoder.
+   *
+   * @return the long primitive value transcoder
+   */
+  public static LongValueTranscoder getLongPrimitiveValueTranscoder() {
+<span class="pc bpc" id="L327" title="1 of 2 branches missed.">    if (longValuePrimitiveTranscoder == null) {</span>
+<span class="fc" id="L328">      longValuePrimitiveTranscoder = new LongValueTranscoder(true);</span>
+    }
+<span class="fc" id="L330">    return longValuePrimitiveTranscoder;</span>
+  }
+
+  /**
+   * Gets short value transcoder.
+   *
+   * @return the short value transcoder
+   */
+  public static ShortValueTranscoder getShortValueTranscoder() {
+<span class="pc bpc" id="L339" title="1 of 2 branches missed.">    if (shortValueTranscoder == null) {</span>
+<span class="fc" id="L340">      shortValueTranscoder = new ShortValueTranscoder(false);</span>
+    }
+<span class="fc" id="L342">    return shortValueTranscoder;</span>
+  }
+
+  /**
+   * Gets short primitive value transcoder.
+   *
+   * @return the short primitive value transcoder
+   */
+  public static ShortValueTranscoder getShortPrimitiveValueTranscoder() {
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">    if (shortPrimitiveValueTranscoder == null) {</span>
+<span class="fc" id="L352">      shortPrimitiveValueTranscoder = new ShortValueTranscoder(true);</span>
+    }
+<span class="fc" id="L354">    return shortPrimitiveValueTranscoder;</span>
+  }
+
+  /**
+   * Gets string value transcoder.
+   *
+   * @return the string value transcoder
+   */
+  public static StringValueTranscoder getStringValueTranscoder() {
+<span class="fc bfc" id="L363" title="All 2 branches covered.">    if (stringValueTranscoder == null) {</span>
+<span class="fc" id="L364">      stringValueTranscoder = new StringValueTranscoder();</span>
+    }
+<span class="fc" id="L366">    return stringValueTranscoder;</span>
+  }
+
+  /**
+   * Gets user account control value transcoder.
+   *
+   * @return the user account control value transcoder
+   */
+  public static UserAccountControlValueTranscoder getUserAccountControlValueTranscoder() {
+<span class="pc bpc" id="L375" title="1 of 2 branches missed.">    if (userAccountControlValueTranscoder == null) {</span>
+<span class="fc" id="L376">      userAccountControlValueTranscoder = new UserAccountControlValueTranscoder();</span>
+    }
+<span class="fc" id="L378">    return userAccountControlValueTranscoder;</span>
+  }
+
+  /**
+   * Gets uuid value transcoder.
+   *
+   * @return the uuid value transcoder
+   */
+  public static UUIDValueTranscoder getUuidValueTranscoder() {
+<span class="pc bpc" id="L387" title="1 of 2 branches missed.">    if (uuidValueTranscoder == null) {</span>
+<span class="fc" id="L388">      uuidValueTranscoder = new UUIDValueTranscoder();</span>
+    }
+<span class="fc" id="L390">    return uuidValueTranscoder;</span>
+  }
+
+  /**
+   * Gets unicode pwd value transcoder.
+   *
+   * @return the unicode pwd value transcoder
+   */
+  public static UnicodePwdValueTranscoder getUnicodePwdValueTranscoder() {
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">    if (unicodePwdValueTranscoder == null) {</span>
+<span class="fc" id="L400">      unicodePwdValueTranscoder = new UnicodePwdValueTranscoder();</span>
+    }
+<span class="fc" id="L402">    return unicodePwdValueTranscoder;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

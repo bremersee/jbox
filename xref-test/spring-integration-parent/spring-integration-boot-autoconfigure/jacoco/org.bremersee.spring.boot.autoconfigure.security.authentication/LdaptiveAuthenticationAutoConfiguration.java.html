@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LdaptiveAuthenticationAutoConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Boot Autoconfiguration</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.boot.autoconfigure.security.authentication</a> &gt; <span class="el_source">LdaptiveAuthenticationAutoConfiguration.java</span></div><h1>LdaptiveAuthenticationAutoConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.boot.autoconfigure.security.authentication;
+
+import static java.util.Objects.nonNull;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import lombok.extern.slf4j.Slf4j;
+import org.bremersee.ldaptive.LdaptiveTemplate;
+import org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration;
+import org.bremersee.spring.security.core.EmailToUsernameResolver;
+import org.bremersee.spring.security.core.authority.mapping.NormalizedGrantedAuthoritiesMapper;
+import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
+import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthentication;
+import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager;
+import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
+import org.bremersee.spring.security.ldaptive.authentication.ReactiveLdaptiveAuthenticationManager;
+import org.bremersee.spring.security.ldaptive.authentication.UsernameToBindDnConverter;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveEvaluatedRememberMeTokenProvider;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptivePwdLastSetRememberMeTokenProvider;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
+import org.ldaptive.ConnectionConfig;
+import org.ldaptive.ConnectionFactory;
+import org.ldaptive.DefaultConnectionFactory;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.util.ClassUtils;
+
+/**
+ * The ldaptive authentication auto-configuration.
+ *
+ * @author Christian Bremer
+ */
+@AutoConfiguration
+@ConditionalOnClass(name = {
+    &quot;org.ldaptive.ConnectionFactory&quot;,
+    &quot;org.bremersee.ldaptive.LdaptiveTemplate&quot;,
+    &quot;org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager&quot;
+})
+@ConditionalOnBean({ConnectionConfig.class})
+@ConditionalOnProperty(prefix = &quot;bremersee.authentication.ldaptive&quot;, name = &quot;user-base-dn&quot;)
+@AutoConfigureAfter({LdaptiveAutoConfiguration.class})
+@EnableConfigurationProperties(AuthenticationProperties.class)
+<span class="fc" id="L75">@Slf4j</span>
+public class LdaptiveAuthenticationAutoConfiguration {
+
+  private final LdaptiveAuthenticationProperties properties;
+
+  private final String rememberMeKey;
+
+  /**
+   * Instantiates a new ldaptive authentication autoconfiguration.
+   *
+   * @param properties the properties
+   */
+<span class="fc" id="L87">  public LdaptiveAuthenticationAutoConfiguration(AuthenticationProperties properties) {</span>
+<span class="fc" id="L88">    this.properties = LdaptivePropertiesMapper.map(properties);</span>
+<span class="fc" id="L89">    this.rememberMeKey = properties.getRememberMe().getKey();</span>
+<span class="fc" id="L90">  }</span>
+
+  /**
+   * Init.
+   */
+  @EventListener(ApplicationReadyEvent.class)
+  public void init() {
+<span class="nc" id="L97">    log.info(&quot;&quot;&quot;</span>
+            
+            *********************************************************************************
+            * {}
+            * properties = {}
+            *********************************************************************************&quot;&quot;&quot;,
+<span class="nc" id="L103">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
+        properties);
+<span class="nc" id="L105">  }</span>
+
+  /**
+   * Creates ldaptive password encoder provider.
+   *
+   * @return the ldaptive password encoder provider
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider() {
+<span class="fc" id="L115">    return LdaptivePasswordEncoderProvider.defaultProvider();</span>
+  }
+
+  /**
+   * The ldaptive remember-me token provider.
+   *
+   * @param accountControlEvaluator the account control evaluator
+   * @return the ldaptive remember-me token provider
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider(
+      ObjectProvider&lt;AccountControlEvaluator&gt; accountControlEvaluator) {
+
+<span class="fc" id="L129">    AccountControlEvaluator evaluator = accountControlEvaluator</span>
+<span class="pc" id="L130">        .getIfAvailable(() -&gt; properties.getAccountControlEvaluator().get());</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">    if (!isEmpty(properties.getPasswordLastSetAttribute())) {</span>
+<span class="fc" id="L132">      return new LdaptivePwdLastSetRememberMeTokenProvider(</span>
+<span class="fc" id="L133">          evaluator, properties.getPasswordLastSetAttribute());</span>
+    }
+<span class="nc" id="L135">    return new LdaptiveEvaluatedRememberMeTokenProvider(evaluator);</span>
+  }
+
+  /**
+   * Creates ldaptive authentication manager.
+   *
+   * @param connectionConfig the connection config
+   * @param connectionFactoryProvider the connection factory provider
+   * @param ldaptiveTemplateProvider the ldaptive template provider
+   * @param ldaptivePasswordEncoderProvider the ldaptive password encoder provider
+   * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
+   * @param emailToUsernameResolver the email to username resolver
+   * @param usernameToBindDnConverter the username to bind dn provider
+   * @param accountControlEvaluator the account control evaluator
+   * @param grantedAuthoritiesMapper the granted authorities mapper
+   * @param tokenConverter the token converter
+   * @return the ldaptive authentication manager
+   */
+  @ConditionalOnWebApplication(type = Type.SERVLET)
+  @Bean(initMethod = &quot;init&quot;)
+  public LdaptiveAuthenticationManager ldaptiveAuthenticationManager(
+      ConnectionConfig connectionConfig,
+      ObjectProvider&lt;ConnectionFactory&gt; connectionFactoryProvider,
+      ObjectProvider&lt;LdaptiveTemplate&gt; ldaptiveTemplateProvider,
+      LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider,
+      LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider,
+      ObjectProvider&lt;EmailToUsernameResolver&gt; emailToUsernameResolver,
+      ObjectProvider&lt;UsernameToBindDnConverter&gt; usernameToBindDnConverter,
+      ObjectProvider&lt;AccountControlEvaluator&gt; accountControlEvaluator,
+      ObjectProvider&lt;GrantedAuthoritiesMapper&gt; grantedAuthoritiesMapper,
+      ObjectProvider&lt;Converter&lt;LdaptiveUserDetails, LdaptiveAuthentication&gt;&gt; tokenConverter) {
+
+<span class="fc" id="L167">    LdaptiveAuthenticationManager manager = new LdaptiveAuthenticationManager(</span>
+<span class="fc" id="L168">        getLdaptiveTemplate(connectionConfig, connectionFactoryProvider, ldaptiveTemplateProvider),</span>
+        properties,
+        rememberMeKey);
+<span class="fc" id="L171">    manager.setPasswordEncoder(ldaptivePasswordEncoderProvider.get());</span>
+<span class="fc" id="L172">    manager.setPasswordProvider(ldaptiveRememberMeTokenProvider);</span>
+<span class="fc" id="L173">    emailToUsernameResolver.ifAvailable(manager::setEmailToUsernameResolver);</span>
+<span class="fc" id="L174">    usernameToBindDnConverter.ifAvailable(manager::setUsernameToBindDnConverter);</span>
+<span class="fc" id="L175">    accountControlEvaluator.ifAvailable(manager::setAccountControlEvaluator);</span>
+<span class="fc" id="L176">    manager.setGrantedAuthoritiesMapper(getGrantedAuthoritiesMapper(grantedAuthoritiesMapper));</span>
+<span class="fc" id="L177">    tokenConverter.ifAvailable(manager::setTokenConverter);</span>
+<span class="fc" id="L178">    return manager;</span>
+  }
+
+  /**
+   * Creates reactive ldaptive authentication manager.
+   *
+   * @param connectionConfig the connection config
+   * @param connectionFactoryProvider the connection factory provider
+   * @param ldaptiveTemplateProvider the ldaptive template provider
+   * @param ldaptivePasswordEncoderProvider the ldaptive password encoder provider
+   * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
+   * @param emailToUsernameResolver the email to username resolver
+   * @param usernameToBindDnConverter the username to bind dn converter
+   * @param accountControlEvaluator the account control evaluator
+   * @param grantedAuthoritiesMapper the granted authorities mapper
+   * @param tokenConverter the token converter
+   * @return the reactive ldaptive authentication manager
+   */
+  @ConditionalOnWebApplication(type = Type.REACTIVE)
+  @Bean
+  public ReactiveLdaptiveAuthenticationManager reactiveLdaptiveAuthenticationManager(
+      ConnectionConfig connectionConfig,
+      ObjectProvider&lt;ConnectionFactory&gt; connectionFactoryProvider,
+      ObjectProvider&lt;LdaptiveTemplate&gt; ldaptiveTemplateProvider,
+      LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider,
+      LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider,
+      ObjectProvider&lt;EmailToUsernameResolver&gt; emailToUsernameResolver,
+      ObjectProvider&lt;UsernameToBindDnConverter&gt; usernameToBindDnConverter,
+      ObjectProvider&lt;AccountControlEvaluator&gt; accountControlEvaluator,
+      ObjectProvider&lt;GrantedAuthoritiesMapper&gt; grantedAuthoritiesMapper,
+      ObjectProvider&lt;Converter&lt;LdaptiveUserDetails, LdaptiveAuthentication&gt;&gt; tokenConverter) {
+<span class="fc" id="L209">    return new ReactiveLdaptiveAuthenticationManager(</span>
+<span class="fc" id="L210">        ldaptiveAuthenticationManager(</span>
+            connectionConfig,
+            connectionFactoryProvider,
+            ldaptiveTemplateProvider,
+            ldaptivePasswordEncoderProvider,
+            ldaptiveRememberMeTokenProvider,
+            emailToUsernameResolver,
+            usernameToBindDnConverter,
+            accountControlEvaluator,
+            grantedAuthoritiesMapper,
+            tokenConverter));
+  }
+
+  private LdaptiveTemplate getLdaptiveTemplate(
+      ConnectionConfig connectionConfig,
+      ObjectProvider&lt;ConnectionFactory&gt; connectionFactoryProvider,
+      ObjectProvider&lt;LdaptiveTemplate&gt; ldaptiveTemplateProvider) {
+
+<span class="fc" id="L228">    LdaptiveTemplate ldaptiveTemplate = ldaptiveTemplateProvider.getIfAvailable();</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">    if (nonNull(ldaptiveTemplate)) {</span>
+<span class="nc" id="L230">      return ldaptiveTemplate;</span>
+    }
+<span class="fc" id="L232">    ConnectionFactory connectionFactory = connectionFactoryProvider.getIfAvailable();</span>
+<span class="pc bpc" id="L233" title="1 of 2 branches missed.">    if (nonNull(connectionFactory)) {</span>
+<span class="nc" id="L234">      return new LdaptiveTemplate(connectionFactory);</span>
+    }
+<span class="fc" id="L236">    return new LdaptiveTemplate(new DefaultConnectionFactory(connectionConfig));</span>
+  }
+
+  private GrantedAuthoritiesMapper getGrantedAuthoritiesMapper(
+      ObjectProvider&lt;GrantedAuthoritiesMapper&gt; grantedAuthoritiesMapper) {
+<span class="pc" id="L241">    return grantedAuthoritiesMapper.getIfAvailable(() -&gt; new NormalizedGrantedAuthoritiesMapper(</span>
+<span class="nc" id="L242">        properties.getDefaultRoles(),</span>
+<span class="nc" id="L243">        properties.toRoleMappings(),</span>
+<span class="nc" id="L244">        properties.getRolePrefix(),</span>
+<span class="nc" id="L245">        properties.getRoleCaseTransformation(),</span>
+<span class="nc" id="L246">        properties.toRoleStringReplacements()));</span>
+  }
+
+  /**
+   * The interface Properties mapper.
+   */
+  @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+  interface PropertiesMapper {
+
+    /**
+     * The constant INSTANCE.
+     */
+<span class="fc" id="L258">    PropertiesMapper INSTANCE = Mappers.getMapper(PropertiesMapper.class);</span>
+
+    /**
+     * Map ldaptive authentication properties.
+     *
+     * @param source the source
+     * @return the ldaptive authentication properties
+     */
+    LdaptiveAuthenticationProperties map(AuthenticationProperties.LdaptiveProperties source);
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

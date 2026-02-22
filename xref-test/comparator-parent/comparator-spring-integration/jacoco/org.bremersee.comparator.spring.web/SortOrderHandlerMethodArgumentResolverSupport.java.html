@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortOrderHandlerMethodArgumentResolverSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Comparator Spring Integration</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.comparator.spring.web</a> &gt; <span class="el_source">SortOrderHandlerMethodArgumentResolverSupport.java</span></div><h1>SortOrderHandlerMethodArgumentResolverSupport.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.comparator.spring.web;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.bremersee.comparator.model.SortOrder;
+import org.bremersee.comparator.model.SortOrderItem;
+import org.bremersee.comparator.model.SortOrderTextSeparators;
+import org.springframework.core.MethodParameter;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.ValueConstants;
+
+/**
+ * The sort order handler method argument resolver support.
+ *
+ * @author Christian Bremer
+ */
+public abstract class SortOrderHandlerMethodArgumentResolverSupport {
+
+<span class="fc" id="L39">  private SortOrderTextSeparators textSeparators = SortOrderTextSeparators.defaults();</span>
+
+  /**
+   * Instantiates a new sort order handler method argument resolver support.
+   */
+  protected SortOrderHandlerMethodArgumentResolverSupport() {
+<span class="fc" id="L45">    super();</span>
+<span class="fc" id="L46">  }</span>
+
+  /**
+   * Sets text separators.
+   *
+   * @param textSeparators the text separators
+   */
+  public void setTextSeparators(SortOrderTextSeparators textSeparators) {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">    if (nonNull(textSeparators)) {</span>
+<span class="fc" id="L55">      this.textSeparators = textSeparators;</span>
+    }
+<span class="fc" id="L57">  }</span>
+
+  /**
+   * Gets parameter name.
+   *
+   * @param parameter the parameter
+   * @return the parameter name
+   */
+  protected String getParameterName(@Nullable MethodParameter parameter) {
+<span class="fc" id="L66">    return Optional.ofNullable(parameter)</span>
+<span class="fc" id="L67">        .map(p -&gt; getParameterName(p.getParameterAnnotation(SortOrderRequestParam.class)))</span>
+<span class="fc" id="L68">        .or(() -&gt; Optional.ofNullable(parameter)</span>
+<span class="fc" id="L69">            .map(MethodParameter::getParameterName))</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        .filter(name -&gt; !name.isEmpty())</span>
+<span class="fc" id="L71">        .orElse(&quot;sort&quot;);</span>
+  }
+
+  private String getParameterName(SortOrderRequestParam requestParam) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (isNull(requestParam)) {</span>
+<span class="fc" id="L76">      return null;</span>
+    }
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (!requestParam.name().isEmpty()) {</span>
+<span class="fc" id="L79">      return requestParam.name();</span>
+    }
+<span class="fc" id="L81">    return null;</span>
+  }
+
+  /**
+   * Gets default from annotation or fallback.
+   *
+   * @param parameter the parameter
+   * @return the default from annotation or fallback
+   */
+  protected SortOrder getDefaultFromAnnotationOrFallback(MethodParameter parameter) {
+<span class="fc" id="L91">    return Optional.ofNullable(parameter.getParameterAnnotation(SortOrderRequestParam.class))</span>
+<span class="fc" id="L92">        .map(SortOrderRequestParam::defaultSort)</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        .filter(defaultValue -&gt; !ValueConstants.DEFAULT_NONE.equals(defaultValue))</span>
+<span class="fc" id="L94">        .map(defaultValue -&gt; SortOrder.fromSortOrderText(defaultValue, textSeparators))</span>
+<span class="fc" id="L95">        .orElseGet(SortOrder::unsorted);</span>
+  }
+
+  /**
+   * Parse parameter values.
+   *
+   * @param parameterValues the parameter values
+   * @return the sort order
+   */
+  protected SortOrder parseParameterValues(List&lt;String&gt; parameterValues) {
+<span class="fc" id="L105">    List&lt;SortOrderItem&gt; sortOrderItems = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    for (String parameterValue : parameterValues) {</span>
+<span class="fc" id="L107">      sortOrderItems.addAll(SortOrder.fromSortOrderText(parameterValue, textSeparators).getItems());</span>
+<span class="fc" id="L108">    }</span>
+<span class="fc" id="L109">    return new SortOrder(sortOrderItems);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

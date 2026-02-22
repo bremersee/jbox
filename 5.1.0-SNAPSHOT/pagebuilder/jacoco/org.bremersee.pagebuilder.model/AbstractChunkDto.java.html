@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractChunkDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PageBuilder</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.pagebuilder.model</a> &gt; <span class="el_source">AbstractChunkDto.java</span></div><h1>AbstractChunkDto.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.pagebuilder.model;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
+import org.bremersee.comparator.model.SortOrder;
+import org.bremersee.comparator.spring.mapper.SortMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+
+/**
+ * The abstract chunk dto.
+ *
+ * @param &lt;T&gt; the type of the content
+ * @author Christian Bremer
+ */
+@SuppressWarnings(&quot;unused&quot;)
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = &quot;abstractChunkType&quot;)
+@Setter(AccessLevel.PROTECTED)
+@EqualsAndHashCode
+@ToString
+@Schema(description = &quot;The chunk.&quot;)
+abstract class AbstractChunkDto&lt;T&gt; implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1;
+
+  /**
+   * The content.
+   */
+  protected List&lt;T&gt; content;
+
+  /**
+   * The sort order.
+   */
+  private SortOrder sort;
+
+  /**
+   * Instantiates a new chunk dto.
+   */
+  protected AbstractChunkDto() {
+<span class="nc" id="L79">    this(List.of(), new SortOrder(List.of()));</span>
+<span class="nc" id="L80">  }</span>
+
+  /**
+   * Instantiates a new chunk dto.
+   *
+   * @param content the content
+   */
+  protected AbstractChunkDto(List&lt;? extends T&gt; content) {
+<span class="nc" id="L88">    this(content, null);</span>
+<span class="nc" id="L89">  }</span>
+
+  /**
+   * Instantiates a new chunk dto.
+   *
+   * @param content the content
+   * @param sort the sort
+   */
+<span class="fc" id="L97">  protected AbstractChunkDto(List&lt;? extends T&gt; content, SortOrder sort) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    this.content = new ArrayList&lt;&gt;(nonNull(content) ? content : List.of());</span>
+<span class="fc" id="L99">    this.sort = sort;</span>
+<span class="fc" id="L100">  }</span>
+
+  /**
+   * Gets content.
+   *
+   * @return the content
+   */
+  @Schema(name = &quot;content&quot;, description = &quot;The content of the page or slice.&quot;)
+  @JsonProperty(value = &quot;content&quot;)
+  public abstract List&lt;T&gt; getContent();
+
+  /**
+   * Sets content.
+   *
+   * @param content the content
+   */
+  protected void setContent(List&lt;T&gt; content) {
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    this.content = new ArrayList&lt;&gt;(nonNull(content) ? content : List.of());</span>
+<span class="fc" id="L118">  }</span>
+
+  /**
+   * Indicates whether the content is present.
+   *
+   * @return the boolean
+   */
+  @Schema(description = &quot;Indicates whether the content is present.&quot;)
+  @JsonProperty(required = true)
+  @XmlElement(name = &quot;contentPresent&quot;, required = true)
+  public boolean isContentPresent() {
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">    return nonNull(getContent()) &amp;&amp; !getContent().isEmpty();</span>
+  }
+
+  /**
+   * Sets content present. This method is ignored.
+   *
+   * @param contentPresent the content present
+   */
+  protected void setContentPresent(boolean contentPresent) {
+    // ignored
+<span class="fc" id="L139">  }</span>
+
+  /**
+   * Gets sort.
+   *
+   * @return the sort
+   */
+  @XmlElementRef(type = SortOrder.class)
+  public SortOrder getSort() {
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    if (isNull(sort)) {</span>
+<span class="fc" id="L149">      return new SortOrder(List.of());</span>
+    }
+<span class="fc" id="L151">    return sort;</span>
+  }
+
+  /**
+   * Gets the page or slice number starting with 0.
+   *
+   * @return the page or slice number starting with 0
+   */
+  @Schema(description = &quot;The page or slice number starting with 0.&quot;)
+  @XmlElement(name = &quot;number&quot;, required = true)
+  public abstract int getNumber();
+
+  /**
+   * Sets number.
+   *
+   * @param number the number
+   */
+  protected abstract void setNumber(int number);
+
+  /**
+   * Gets the size of the page or slice (not the size of the content).
+   *
+   * @return the size of the page or slice (not the size of the content)
+   */
+  @Schema(description = &quot;The size of the page or slice (not the size of the content).&quot;)
+  @XmlElement(name = &quot;size&quot;, required = true)
+  public abstract int getSize();
+
+  /**
+   * Sets size.
+   *
+   * @param size the size
+   */
+  protected abstract void setSize(int size);
+
+  /**
+   * Gets the number of elements.
+   *
+   * @return the number of elements
+   */
+  @Schema(description = &quot;The number of elements.&quot;)
+  @JsonProperty(required = true)
+  @XmlElement(name = &quot;numberOfElements&quot;, required = true)
+  public int getNumberOfElements() {
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">    return nonNull(getContent()) ? getContent().size() : 0;</span>
+  }
+
+  /**
+   * Sets the number of elements. This method is ignored.
+   *
+   * @param numberOfElements the number of elements
+   */
+  protected void setNumberOfElements(int numberOfElements) {
+    // ignored
+<span class="fc" id="L205">  }</span>
+
+  /**
+   * Indicates whether the page or slice is the first.
+   *
+   * @return the boolean
+   */
+  @Schema(description = &quot;Indicates whether the page or slice is the first.&quot;)
+  @JsonProperty(required = true)
+  @XmlElement(name = &quot;first&quot;, required = true)
+  public boolean isFirst() {
+<span class="fc bfc" id="L216" title="All 2 branches covered.">    return !isPreviousAvailable();</span>
+  }
+
+  /**
+   * Sets first. This method is ignored.
+   *
+   * @param first the first
+   */
+  protected void setFirst(boolean first) {
+    // ignored
+<span class="fc" id="L226">  }</span>
+
+  /**
+   * Indicates whether the page or slice is the last.
+   *
+   * @return the boolean
+   */
+  @Schema(description = &quot;Indicates whether the page or slice is the last.&quot;)
+  @JsonProperty(required = true)
+  @XmlElement(name = &quot;last&quot;, required = true)
+  public boolean isLast() {
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">    return !isNextAvailable();</span>
+  }
+
+  /**
+   * Sets last. This method is ignored.
+   *
+   * @param last the last
+   */
+  protected void setLast(boolean last) {
+    // ignored
+<span class="fc" id="L247">  }</span>
+
+  /**
+   * Indicates whether a next page or slice is available.
+   *
+   * @return the boolean
+   */
+  @Schema(description = &quot;Indicates whether a next page or slice is available.&quot;)
+  @JsonProperty(required = true)
+  @XmlElement(name = &quot;nextAvailable&quot;, required = true)
+  public abstract boolean isNextAvailable();
+
+  /**
+   * Sets next available.
+   *
+   * @param nextAvailable the next available
+   */
+  protected abstract void setNextAvailable(boolean nextAvailable);
+
+  /**
+   * Indicates whether a previous page or slice is available.
+   *
+   * @return the boolean
+   */
+  @Schema(description = &quot;Indicates whether a previous page or slice is available.&quot;)
+  @JsonProperty(required = true)
+  @XmlElement(name = &quot;previousAvailable&quot;, required = true)
+  public boolean isPreviousAvailable() {
+<span class="fc bfc" id="L275" title="All 2 branches covered.">    return getNumber() &gt; 0;</span>
+  }
+
+  /**
+   * Sets previous available. This method is ignored.
+   *
+   * @param previousAvailable the previous available
+   */
+  protected void setPreviousAvailable(boolean previousAvailable) {
+    // ignored
+<span class="fc" id="L285">  }</span>
+
+  /**
+   * Gets pageable.
+   *
+   * @return the pageable
+   */
+  @Hidden
+  @XmlTransient
+  @JsonIgnore
+  public Pageable getPageable() {
+<span class="fc bfc" id="L296" title="All 2 branches covered.">    if (getSort().isEmpty()) {</span>
+<span class="fc" id="L297">      return PageRequest.of(getNumber(), getSize());</span>
+    }
+<span class="fc" id="L299">    return PageRequest.of(getNumber(), getSize(), SortMapper.defaultSortMapper().toSort(getSort()));</span>
+  }
+
+  /**
+   * To slice.
+   *
+   * @return the slice
+   */
+  public Slice&lt;T&gt; toSlice() {
+<span class="fc" id="L308">    return new SliceImpl&lt;&gt;(getContent(), getPageable(), isNextAvailable());</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

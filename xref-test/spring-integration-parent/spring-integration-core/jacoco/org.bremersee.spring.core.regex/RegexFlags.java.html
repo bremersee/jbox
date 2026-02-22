@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegexFlags.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Core</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.core.regex</a> &gt; <span class="el_source">RegexFlags.java</span></div><h1>RegexFlags.java</h1><pre class="source lang-java linenums">package org.bremersee.spring.core.regex;
+
+import static java.util.Objects.isNull;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import lombok.Builder;
+import lombok.Data;
+
+/**
+ * The regex flags.
+ */
+@Data
+public class RegexFlags implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Flag unix lines.
+   */
+  private boolean unixLines;
+
+  /**
+   * Flag case-insensitive.
+   */
+  private boolean caseInsensitive;
+
+  /**
+   * Flag comments.
+   */
+  private boolean comments;
+
+  /**
+   * Flag multi-line.
+   */
+  private boolean multiLine;
+
+  /**
+   * Flag literal.
+   */
+  private boolean literal;
+
+  /**
+   * Flag dot-all.
+   */
+  private boolean dotAll;
+
+  /**
+   * Flag unicode-case.
+   */
+  private boolean unicodeCase;
+
+  /**
+   * Flag canon-eq.
+   */
+  private boolean canonEq;
+
+  /**
+   * Flag unicode-character class
+   */
+  private boolean unicodeCharacterClass;
+
+  /**
+   * Instantiates new regex flags.
+   */
+  public RegexFlags() {
+<span class="fc" id="L70">    super();</span>
+<span class="fc" id="L71">  }</span>
+
+  /**
+   * Instantiates new regex flags.
+   *
+   * @param unixLines the unix lines flag
+   * @param caseInsensitive the case-insensitive flag
+   * @param comments the comments flag
+   * @param multiLine the multi line flag
+   * @param literal the literal flag
+   * @param dotAll the dot all flag
+   * @param unicodeCase the unicode-case flag
+   * @param canonEq the canon eq flag
+   * @param unicodeCharacterClass the unicode-character class flag
+   */
+  @Builder(toBuilder = true)
+  RegexFlags(boolean unixLines, boolean caseInsensitive, boolean comments, boolean multiLine,
+      boolean literal, boolean dotAll, boolean unicodeCase, boolean canonEq,
+<span class="fc" id="L89">      boolean unicodeCharacterClass) {</span>
+<span class="fc" id="L90">    this.unixLines = unixLines;</span>
+<span class="fc" id="L91">    this.caseInsensitive = caseInsensitive;</span>
+<span class="fc" id="L92">    this.comments = comments;</span>
+<span class="fc" id="L93">    this.multiLine = multiLine;</span>
+<span class="fc" id="L94">    this.literal = literal;</span>
+<span class="fc" id="L95">    this.dotAll = dotAll;</span>
+<span class="fc" id="L96">    this.unicodeCase = unicodeCase;</span>
+<span class="fc" id="L97">    this.canonEq = canonEq;</span>
+<span class="fc" id="L98">    this.unicodeCharacterClass = unicodeCharacterClass;</span>
+<span class="fc" id="L99">  }</span>
+
+  /**
+   * To regex flags.
+   *
+   * @return the optional
+   */
+  public Optional&lt;Integer&gt; toRegexFlags() {
+<span class="fc" id="L107">    int flags = 0;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (isUnixLines()) {</span>
+<span class="fc" id="L109">      flags = Pattern.UNIX_LINES;</span>
+    }
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (isCaseInsensitive()) {</span>
+<span class="fc" id="L112">      flags = flags | Pattern.CASE_INSENSITIVE;</span>
+    }
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (isComments()) {</span>
+<span class="fc" id="L115">      flags = flags | Pattern.COMMENTS;</span>
+    }
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (isMultiLine()) {</span>
+<span class="fc" id="L118">      flags = flags | Pattern.MULTILINE;</span>
+    }
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (isLiteral()) {</span>
+<span class="fc" id="L121">      flags = flags | Pattern.LITERAL;</span>
+    }
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (isDotAll()) {</span>
+<span class="fc" id="L124">      flags = flags | Pattern.DOTALL;</span>
+    }
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (isUnicodeCase()) {</span>
+<span class="fc" id="L127">      flags = flags | Pattern.UNICODE_CASE;</span>
+    }
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (isCanonEq()) {</span>
+<span class="fc" id="L130">      flags = flags | Pattern.CANON_EQ;</span>
+    }
+<span class="fc bfc" id="L132" title="All 2 branches covered.">    if (isUnicodeCharacterClass()) {</span>
+<span class="fc" id="L133">      flags = flags | Pattern.UNICODE_CHARACTER_CLASS;</span>
+    }
+<span class="fc" id="L135">    return Optional.of(flags)</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        .filter(v -&gt; v &gt; 0);</span>
+  }
+
+  /**
+   * Compile pattern.
+   *
+   * @param regex the regex
+   * @return the pattern
+   */
+  @SuppressWarnings(&quot;MagicConstant&quot;)
+  public Pattern compile(String regex) {
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (isNull(regex)) {</span>
+<span class="fc" id="L148">      return null;</span>
+    }
+<span class="fc" id="L150">    return toRegexFlags()</span>
+<span class="fc" id="L151">        .map(flags -&gt; Pattern.compile(regex, flags))</span>
+<span class="fc" id="L152">        .orElseGet(() -&gt; Pattern.compile(regex));</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ComparatorBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Comparator</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.comparator</a> &gt; <span class="el_source">ComparatorBuilder.java</span></div><h1>ComparatorBuilder.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.comparator;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import org.bremersee.comparator.model.SortOrder;
+import org.bremersee.comparator.model.SortOrderItem;
+
+/**
+ * The comparator builder.
+ *
+ * @author Christian Bremer
+ */
+public interface ComparatorBuilder {
+
+  /**
+   * Creates a new comparator builder.
+   *
+   * @return the new comparator builder
+   */
+  static ComparatorBuilder newInstance() {
+<span class="fc" id="L42">    return new DefaultComparatorBuilder();</span>
+  }
+
+  /**
+   * Adds the given comparator to this builder.
+   *
+   * @param comparator the comparator (can be {@code null} - then no comparator is added)
+   * @return the comparator builder
+   */
+  ComparatorBuilder add(Comparator&lt;?&gt; comparator);
+
+  /**
+   * Adds a default comparator for the given field (the value of the field must be comparable).
+   *
+   * @param field the field
+   * @return the comparator builder
+   */
+  default ComparatorBuilder add(String field) {
+<span class="fc" id="L60">    return add(SortOrderItem.by(field));</span>
+  }
+
+  /**
+   * Adds the given comparator for the given field name or path to this builder.
+   *
+   * @param field the field name or path (can be {@code null})
+   * @param comparator the comparator (can be {@code null} - then no comparator is added)
+   * @return the comparator builder
+   */
+  default ComparatorBuilder add(String field, Comparator&lt;?&gt; comparator) {
+<span class="fc" id="L71">    return add(field, null, comparator);</span>
+  }
+
+  /**
+   * Adds the given comparator for the given field name or path to this builder. A custom value
+   * extractor can be specified.
+   *
+   * @param field the field name or path (can be {@code null})
+   * @param valueExtractor the value extractor (can be {@code null})
+   * @param comparator the comparator (can be {@code null} - then no comparator is added)
+   * @return the comparator builder
+   */
+  default ComparatorBuilder add(
+      String field,
+      ValueExtractor valueExtractor,
+      Comparator&lt;?&gt; comparator) {
+
+<span class="fc" id="L88">    return Optional.ofNullable(comparator)</span>
+<span class="fc" id="L89">        .map(c -&gt; add(new DelegatingComparator(field, valueExtractor, c)))</span>
+<span class="fc" id="L90">        .orElse(this);</span>
+  }
+
+  /**
+   * Creates and adds a value comparator for the given field ordering description.
+   *
+   * @param field the field ordering description (can be {@code null})
+   * @return the comparator builder
+   */
+  default ComparatorBuilder add(SortOrderItem field) {
+<span class="fc" id="L100">    return add(field, null);</span>
+  }
+
+  /**
+   * Creates and adds a value comparator for the given field ordering description. A custom value
+   * extractor can be specified.
+   *
+   * @param field the field ordering description (can be {@code null})
+   * @param valueExtractor the value extractor (can be {@code null})
+   * @return the comparator builder
+   */
+  default ComparatorBuilder add(SortOrderItem field, ValueExtractor valueExtractor) {
+<span class="fc" id="L112">    return add(new ValueComparator(field, valueExtractor));</span>
+  }
+
+  /**
+   * Creates and adds value comparators for the given field ordering descriptions.
+   *
+   * @param sortOrders the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(Collection&lt;? extends SortOrderItem&gt; sortOrders) {
+<span class="fc" id="L123">    return addAll(sortOrders, (ValueExtractor) null);</span>
+  }
+
+  /**
+   * Creates and adds value comparators for the given field ordering descriptions. A custom value
+   * extractor can be specified.
+   *
+   * @param sortOrders the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @param valueExtractor the value extractor (can be {@code null})
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(
+      Collection&lt;? extends SortOrderItem&gt; sortOrders,
+      ValueExtractor valueExtractor) {
+<span class="fc" id="L138">    Optional.ofNullable(sortOrders)</span>
+<span class="fc" id="L139">        .ifPresent(orders -&gt; orders.stream()</span>
+<span class="fc" id="L140">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L141">            .forEach(sortOrder -&gt; add(sortOrder, valueExtractor)));</span>
+<span class="fc" id="L142">    return this;</span>
+  }
+
+  /**
+   * Adds comparators for the given sortOrders ordering descriptions.
+   *
+   * @param sortOrders the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @param comparatorFunction the comparator function
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(
+      Collection&lt;? extends SortOrderItem&gt; sortOrders,
+      Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; comparatorFunction) {
+
+<span class="fc" id="L157">    Optional.ofNullable(sortOrders)</span>
+<span class="fc" id="L158">        .ifPresent(orders -&gt; orders.stream()</span>
+<span class="fc" id="L159">            .filter(Objects::nonNull)</span>
+<span class="fc" id="L160">            .forEach(sortOrder -&gt; add(comparatorFunction.apply(sortOrder))));</span>
+<span class="fc" id="L161">    return this;</span>
+  }
+
+  /**
+   * Creates and adds value comparators for the given field ordering descriptions.
+   *
+   * @param sortOrder the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(SortOrder sortOrder) {
+<span class="fc" id="L172">    return addAll(sortOrder, (ValueExtractor) null);</span>
+  }
+
+  /**
+   * Creates and adds value comparators for the given field ordering descriptions. A custom value
+   * extractor can be specified.
+   *
+   * @param sortOrder the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @param valueExtractor the value extractor (can be {@code null})
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(
+      SortOrder sortOrder,
+      ValueExtractor valueExtractor) {
+<span class="fc" id="L187">    return Optional.ofNullable(sortOrder)</span>
+<span class="fc" id="L188">        .map(orders -&gt; addAll(orders.getItems(), valueExtractor))</span>
+<span class="fc" id="L189">        .orElse(this);</span>
+  }
+
+  /**
+   * Add all comparator builder.
+   *
+   * @param sortOrder the sort orders
+   * @param comparatorFunction the comparator function
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(
+      SortOrder sortOrder,
+      Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; comparatorFunction) {
+<span class="fc" id="L202">    return Optional.ofNullable(sortOrder)</span>
+<span class="fc" id="L203">        .map(orders -&gt; addAll(orders.getItems(), comparatorFunction))</span>
+<span class="fc" id="L204">        .orElse(this);</span>
+  }
+
+  /**
+   * Creates and adds value comparators for the given field ordering descriptions.
+   *
+   * @param sortOrderText the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(String sortOrderText) {
+<span class="fc" id="L215">    return addAll(SortOrder.fromSortOrderText(sortOrderText));</span>
+  }
+
+  /**
+   * Creates and adds value comparators for the given field ordering descriptions. A custom value
+   * extractor can be specified.
+   *
+   * @param sortOrderText the ordering descriptions (can be {@code null} - no comparator will be
+   *     added)
+   * @param valueExtractor the value extractor (can be {@code null})
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(
+      String sortOrderText,
+      ValueExtractor valueExtractor) {
+<span class="fc" id="L230">    return addAll(SortOrder.fromSortOrderText(sortOrderText), valueExtractor);</span>
+  }
+
+  /**
+   * Add all comparator builder.
+   *
+   * @param sortOrderText the sort orders
+   * @param comparatorFunction the comparator function
+   * @return the comparator builder
+   */
+  default ComparatorBuilder addAll(
+      String sortOrderText,
+      Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; comparatorFunction) {
+<span class="fc" id="L243">    return addAll(SortOrder.fromSortOrderText(sortOrderText), comparatorFunction);</span>
+  }
+
+  /**
+   * Build comparator.
+   *
+   * @param &lt;T&gt; the type parameter
+   * @return the comparator
+   */
+  &lt;T&gt; Comparator&lt;T&gt; build();
+
+  /**
+   * The default comparator builder.
+   */
+  class DefaultComparatorBuilder implements ComparatorBuilder {
+
+<span class="fc" id="L259">    @SuppressWarnings(&quot;rawtypes&quot;)</span>
+    private final List&lt;Comparator&gt; comparatorChain = new LinkedList&lt;&gt;();
+
+    /**
+     * Instantiates a new default comparator builder.
+     */
+    public DefaultComparatorBuilder() {
+<span class="fc" id="L266">      super();</span>
+<span class="fc" id="L267">    }</span>
+
+    @Override
+    public ComparatorBuilder add(Comparator&lt;?&gt; comparator) {
+<span class="fc" id="L271">      Optional.ofNullable(comparator)</span>
+<span class="fc" id="L272">          .ifPresent(comparatorChain::add);</span>
+<span class="fc" id="L273">      return this;</span>
+    }
+
+    @Override
+    public &lt;T&gt; Comparator&lt;T&gt; build() {
+      //noinspection unchecked
+<span class="fc" id="L279">      return (Comparator&lt;T&gt;) new ComparatorChain(comparatorChain);</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

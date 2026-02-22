@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PageBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PageBuilder</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.pagebuilder</a> &gt; <span class="el_source">PageBuilder.java</span></div><h1>PageBuilder.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.pagebuilder;
+
+import static java.util.Objects.requireNonNullElse;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import org.bremersee.comparator.ComparatorBuilder;
+import org.bremersee.comparator.ValueComparator;
+import org.bremersee.comparator.model.SortOrder;
+import org.bremersee.comparator.model.SortOrderItem;
+import org.bremersee.comparator.spring.mapper.SortMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.util.ObjectUtils;
+
+/**
+ * The page builder.
+ *
+ * @param &lt;S&gt; the source type
+ * @param &lt;T&gt; the target type
+ * @author Christian Bremer
+ */
+public class PageBuilder&lt;S, T&gt; {
+
+  private Stream&lt;? extends S&gt; sourceEntries;
+
+  private Predicate&lt;S&gt; sourceFilter;
+
+  private Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; sourceSortFn;
+
+  private Integer pageNumber;
+
+  private Integer pageSize;
+
+  private List&lt;SortOrderItem&gt; sort;
+
+  private SortTarget sortTarget;
+
+  private Function&lt;S, T&gt; converter;
+
+  private Predicate&lt;T&gt; targetFilter;
+
+  private Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; targetSortFn;
+
+  /**
+   * Instantiates a new page builder.
+   */
+<span class="fc" id="L77">  public PageBuilder() {</span>
+<span class="fc" id="L78">    sourceFilter = sourceEntry -&gt; true;</span>
+    //noinspection unchecked
+<span class="pc" id="L80">    sourceSortFn = cf -&gt; (Comparator&lt;S&gt;) new ValueComparator(cf);</span>
+    //noinspection unchecked
+<span class="fc" id="L82">    converter = e -&gt; (T) e;</span>
+<span class="fc" id="L83">    targetFilter = targetEntry -&gt; true;</span>
+    //noinspection unchecked
+<span class="fc" id="L85">    targetSortFn = cf -&gt; (Comparator&lt;T&gt;) new ValueComparator(cf);</span>
+<span class="fc" id="L86">  }</span>
+
+  /**
+   * Sets source entries to the page builder.
+   *
+   * @param entries the entries
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; sourceEntries(Stream&lt;? extends S&gt; entries) {
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    if (!Objects.isNull(entries)) {</span>
+<span class="fc" id="L96">      this.sourceEntries = entries;</span>
+    }
+<span class="fc" id="L98">    return this;</span>
+  }
+
+  /**
+   * Sets source entries to the page builder.
+   *
+   * @param entries the entries
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; sourceEntries(Iterable&lt;? extends S&gt; entries) {
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">    if (!Objects.isNull(entries)) {</span>
+<span class="fc" id="L109">      this.sourceEntries = StreamSupport.stream(entries.spliterator(), false);</span>
+    }
+<span class="fc" id="L111">    return this;</span>
+  }
+
+  /**
+   * Sets source entries to the page builder.
+   *
+   * @param entries the entries
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; sourceEntries(Iterator&lt;? extends S&gt; entries) {
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    if (!Objects.isNull(entries)) {</span>
+<span class="fc" id="L122">      this.sourceEntries = StreamSupport.stream(Spliterators</span>
+<span class="fc" id="L123">          .spliteratorUnknownSize(entries, Spliterator.ORDERED), false);</span>
+    }
+<span class="fc" id="L125">    return this;</span>
+  }
+
+  /**
+   * Sets source filter to the page builder.
+   *
+   * @param sourceFilter the source filter
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; sourceFilter(Predicate&lt;S&gt; sourceFilter) {
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">    if (!Objects.isNull(sourceFilter)) {</span>
+<span class="fc" id="L136">      this.sourceFilter = sourceFilter;</span>
+    }
+<span class="fc" id="L138">    return this;</span>
+  }
+
+  /**
+   * Sets source sort function to the page builder.
+   *
+   * @param sourceSortFn the source sort function
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; sourceSortFn(
+      Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; sourceSortFn) {
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    if (!Objects.isNull(sourceSortFn)) {</span>
+<span class="fc" id="L150">      this.sourceSortFn = sourceSortFn;</span>
+    }
+<span class="fc" id="L152">    return this;</span>
+  }
+
+  /**
+   * Sets pageable to the page builder.
+   *
+   * @param pageable the pageable
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; pageable(Pageable pageable) {
+<span class="fc" id="L162">    return pageable(pageable, SortTarget.TARGET_ENTRIES);</span>
+  }
+
+  /**
+   * Sets pageable to the page builder.
+   *
+   * @param pageable the pageable
+   * @param sortTarget the sort target
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; pageable(Pageable pageable, SortTarget sortTarget) {
+<span class="fc bfc" id="L173" title="All 2 branches covered.">    if (!Objects.isNull(pageable)) {</span>
+<span class="fc" id="L174">      return pageable(</span>
+<span class="fc" id="L175">          pageable.getPageNumber(),</span>
+<span class="fc" id="L176">          pageable.getPageSize(),</span>
+          sortTarget,
+<span class="fc" id="L178">          SortMapper.defaultSortMapper().fromSort(pageable.getSort()).getItems());</span>
+    }
+<span class="fc" id="L180">    return this;</span>
+  }
+
+  /**
+   * Sets pageable to the page builder.
+   *
+   * @param pageNumber the page number
+   * @param pageSize the page size
+   * @param sort the sort
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; pageable(
+      Integer pageNumber,
+      Integer pageSize,
+      SortOrderItem... sort) {
+<span class="fc" id="L195">    return pageable(</span>
+        pageNumber,
+        pageSize,
+        SortTarget.TARGET_ENTRIES,
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">        Objects.isNull(sort) ? null : Arrays.asList(sort));</span>
+  }
+
+  /**
+   * Sets pageable to the page builder.
+   *
+   * @param pageNumber the page number
+   * @param pageSize the page size
+   * @param sort the sort
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; pageable(
+      Integer pageNumber,
+      Integer pageSize,
+      List&lt;SortOrderItem&gt; sort) {
+<span class="fc" id="L214">    return pageable(pageNumber, pageSize, SortTarget.TARGET_ENTRIES, sort);</span>
+  }
+
+  /**
+   * Sets pageable to the page builder.
+   *
+   * @param pageNumber the page number
+   * @param pageSize the page size
+   * @param sortTarget the sort target
+   * @param sort the sort
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; pageable(
+      Integer pageNumber,
+      Integer pageSize,
+      SortTarget sortTarget,
+      SortOrderItem... sort) {
+<span class="fc" id="L231">    return pageable(</span>
+        pageNumber,
+        pageSize,
+        sortTarget,
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        Objects.isNull(sort) ? null : Arrays.asList(sort));</span>
+  }
+
+  /**
+   * Sets pageable to the page builder.
+   *
+   * @param pageNumber the page number
+   * @param pageSize the page size
+   * @param sortTarget the sort target
+   * @param sort the sort
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; pageable(
+      Integer pageNumber,
+      Integer pageSize,
+      SortTarget sortTarget,
+      List&lt;SortOrderItem&gt; sort) {
+
+<span class="fc" id="L253">    Pageable pageable = PageRequest.of(pageNumber, pageSize);</span>
+<span class="fc" id="L254">    this.pageNumber = pageable.getPageNumber();</span>
+<span class="fc" id="L255">    this.pageSize = pageable.getPageSize();</span>
+<span class="fc" id="L256">    this.sort = sort;</span>
+<span class="fc bfc" id="L257" title="All 2 branches covered.">    if (ObjectUtils.isEmpty(this.sort)) {</span>
+<span class="fc" id="L258">      this.sortTarget = null;</span>
+    } else {
+<span class="fc" id="L260">      this.sortTarget = requireNonNullElse(sortTarget, SortTarget.TARGET_ENTRIES);</span>
+    }
+<span class="fc" id="L262">    return this;</span>
+  }
+
+  /**
+   * Sets entry converter to the page builder.
+   *
+   * @param converter the entry converter
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; converter(Function&lt;S, T&gt; converter) {
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">    if (!Objects.isNull(converter)) {</span>
+<span class="fc" id="L273">      this.converter = converter;</span>
+    }
+<span class="fc" id="L275">    return this;</span>
+  }
+
+  /**
+   * Sets target filter to the page builder.
+   *
+   * @param targetFilter the target filter
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; targetFilter(Predicate&lt;T&gt; targetFilter) {
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">    if (!Objects.isNull(targetFilter)) {</span>
+<span class="fc" id="L286">      this.targetFilter = targetFilter;</span>
+    }
+<span class="fc" id="L288">    return this;</span>
+  }
+
+  /**
+   * Sets target sort function to the page builder.
+   *
+   * @param targetSortFn the target sort function
+   * @return the page builder
+   */
+  public PageBuilder&lt;S, T&gt; targetSortFn(
+      Function&lt;SortOrderItem, Comparator&lt;?&gt;&gt; targetSortFn) {
+<span class="fc bfc" id="L299" title="All 2 branches covered.">    if (!Objects.isNull(targetSortFn)) {</span>
+<span class="fc" id="L300">      this.targetSortFn = targetSortFn;</span>
+    }
+<span class="fc" id="L302">    return this;</span>
+  }
+
+  /**
+   * Builds the page.
+   *
+   * @return the page
+   */
+  public Page&lt;T&gt; build() {
+    //noinspection unchecked
+<span class="fc" id="L312">    final List&lt;S&gt; source = ((Stream&lt;S&gt;) requireNonNullElse(this.sourceEntries, Stream.empty()))</span>
+<span class="fc" id="L313">        .filter(sourceFilter)</span>
+<span class="fc" id="L314">        .collect(Collectors.toList());</span>
+<span class="pc bpc" id="L315" title="1 of 4 branches missed.">    if (SortTarget.SOURCE_ENTRIES.equals(sortTarget) &amp;&amp; !ObjectUtils.isEmpty(sort)) {</span>
+<span class="fc" id="L316">      source.sort(ComparatorBuilder.newInstance()</span>
+<span class="fc" id="L317">          .addAll(sort, sourceSortFn)</span>
+<span class="fc" id="L318">          .build());</span>
+    }
+<span class="fc" id="L320">    final List&lt;T&gt; target = source.stream()</span>
+<span class="fc" id="L321">        .map(converter)</span>
+<span class="fc" id="L322">        .filter(targetFilter)</span>
+<span class="fc" id="L323">        .collect(Collectors.toList());</span>
+    final Sort pageSort;
+<span class="pc bpc" id="L325" title="1 of 4 branches missed.">    if (SortTarget.TARGET_ENTRIES.equals(sortTarget) &amp;&amp; !ObjectUtils.isEmpty(sort)) {</span>
+<span class="fc" id="L326">      target.sort(ComparatorBuilder.newInstance()</span>
+<span class="fc" id="L327">          .addAll(sort, targetSortFn)</span>
+<span class="fc" id="L328">          .build());</span>
+<span class="fc" id="L329">      pageSort = SortMapper.defaultSortMapper().toSort(new SortOrder(sort));</span>
+    } else {
+<span class="fc" id="L331">      pageSort = Sort.unsorted();</span>
+    }
+
+<span class="fc" id="L334">    int number = requireNonNullElse(pageNumber, 0);</span>
+<span class="fc" id="L335">    int size = requireNonNullElse(pageSize, Integer.MAX_VALUE);</span>
+<span class="fc" id="L336">    final Pageable pageable = PageRequest.of(number, size, pageSort);</span>
+<span class="fc" id="L337">    final List&lt;T&gt; content = target.stream()</span>
+<span class="fc" id="L338">        .skip(pageable.getOffset())</span>
+<span class="fc" id="L339">        .limit(pageable.getPageSize())</span>
+<span class="fc" id="L340">        .toList();</span>
+<span class="fc" id="L341">    return new PageImpl&lt;&gt;(content, pageable, target.size());</span>
+  }
+
+  /**
+   * The sort target.
+   */
+<span class="fc" id="L347">  public enum SortTarget {</span>
+    /**
+     * Source entries sort target.
+     */
+<span class="fc" id="L351">    SOURCE_ENTRIES,</span>
+    /**
+     * Target entries sort target.
+     */
+<span class="fc" id="L355">    TARGET_ENTRIES</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
