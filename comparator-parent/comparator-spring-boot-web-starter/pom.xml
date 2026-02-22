@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>comparator-parent</artifactId>
-    <version>5.1.0-SNAPSHOT</version>
+    <version>5.1.0</version>
   </parent>
 
   <artifactId>comparator-spring-boot-web-starter</artifactId>
