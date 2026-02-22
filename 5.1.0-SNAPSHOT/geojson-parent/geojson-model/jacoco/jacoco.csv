@@ -8,8 +8,8 @@ GeoJSON Simple Model,org.bremersee.geojson.model,Geometry,0,51,0,0,0,11,0,4,0,4
 GeoJSON Simple Model,org.bremersee.geojson.model,Geometry.TypeEnum,0,99,0,4,0,17,0,6,0,4
 GeoJSON Simple Model,org.bremersee.geojson.model,Position,0,50,0,8,0,14,0,7,0,3
 GeoJSON Simple Model,org.bremersee.geojson.model,Polygon,0,25,0,0,0,9,0,3,0,3
-GeoJSON Simple Model,org.bremersee.geojson.model,UnknownAware,12,151,8,30,7,41,8,23,0,12
 GeoJSON Simple Model,org.bremersee.geojson.model,LatitudeLongitude,0,22,1,1,0,9,1,2,0,2
+GeoJSON Simple Model,org.bremersee.geojson.model,UnknownAware,12,151,8,30,7,41,8,23,0,12
 GeoJSON Simple Model,org.bremersee.geojson.model,LineString,0,25,0,0,0,9,0,3,0,3
 GeoJSON Simple Model,org.bremersee.geojson.model,MultiPolygon,0,25,0,0,0,9,0,3,0,3
 GeoJSON Simple Model,org.bremersee.geojson.model,MultiLineString,0,25,0,0,0,9,0,3,0,3

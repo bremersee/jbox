@@ -14,8 +14,8 @@ Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigur
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,AuthenticationProperties.RoleMapping,3,0,0,0,2,0,1,0,1,0
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,LdaptiveAuthenticationAutoConfiguration.PropertiesMapper,0,5,0,0,0,1,0,1,0,1
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,AuthenticationProperties,0,18,0,0,0,5,0,1,0,1
-Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,LdaptivePasswordEncoderProvider,0,4,0,0,0,1,0,1,0,1
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,LdaptiveRememberMeAutoConfiguration,0,133,0,2,0,28,0,6,0,5
+Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,LdaptivePasswordEncoderProvider,0,4,0,0,0,1,0,1,0,1
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,AuthenticationProperties.LdaptiveProperties.AccountControlEvaluatorProperty,15,0,0,0,3,0,1,0,1,0
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,AuthenticationProperties.LdaptiveProperties,0,6,0,0,0,3,0,1,0,1
 Spring Integration Boot Autoconfiguration,org.bremersee.spring.boot.autoconfigure.security.authentication,AuthenticationProperties.CaseTransformation,21,0,0,0,4,0,1,0,1,0

@@ -21,8 +21,8 @@ GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToPolygonC
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToMultiLineStringConverter,0,10,0,0,0,3,0,2,0,2
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToGeometryCollectionConverter,0,10,0,0,0,3,0,2,0,2
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToLineStringConverter,0,10,0,0,0,3,0,2,0,2
-GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToGeometryConverter,0,9,0,0,0,3,0,2,0,2
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToPointConverter,0,10,0,0,0,3,0,2,0,2
+GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToGeometryConverter,0,9,0,0,0,3,0,2,0,2
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToMultiPolygonConverter,0,10,0,0,0,3,0,2,0,2
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,GeometryConverters,0,37,0,0,0,1,0,1,0,1
 GeoJSON with JTS Topology Suite,org.bremersee.geojson.converter,StringToMultiPointConverter,0,10,0,0,0,3,0,2,0,2

@@ -13,7 +13,7 @@ GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongo
 GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,DocumentToPolygonConverter,0,7,0,0,0,4,0,2,0,2
 GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,MultiPointToDocumentConverter,0,3,0,0,0,1,0,1,0,1
 GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,DocumentToMultiLineStringConverter,0,7,0,0,0,4,0,2,0,2
-GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,GeometryCollectionToDocumentConverter,0,3,0,0,0,1,0,1,0,1
 GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,AbstractDocumentToGeometryConverter,16,33,6,2,3,10,4,5,1,4
 GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,PointToDocumentConverter,0,3,0,0,0,1,0,1,0,1
+GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,GeometryCollectionToDocumentConverter,0,3,0,0,0,1,0,1,0,1
 GeoJSON with JTS for Spring Data MongoDB,org.bremersee.geojson.spring.data.mongodb.convert,MultiLineStringToDocumentConverter,0,3,0,0,0,1,0,1,0,1

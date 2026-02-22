@@ -8,7 +8,7 @@ Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.bo
 Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure,RestApiExceptionMapperBootProperties.ExceptionMappingConfigImpl,0,35,0,0,0,10,0,1,0,1
 Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure,RestApiExceptionMapperBootProperties,0,92,0,0,0,21,0,2,0,2
 Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure.servlet,ApiExceptionResolverAutoConfiguration,0,79,0,0,0,21,0,4,0,4
-Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure.servlet,FeignClientExceptionErrorDecoderAutoConfiguration,0,31,0,0,0,10,0,4,0,4
 Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure.servlet,RestApiExceptionMapperForWebAutoConfiguration,0,46,0,0,0,11,0,4,0,4
+Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure.servlet,FeignClientExceptionErrorDecoderAutoConfiguration,0,31,0,0,0,10,0,4,0,4
 Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure.servlet,RestTemplateErrorHandlerAutoConfiguration,0,17,0,0,0,6,0,2,0,2
 Common Exception Spring Boot Autoconfiguration,org.bremersee.exception.spring.boot.autoconfigure.servlet,RestApiExceptionParserForWebAutoConfiguration,5,49,0,0,0,15,1,5,1,5
