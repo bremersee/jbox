@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LdaptiveAttribute.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.ldaptive</a> &gt; <span class="el_source">LdaptiveAttribute.java</span></div><h1>LdaptiveAttribute.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.ldaptive;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiPredicate;
+import java.util.stream.Stream;
+import lombok.Getter;
+import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
+import org.ldaptive.AttributeModification;
+import org.ldaptive.AttributeModification.Type;
+import org.ldaptive.LdapAttribute;
+import org.ldaptive.LdapEntry;
+import org.ldaptive.transcode.ValueTranscoder;
+import org.springframework.util.Assert;
+
+/**
+ * The ldaptive attribute.
+ *
+ * @param &lt;T&gt; the type parameter
+ * @author Christian Bremer
+ */
+public interface LdaptiveAttribute&lt;T&gt; {
+
+  /**
+   * Gets name.
+   *
+   * @return the name
+   */
+  String getName();
+
+  /**
+   * Is binary.
+   *
+   * @return the boolean
+   */
+  boolean isBinary();
+
+  /**
+   * Gets value transcoder.
+   *
+   * @return the value transcoder
+   */
+  ValueTranscoder&lt;T&gt; getValueTranscoder();
+
+  /**
+   * Determines whether the attribute exists in the given ldap entry or not.
+   *
+   * @param entry the entry
+   * @return {@code true} if the attribute exists, otherwise {@code false}
+   */
+  default boolean exists(LdapEntry entry) {
+<span class="fc bfc" id="L74" title="All 4 branches covered.">    return !isEmpty(entry) &amp;&amp; !isEmpty(entry.getAttribute(getName()));</span>
+  }
+
+  /**
+   * Gets value.
+   *
+   * @param entry the entry
+   * @return the value
+   */
+  default Optional&lt;T&gt; getValue(LdapEntry entry) {
+<span class="fc" id="L84">    return getValue(entry, null);</span>
+  }
+
+  /**
+   * Gets value.
+   *
+   * @param entry the entry
+   * @param defaultValue the default value
+   * @return the value
+   */
+  default Optional&lt;T&gt; getValue(LdapEntry entry, T defaultValue) {
+<span class="fc" id="L95">    return Optional.ofNullable(entry)</span>
+<span class="fc" id="L96">        .map(e -&gt; e.getAttribute(getName()))</span>
+<span class="fc" id="L97">        .map(attr -&gt; attr.getValue(getValueTranscoder().decoder()))</span>
+<span class="fc" id="L98">        .or(() -&gt; Optional.ofNullable(defaultValue));</span>
+  }
+
+  /**
+   * Gets values.
+   *
+   * @param entry the entry
+   * @return the values
+   */
+  default Stream&lt;T&gt; getValues(LdapEntry entry) {
+<span class="fc" id="L108">    return Stream.ofNullable(entry)</span>
+<span class="fc" id="L109">        .map(e -&gt; e.getAttribute(getName()))</span>
+<span class="fc" id="L110">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L111">        .map(attr -&gt; attr.getValues(getValueTranscoder().decoder()))</span>
+<span class="fc" id="L112">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L113">        .flatMap(Collection::stream);</span>
+  }
+
+  /**
+   * Sets value.
+   *
+   * @param entry the entry
+   * @param value the value
+   * @return the value
+   */
+  default Optional&lt;AttributeModification&gt; setValue(LdapEntry entry, T value) {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    return setValues(entry, isEmpty(value) ? List.of() : List.of(value));</span>
+  }
+
+  /**
+   * Sets value.
+   *
+   * @param entry the entry
+   * @param value the value
+   * @param condition the condition
+   * @return the value
+   */
+  default Optional&lt;AttributeModification&gt; setValue(
+      LdapEntry entry,
+      T value,
+      BiPredicate&lt;T, T&gt; condition) {
+<span class="fc bfc" id="L139" title="All 4 branches covered.">    if (isEmpty(condition) || condition.test(getValue(entry).orElse(null), value)) {</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">      return setValues(entry, isEmpty(value) ? List.of() : List.of(value));</span>
+    }
+<span class="fc" id="L142">    return Optional.empty();</span>
+  }
+
+  /**
+   * Sets values.
+   *
+   * @param entry the entry
+   * @param values the values
+   * @return the values
+   */
+  default Optional&lt;AttributeModification&gt; setValues(LdapEntry entry, Collection&lt;T&gt; values) {
+<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (isEmpty(entry)) {</span>
+<span class="fc" id="L154">      return Optional.empty();</span>
+    }
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (isEmpty(values)) {</span>
+<span class="fc" id="L157">      return remove(entry);</span>
+    }
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">    List&lt;T&gt; newValues = values.stream().filter(v -&gt; !isEmpty(v)).toList();</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (isEmpty(entry.getAttribute(getName()))) {</span>
+<span class="fc" id="L161">      return addValues(entry, newValues);</span>
+    }
+<span class="fc" id="L163">    List&lt;byte[]&gt; newByteList = newValues.stream()</span>
+<span class="fc" id="L164">        .map(v -&gt; getValueTranscoder().encodeBinaryValue(v))</span>
+<span class="fc" id="L165">        .toList();</span>
+<span class="fc" id="L166">    Collection&lt;byte[]&gt; existingBytes = entry.getAttribute(getName()).getBinaryValues();</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (equals(existingBytes, newByteList)) {</span>
+<span class="fc" id="L168">      return Optional.empty();</span>
+    }
+<span class="fc" id="L170">    LdapAttribute attribute = createAttribute(newValues);</span>
+<span class="fc" id="L171">    entry.addAttributes(attribute);</span>
+<span class="fc" id="L172">    return Optional.of(new AttributeModification(Type.REPLACE, attribute));</span>
+  }
+
+  private boolean equals(Collection&lt;byte[]&gt; c1, Collection&lt;byte[]&gt; c2) {
+<span class="fc bfc" id="L176" title="All 2 branches covered.">    if (c1.size() != c2.size()) {</span>
+<span class="fc" id="L177">      return false;</span>
+    }
+<span class="fc" id="L179">    Iterator&lt;byte[]&gt; iter1 = c1.iterator();</span>
+<span class="fc" id="L180">    Iterator&lt;byte[]&gt; iter2 = c2.iterator();</span>
+<span class="pc bpc" id="L181" title="1 of 4 branches missed.">    while (iter1.hasNext() &amp;&amp; iter2.hasNext()) {</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">      if (!Arrays.equals(iter1.next(), iter2.next())) {</span>
+<span class="fc" id="L183">        return false;</span>
+      }
+    }
+<span class="fc" id="L186">    return true;</span>
+  }
+
+  private Optional&lt;AttributeModification&gt; addValues(LdapEntry entry, Collection&lt;T&gt; values) {
+<span class="fc" id="L190">    LdapAttribute attribute = createAttribute(values);</span>
+<span class="fc" id="L191">    entry.addAttributes(attribute);</span>
+<span class="fc" id="L192">    return Optional.of(new AttributeModification(Type.ADD, attribute));</span>
+  }
+
+  private Optional&lt;AttributeModification&gt; remove(LdapEntry entry) {
+<span class="fc bfc" id="L196" title="All 2 branches covered.">    if (isEmpty(entry.getAttribute(getName()))) {</span>
+<span class="fc" id="L197">      return Optional.empty();</span>
+    }
+<span class="fc" id="L199">    entry.removeAttribute(getName());</span>
+<span class="fc" id="L200">    return Optional.of(new AttributeModification(Type.DELETE, createAttribute()));</span>
+  }
+
+
+  /**
+   * Create attribute ldap attribute.
+   *
+   * @return the ldap attribute
+   */
+  default LdapAttribute createAttribute() {
+<span class="fc" id="L210">    LdapAttribute attribute = new LdapAttribute(getName());</span>
+<span class="fc" id="L211">    attribute.setBinary(isBinary());</span>
+<span class="fc" id="L212">    return attribute;</span>
+  }
+
+  /**
+   * Create attribute ldap attribute.
+   *
+   * @param value the value
+   * @return the ldap attribute
+   */
+  default LdapAttribute createAttribute(T value) {
+<span class="fc bfc" id="L222" title="All 2 branches covered.">    if (isEmpty(value)) {</span>
+<span class="fc" id="L223">      return createAttribute();</span>
+    }
+<span class="fc" id="L225">    return createAttribute(List.of(value));</span>
+  }
+
+  /**
+   * Create attribute ldap attribute.
+   *
+   * @param values the values
+   * @return the ldap attribute
+   */
+  default LdapAttribute createAttribute(Collection&lt;T&gt; values) {
+<span class="fc bfc" id="L235" title="All 2 branches covered.">    if (isEmpty(values)) {</span>
+<span class="fc" id="L236">      return createAttribute();</span>
+    }
+<span class="fc" id="L238">    LdapAttribute attribute = new LdapAttribute(getName());</span>
+<span class="fc" id="L239">    attribute.setBinary(isBinary());</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">    if (!isEmpty(values)) {</span>
+<span class="fc" id="L241">      attribute.addValues(getValueTranscoder().encoder(), values);</span>
+    }
+<span class="fc" id="L243">    return attribute;</span>
+  }
+
+  /**
+   * Define ldaptive attribute.
+   *
+   * @param name the name
+   * @return the ldaptive attribute
+   */
+  static LdaptiveAttribute&lt;String&gt; define(String name) {
+<span class="fc" id="L253">    return define(name, false, ValueTranscoderFactory.getStringValueTranscoder());</span>
+  }
+
+  /**
+   * Define ldaptive attribute.
+   *
+   * @param &lt;T&gt; the type parameter
+   * @param name the name
+   * @param binary the binary
+   * @param valueTranscoder the value transcoder
+   * @return the ldaptive attribute
+   */
+  static &lt;T&gt; LdaptiveAttribute&lt;T&gt; define(
+      String name,
+      boolean binary,
+      ValueTranscoder&lt;T&gt; valueTranscoder) {
+<span class="fc" id="L269">    return new Specification&lt;&gt;(name, binary, valueTranscoder);</span>
+  }
+
+  /**
+   * The ldaptive attribute specification.
+   *
+   * @param &lt;T&gt; the type parameter
+   */
+  @SuppressWarnings(&quot;ClassCanBeRecord&quot;)
+  class Specification&lt;T&gt; implements LdaptiveAttribute&lt;T&gt; {
+
+    @Getter
+    private final String name;
+
+    @Getter
+    private final boolean binary;
+
+    @Getter
+    private final ValueTranscoder&lt;T&gt; valueTranscoder;
+
+    /**
+     * Instantiates a new specification.
+     *
+     * @param name the name
+     * @param binary the binary
+     * @param valueTranscoder the value transcoder
+     */
+<span class="fc" id="L296">    public Specification(String name, boolean binary, ValueTranscoder&lt;T&gt; valueTranscoder) {</span>
+<span class="fc" id="L297">      Assert.hasText(name, &quot;Name must not be null or empty.&quot;);</span>
+<span class="fc" id="L298">      Assert.notNull(valueTranscoder, &quot;ValueTranscoder must not be null.&quot;);</span>
+<span class="fc" id="L299">      this.name = name;</span>
+<span class="fc" id="L300">      this.binary = binary;</span>
+<span class="fc" id="L301">      this.valueTranscoder = valueTranscoder;</span>
+<span class="fc" id="L302">    }</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
