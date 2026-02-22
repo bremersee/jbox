@@ -1,9 +1,6 @@
 pipeline {
   agent {
-    label 'jdk21'
-    label 'maven'
-    label 'docker'
-    label 'AVX'
+    label 'jdk21 maven docker AVX'
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
