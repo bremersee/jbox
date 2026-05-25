@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LdaptiveObjectMapperModule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.ldaptive</a> &gt; <span class="el_source">LdaptiveObjectMapperModule.java</span></div><h1>LdaptiveObjectMapperModule.java</h1><pre class="source lang-java linenums">package org.bremersee.ldaptive;
+
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import java.io.Serial;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import org.bremersee.ldaptive.converter.JacksonDnDeserializer;
+import org.bremersee.ldaptive.converter.JacksonDnSerializer;
+import org.bremersee.ldaptive.converter.JacksonLdapEntryDeserializer;
+import org.bremersee.ldaptive.converter.JacksonLdapEntrySerializer;
+import org.ldaptive.LdapEntry;
+import org.ldaptive.dn.Dn;
+
+/**
+ * The ldaptive object mapper module.
+ */
+public class LdaptiveObjectMapperModule extends SimpleModule {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * The constant TYPE_ID.
+   */
+<span class="fc" id="L27">  public static final String TYPE_ID = LdaptiveObjectMapperModule.class.getName();</span>
+
+  /**
+   * Instantiates a new ldaptive object mapper module.
+   */
+  public LdaptiveObjectMapperModule() {
+<span class="fc" id="L33">    super(</span>
+        TYPE_ID,
+<span class="fc" id="L35">        getVersion(),</span>
+<span class="fc" id="L36">        Map.of(</span>
+            Dn.class, new JacksonDnDeserializer(),
+            LdapEntry.class, new JacksonLdapEntryDeserializer()),
+<span class="fc" id="L39">        List.of(new JacksonDnSerializer(), new JacksonLdapEntrySerializer()));</span>
+<span class="fc" id="L40">  }</span>
+
+  private static Version getVersion() {
+
+<span class="fc" id="L44">    int defaultMajor = 5;</span>
+<span class="fc" id="L45">    int defaultMinor = 0;</span>
+<span class="fc" id="L46">    int defaultPatchLevel = 0;</span>
+<span class="fc" id="L47">    String defaultSnapshotInfo = &quot;SNAPSHOT&quot;;</span>
+
+<span class="fc" id="L49">    int major = defaultMajor;</span>
+<span class="fc" id="L50">    int minor = defaultMinor;</span>
+<span class="fc" id="L51">    int patchLevel = defaultPatchLevel;</span>
+<span class="fc" id="L52">    String snapshotInfo = defaultSnapshotInfo;</span>
+
+<span class="fc" id="L54">    String version = LdaptiveObjectMapperModule.class.getPackage().getImplementationVersion();</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">    if (version != null) {</span>
+      try {
+<span class="nc" id="L57">        int i = version.indexOf('-');</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (i &lt; 0) {</span>
+<span class="nc" id="L59">          snapshotInfo = null;</span>
+        } else {
+<span class="nc" id="L61">          snapshotInfo = version.substring(i + 1);</span>
+<span class="nc" id="L62">          String[] a = version.substring(0, i).split(Pattern.quote(&quot;.&quot;));</span>
+<span class="nc" id="L63">          major = Integer.parseInt(a[0]);</span>
+<span class="nc" id="L64">          minor = Integer.parseInt(a[1]);</span>
+<span class="nc" id="L65">          patchLevel = Integer.parseInt(a[2]);</span>
+        }
+
+<span class="nc" id="L68">      } catch (RuntimeException e) {</span>
+<span class="nc" id="L69">        major = defaultMajor;</span>
+<span class="nc" id="L70">        minor = defaultMinor;</span>
+<span class="nc" id="L71">        snapshotInfo = defaultSnapshotInfo;</span>
+<span class="nc" id="L72">      }</span>
+    }
+
+<span class="fc" id="L75">    return new Version(major, minor, patchLevel, snapshotInfo, &quot;org.bremersee&quot;,</span>
+        &quot;spring-integration-ldaptive&quot;);
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DnValueTranscoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.ldaptive.transcoder</a> &gt; <span class="el_source">DnValueTranscoder.java</span></div><h1>DnValueTranscoder.java</h1><pre class="source lang-java linenums">package org.bremersee.ldaptive.transcoder;
+
+import static java.util.Objects.isNull;
+
+import java.util.Objects;
+import org.ldaptive.dn.DefaultRDnNormalizer;
+import org.ldaptive.dn.Dn;
+import org.ldaptive.dn.RDnNormalizer;
+import org.ldaptive.transcode.AbstractStringValueTranscoder;
+
+/**
+ * The distinguished name value transcoder.
+ */
+public class DnValueTranscoder extends AbstractStringValueTranscoder&lt;Dn&gt; {
+
+  private final RDnNormalizer rdnNormalizer;
+
+  /**
+   * Instantiates a new distinguished name value transcoder.
+   */
+  public DnValueTranscoder() {
+<span class="fc" id="L22">    this(new DefaultRDnNormalizer());</span>
+<span class="fc" id="L23">  }</span>
+
+  /**
+   * Instantiates a new distinguished name value transcoder.
+   *
+   * @param rdnNormalizer the rdn normalizer
+   */
+<span class="fc" id="L30">  public DnValueTranscoder(RDnNormalizer rdnNormalizer) {</span>
+<span class="fc" id="L31">    this.rdnNormalizer = Objects.requireNonNullElseGet(rdnNormalizer, DefaultRDnNormalizer::new);</span>
+<span class="fc" id="L32">  }</span>
+
+  @Override
+  public Dn decodeStringValue(String dn) {
+<span class="fc bfc" id="L36" title="All 4 branches covered.">    if (isNull(dn) || dn.trim().isEmpty()) {</span>
+<span class="fc" id="L37">      return null;</span>
+    }
+<span class="fc" id="L39">    return new Dn(dn.trim());</span>
+  }
+
+  @Override
+  public String encodeStringValue(Dn dn) {
+<span class="fc bfc" id="L44" title="All 4 branches covered.">    if (isNull(dn) || dn.isEmpty()) {</span>
+<span class="fc" id="L45">      return null;</span>
+    }
+<span class="fc" id="L47">    return dn.format(rdnNormalizer);</span>
+  }
+
+  @Override
+  public Class&lt;Dn&gt; getType() {
+<span class="fc" id="L52">    return Dn.class;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.exception.feign","l":"FeignClientException"},{"p":"org.bremersee.exception.feign","l":"FeignClientExceptionErrorDecoder"}];updateSearchResults();

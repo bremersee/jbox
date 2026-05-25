@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Boot Autoconfiguration</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.boot.autoconfigure.security.authentication</a> &gt; <span class="el_source">AuthenticationProperties.java</span></div><h1>AuthenticationProperties.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.boot.autoconfigure.security.authentication;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+/**
+ * The authentication properties.
+ *
+ * @author Christian Bremer
+ */
+@ConfigurationProperties(prefix = &quot;bremersee.authentication&quot;)
+@Data
+public class AuthenticationProperties {
+
+  /**
+   * The remember-me properties.
+   */
+<span class="fc" id="L41">  private RememberMeProperties rememberMe = new RememberMeProperties();</span>
+
+  /**
+   * The jwt converter properties.
+   */
+<span class="fc" id="L46">  private JwtConverterProperties jwtConverter = new JwtConverterProperties();</span>
+
+  /**
+   * The ldaptive properties.
+   */
+<span class="fc" id="L51">  private LdaptiveProperties ldaptive = new LdaptiveProperties();</span>
+
+  /**
+   * Instantiates new authentication properties.
+   */
+  public AuthenticationProperties() {
+<span class="fc" id="L57">    super();</span>
+<span class="fc" id="L58">  }</span>
+
+  /**
+   * The remember-me properties.
+   *
+   * @author Christian Bremer
+   */
+  @Data
+  public static class RememberMeProperties {
+
+    /**
+     * The key.
+     */
+    private String key;
+
+    /**
+     * Specifies whether remember-me is always activated.
+     */
+    private Boolean alwaysRemember;
+
+    /**
+     * The cookie name.
+     */
+    private String cookieName;
+
+    /**
+     * The cookie domain.
+     */
+    private String cookieDomain;
+
+    /**
+     * Specifies whether to use secure cookie.
+     */
+    private Boolean useSecureCookie;
+
+    /**
+     * The parameter name (default remember-me).
+     */
+    private String parameterName;
+
+    /**
+     * The token validity in seconds (default two weeks).
+     */
+    private Integer tokenValiditySeconds;
+
+    /**
+     * Instantiates new remember-me properties.
+     */
+    public RememberMeProperties() {
+<span class="fc" id="L107">      super();</span>
+<span class="fc" id="L108">    }</span>
+  }
+
+  /**
+   * The jwt converter properties.
+   */
+  @Data
+  public static class JwtConverterProperties {
+
+    /**
+     * The json path to the username.
+     */
+<span class="fc" id="L120">    private String nameJsonPath = &quot;$.sub&quot;; // keycloak: $.preferred_username</span>
+
+    /**
+     * The json path to the first name.
+     */
+<span class="fc" id="L125">    private String firstNameJsonPath = &quot;$.given_name&quot;;</span>
+
+    /**
+     * The json path to the last name.
+     */
+<span class="fc" id="L130">    private String lastNameJsonPath = &quot;$.family_name&quot;;</span>
+
+    /**
+     * The json path to the email.
+     */
+<span class="fc" id="L135">    private String emailJsonPath = &quot;$.email&quot;;</span>
+
+    /**
+     * The json path to the roles.
+     */
+<span class="fc" id="L140">    private String rolesJsonPath = &quot;$.scope&quot;; // keycloak: $.realm_access.roles</span>
+
+    /**
+     * Specifies whether the roles are represented as a json array or as a list separated by
+     * {@link #getRolesValueSeparator()}.
+     */
+<span class="fc" id="L146">    private boolean rolesValueList = false; // keycloak: true</span>
+
+    /**
+     * The roles separator to use if {@link #isRolesValueList()} is set to {@code false}.
+     */
+<span class="fc" id="L151">    private String rolesValueSeparator = &quot; &quot;;</span>
+
+    /**
+     * The default roles.
+     */
+<span class="fc" id="L156">    private List&lt;String&gt; defaultRoles = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * The role mappings.
+     */
+<span class="fc" id="L161">    private List&lt;RoleMapping&gt; roleMapping = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * The role prefix (like 'ROLE_' or 'SCOPE_').
+     */
+<span class="fc" id="L166">    private String rolePrefix = &quot;SCOPE_&quot;; // keycloak: ROLE_</span>
+
+    /**
+     * The role case transformation.
+     */
+    private CaseTransformation roleCaseTransformation;
+
+    /**
+     * The string replacements for roles.
+     */
+    private List&lt;StringReplacement&gt; roleStringReplacements;
+
+    /**
+     * Instantiates new jwt converter properties.
+     */
+    public JwtConverterProperties() {
+<span class="fc" id="L182">      super();</span>
+<span class="fc" id="L183">    }</span>
+
+    /**
+     * To role mappings map.
+     *
+     * @return the map
+     */
+    public Map&lt;String, String&gt; toRoleMappings() {
+<span class="nc" id="L191">      return Stream.ofNullable(getRoleMapping())</span>
+<span class="nc" id="L192">          .flatMap(Collection::stream)</span>
+<span class="nc" id="L193">          .collect(Collectors.toMap(</span>
+              RoleMapping::getSource,
+              RoleMapping::getTarget,
+<span class="nc" id="L196">              (first, second) -&gt; first,</span>
+              LinkedHashMap::new));
+    }
+
+    /**
+     * To role string replacements map.
+     *
+     * @return the map
+     */
+    public Map&lt;String, String&gt; toRoleStringReplacements() {
+<span class="nc" id="L206">      return Stream.ofNullable(getRoleStringReplacements())</span>
+<span class="nc" id="L207">          .flatMap(Collection::stream)</span>
+<span class="nc" id="L208">          .collect(Collectors.toMap(</span>
+              StringReplacement::getRegex,
+              StringReplacement::getReplacement,
+<span class="nc" id="L211">              (first, second) -&gt; first,</span>
+              LinkedHashMap::new));
+    }
+
+  }
+
+  /**
+   * The ldaptive properties.
+   */
+  @Data
+  public static class LdaptiveProperties {
+
+    /**
+     * The ldap template with default configuration properties.
+     */
+<span class="fc" id="L226">    private Template template = Template.ACTIVE_DIRECTORY;</span>
+
+    /**
+     * The user base dn (like 'ou=people,dc=example,dc=org'). This value is always required.
+     */
+    private String userBaseDn;
+
+    /**
+     * A list with refused usernames.
+     */
+    private List&lt;String&gt; refusedUsernames;
+
+    /**
+     * The object class of the user (like 'inetOrgPerson'). The selected template contains a
+     * default.
+     */
+    private String userObjectClass;
+
+    /**
+     * The username attribute of the user (like 'uid' or 'sAMAccountName'). The selected template
+     * contains a default.
+     */
+    private String usernameAttribute;
+
+    /**
+     * The password attribute of the user (like 'userPassword'). If it is empty, a simple user bind
+     * will be done with the credentials of the user for authentication. If it is present, the
+     * connection to the ldap server must be done by a 'global' user and a password encoder that
+     * fits your requirements must be present. The default password encoder only supports SHA, that
+     * is insecure.
+     */
+    private String passwordAttribute;
+
+    /**
+     * The password last set attribute (like 'pwdLastSet') can be used to activate the remember-me
+     * functionality.
+     */
+    private String passwordLastSetAttribute;
+
+    /**
+     * The filter to find the user. If it is empty, it will be generated from 'userObjectClass' and
+     * 'usernameAttribute' like this '(&amp;(objectClass=inetOrgPerson)(uid={0}))'.
+     */
+    private String userFindOneFilter;
+
+    /**
+     * The scope to find a user. Default is 'one level'.
+     */
+    private SearchScope userFindOneSearchScope;
+
+    /**
+     * The first name attribute of the user. Default is 'givenName'.
+     */
+    protected String firstNameAttribute;
+
+    /**
+     * The last name attribute of the user. Default is 'sn'.
+     */
+    protected String lastNameAttribute;
+
+    /**
+     * The email attribute of the user. Default is 'mail';
+     */
+    private String emailAttribute;
+
+    /**
+     * The account control evaluator.
+     */
+    private AccountControlEvaluatorProperty accountControlEvaluator;
+
+    /**
+     * The group fetch strategy.
+     */
+    private GroupFetchStrategy groupFetchStrategy;
+
+    /**
+     * The member attribute.
+     */
+    private String memberAttribute;
+
+    /**
+     * The group base dn (like 'ou=groups,dc=example,dc=org'). It's only required, if
+     * {@code groupFetchStrategy} is set to {@code GROUP_CONTAINS_USERS}.
+     */
+    private String groupBaseDn;
+
+    /**
+     * The group search scope. It's only required, if {@code groupFetchStrategy} is set to
+     * {@code GROUP_CONTAINS_USERS},
+     */
+    private SearchScope groupSearchScope;
+
+    /**
+     * The group object class. It's only required, if {@code groupFetchStrategy} is set to
+     * {@code GROUP_CONTAINS_USERS}
+     */
+    private String groupObjectClass;
+
+    /**
+     * The group id attribute. It's only required, if {@code groupFetchStrategy} is set to
+     * {@code GROUP_CONTAINS_USERS}
+     */
+    private String groupIdAttribute;
+
+    /**
+     * The group member attribute. It's only required, if {@code groupFetchStrategy} is set to
+     * {@code GROUP_CONTAINS_USERS}
+     */
+    private String groupMemberAttribute;
+
+    /**
+     * The group member format. It's only required, if {@code groupFetchStrategy} is set to
+     * {@code GROUP_CONTAINS_USERS}
+     */
+    private String groupMemberFormat;
+
+    /**
+     * The role mappings.
+     */
+    private List&lt;RoleMapping&gt; roleMapping;
+
+    /**
+     * The default roles.
+     */
+    private List&lt;String&gt; defaultRoles;
+
+    /**
+     * The role prefix (like 'ROLE_').
+     */
+    private String rolePrefix;
+
+    /**
+     * The role case transformation.
+     */
+    private CaseTransformation roleCaseTransformation;
+
+    /**
+     * The string replacements for roles.
+     */
+    private List&lt;StringReplacement&gt; roleStringReplacements;
+
+    /**
+     * Instantiates new ldaptive properties.
+     */
+    public LdaptiveProperties() {
+<span class="fc" id="L371">      super();</span>
+<span class="fc" id="L372">    }</span>
+
+    /**
+     * The search scope.
+     */
+<span class="nc" id="L377">    public enum SearchScope {</span>
+
+      /**
+       * Base object search.
+       */
+<span class="nc" id="L382">      OBJECT,</span>
+
+      /**
+       * Single level search.
+       */
+<span class="nc" id="L387">      ONELEVEL,</span>
+
+      /**
+       * Whole subtree search.
+       */
+<span class="nc" id="L392">      SUBTREE,</span>
+
+      /**
+       * Subordinate subtree search. See draft-sermersheim-ldap-subordinate-scope.
+       */
+<span class="nc" id="L397">      SUBORDINATE</span>
+    }
+
+    /**
+     * The account control evaluator property.
+     */
+<span class="nc" id="L403">    public enum AccountControlEvaluatorProperty {</span>
+
+      /**
+       * The None.
+       */
+<span class="nc" id="L408">      NONE,</span>
+
+      /**
+       * The Active directory.
+       */
+<span class="nc" id="L413">      ACTIVE_DIRECTORY</span>
+    }
+
+    /**
+     * The group fetch strategy.
+     */
+<span class="nc" id="L419">    public enum GroupFetchStrategy {</span>
+
+      /**
+       * Groups will not be fetched.
+       */
+<span class="nc" id="L424">      NONE,</span>
+
+      /**
+       * User contains groups group-fetch strategy.
+       */
+<span class="nc" id="L429">      USER_CONTAINS_GROUPS,</span>
+
+      /**
+       * Group contains users group-fetch strategy.
+       */
+<span class="nc" id="L434">      GROUP_CONTAINS_USERS</span>
+    }
+
+    /**
+     * The templates for ldap authentication.
+     *
+     * @author Christian Bremer
+     */
+<span class="fc" id="L442">    public enum Template {</span>
+
+      /**
+       * Active directory template.
+       */
+<span class="fc" id="L447">      ACTIVE_DIRECTORY,</span>
+
+      /**
+       * Open ldap template.
+       */
+<span class="fc" id="L452">      OPEN_LDAP,</span>
+
+      /**
+       * User contains groups template.
+       */
+<span class="fc" id="L457">      USER_CONTAINS_GROUPS,</span>
+
+      /**
+       * Group contains users template.
+       */
+<span class="fc" id="L462">      GROUP_CONTAINS_USERS</span>
+    }
+  }
+
+  /**
+   * The role mapping.
+   */
+  @Data
+  public static class RoleMapping {
+
+    private String source;
+
+    private String target;
+
+    /**
+     * Instantiates a new role mapping.
+     */
+    public RoleMapping() {
+<span class="nc" id="L480">      super();</span>
+<span class="nc" id="L481">    }</span>
+  }
+
+  /**
+   * The case transformation.
+   */
+<span class="nc" id="L487">  public enum CaseTransformation {</span>
+
+    /**
+     * None case transformation.
+     */
+<span class="nc" id="L492">    NONE,</span>
+
+    /**
+     * To upper case transformation.
+     */
+<span class="nc" id="L497">    TO_UPPER_CASE,</span>
+
+    /**
+     * To lower case transformation.
+     */
+<span class="nc" id="L502">    TO_LOWER_CASE</span>
+  }
+
+  /**
+   * The string replacement.
+   */
+  @Data
+  public static class StringReplacement {
+
+    /**
+     * The regular expression to which the string is to be matched. '{@code [- ]}' for example would
+     * replace every '-' and every space.
+     */
+    private String regex;
+
+    /**
+     * The string to be substituted for each match.
+     */
+    private String replacement;
+
+    /**
+     * Instantiates a new string replacement.
+     */
+    public StringReplacement() {
+<span class="nc" id="L526">      super();</span>
+<span class="nc" id="L527">    }</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
