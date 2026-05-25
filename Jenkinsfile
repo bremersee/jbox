@@ -4,12 +4,13 @@ pipeline {
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
-    TEST = false
+    TEST = true
     DEPLOY = false
     SITE = false
     SNAPSHOT_SITE = false
     RELEASE_SITE = false
     DEPLOY_FEATURE = false
+    CLEAN = true
   }
   tools {
     jdk 'jdk21'
@@ -131,6 +132,14 @@ pipeline {
       }
       steps {
         sh 'mvn -B -P build-system,feature,allow-features clean deploy'
+      }
+    }
+    stage('Clean') {
+      when {
+        environment name: 'CLEAN', value: 'true'
+      }
+      steps {
+        sh 'mvn -B clean'
       }
     }
   }
