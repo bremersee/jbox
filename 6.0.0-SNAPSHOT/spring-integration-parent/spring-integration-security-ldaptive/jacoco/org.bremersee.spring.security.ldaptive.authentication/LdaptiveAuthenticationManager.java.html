@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LdaptiveAuthenticationManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Security Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.security.ldaptive.authentication</a> &gt; <span class="el_source">LdaptiveAuthenticationManager.java</span></div><h1>LdaptiveAuthenticationManager.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.security.ldaptive.authentication;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNullElseGet;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Stream;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bremersee.ldaptive.DefaultLdaptiveErrorHandler;
+import org.bremersee.ldaptive.LdaptiveTemplate;
+import org.bremersee.spring.security.core.EmailToUsernameResolver;
+import org.bremersee.spring.security.ldaptive.authentication.provider.NoAccountControlEvaluator;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
+import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetailsService;
+import org.jspecify.annotations.NonNull;
+import org.ldaptive.BindOperation;
+import org.ldaptive.BindResponse;
+import org.ldaptive.CompareRequest;
+import org.ldaptive.ConnectionConfig;
+import org.ldaptive.ConnectionFactory;
+import org.ldaptive.DefaultConnectionFactory;
+import org.ldaptive.LdapException;
+import org.ldaptive.SimpleBindRequest;
+import org.ldaptive.SingleConnectionFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.RememberMeAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.Assert;
+
+/**
+ * The ldaptive authentication manager.
+ *
+ * @author Christian Bremer
+ */
+public class LdaptiveAuthenticationManager
+    implements AuthenticationManager, AuthenticationProvider, MessageSourceAware {
+
+  /**
+   * The Logger.
+   */
+<span class="fc" id="L80">  protected final Log logger = LogFactory.getLog(this.getClass());</span>
+
+  /**
+   * The authentication properties.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  private final LdaptiveAuthenticationProperties authenticationProperties;
+
+  /**
+   * The remember-me key.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  private final String rememberMeKey;
+
+  /**
+   * The application ldaptive template.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  private final LdaptiveTemplate applicationLdaptiveTemplate;
+
+  /**
+   * The email to username resolver.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  private EmailToUsernameResolver emailToUsernameResolver;
+
+  /**
+   * The password encoder.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  @Setter
+  private PasswordEncoder passwordEncoder;
+
+  /**
+   * The account control evaluator.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  private AccountControlEvaluator accountControlEvaluator;
+
+  /**
+   * The granted authorities mapper.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  @Setter
+  private GrantedAuthoritiesMapper grantedAuthoritiesMapper;
+
+  /**
+   * The remember-me token provider.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  @Setter
+  private LdaptiveRememberMeTokenProvider passwordProvider;
+
+  /**
+   * The token converter.
+   */
+  @Getter(AccessLevel.PROTECTED)
+  @Setter
+  private Converter&lt;LdaptiveUserDetails, LdaptiveAuthentication&gt; tokenConverter;
+
+  /**
+   * The message source.
+   */
+<span class="fc" id="L143">  @Getter(AccessLevel.PROTECTED)</span>
+<span class="fc" id="L144">  private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();</span>
+
+  /**
+   * Instantiates a new ldaptive authentication manager.
+   *
+   * @param connectionConfig the connection config
+   * @param authenticationProperties the authentication properties
+   * @param rememberMeKey the remember me key
+   */
+  public LdaptiveAuthenticationManager(
+      ConnectionConfig connectionConfig,
+      LdaptiveAuthenticationProperties authenticationProperties,
+      String rememberMeKey) {
+<span class="fc" id="L157">    this(new DefaultConnectionFactory(connectionConfig), authenticationProperties, rememberMeKey);</span>
+<span class="fc" id="L158">  }</span>
+
+  /**
+   * Instantiates a new ldaptive authentication manager.
+   *
+   * @param connectionFactory the connection factory
+   * @param authenticationProperties the authentication properties
+   * @param rememberMeKey the remember me key
+   */
+  public LdaptiveAuthenticationManager(
+      ConnectionFactory connectionFactory,
+      LdaptiveAuthenticationProperties authenticationProperties,
+      String rememberMeKey) {
+<span class="fc" id="L171">    this(new LdaptiveTemplate(connectionFactory), authenticationProperties, rememberMeKey);</span>
+<span class="fc" id="L172">  }</span>
+
+  /**
+   * Instantiates a new ldaptive authentication manager.
+   *
+   * @param applicationLdaptiveTemplate the application ldaptive template
+   * @param authenticationProperties the authentication properties
+   * @param rememberMeKey the remember me key
+   */
+  public LdaptiveAuthenticationManager(
+      LdaptiveTemplate applicationLdaptiveTemplate,
+      LdaptiveAuthenticationProperties authenticationProperties,
+<span class="fc" id="L184">      String rememberMeKey) {</span>
+
+<span class="fc" id="L186">    this.applicationLdaptiveTemplate = applicationLdaptiveTemplate;</span>
+<span class="fc" id="L187">    Assert.notNull(getApplicationLdaptiveTemplate(), &quot;Application ldaptive template is required.&quot;);</span>
+<span class="fc" id="L188">    this.authenticationProperties = authenticationProperties;</span>
+<span class="fc" id="L189">    Assert.notNull(getAuthenticationProperties(), &quot;Authentication properties are required.&quot;);</span>
+<span class="fc" id="L190">    this.rememberMeKey = rememberMeKey;</span>
+
+    // emailToUsernameResolver
+<span class="fc" id="L193">    setEmailToUsernameResolver(new EmailToUsernameResolverByLdapAttribute(</span>
+<span class="fc" id="L194">        getAuthenticationProperties(), getApplicationLdaptiveTemplate()));</span>
+
+    // accountControlEvaluator
+<span class="fc bfc" id="L197" title="All 2 branches covered.">    if (isNull(getAuthenticationProperties().getAccountControlEvaluator())) {</span>
+<span class="fc" id="L198">      setAccountControlEvaluator(new NoAccountControlEvaluator());</span>
+    } else {
+<span class="fc" id="L200">      setAccountControlEvaluator(getAuthenticationProperties().getAccountControlEvaluator().get());</span>
+    }
+<span class="fc" id="L202">  }</span>
+
+  /**
+   * Sets email to username resolver.
+   *
+   * @param emailToUsernameResolver the email to username resolver
+   */
+  public void setEmailToUsernameResolver(
+      EmailToUsernameResolver emailToUsernameResolver) {
+<span class="fc bfc" id="L211" title="All 2 branches covered.">    if (nonNull(emailToUsernameResolver)) {</span>
+<span class="fc" id="L212">      this.emailToUsernameResolver = emailToUsernameResolver;</span>
+    }
+<span class="fc" id="L214">  }</span>
+
+  /**
+   * Sets account control evaluator.
+   *
+   * @param accountControlEvaluator the account control evaluator
+   */
+  public void setAccountControlEvaluator(
+      AccountControlEvaluator accountControlEvaluator) {
+<span class="fc bfc" id="L223" title="All 2 branches covered.">    if (nonNull(accountControlEvaluator)) {</span>
+<span class="fc" id="L224">      this.accountControlEvaluator = accountControlEvaluator;</span>
+    }
+<span class="fc" id="L226">  }</span>
+
+  @Override
+  public void setMessageSource(@NonNull MessageSource messageSource) {
+<span class="fc" id="L230">    this.messages = new MessageSourceAccessor(messageSource);</span>
+<span class="fc" id="L231">  }</span>
+
+  /**
+   * Init.
+   */
+  public void init() {
+<span class="fc bfc" id="L237" title="All 4 branches covered.">    if (!isSimpleBindAuthentication() &amp;&amp; isNull(getPasswordEncoder())) {</span>
+<span class="fc" id="L238">      throw new IllegalStateException(String.format(&quot;A password attribute is set (%s) but no &quot;</span>
+              + &quot;password encoder is present. Either delete the password attribute to perform a &quot;
+              + &quot;bind to authenticate or set a password encoder.&quot;,
+<span class="fc" id="L241">          getAuthenticationProperties().getPasswordAttribute()));</span>
+    }
+<span class="fc" id="L243">  }</span>
+
+  @Override
+  public boolean supports(@NonNull Class&lt;?&gt; authentication) {
+<span class="fc bfc" id="L247" title="All 2 branches covered.">    return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication)</span>
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        || isRememberMeAuthentication(authentication);</span>
+  }
+
+  private boolean isRememberMeAuthentication(Class&lt;?&gt; authentication) {
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">    return !isEmpty(getRememberMeKey())</span>
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">        &amp;&amp; RememberMeAuthenticationToken.class.isAssignableFrom(authentication);</span>
+  }
+
+  /**
+   * Remember me key matches given authentication.
+   *
+   * @param authentication the authentication
+   * @return the boolean
+   */
+  protected boolean rememberMeKeyMatches(RememberMeAuthenticationToken authentication) {
+<span class="fc" id="L263">    return Optional.ofNullable(getRememberMeKey())</span>
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">        .filter(key -&gt; key.hashCode() == authentication.getKeyHash())</span>
+<span class="fc" id="L265">        .isPresent();</span>
+  }
+
+  @NonNull
+  @Override
+  public Authentication authenticate(Authentication authentication)
+      throws AuthenticationException {
+
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">    if (!supports(authentication.getClass())) {</span>
+<span class="nc" id="L274">      logger.debug(String.format(&quot;Authentication [%s] is not supported.&quot;,</span>
+<span class="nc" id="L275">          authentication.getClass().getName()));</span>
+      //noinspection DataFlowIssue
+<span class="nc" id="L277">      return null;</span>
+    }
+<span class="fc bfc" id="L279" title="All 2 branches covered.">    if (authentication instanceof RememberMeAuthenticationToken rma) {</span>
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">      if (!rememberMeKeyMatches(rma)) {</span>
+<span class="fc" id="L281">        throw new BadCredentialsException(getMessages().getMessage(</span>
+            &quot;RememberMeAuthenticationProvider.incorrectKey&quot;,
+            &quot;The presented RememberMeAuthenticationToken does not contain the expected key&quot;));
+      }
+<span class="nc" id="L285">      return rma;</span>
+    }
+
+<span class="fc" id="L288">    String name = getName(authentication);</span>
+<span class="fc" id="L289">    logger.debug(&quot;Authenticating user '&quot; + name + &quot;' ...&quot;);</span>
+<span class="fc" id="L290">    String password = Optional.ofNullable(authentication.getCredentials())</span>
+<span class="fc" id="L291">        .map(String::valueOf)</span>
+<span class="pc" id="L292">        .orElseThrow(() -&gt; new BadCredentialsException(&quot;Password is required.&quot;));</span>
+<span class="fc" id="L293">    String username = getEmailToUsernameResolver()</span>
+<span class="fc" id="L294">        .getUsernameByEmail(name)</span>
+<span class="fc" id="L295">        .orElse(name);</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">    if (isRefusedUsername(username)) {</span>
+<span class="fc" id="L297">      throw new DisabledException(String</span>
+<span class="fc" id="L298">          .format(&quot;Username '%s' is refused by configuration.&quot;, username));</span>
+    }
+
+<span class="fc" id="L301">    LdaptiveUserDetails userDetails = getUserDetailsService().loadUserByUsername(username);</span>
+<span class="fc" id="L302">    checkPassword(userDetails, password);</span>
+<span class="fc" id="L303">    checkAccountControl(userDetails);</span>
+
+<span class="fc bfc" id="L305" title="All 2 branches covered.">    if (nonNull(getTokenConverter())) {</span>
+<span class="fc" id="L306">      return getTokenConverter().convert(userDetails);</span>
+    }
+<span class="fc" id="L308">    return new LdaptiveAuthenticationToken(userDetails);</span>
+  }
+
+  /**
+   * Determines whether the username is refused by configuration.
+   *
+   * @param username the username
+   * @return {@code true} if the username is refused, otherwise {@code false}
+   */
+  protected boolean isRefusedUsername(String username) {
+<span class="fc bfc" id="L318" title="All 2 branches covered.">    if (isEmpty(username)) {</span>
+<span class="fc" id="L319">      return true;</span>
+    }
+<span class="fc" id="L321">    return Stream.ofNullable(getAuthenticationProperties().getRefusedUsernames())</span>
+<span class="fc" id="L322">        .flatMap(Collection::stream)</span>
+<span class="pc bpc" id="L323" title="1 of 2 branches missed.">        .filter(refusedUsername -&gt; !isEmpty(refusedUsername))</span>
+<span class="fc" id="L324">        .anyMatch(refusedUsername -&gt; refusedUsername.equalsIgnoreCase(username));</span>
+  }
+
+  /**
+   * Gets name.
+   *
+   * @param authentication the authentication
+   * @return the name
+   */
+  protected String getName(Authentication authentication) {
+<span class="fc" id="L334">    Object principal = authentication.getPrincipal();</span>
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">    if (principal instanceof LdaptiveUserDetails ldaptiveUserDetails) {</span>
+<span class="nc" id="L336">      return requireNonNullElseGet(ldaptiveUserDetails.getDn(), authentication::getName);</span>
+    }
+<span class="fc" id="L338">    return authentication.getName();</span>
+  }
+
+  /**
+   * Gets user details service.
+   *
+   * @return the user details service
+   */
+  public LdaptiveUserDetailsService getUserDetailsService() {
+<span class="fc" id="L347">    LdaptiveUserDetailsService userDetailsService = new LdaptiveUserDetailsService(</span>
+<span class="fc" id="L348">        getAuthenticationProperties(), getApplicationLdaptiveTemplate());</span>
+<span class="fc" id="L349">    userDetailsService.setAccountControlEvaluator(getAccountControlEvaluator());</span>
+<span class="fc" id="L350">    userDetailsService.setGrantedAuthoritiesMapper(getGrantedAuthoritiesMapper());</span>
+<span class="fc" id="L351">    userDetailsService.setRememberMeTokenProvider(getPasswordProvider());</span>
+<span class="fc" id="L352">    return userDetailsService;</span>
+  }
+
+  /**
+   * Determines whether to bind with username and password or to compare the passwords.
+   *
+   * @return the boolean
+   */
+  protected boolean isSimpleBindAuthentication() {
+<span class="fc bfc" id="L361" title="All 2 branches covered.">    return isNull(getAuthenticationProperties().getPasswordAttribute())</span>
+<span class="fc bfc" id="L362" title="All 2 branches covered.">        || getAuthenticationProperties().getPasswordAttribute().isBlank();</span>
+  }
+
+  /**
+   * Check password.
+   *
+   * @param user the user
+   * @param password the password
+   */
+  protected void checkPassword(LdaptiveUserDetails user, String password) {
+<span class="fc bfc" id="L372" title="All 2 branches covered.">    if (isSimpleBindAuthentication()) {</span>
+<span class="fc" id="L373">      checkPasswordWithSimpleBind(user, password);</span>
+    } else {
+<span class="fc" id="L375">      checkPasswordWithCompareRequest(user, password);</span>
+    }
+<span class="fc" id="L377">  }</span>
+
+  protected void checkPasswordWithCompareRequest(LdaptiveUserDetails user, String password) {
+<span class="fc" id="L380">    Assert.notNull(getPasswordEncoder(), &quot;No password encoder is present.&quot;);</span>
+<span class="fc" id="L381">    boolean matches = getApplicationLdaptiveTemplate().compare(CompareRequest.builder()</span>
+<span class="fc" id="L382">        .dn(user.getDn())</span>
+<span class="fc" id="L383">        .name(getAuthenticationProperties().getPasswordAttribute())</span>
+<span class="fc" id="L384">        .value(getPasswordEncoder().encode(password))</span>
+<span class="fc" id="L385">        .build());</span>
+<span class="fc bfc" id="L386" title="All 2 branches covered.">    if (!matches) {</span>
+<span class="fc" id="L387">      throw new BadCredentialsException(&quot;Password doesn't match.&quot;);</span>
+    }
+<span class="fc" id="L389">  }</span>
+
+  protected void checkPasswordWithSimpleBind(LdaptiveUserDetails user, String password) {
+<span class="fc" id="L392">    SingleConnectionFactory connectionFactory = getSingleConnectionFactory();</span>
+    try {
+<span class="fc" id="L394">      connectionFactory.initialize();</span>
+<span class="fc" id="L395">      BindOperation bind = getBindOperation(connectionFactory);</span>
+<span class="fc" id="L396">      BindResponse response = bind.execute(SimpleBindRequest.builder()</span>
+<span class="fc" id="L397">          .dn(user.getDn())</span>
+<span class="fc" id="L398">          .password(password)</span>
+<span class="fc" id="L399">          .build());</span>
+<span class="fc bfc" id="L400" title="All 2 branches covered.">      if (!response.isSuccess()) {</span>
+<span class="fc" id="L401">        throw new BadCredentialsException(&quot;Password doesn't match.&quot;);</span>
+      }
+
+<span class="nc" id="L404">    } catch (LdapException ldapException) {</span>
+<span class="nc" id="L405">      new DefaultLdaptiveErrorHandler().handleError(ldapException);</span>
+    } finally {
+<span class="fc" id="L407">      connectionFactory.close();</span>
+    }
+<span class="fc" id="L409">  }</span>
+
+  SingleConnectionFactory getSingleConnectionFactory() {
+<span class="fc" id="L412">    ConnectionConfig connectionConfig = ConnectionConfig</span>
+<span class="fc" id="L413">        .copy(getApplicationLdaptiveTemplate().getConnectionFactory().getConnectionConfig());</span>
+<span class="fc" id="L414">    connectionConfig.setConnectionInitializers();</span>
+<span class="fc" id="L415">    return new SingleConnectionFactory(connectionConfig);</span>
+  }
+
+  BindOperation getBindOperation(SingleConnectionFactory cf) {
+<span class="fc" id="L419">    return new BindOperation(cf);</span>
+  }
+
+  /**
+   * Check account control.
+   *
+   * @param user the user
+   */
+  protected void checkAccountControl(LdaptiveUserDetails user) {
+<span class="fc bfc" id="L428" title="All 2 branches covered.">    if (!user.isEnabled()) {</span>
+<span class="fc" id="L429">      throw new DisabledException(&quot;Account is disabled.&quot;);</span>
+    }
+<span class="fc bfc" id="L431" title="All 2 branches covered.">    if (!user.isAccountNonLocked()) {</span>
+<span class="fc" id="L432">      throw new LockedException(&quot;Account is locked.&quot;);</span>
+    }
+<span class="fc bfc" id="L434" title="All 2 branches covered.">    if (!user.isAccountNonExpired()) {</span>
+<span class="fc" id="L435">      throw new AccountExpiredException(&quot;Account is expired.&quot;);</span>
+    }
+<span class="fc bfc" id="L437" title="All 2 branches covered.">    if (!user.isCredentialsNonExpired()) {</span>
+<span class="fc" id="L438">      throw new CredentialsExpiredException(&quot;Credentials are expired.&quot;);</span>
+    }
+<span class="fc" id="L440">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
