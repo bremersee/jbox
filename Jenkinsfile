@@ -4,9 +4,9 @@ pipeline {
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
-    TEST = true
+    TEST = false
     DEPLOY = false
-    SITE = true
+    SITE = false
     SNAPSHOT_SITE = false
     RELEASE_SITE = false
     DEPLOY_FEATURE = false
@@ -77,6 +77,7 @@ pipeline {
           git -C target/gh-pages add .
           git -C target/gh-pages commit -m "Maven site"
           git -C target/gh-pages push
+          rm -rf target/gh-pages
         '''
       }
       post {
