@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.bremersee.pagebuilder.testmodel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementRefs;
@@ -44,6 +45,7 @@ public class AnimalPage extends AbstractPageDto<Animal> {
    * Instantiates a new animal page.
    */
   protected AnimalPage() {
+    super();
   }
 
   /**
@@ -55,6 +57,7 @@ public class AnimalPage extends AbstractPageDto<Animal> {
    * @param totalElements the total elements
    * @param sort the sort
    */
+  @JsonIgnore
   public AnimalPage(List<? extends Animal> content, int number, int size, long totalElements,
       Sort sort) {
     super(content, number, size, totalElements, sort);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.bremersee.xml.http.codec.ReactiveJaxbDecoder;
 import org.bremersee.xml.http.codec.ReactiveJaxbEncoder;
 import org.bremersee.xml.spring.boot.JaxbContextBuilderAutoConfiguration;
 import org.bremersee.xml.spring.boot.http.JaxbReadWriteConfigurer;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -37,7 +38,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.lang.NonNull;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
@@ -91,7 +91,7 @@ public class Jaxb2HttpMessageCodecAutoConfiguration implements WebFluxConfigurer
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
     log.info(String.format("""
-
+            
             *********************************************************************************
             * %s
             *********************************************************************************

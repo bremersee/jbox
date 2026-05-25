@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 the original author or authors.
+ * Copyright 2024-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import java.util.List;
 import org.bremersee.spring.security.core.NormalizedPrincipal;
 import org.immutables.serial.Serial;
 import org.immutables.value.Value;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -48,6 +49,7 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
   String getDn();
 
   @Value.Default
+  @NonNull
   @Override
   default Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of();

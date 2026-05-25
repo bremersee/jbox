@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ class RestApiExceptionMapperForWebTest {
         .exceptionMappings(List.of(
             ExceptionMapping.builder()
                 .exceptionClassName("org.bremersee.exception.*")
-                .status(HttpStatus.I_AM_A_TEAPOT.value())
+                .status(HttpStatus.CONFLICT.value())
                 .code("4004")
                 .message("Wait five minutes")
                 .build()
@@ -454,8 +454,8 @@ class RestApiExceptionMapperForWebTest {
 
       RestApiException expected = RestApiException.builder()
           .timestamp(OffsetDateTime.now())
-          .status(HttpStatus.I_AM_A_TEAPOT.value())
-          .error(HttpStatus.I_AM_A_TEAPOT.getReasonPhrase())
+          .status(HttpStatus.CONFLICT.value())
+          .error(HttpStatus.CONFLICT.getReasonPhrase())
           .errorCode("4004")
           .errorCodeInherited(false)
           .message("Wait five minutes")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 
@@ -173,7 +173,7 @@ public class MinioMultipartFileImpl implements MinioMultipartFile {
 
   @Override
   public String getOriginalFilename() {
-    return name;
+    return getName();
   }
 
   @Override
@@ -194,9 +194,8 @@ public class MinioMultipartFileImpl implements MinioMultipartFile {
     return size;
   }
 
-  @NonNull
   @Override
-  public byte[] getBytes() throws IOException {
+  public byte @NonNull [] getBytes() throws IOException {
     if (isEmpty()) {
       return new byte[0];
     }

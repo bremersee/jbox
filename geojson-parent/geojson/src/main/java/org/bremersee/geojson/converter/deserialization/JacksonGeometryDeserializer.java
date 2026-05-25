@@ -18,16 +18,14 @@ package org.bremersee.geojson.converter.deserialization;
 
 import static java.util.Objects.isNull;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import java.io.IOException;
-import java.io.Serial;
 import java.util.Map;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
 /**
  * A Jackson deserializer for a {@link Geometry}.
@@ -35,9 +33,6 @@ import org.locationtech.jts.geom.GeometryFactory;
  * @author Christian Bremer
  */
 public class JacksonGeometryDeserializer extends StdDeserializer<Geometry> {
-
-  @Serial
-  private static final long serialVersionUID = 3L;
 
   /**
    * The json to geometry converter.
@@ -63,7 +58,7 @@ public class JacksonGeometryDeserializer extends StdDeserializer<Geometry> {
   }
 
   @Override
-  public Geometry deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+  public Geometry deserialize(JsonParser jp, DeserializationContext ctxt) {
     Map<String, Object> map = jp.readValueAs(new MapTypeReference());
     if (isNull(map) || map.isEmpty()) {
       return null;

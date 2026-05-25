@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,9 @@ import org.bremersee.exception.spring.boot.autoconfigure.RestApiExceptionMapperB
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * The api exception resolver autoconfiguration test.
@@ -58,16 +59,21 @@ class ApiExceptionResolverAutoConfigurationTest {
     ));
 
     //noinspection unchecked
-    ObjectProvider<Jackson2ObjectMapperBuilder> objectMapperBuilder = mock(ObjectProvider.class);
-    when(objectMapperBuilder.getIfAvailable(any()))
-        .thenReturn(new Jackson2ObjectMapperBuilder());
+    ObjectProvider<JsonMapper.Builder> jsonMapperBuilder = mock(ObjectProvider.class);
+    when(jsonMapperBuilder.getIfAvailable(any()))
+        .thenReturn(JsonMapper.builder());
+
+    //noinspection unchecked
+    ObjectProvider<XmlMapper.Builder> xmlMapperBuilder = mock(ObjectProvider.class);
+    when(xmlMapperBuilder.getIfAvailable(any()))
+        .thenReturn(XmlMapper.builder());
 
     //noinspection unchecked
     ObjectProvider<HttpServletRequestIdProvider> restApiIdProvider = mock(ObjectProvider.class);
     when(restApiIdProvider.getIfAvailable()).thenReturn(null);
 
     this.target = new ApiExceptionResolverAutoConfiguration(
-        properties, apiExceptionMapper, objectMapperBuilder, restApiIdProvider);
+        properties, apiExceptionMapper, jsonMapperBuilder, xmlMapperBuilder, restApiIdProvider);
   }
 
   /**

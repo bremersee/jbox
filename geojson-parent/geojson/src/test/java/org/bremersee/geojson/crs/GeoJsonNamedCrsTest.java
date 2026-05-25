@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The GeoJSON named crs test.
@@ -74,12 +74,10 @@ class GeoJsonNamedCrsTest {
 
   /**
    * Json.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void json() throws Exception {
-    ObjectMapper om = new ObjectMapper();
+  void json() {
+    JsonMapper om = JsonMapper.builder().build();
     GeoJsonNamedCrs model = new GeoJsonNamedCrs(GeoJsonCrsConstants.MERCATOR_CRS_ALT);
     String jsonStr = om.writerWithDefaultPrettyPrinter().writeValueAsString(model);
     System.out.println(jsonStr);

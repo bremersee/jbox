@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,21 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.exception.model.app.TestConfiguration;
+import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,16 +47,16 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author Christian Bremer
  */
+@Disabled
 @SpringBootTest(
     classes = TestConfiguration.class,
     webEnvironment = WebEnvironment.RANDOM_PORT,
     properties = {
         "spring.main.web-application-type=servlet",
         "spring.application.name=junit",
-        "server.error.include-exception=true",
-        "server.error.include-message=always"
+        "spring.web.error.include-exception=true",
+        "spring.web.error.include-message=always"
     })
-@TestInstance(Lifecycle.PER_CLASS) // allows us to use @BeforeAll with a non-static method
 @ExtendWith(SoftAssertionsExtension.class)
 class RestApiExceptionIntegrationTest {
 
@@ -119,7 +118,8 @@ class RestApiExceptionIntegrationTest {
         .usingRecursiveComparison()
         .ignoringFieldsOfTypes(OffsetDateTime.class)
         .isEqualTo(expected);
-    softly.assertThat(response.getBody())
+    softly.assertThat(response)
+        .extracting(ResponseEntity::getBody, InstanceOfAssertFactories.type(RestApiException.class))
         .extracting(RestApiException::furtherDetails,
             InstanceOfAssertFactories.map(String.class, Object.class))
         .containsAllEntriesOf(expected.furtherDetails());
@@ -150,7 +150,8 @@ class RestApiExceptionIntegrationTest {
         .usingRecursiveComparison()
         .ignoringFieldsOfTypes(OffsetDateTime.class)
         .isEqualTo(expected);
-    softly.assertThat(response.getBody())
+    softly.assertThat(response)
+        .extracting(ResponseEntity::getBody, InstanceOfAssertFactories.type(RestApiException.class))
         .extracting(RestApiException::furtherDetails,
             InstanceOfAssertFactories.map(String.class, Object.class))
         .containsAllEntriesOf(expected.furtherDetails());

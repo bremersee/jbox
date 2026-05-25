@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.bremersee.exception.spring.boot.autoconfigure.servlet;
 
 import java.nio.charset.Charset;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionParser;
@@ -29,13 +29,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * The rest api exception parser autoconfiguration.
@@ -44,8 +43,7 @@ import org.springframework.util.ClassUtils;
  */
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(name = {
-    "com.fasterxml.jackson.databind.ObjectMapper",
-    "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
+    "tools.jackson.databind.ObjectMapper",
     "org.bremersee.exception.RestApiExceptionParserImpl"
 })
 @AutoConfiguration
@@ -78,23 +76,22 @@ public class RestApiExceptionParserForWebAutoConfiguration {
    * Creates rest api exception parser for servlet based web application.
    *
    * @param environment the environment
-   * @param objectMapperBuilderProvider the object mapper builder provider
+   * @param jsonMapperBuilderProvider the json mapper builder provider
+   * @param xmlMapperBuilderProvider the xml mapper builder provider
    * @return the rest api exception parser
    */
   @ConditionalOnMissingBean
   @Bean
   public RestApiExceptionParser restApiExceptionParser(
       Environment environment,
-      ObjectProvider<Jackson2ObjectMapperBuilder> objectMapperBuilderProvider) {
+      ObjectProvider<JsonMapper.Builder> jsonMapperBuilderProvider,
+      ObjectProvider<XmlMapper.Builder> xmlMapperBuilderProvider) {
 
-    Jackson2ObjectMapperBuilder objectMapperBuilder = objectMapperBuilderProvider.getIfAvailable();
-    Charset charset = Binder
-        .get(environment)
-        .bindOrCreate("server.servlet.encoding", Encoding.class)
-        .getCharset();
-    return Optional.ofNullable(objectMapperBuilder)
-        .map(builder -> new RestApiExceptionParserImpl(builder, charset))
-        .orElseGet(() -> new RestApiExceptionParserImpl(charset));
+    Charset charset = environment
+        .getProperty("spring.servlet.encoding.charset", Charset.class, StandardCharsets.UTF_8);
+    JsonMapper jsonMapper = jsonMapperBuilderProvider.getIfAvailable(JsonMapper::builder).build();
+    XmlMapper xmlMapper = xmlMapperBuilderProvider.getIfAvailable(XmlMapper::builder).build();
+    return new RestApiExceptionParserImpl(jsonMapper, xmlMapper, charset);
   }
 
 }

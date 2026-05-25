@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+* Copyright 2018-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
@@ -46,6 +47,11 @@ import org.bremersee.geojson.GeoJsonConstants;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
+@JsonPropertyOrder({
+    TYPE,
+    GeoJsonConstants.BBOX,
+    "features"
+})
 public class FeatureCollection implements Serializable {
 
   @Serial

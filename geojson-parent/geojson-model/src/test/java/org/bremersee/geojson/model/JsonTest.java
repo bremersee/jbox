@@ -1,7 +1,5 @@
 package org.bremersee.geojson.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +7,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The json test.
@@ -16,16 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(SoftAssertionsExtension.class)
 class JsonTest {
 
-  private static final ObjectMapper OM = new ObjectMapper();
+  private static final JsonMapper OM = JsonMapper.builder().build();
 
   /**
    * Point.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void point(SoftAssertions softly) throws JsonProcessingException {
+  void point(SoftAssertions softly) {
     Position value = new Position(BigDecimal.ZERO, BigDecimal.ZERO);
     Point model = new Point();
     model.setCoordinates(value);
@@ -46,10 +44,9 @@ class JsonTest {
    * Line string.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void lineString(SoftAssertions softly) throws JsonProcessingException {
+  void lineString(SoftAssertions softly) {
     List<Position> value = Arrays.asList(
         new Position(BigDecimal.ZERO, BigDecimal.ZERO),
         new Position(BigDecimal.ONE, BigDecimal.ONE));
@@ -72,10 +69,9 @@ class JsonTest {
    * Polygon.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void polygon(SoftAssertions softly) throws JsonProcessingException {
+  void polygon(SoftAssertions softly) {
     List<Position> e0 = Arrays.asList(
         new Position(BigDecimal.ZERO, BigDecimal.ZERO),
         new Position(BigDecimal.ONE, BigDecimal.ONE));
@@ -102,10 +98,9 @@ class JsonTest {
    * Multi point.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void multiPoint(SoftAssertions softly) throws JsonProcessingException {
+  void multiPoint(SoftAssertions softly) {
     List<Position> value = Arrays.asList(
         new Position(BigDecimal.ZERO, BigDecimal.ZERO),
         new Position(BigDecimal.ONE, BigDecimal.ONE));
@@ -128,10 +123,9 @@ class JsonTest {
    * Multi line string.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void multiLineString(SoftAssertions softly) throws JsonProcessingException {
+  void multiLineString(SoftAssertions softly) {
     List<Position> e0 = Arrays.asList(
         new Position(BigDecimal.ZERO, BigDecimal.ZERO),
         new Position(BigDecimal.ONE, BigDecimal.ONE));
@@ -159,10 +153,9 @@ class JsonTest {
    * Multi polygon.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void multiPolygon(SoftAssertions softly) throws JsonProcessingException {
+  void multiPolygon(SoftAssertions softly) {
     List<Position> e0 = Arrays.asList(
         new Position(BigDecimal.ZERO, BigDecimal.ZERO),
         new Position(BigDecimal.ONE, BigDecimal.ONE));
@@ -192,10 +185,9 @@ class JsonTest {
    * Geometry collection.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void geometryCollection(SoftAssertions softly) throws JsonProcessingException {
+  void geometryCollection(SoftAssertions softly) {
     List<Geometry> value = Arrays.asList(
         Point.builder().coordinates(new Position(BigDecimal.ONE, BigDecimal.ONE)).build(),
         Point.builder().coordinates(new Position(BigDecimal.TEN, BigDecimal.ZERO)).build());
@@ -229,10 +221,9 @@ class JsonTest {
    * Feature.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void feature(SoftAssertions softly) throws JsonProcessingException {
+  void feature(SoftAssertions softly) {
     Feature model = getFeature();
 
     String json = OM.writeValueAsString(model);
@@ -255,10 +246,9 @@ class JsonTest {
    * Feature collection.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void featureCollection(SoftAssertions softly) throws JsonProcessingException {
+  void featureCollection(SoftAssertions softly) {
     BoundingBox boundingBox = new BoundingBox(
         List.of(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
     FeatureCollection model = new FeatureCollection(boundingBox, List.of(getFeature()));

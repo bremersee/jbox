@@ -35,6 +35,7 @@ import org.springframework.data.domain.Sort;
  * @param <T> the content type
  * @author Christian Bremer
  */
+@SuppressWarnings("unused")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Schema(description = "The page for json deserialization.")
@@ -47,6 +48,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * Instantiates a new json page transfer object.
    */
   protected JsonPageDto() {
+    super();
   }
 
   /**
@@ -57,7 +59,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * @param size the size
    * @param totalElements the total elements
    */
-  protected JsonPageDto(List<? extends T> content, int number, int size, long totalElements) {
+  public JsonPageDto(List<? extends T> content, int number, int size, long totalElements) {
     super(content, number, size, totalElements);
   }
 
@@ -70,7 +72,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  protected JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
+  public JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
       SortOrder sort) {
     super(content, number, size, totalElements, sort);
   }
@@ -84,7 +86,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    * @param totalElements the total elements
    * @param sort the sort
    */
-  protected JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
+  public JsonPageDto(List<? extends T> content, int number, int size, long totalElements,
       Sort sort) {
     super(content, number, size, totalElements, sort);
   }
@@ -94,7 +96,7 @@ public abstract class JsonPageDto<T> extends AbstractPageDto<T> {
    *
    * @param page the page
    */
-  protected JsonPageDto(Page<? extends T> page) {
+  public JsonPageDto(Page<? extends T> page) {
     super(page);
   }
 

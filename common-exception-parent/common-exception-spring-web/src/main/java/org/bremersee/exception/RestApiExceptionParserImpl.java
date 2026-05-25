@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.StringUtils.hasText;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,11 +32,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ObjectUtils;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
- * The default implementation of a http response parser that creates a {@link RestApiException}.
+ * The default implementation of an http response parser that creates a {@link RestApiException}.
  *
  * @author Christian Bremer
  */
@@ -45,7 +46,7 @@ public class RestApiExceptionParserImpl implements RestApiExceptionParser {
 
   private static final Log log = LogFactory.getLog(RestApiExceptionParserImpl.class);
 
-  private final ObjectMapper objectMapper;
+  private final JsonMapper jsonMapper;
 
   private final XmlMapper xmlMapper;
 
@@ -55,7 +56,7 @@ public class RestApiExceptionParserImpl implements RestApiExceptionParser {
    * Instantiates a new rest api exception parser.
    */
   public RestApiExceptionParserImpl() {
-    this(new Jackson2ObjectMapperBuilder());
+    this(StandardCharsets.UTF_8);
   }
 
   /**
@@ -64,59 +65,38 @@ public class RestApiExceptionParserImpl implements RestApiExceptionParser {
    * @param defaultCharset the default charset
    */
   public RestApiExceptionParserImpl(Charset defaultCharset) {
-    this(new Jackson2ObjectMapperBuilder(), defaultCharset);
+    this(null, null, defaultCharset);
   }
 
   /**
    * Instantiates a new rest api exception parser.
    *
-   * @param objectMapperBuilder the object mapper builder
-   */
-  public RestApiExceptionParserImpl(Jackson2ObjectMapperBuilder objectMapperBuilder) {
-    this(objectMapperBuilder.build(), objectMapperBuilder.createXmlMapper(true).build());
-  }
-
-  /**
-   * Instantiates a new rest api exception parser.
-   *
-   * @param objectMapperBuilder the object mapper builder
-   * @param charset the charset
-   */
-  public RestApiExceptionParserImpl(
-      Jackson2ObjectMapperBuilder objectMapperBuilder,
-      Charset charset) {
-    this(objectMapperBuilder.build(), objectMapperBuilder.createXmlMapper(true).build(), charset);
-  }
-
-  /**
-   * Instantiates a new rest api exception parser.
-   *
-   * @param objectMapper the object mapper
+   * @param jsonMapper the object mapper
    * @param xmlMapper the xml mapper
    */
-  public RestApiExceptionParserImpl(ObjectMapper objectMapper, XmlMapper xmlMapper) {
-    this(objectMapper, xmlMapper, null);
+  public RestApiExceptionParserImpl(JsonMapper jsonMapper, XmlMapper xmlMapper) {
+    this(jsonMapper, xmlMapper, null);
   }
 
   /**
    * Instantiates a new rest api exception parser.
    *
-   * @param objectMapper the object mapper
+   * @param jsonMapper the object mapper
    * @param xmlMapper the xml mapper
    * @param defaultCharset the default charset
    */
   public RestApiExceptionParserImpl(
-      ObjectMapper objectMapper,
+      JsonMapper jsonMapper,
       XmlMapper xmlMapper,
       Charset defaultCharset) {
-    this.objectMapper = objectMapper;
-    this.xmlMapper = xmlMapper;
+    this.jsonMapper = Objects.requireNonNullElseGet(jsonMapper, () -> JsonMapper.builder().build());
+    this.xmlMapper = Objects.requireNonNullElseGet(xmlMapper, () -> XmlMapper.builder().build());
     this.defaultCharset = Optional.ofNullable(defaultCharset)
         .orElse(StandardCharsets.UTF_8);
   }
 
-  private ObjectMapper getJsonMapper() {
-    return objectMapper;
+  private JsonMapper getJsonMapper() {
+    return jsonMapper;
   }
 
   private XmlMapper getXmlMapper() {

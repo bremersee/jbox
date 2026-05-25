@@ -18,14 +18,9 @@ package org.bremersee.geojson;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Geometry;
@@ -36,6 +31,8 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The geo json object mapper module test.
@@ -47,55 +44,15 @@ class GeoJsonObjectMapperModuleTest {
 
   private static final GeoJsonGeometryFactory geometryFactory = new GeoJsonGeometryFactory();
 
-  private static final ObjectMapper target = JsonMapper.builder().build();
-
-  /**
-   * Init.
-   */
-  @BeforeAll
-  static void init() {
-    target.registerModule(new GeoJsonObjectMapperModule(geometryFactory, true, true));
-  }
-
-  /**
-   * Configure.
-   *
-   * @param softly the softly
-   */
-  @Test
-  void configure(SoftAssertions softly) {
-    ObjectMapper om = JsonMapper.builder().build();
-    om.registerModule(new GeoJsonObjectMapperModule());
-    softly.assertThat(om.getRegisteredModuleIds())
-        .anyMatch(module -> GeoJsonObjectMapperModule.TYPE_ID
-            .equals(String.valueOf(module)));
-
-    om = new ObjectMapper();
-    om.registerModule(new GeoJsonObjectMapperModule(false, true));
-    softly.assertThat(om.getRegisteredModuleIds())
-        .anyMatch(module -> GeoJsonObjectMapperModule.TYPE_ID
-            .equals(String.valueOf(module)));
-
-    om = new ObjectMapper();
-    om.registerModule(new GeoJsonObjectMapperModule(new GeoJsonGeometryFactory()));
-    softly.assertThat(om.getRegisteredModuleIds())
-        .anyMatch(module -> GeoJsonObjectMapperModule.TYPE_ID
-            .equals(String.valueOf(module)));
-
-    om = new ObjectMapper();
-    om.registerModule(new GeoJsonObjectMapperModule(new GeoJsonGeometryFactory(), true, false));
-    softly.assertThat(om.getRegisteredModuleIds())
-        .anyMatch(module -> GeoJsonObjectMapperModule.TYPE_ID
-            .equals(String.valueOf(module)));
-  }
+  private static final JsonMapper target = JsonMapper.builder()
+      .addModules(new GeoJsonObjectMapperModule(geometryFactory, true, true))
+      .build();
 
   /**
    * Map point.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapPoint() throws Exception {
+  void mapPoint() {
     var expected = geometryFactory.createPoint(1.234, 5.6789);
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
     System.out.println(json);
@@ -107,11 +64,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map line string.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapLineString() throws Exception {
+  void mapLineString() {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "LINESTRING (0 0, 0 1, 1 1, 1 0, 0 0)");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
@@ -124,11 +79,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map polygon.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapPolygon() throws Exception {
+  void mapPolygon() {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
@@ -141,11 +94,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map multi point.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapMultiPoint() throws Exception {
+  void mapMultiPoint() {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "MULTIPOINT ((1 2), (6 7))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
@@ -158,11 +109,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map multi line string.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapMultiLineString() throws Exception {
+  void mapMultiLineString() {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "MULTILINESTRING ((0 0, 0 1, 1 1, 1 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
@@ -175,11 +124,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map multi polygon.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapMultiPolygon() throws Exception {
+  void mapMultiPolygon() {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)), ((0 0, 0 1, 1 1, 1 0, 0 0), "
             + "(0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2 0.1, 0.1 0.1), "
@@ -194,11 +141,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map geometry collection.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapGeometryCollection() throws Exception {
+  void mapGeometryCollection() {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "GEOMETRYCOLLECTION (POINT (-17.8 -6.001), LINESTRING (0 0, 0 1, 1 1, 1 0, 0 0), "
             + "POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0)), MULTIPOINT ((5.5 -3.3)), "
@@ -217,11 +162,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map feature.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapFeature() throws Exception {
+  void mapFeature() {
     var lineString = geometryFactory.createGeometryFromWellKnownText(
         "LINESTRING (0 0, 0 1, 1 1, 1 0, 0 0)");
     var expected = new GeoJsonFeature<Geometry, Map<String, Object>>(
@@ -240,11 +183,9 @@ class GeoJsonObjectMapperModuleTest {
 
   /**
    * Map feature collection.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void mapFeatureCollection() throws Exception {
+  void mapFeatureCollection() {
     var lineString = geometryFactory.createGeometryFromWellKnownText(
         "LINESTRING (0 0, 0 1, 1 1, 1 0, 0 0)");
     var f0 = new GeoJsonFeature<Geometry, Object>(

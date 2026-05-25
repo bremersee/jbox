@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.bremersee.geojson.converter;
 
 import lombok.NoArgsConstructor;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
+import org.jspecify.annotations.NonNull;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 
 /**
  * The string to polygon converter.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,8 +79,8 @@ public class RestApiExceptionMapperBootProperties {
   private ExceptionMappingImpl defaultExceptionMapping;
 
   /**
-   * Values ​​of errors whose values ​​can not be determined automatically. The name of the
-   * exception can be a package, too (e. g. org.bremersee.foobar.*).
+   * Values of errors whose values can not be determined automatically. The name of the
+   * exception can be a package, too (e.g. org.bremersee.foobar.*).
    *
    * <p>Examples application.yml:
    * <pre>
@@ -141,7 +141,7 @@ public class RestApiExceptionMapperBootProperties {
    * </tbody>
    * </table>
    *
-   * <p>If two values of a key are available (e. g. per annotation (see {@link
+   * <p>If two values of a key are available (e.g. per annotation (see {@link
    * org.springframework.web.bind.annotation.ResponseStatus}) and member attribute) it is possible
    * with {@code evaluateAnnotationFirst} to specify which one should be used.
    */
@@ -149,7 +149,7 @@ public class RestApiExceptionMapperBootProperties {
 
   /**
    * Specifies mapping configuration per exception class.  The name of the exception can be a
-   * package, too (e. g. org.bremersee.foobar.*).
+   * package, too (e.g. org.bremersee.foobar.*).
    *
    * <p>Examples application.yml:
    * <pre>

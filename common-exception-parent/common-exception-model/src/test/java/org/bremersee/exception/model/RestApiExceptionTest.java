@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+* Copyright 2018-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,6 @@ package org.bremersee.exception.model;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator.Feature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -35,6 +29,8 @@ import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * The rest api exception test.
@@ -344,10 +340,9 @@ class RestApiExceptionTest {
    * Json.
    *
    * @param softly the soft assertions
-   * @throws Exception the exception
    */
   @Test
-  void json(SoftAssertions softly) throws Exception {
+  void json(SoftAssertions softly) {
     RestApiException cause = RestApiException.builder()
         .id(UUID.randomUUID().toString())
         .application("test")
@@ -378,22 +373,18 @@ class RestApiExceptionTest {
         .stackTrace(Arrays.asList(i0, i1))
         .errorCodeInherited(true)
         .errorCode(cause.getErrorCode())
-        .path("(api/something")
+        .path("/api/something")
         .id("5678")
         .message("Something went wrong.")
         .application("junit")
         .timestamp(OffsetDateTime.parse("2007-12-24T18:21Z", ISO_OFFSET_DATE_TIME))
         .build();
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new Jdk8Module());
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    objectMapper.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+    JsonMapper jsonMapper = JsonMapper.builder().build();
 
-    String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(model);
+    String json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(model);
 
-    RestApiException actualModel = objectMapper.readValue(json, RestApiException.class);
+    RestApiException actualModel = jsonMapper.readValue(json, RestApiException.class);
     softly.assertThat(actualModel).isEqualTo(model);
   }
 
@@ -401,10 +392,9 @@ class RestApiExceptionTest {
    * Xml.
    *
    * @param softly the soft assertions
-   * @throws Exception the exception
    */
   @Test
-  void xml(SoftAssertions softly) throws Exception {
+  void xml(SoftAssertions softly) {
     RestApiException cause = RestApiException.builder()
         .id(UUID.randomUUID().toString())
         .application("test")
@@ -435,7 +425,7 @@ class RestApiExceptionTest {
         .stackTrace(Arrays.asList(i0, i1))
         .errorCodeInherited(true)
         .errorCode(cause.getErrorCode())
-        .path("(api/something")
+        .path("/api/something")
         .id("5678")
         .message("Something went wrong.")
         .application("junit")
@@ -443,12 +433,8 @@ class RestApiExceptionTest {
         .build();
     model.furtherDetails("custom", "A custom information");
 
-    XmlMapper xmlMapper = new XmlMapper();
-    xmlMapper.registerModule(new Jdk8Module());
-    xmlMapper.registerModule(new JavaTimeModule());
-    xmlMapper.enable(Feature.WRITE_XML_DECLARATION);
-    xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    xmlMapper.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+    XmlMapper xmlMapper = XmlMapper.builder().build();
+
     String xml = xmlMapper
         .writerWithDefaultPrettyPrinter()
         .writeValueAsString(model);

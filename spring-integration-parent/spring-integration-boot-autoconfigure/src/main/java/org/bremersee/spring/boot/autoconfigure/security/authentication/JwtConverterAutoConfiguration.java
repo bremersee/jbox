@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 the original author or authors.
+ * Copyright 2024-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.security.autoconfigure.web.reactive.ReactiveWebSecurityAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.convert.converter.Converter;
@@ -47,15 +47,17 @@ import org.springframework.util.ClassUtils;
  *
  * @author Christian Bremer
  */
-@AutoConfiguration(
-    before = {
-        SecurityAutoConfiguration.class,
-        ReactiveSecurityAutoConfiguration.class
-    })
 @ConditionalOnClass(name = {
     "org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter",
-    "org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter"
+    "org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter",
+    "org.springframework.boot.security.autoconfigure.web.reactive.ReactiveWebSecurityAutoConfiguration",
+    "org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration"
 })
+@AutoConfiguration(
+    before = {
+        ServletWebSecurityAutoConfiguration.class,
+        ReactiveWebSecurityAutoConfiguration.class
+    })
 @ConditionalOnProperty(
     prefix = "spring.security.oauth2.resourceserver.jwt",
     name = "jwk-set-uri")

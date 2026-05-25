@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ import org.bremersee.comparator.model.SortOrderItem;
 import org.bremersee.comparator.model.SortOrderItem.CaseHandling;
 import org.bremersee.comparator.model.SortOrderTextSeparators;
 import org.bremersee.comparator.spring.converter.SortOrderConverter;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.NullHandling;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 /**
  * This mapper provides methods to transform a {@link SortOrderItem} into a {@code Sort} object from
@@ -124,7 +124,6 @@ public interface SortMapper {
    * @param sortOrderItem the sort order
    * @return the sort object
    */
-  @Nullable
   default Sort.Order toSortOrder(@Nullable SortOrderItem sortOrderItem) {
     if (sortOrderItem == null || sortOrderItem.getField() == null) {
       return null;
@@ -167,7 +166,7 @@ public interface SortMapper {
    * @return the sort order
    */
   @Nullable
-  default SortOrderItem fromSortOrder(@Nullable Sort.Order sortOrder) {
+  default SortOrderItem fromSortOrder(Sort.Order sortOrder) {
     if (isNull(sortOrder)) {
       return null;
     }

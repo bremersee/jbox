@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 /**
  * The sort order converter integration test configuration.
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration
+@EnableSpringDataWebSupport
 @ComponentScan(basePackageClasses = {TestRestController.class})
 public class SortOrderConverterIntegrationTestConfiguration {
 

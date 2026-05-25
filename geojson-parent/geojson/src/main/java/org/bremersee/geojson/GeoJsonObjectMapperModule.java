@@ -18,14 +18,8 @@ package org.bremersee.geojson;
 
 import static java.util.Objects.isNull;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.bremersee.geojson.converter.deserialization.JacksonGeometryDeserializer;
@@ -39,6 +33,10 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import tools.jackson.core.Version;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.module.SimpleDeserializers;
+import tools.jackson.databind.module.SimpleModule;
 
 /**
  * A Jackson JSON processor module that provides the processing (serialization and deserialization)
@@ -103,16 +101,15 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
       GeometryFactory geometryFactory,
       boolean withBoundingBox,
       boolean useBigDecimal) {
-    super(
-        TYPE_ID,
-        getVersion(),
-        getDeserializers(geometryFactory),
-        getSerializers(withBoundingBox, useBigDecimal));
+
+    super(TYPE_ID, getVersion());
+    setDeserializers(new SimpleDeserializers(getDeserializers(geometryFactory)));
+    addSerializer(Geometry.class, new JacksonGeometrySerializer(withBoundingBox, useBigDecimal));
   }
 
   private static Version getVersion() {
 
-    int defaultMajor = 5;
+    int defaultMajor = 6;
     int defaultMinor = 0;
     int defaultPatchLevel = 0;
     String defaultSnapshotInfo = "SNAPSHOT";
@@ -147,13 +144,13 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
         "geojson");
   }
 
-  private static Map<Class<?>, JsonDeserializer<?>> getDeserializers(
+  private static Map<Class<?>, ValueDeserializer<?>> getDeserializers(
       GeometryFactory geometryFactory) {
 
     GeometryFactory gf = isNull(geometryFactory)
         ? new GeoJsonGeometryFactory()
         : geometryFactory;
-    HashMap<Class<?>, JsonDeserializer<?>> map = new HashMap<>();
+    HashMap<Class<?>, ValueDeserializer<?>> map = new HashMap<>();
     map.put(Geometry.class, new JacksonGeometryDeserializer(gf));
     map.put(Point.class, new JacksonGeometryDeserializer(gf));
     map.put(LineString.class, new JacksonGeometryDeserializer(gf));
@@ -163,13 +160,6 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
     map.put(MultiPolygon.class, new JacksonGeometryDeserializer(gf));
     map.put(GeometryCollection.class, new JacksonGeometryDeserializer(gf));
     return map;
-  }
-
-  private static List<JsonSerializer<?>> getSerializers(boolean withBoundingBox,
-      boolean useBigDecimal) {
-    ArrayList<JsonSerializer<?>> list = new ArrayList<>();
-    list.add(new JacksonGeometrySerializer(withBoundingBox, useBigDecimal));
-    return list;
   }
 
 }

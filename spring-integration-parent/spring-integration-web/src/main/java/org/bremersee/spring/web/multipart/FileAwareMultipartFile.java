@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.lang.NonNull;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -293,9 +293,8 @@ public class FileAwareMultipartFile implements MultipartFile {
     return isFileValid() ? file.length() : 0;
   }
 
-  @NonNull
   @Override
-  public byte[] getBytes() throws IOException {
+  public byte @NonNull [] getBytes() throws IOException {
     return isEmpty() ? new byte[0] : FileCopyUtils.copyToByteArray(new FileInputStream(file));
   }
 

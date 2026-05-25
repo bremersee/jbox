@@ -16,12 +16,10 @@
 
 package org.bremersee.geojson.converter.serialization;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
-import java.io.Serial;
 import org.locationtech.jts.geom.Geometry;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 /**
  * A Jackson serializer for a {@link Geometry}.
@@ -29,9 +27,6 @@ import org.locationtech.jts.geom.Geometry;
  * @author Christian Bremer
  */
 public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
-
-  @Serial
-  private static final long serialVersionUID = 3L;
 
   /**
    * The geometry to json converter.
@@ -52,7 +47,7 @@ public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
    * @param useBigDecimal the use big decimal
    */
   public JacksonGeometrySerializer(boolean withBoundingBox, boolean useBigDecimal) {
-    super(Geometry.class, false);
+    super(Geometry.class);
     this.converter = new GeometryToJsonConverter(withBoundingBox, useBigDecimal);
   }
 
@@ -60,13 +55,12 @@ public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
   public void serialize(
       Geometry value,
       JsonGenerator jgen,
-      SerializerProvider provider)
-      throws IOException {
+      SerializationContext serializationContext) {
 
     if (value == null) {
       jgen.writeNull();
     } else {
-      jgen.writeObject(converter.convert(value));
+      jgen.writePOJO(converter.convert(value));
     }
   }
 

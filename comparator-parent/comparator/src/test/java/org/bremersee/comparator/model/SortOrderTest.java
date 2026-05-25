@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.bremersee.comparator.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.list;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -35,6 +34,7 @@ import org.bremersee.comparator.model.SortOrderItem.NullHandling;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The sort order tests.
@@ -91,11 +91,9 @@ class SortOrderTest {
 
   /**
    * Test read and write json of sort order.
-   *
-   * @throws Exception the exception
    */
   @Test
-  void testJsonSortOrders() throws Exception {
+  void testJsonSortOrders() {
     SortOrderItem sortOrderItem0 = new SortOrderItem(
         "i0", Direction.ASC, CaseHandling.SENSITIVE, NullHandling.NULLS_FIRST);
     SortOrderItem sortOrderItem1 = new SortOrderItem(
@@ -105,7 +103,7 @@ class SortOrderTest {
 
     SortOrder sortOrder = new SortOrder(List.of(sortOrderItem0, sortOrderItem1, sortOrderItem2));
 
-    ObjectMapper om = new ObjectMapper();
+    JsonMapper om = JsonMapper.builder().build();
 
     String jsonStr = om.writerWithDefaultPrettyPrinter().writeValueAsString(sortOrder);
 

@@ -5,11 +5,11 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import org.bremersee.spring.boot.autoconfigure.data.mongo.MongoCustomConversionsFilter.DefaultFilter;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
-import org.springframework.lang.NonNull;
 
 /**
  * The type Mongo custom conversions filter test.

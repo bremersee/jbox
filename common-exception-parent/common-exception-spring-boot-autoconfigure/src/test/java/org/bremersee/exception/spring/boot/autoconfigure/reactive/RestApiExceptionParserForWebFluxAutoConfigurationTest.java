@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,15 @@ package org.bremersee.exception.spring.boot.autoconfigure.reactive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.bremersee.exception.RestApiExceptionParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
- * The rest api exception parser auto configuration test.
+ * The rest api exception parser autoconfiguration test.
  *
  * @author Christian Bremer
  */
@@ -58,15 +56,9 @@ class RestApiExceptionParserForWebFluxAutoConfigurationTest {
   @Test
   void restApiExceptionParser() {
     RestApiExceptionParser actual = target
-        .restApiExceptionParser(objectMapperBuilderProvider());
+        .restApiExceptionParser(JsonMapper.builder(), XmlMapper.builder());
     assertThat(actual)
         .isNotNull();
   }
 
-  private ObjectProvider<Jackson2ObjectMapperBuilder> objectMapperBuilderProvider() {
-    //noinspection unchecked
-    ObjectProvider<Jackson2ObjectMapperBuilder> provider = mock(ObjectProvider.class);
-    when(provider.getIfAvailable()).thenReturn(new Jackson2ObjectMapperBuilder());
-    return provider;
-  }
 }

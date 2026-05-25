@@ -25,8 +25,8 @@ import java.util.Optional;
 import org.bremersee.comparator.model.SortOrder;
 import org.bremersee.comparator.model.SortOrderItem;
 import org.bremersee.comparator.model.SortOrderTextSeparators;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ValueConstants;
 
 /**

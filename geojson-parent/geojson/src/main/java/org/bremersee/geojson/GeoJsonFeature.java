@@ -25,8 +25,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Arrays;
 import java.util.Objects;
@@ -34,6 +32,8 @@ import org.bremersee.geojson.converter.deserialization.JacksonGeometryDeserializ
 import org.bremersee.geojson.converter.serialization.JacksonGeometrySerializer;
 import org.bremersee.geojson.model.UnknownAware;
 import org.locationtech.jts.geom.Geometry;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 /**
  * A GeoJSON object with the type {@code Feature} (see

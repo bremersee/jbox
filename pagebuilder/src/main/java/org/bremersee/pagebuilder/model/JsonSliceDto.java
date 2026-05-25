@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 the original author or authors.
+ * Copyright 2025-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.springframework.data.domain.Sort;
  * @param <T> the content type
  * @author Christian Bremer
  */
+@SuppressWarnings("unused")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Schema(description = "The slice for json deserialization.")
@@ -47,6 +48,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * Instantiates a new slice data transfer object.
    */
   protected JsonSliceDto() {
+    super();
   }
 
   /**
@@ -57,7 +59,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * @param size the size
    * @param hasNext the has next
    */
-  protected JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext) {
+  public JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext) {
     super(content, number, size, hasNext);
   }
 
@@ -70,7 +72,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * @param hasNext the has next
    * @param sort the sort
    */
-  protected JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
+  public JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
       SortOrder sort) {
     super(content, number, size, hasNext, sort);
   }
@@ -84,7 +86,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    * @param hasNext the has next
    * @param sort the sort
    */
-  protected JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
+  public JsonSliceDto(List<? extends T> content, int number, int size, boolean hasNext,
       Sort sort) {
     super(content, number, size, hasNext, sort);
   }
@@ -94,7 +96,7 @@ public abstract class JsonSliceDto<T> extends AbstractSliceDto<T> {
    *
    * @param slice the slice
    */
-  protected JsonSliceDto(Slice<? extends T> slice) {
+  public JsonSliceDto(Slice<? extends T> slice) {
     super(slice);
   }
 

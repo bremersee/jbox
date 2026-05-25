@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.bremersee.exception.servlet.ApiExceptionResolver.MODEL_KEY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -94,8 +93,6 @@ class ApiExceptionResolverTest {
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getServletPath()).thenReturn("/api/resource");
     when(request.getRequestURI()).thenReturn("/api/resource");
-    when(request.getHeaderNames())
-        .thenReturn(Collections.enumeration(List.of(HttpHeaders.ACCEPT)));
     when(request.getHeaders(HttpHeaders.ACCEPT))
         .thenReturn(Collections.enumeration(List.of(MediaType.APPLICATION_JSON_VALUE)));
 
@@ -139,8 +136,6 @@ class ApiExceptionResolverTest {
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getServletPath()).thenReturn("/api/resource");
     when(request.getRequestURI()).thenReturn("/api/resource");
-    when(request.getHeaderNames())
-        .thenReturn(Collections.enumeration(List.of(HttpHeaders.ACCEPT)));
     when(request.getHeaders(HttpHeaders.ACCEPT))
         .thenReturn(Collections.enumeration(List.of(MediaType.APPLICATION_XML_VALUE)));
 
@@ -182,9 +177,7 @@ class ApiExceptionResolverTest {
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getServletPath()).thenReturn("/api/resource");
     when(request.getRequestURI()).thenReturn("/api/resource");
-    when(request.getHeaderNames())
-        .thenReturn(Collections.enumeration(List.of(HttpHeaders.ACCEPT)));
-    when(request.getHeaders(eq(HttpHeaders.ACCEPT)))
+    when(request.getHeaders(HttpHeaders.ACCEPT))
         .thenReturn(Collections.enumeration(List.of(MediaType.APPLICATION_OCTET_STREAM_VALUE)));
 
     RestApiException expected = RestApiException.builder()
