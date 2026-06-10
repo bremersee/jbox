@@ -50,7 +50,7 @@
     <java.version>21</java.version>
 
     <!-- see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
-    <argLine>-Dorg.bremersee.test.executor=BUILD_SYSTEM</argLine> <!-- BUILD_SYSTEM | NOT_SPECIFIED -->
+    <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine> <!-- BUILD_SYSTEM | NOT_SPECIFIED -->
 
     <jbox.version>6.0.0-SNAPSHOT</jbox.version>
     <spring-boot.version>4.0.6</spring-boot.version>
@@ -67,7 +67,7 @@
     <lombok.version>1.18.42</lombok.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     <mapstruct.version>1.6.3</mapstruct.version>
-    <minio.version>8.6.0</minio.version>
+    <minio.version>9.0.1</minio.version>
     <mock-server.version>5.15.0</mock-server.version>
     <passay.version>1.6.6</passay.version>
     <reflections.version>0.10.2</reflections.version>

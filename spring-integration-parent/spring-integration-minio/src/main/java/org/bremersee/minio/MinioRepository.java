@@ -1,5 +1,5 @@
 /*
-* Copyright 2020-2026 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package org.bremersee.minio;
 
+import io.minio.Http;
 import io.minio.ObjectWriteResponse;
-import io.minio.http.Method;
-import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteResult;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -120,7 +120,7 @@ public interface MinioRepository {
    * @param ids the IDs
    * @return the list
    */
-  List<DeleteError> deleteAll(Collection<MinioObjectId> ids);
+  List<DeleteResult.Error> deleteAll(Collection<MinioObjectId> ids);
 
   /**
    * Gets presigned object url.
@@ -129,7 +129,7 @@ public interface MinioRepository {
    * @param method the method
    * @return the presigned object url
    */
-  default String getPresignedObjectUrl(MinioObjectId id, Method method) {
+  default String getPresignedObjectUrl(MinioObjectId id, Http.Method method) {
     return getPresignedObjectUrl(id, method, null);
   }
 
@@ -143,7 +143,7 @@ public interface MinioRepository {
    */
   String getPresignedObjectUrl(
       MinioObjectId id,
-      Method method,
+      Http.Method method,
       @Nullable Duration duration);
 
 }

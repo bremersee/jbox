@@ -1,5 +1,5 @@
 /*
-* Copyright 2020-2026 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class DefaultMinioErrorHandlerTest {
     assertEquals(ERROR_CODE_PREFIX + "UNSPECIFIED", me.getErrorCode());
     assertEquals("Unmapped minio error.", me.getMessage());
 
-    me = handler.map(new io.minio.errors.MinioException());
+    me = handler.map(new io.minio.errors.MinioException("junit"));
     assertEquals(500, me.status());
 
     me = handler.map(new io.minio.errors.BucketPolicyTooLargeException("bucket-name"));
@@ -110,7 +110,7 @@ class DefaultMinioErrorHandlerTest {
             .code(500)
             .message("Internal server error")
             .request(new Request.Builder()
-                .url("http://example.org")
+                .url("https://example.org")
                 .build())
             .build(),
         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
@@ -123,7 +123,7 @@ class DefaultMinioErrorHandlerTest {
             .code(500)
             .message("Internal server error")
             .request(new Request.Builder()
-                .url("http://example.org")
+                .url("https://example.org")
                 .build())
             .build(),
         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
@@ -137,7 +137,7 @@ class DefaultMinioErrorHandlerTest {
             .code(500)
             .message("Internal server error")
             .request(new Request.Builder()
-                .url("http://example.org")
+                .url("https://example.org")
                 .build())
             .build(),
         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
@@ -151,7 +151,7 @@ class DefaultMinioErrorHandlerTest {
             .code(500)
             .message("Internal server error")
             .request(new Request.Builder()
-                .url("http://example.org")
+                .url("https://example.org")
                 .build())
             .build(),
         HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
