@@ -27,10 +27,10 @@ import org.ldaptive.LdapException;
 import org.ldaptive.ModifyRequest;
 import org.ldaptive.ResultCode;
 import org.ldaptive.SimpleBindRequest;
-import org.passay.CharacterData;
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
+import org.passay.data.CharacterData;
+import org.passay.data.EnglishCharacterData;
+import org.passay.generate.PasswordGenerator;
+import org.passay.rule.CharacterRule;
 
 /**
  * The ldaptive samba template.
@@ -139,7 +139,6 @@ public class LdaptiveSambaTemplate extends LdaptiveTemplate {
   }
 
   private static Supplier<String> getDefaultPasswordGenerator() {
-    PasswordGenerator pwGen = new PasswordGenerator();
     CharacterData special = new CharacterData() {
       @Override
       public String getErrorCode() {
@@ -163,7 +162,7 @@ public class LdaptiveSambaTemplate extends LdaptiveTemplate {
 
         // at least one special character
         new CharacterRule(special, 1));
-    return () -> pwGen.generatePassword(16, rules);
+    return () -> new PasswordGenerator(16, rules).generate().toString();
   }
 
 }
