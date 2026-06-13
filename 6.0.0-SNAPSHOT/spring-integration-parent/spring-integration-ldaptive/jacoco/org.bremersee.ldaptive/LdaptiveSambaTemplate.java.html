@@ -27,10 +27,10 @@ import org.ldaptive.LdapException;
 import org.ldaptive.ModifyRequest;
 import org.ldaptive.ResultCode;
 import org.ldaptive.SimpleBindRequest;
-import org.passay.CharacterData;
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
+import org.passay.data.CharacterData;
+import org.passay.data.EnglishCharacterData;
+import org.passay.generate.PasswordGenerator;
+import org.passay.rule.CharacterRule;
 
 /**
  * The ldaptive samba template.
@@ -139,19 +139,18 @@ public class LdaptiveSambaTemplate extends LdaptiveTemplate {
 <span class="fc" id="L139">  }</span>
 
   private static Supplier&lt;String&gt; getDefaultPasswordGenerator() {
-<span class="fc" id="L142">    PasswordGenerator pwGen = new PasswordGenerator();</span>
-<span class="fc" id="L143">    CharacterData special = new CharacterData() {</span>
+<span class="fc" id="L142">    CharacterData special = new CharacterData() {</span>
       @Override
       public String getErrorCode() {
-<span class="nc" id="L146">        return &quot;INSUFFICIENT_SPECIAL&quot;;</span>
+<span class="nc" id="L145">        return &quot;INSUFFICIENT_SPECIAL&quot;;</span>
       }
 
       @Override
       public String getCharacters() {
-<span class="fc" id="L151">        return &quot;!#$%&amp;'()*+,-./:;&lt;=&gt;?@[]_{|}~&quot;;</span>
+<span class="fc" id="L150">        return &quot;!#$%&amp;'()*+,-./:;&lt;=&gt;?@[]_{|}~&quot;;</span>
       }
     };
-<span class="fc" id="L154">    List&lt;CharacterRule&gt; rules = List.of(</span>
+<span class="fc" id="L153">    List&lt;CharacterRule&gt; rules = List.of(</span>
         // at least five upper-case character
         new CharacterRule(EnglishCharacterData.UpperCase, 5),
 
@@ -163,7 +162,7 @@ public class LdaptiveSambaTemplate extends LdaptiveTemplate {
 
         // at least one special character
         new CharacterRule(special, 1));
-<span class="fc" id="L166">    return () -&gt; pwGen.generatePassword(16, rules);</span>
+<span class="fc" id="L165">    return () -&gt; new PasswordGenerator(16, rules).generate().toString();</span>
   }
 
 }

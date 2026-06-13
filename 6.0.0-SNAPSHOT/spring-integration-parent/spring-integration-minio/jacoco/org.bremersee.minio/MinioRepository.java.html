@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinioRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Minio</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.minio</a> &gt; <span class="el_source">MinioRepository.java</span></div><h1>MinioRepository.java</h1><pre class="source lang-java linenums">/*
-* Copyright 2020-2026 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package org.bremersee.minio;
 
+import io.minio.Http;
 import io.minio.ObjectWriteResponse;
-import io.minio.http.Method;
-import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteResult;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -120,7 +120,7 @@ public interface MinioRepository {
    * @param ids the IDs
    * @return the list
    */
-  List&lt;DeleteError&gt; deleteAll(Collection&lt;MinioObjectId&gt; ids);
+  List&lt;DeleteResult.Error&gt; deleteAll(Collection&lt;MinioObjectId&gt; ids);
 
   /**
    * Gets presigned object url.
@@ -129,7 +129,7 @@ public interface MinioRepository {
    * @param method the method
    * @return the presigned object url
    */
-  default String getPresignedObjectUrl(MinioObjectId id, Method method) {
+  default String getPresignedObjectUrl(MinioObjectId id, Http.Method method) {
 <span class="fc" id="L133">    return getPresignedObjectUrl(id, method, null);</span>
   }
 
@@ -143,7 +143,7 @@ public interface MinioRepository {
    */
   String getPresignedObjectUrl(
       MinioObjectId id,
-      Method method,
+      Http.Method method,
       @Nullable Duration duration);
 
 }

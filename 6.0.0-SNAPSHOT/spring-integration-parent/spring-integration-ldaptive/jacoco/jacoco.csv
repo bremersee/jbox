@@ -12,7 +12,7 @@ Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveProperties.Connection
 Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveEntryMapper,1,36,1,1,0,7,1,6,0,6
 Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveProperties.ConnectionValidatorProperties,0,34,0,2,0,9,0,3,0,2
 Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveOperations,0,114,0,0,0,26,0,13,0,13
-Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveSambaTemplate,0,189,1,5,0,42,1,10,0,8
+Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveSambaTemplate,0,187,1,5,0,41,1,10,0,8
 Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveProperties.SslProperties,42,20,9,3,11,7,6,2,0,2
 Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveProperties.ConnectionStrategy,0,50,0,0,0,9,0,3,0,3
 Spring Integration Ldaptive,org.bremersee.ldaptive,LdaptiveAttribute.Specification,0,18,0,0,0,7,0,1,0,1
