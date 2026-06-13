@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeometryToJsonConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GeoJSON with JTS Topology Suite</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.geojson.converter.serialization</a> &gt; <span class="el_source">GeometryToJsonConverter.java</span></div><h1>GeometryToJsonConverter.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.geojson.converter.serialization;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.isNull;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.bremersee.geojson.GeoJsonConstants;
+import org.bremersee.geojson.GeoJsonGeometryFactory;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+
+/**
+ * The geometry to json converter.
+ *
+ * @author Christian Bremer
+ */
+public class GeometryToJsonConverter implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * The point converter.
+   */
+  private final PointToJsonConverter pointConverter;
+
+  /**
+   * The Line string converter.
+   */
+  private final LineStringToJsonConverter lineStringConverter;
+
+  /**
+   * The Polygon converter.
+   */
+  private final PolygonToJsonConverter polygonConverter;
+
+  /**
+   * The Multi point converter.
+   */
+  private final MultiPointToJsonConverter multiPointConverter;
+
+  /**
+   * The Multi line string converter.
+   */
+  private final MultiLineStringToJsonConverter multiLineStringConverter;
+
+  /**
+   * The Multi polygon converter.
+   */
+  private final MultiPolygonToJsonConverter multiPolygonConverter;
+
+  /**
+   * Specifies whether a bounding box should be generated or not.
+   */
+  private final boolean withBoundingBox;
+
+  /**
+   * Instantiates a new geometry to json converter.
+   */
+  public GeometryToJsonConverter() {
+<span class="fc" id="L92">    this(false, false);</span>
+<span class="fc" id="L93">  }</span>
+
+  /**
+   * Instantiates a new geometry to json converter.
+   *
+   * @param withBoundingBox with bounding box
+   * @param useBigDecimal use big decimal
+   */
+<span class="fc" id="L101">  public GeometryToJsonConverter(boolean withBoundingBox, boolean useBigDecimal) {</span>
+<span class="fc" id="L102">    CoordinateToListConverter coordinateConverter = new CoordinateToListConverter(useBigDecimal);</span>
+<span class="fc" id="L103">    CoordinateSequenceToListConverter coordinateSequenceConverter</span>
+        = new CoordinateSequenceToListConverter(coordinateConverter);
+
+<span class="fc" id="L106">    pointConverter = new PointToJsonConverter(coordinateConverter, withBoundingBox);</span>
+<span class="fc" id="L107">    lineStringConverter = new LineStringToJsonConverter(</span>
+        coordinateSequenceConverter,
+        withBoundingBox);
+<span class="fc" id="L110">    polygonConverter = new PolygonToJsonConverter(coordinateSequenceConverter, withBoundingBox);</span>
+
+<span class="fc" id="L112">    multiPointConverter = new MultiPointToJsonConverter(pointConverter, withBoundingBox);</span>
+<span class="fc" id="L113">    multiLineStringConverter = new MultiLineStringToJsonConverter(</span>
+        lineStringConverter,
+        withBoundingBox);
+<span class="fc" id="L116">    multiPolygonConverter = new MultiPolygonToJsonConverter(polygonConverter, withBoundingBox);</span>
+
+<span class="fc" id="L118">    this.withBoundingBox = withBoundingBox;</span>
+<span class="fc" id="L119">  }</span>
+
+  /**
+   * Convert map.
+   *
+   * @param source the source
+   * @return the map
+   */
+  public Map&lt;String, Object&gt; convert(Geometry source) {
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">    if (isNull(source)) {</span>
+<span class="nc" id="L129">      return null;</span>
+    }
+<span class="fc bfc" id="L131" title="All 2 branches covered.">    if (source instanceof Point point) {</span>
+<span class="fc" id="L132">      return pointConverter.convert(point);</span>
+    }
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (source instanceof LineString lineString) {</span>
+<span class="fc" id="L136">      return lineStringConverter.convert(lineString);</span>
+    }
+
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (source instanceof Polygon polygon) {</span>
+<span class="fc" id="L140">      return polygonConverter.convert(polygon);</span>
+    }
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (source instanceof MultiPoint multiPoint) {</span>
+<span class="fc" id="L144">      return multiPointConverter.convert(multiPoint);</span>
+    }
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (source instanceof MultiLineString multiLineString) {</span>
+<span class="fc" id="L148">      return multiLineStringConverter.convert(multiLineString);</span>
+    }
+
+<span class="fc bfc" id="L151" title="All 2 branches covered.">    if (source instanceof MultiPolygon multiPolygon) {</span>
+<span class="fc" id="L152">      return multiPolygonConverter.convert(multiPolygon);</span>
+    }
+
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (source instanceof GeometryCollection) {</span>
+<span class="fc" id="L156">      List&lt;Map&lt;String, Object&gt;&gt; geometries = new ArrayList&lt;&gt;(source.getNumGeometries());</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">      for (int i = 0; i &lt; source.getNumGeometries(); i++) {</span>
+<span class="fc" id="L158">        geometries.add(convert(source.getGeometryN(i)));</span>
+      }
+<span class="fc" id="L160">      Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L161">      map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">      if (withBoundingBox) {</span>
+<span class="fc" id="L163">        Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))</span>
+<span class="fc" id="L164">            .map(bbox -&gt; Arrays.stream(bbox).boxed().toList())</span>
+<span class="fc" id="L165">            .ifPresent(bbox -&gt; map.put(GeoJsonConstants.BBOX, bbox));</span>
+      }
+<span class="fc" id="L167">      map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));</span>
+<span class="fc" id="L168">      return unmodifiableMap(map);</span>
+    }
+
+<span class="fc" id="L171">    throw new IllegalArgumentException(&quot;Geometry [&quot; + source + &quot;] is unsupported. It must be &quot;</span>
+        + &quot;an instance of Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon &quot;
+        + &quot;or GeometryCollection.&quot;);
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
