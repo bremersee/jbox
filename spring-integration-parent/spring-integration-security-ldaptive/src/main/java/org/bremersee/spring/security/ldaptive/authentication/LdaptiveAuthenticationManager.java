@@ -376,6 +376,12 @@ public class LdaptiveAuthenticationManager
     }
   }
 
+  /**
+   * Check password with compare request.
+   *
+   * @param user the user
+   * @param password the password
+   */
   protected void checkPasswordWithCompareRequest(LdaptiveUserDetails user, String password) {
     Assert.notNull(getPasswordEncoder(), "No password encoder is present.");
     boolean matches = getApplicationLdaptiveTemplate().compare(CompareRequest.builder()
@@ -388,6 +394,12 @@ public class LdaptiveAuthenticationManager
     }
   }
 
+  /**
+   * Check password with simple bind.
+   *
+   * @param user the user
+   * @param password the password
+   */
   protected void checkPasswordWithSimpleBind(LdaptiveUserDetails user, String password) {
     SingleConnectionFactory connectionFactory = getSingleConnectionFactory();
     try {
@@ -408,6 +420,11 @@ public class LdaptiveAuthenticationManager
     }
   }
 
+  /**
+   * Gets single connection factory.
+   *
+   * @return the single connection factory
+   */
   SingleConnectionFactory getSingleConnectionFactory() {
     ConnectionConfig connectionConfig = ConnectionConfig
         .copy(getApplicationLdaptiveTemplate().getConnectionFactory().getConnectionConfig());
@@ -415,6 +432,12 @@ public class LdaptiveAuthenticationManager
     return new SingleConnectionFactory(connectionConfig);
   }
 
+  /**
+   * Gets bind operation.
+   *
+   * @param cf the cf
+   * @return the bind operation
+   */
   BindOperation getBindOperation(SingleConnectionFactory cf) {
     return new BindOperation(cf);
   }
