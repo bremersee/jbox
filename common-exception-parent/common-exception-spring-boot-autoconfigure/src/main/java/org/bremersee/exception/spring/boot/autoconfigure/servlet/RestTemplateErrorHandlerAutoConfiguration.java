@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
-import org.springframework.boot.web.client.RestTemplateCustomizer;
+import org.springframework.boot.restclient.RestTemplateCustomizer;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(name = {
-    "com.fasterxml.jackson.databind.ObjectMapper",
+    "tools.jackson.databind.ObjectMapper",
     "org.bremersee.exception.RestApiResponseErrorHandler"
 })
 @AutoConfigureAfter({

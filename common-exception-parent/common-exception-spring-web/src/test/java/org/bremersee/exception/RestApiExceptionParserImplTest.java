@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.bremersee.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
@@ -31,7 +31,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
+//import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
  * The rest api exception parser impl test.
@@ -65,7 +67,7 @@ class RestApiExceptionParserImplTest {
     softly.assertThat(targetWithDefaults.getObjectMapper(RestApiResponseType.JSON))
         .isPresent()
         .get()
-        .isInstanceOf(ObjectMapper.class);
+        .isInstanceOf(JsonMapper.class);
     softly.assertThat(targetWithDefaults.getObjectMapper(RestApiResponseType.XML))
         .isPresent()
         .get()
@@ -109,7 +111,7 @@ class RestApiExceptionParserImplTest {
     softly.assertThat(actual)
         .isEqualTo(expected);
 
-    String response = Jackson2ObjectMapperBuilder.json().build().writeValueAsString(expected);
+    String response = JsonMapper.builder().build().writeValueAsString(expected);
     actual = targetWithDefaults.parseException(
         response, httpStatus, httpHeaders);
     softly.assertThat(actual)

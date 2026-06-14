@@ -1,10 +1,6 @@
 package org.bremersee.ldaptive;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.Serial;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import org.bremersee.ldaptive.converter.JacksonDnDeserializer;
 import org.bremersee.ldaptive.converter.JacksonDnSerializer;
@@ -12,6 +8,8 @@ import org.bremersee.ldaptive.converter.JacksonLdapEntryDeserializer;
 import org.bremersee.ldaptive.converter.JacksonLdapEntrySerializer;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.dn.Dn;
+import tools.jackson.core.Version;
+import tools.jackson.databind.module.SimpleModule;
 
 /**
  * The ldaptive object mapper module.
@@ -30,18 +28,16 @@ public class LdaptiveObjectMapperModule extends SimpleModule {
    * Instantiates a new ldaptive object mapper module.
    */
   public LdaptiveObjectMapperModule() {
-    super(
-        TYPE_ID,
-        getVersion(),
-        Map.of(
-            Dn.class, new JacksonDnDeserializer(),
-            LdapEntry.class, new JacksonLdapEntryDeserializer()),
-        List.of(new JacksonDnSerializer(), new JacksonLdapEntrySerializer()));
+    super(TYPE_ID, getVersion());
+    addDeserializer(Dn.class, new JacksonDnDeserializer());
+    addDeserializer(LdapEntry.class, new JacksonLdapEntryDeserializer());
+    addSerializer(Dn.class, new JacksonDnSerializer());
+    addSerializer(LdapEntry.class, new JacksonLdapEntrySerializer());
   }
 
   private static Version getVersion() {
 
-    int defaultMajor = 5;
+    int defaultMajor = 6;
     int defaultMinor = 0;
     int defaultPatchLevel = 0;
     String defaultSnapshotInfo = "SNAPSHOT";

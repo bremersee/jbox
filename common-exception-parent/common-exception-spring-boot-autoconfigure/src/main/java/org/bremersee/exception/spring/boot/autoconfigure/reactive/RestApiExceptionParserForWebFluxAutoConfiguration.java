@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
 
 package org.bremersee.exception.spring.boot.autoconfigure.reactive;
 
-import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.RestApiExceptionParser;
 import org.bremersee.exception.RestApiExceptionParserImpl;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,8 +28,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * The rest api exception parser autoconfiguration.
@@ -40,8 +39,7 @@ import org.springframework.util.ClassUtils;
  */
 @ConditionalOnWebApplication(type = Type.REACTIVE)
 @ConditionalOnClass(name = {
-    "com.fasterxml.jackson.databind.ObjectMapper",
-    "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
+    "tools.jackson.databind.ObjectMapper",
     "org.bremersee.exception.RestApiExceptionParserImpl"
 })
 @AutoConfiguration
@@ -73,19 +71,18 @@ public class RestApiExceptionParserForWebFluxAutoConfiguration {
   /**
    * Creates rest api exception parser for reactive web application.
    *
-   * @param objectMapperBuilderProvider the object mapper builder provider
+   * @param jsonMapperBuilder the json mapper builder
+   * @param xmlMapperBuilder the xml mapper builder
    * @return the rest api exception parser
    */
   @ConditionalOnWebApplication(type = Type.REACTIVE)
   @ConditionalOnMissingBean
   @Bean
   public RestApiExceptionParser restApiExceptionParser(
-      ObjectProvider<Jackson2ObjectMapperBuilder> objectMapperBuilderProvider) {
+      JsonMapper.Builder jsonMapperBuilder,
+      XmlMapper.Builder xmlMapperBuilder) {
 
-    Jackson2ObjectMapperBuilder objectMapperBuilder = objectMapperBuilderProvider.getIfAvailable();
-    return Optional.ofNullable(objectMapperBuilder)
-        .map(RestApiExceptionParserImpl::new)
-        .orElseGet(RestApiExceptionParserImpl::new);
+    return new RestApiExceptionParserImpl(jsonMapperBuilder.build(), xmlMapperBuilder.build());
   }
 
 }

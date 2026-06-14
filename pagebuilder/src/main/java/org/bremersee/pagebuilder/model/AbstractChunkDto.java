@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 the original author or authors.
+ * Copyright 2025-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,7 @@ abstract class AbstractChunkDto<T> implements Serializable {
   /**
    * The sort order.
    */
+  @JsonProperty("sort")
   private SortOrder sort;
 
   /**
@@ -113,6 +114,7 @@ abstract class AbstractChunkDto<T> implements Serializable {
    *
    * @param content the content
    */
+  @JsonProperty(value = "content")
   protected void setContent(List<T> content) {
     this.content = new ArrayList<>(nonNull(content) ? content : List.of());
   }
@@ -143,12 +145,19 @@ abstract class AbstractChunkDto<T> implements Serializable {
    *
    * @return the sort
    */
+  @Schema(description = "The sort order.")
+  @JsonProperty(value = "sort")
   @XmlElementRef(type = SortOrder.class)
   public SortOrder getSort() {
     if (isNull(sort)) {
       return new SortOrder(List.of());
     }
     return sort;
+  }
+
+  @JsonProperty(value = "sort")
+  protected void setSort(SortOrder sort) {
+    this.sort = sort;
   }
 
   /**

@@ -78,6 +78,7 @@ pipeline {
           git -C target/gh-pages add .
           git -C target/gh-pages commit -m "Maven site"
           git -C target/gh-pages push
+          rm -rf target/gh-pages
         '''
       }
       post {

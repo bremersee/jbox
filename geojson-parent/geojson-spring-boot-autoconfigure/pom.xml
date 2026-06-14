@@ -7,7 +7,7 @@
   <parent>
     <artifactId>geojson-parent</artifactId>
     <groupId>org.bremersee</groupId>
-    <version>5.1.2</version>
+    <version>6.0.0</version>
   </parent>
 
   <artifactId>geojson-spring-boot-autoconfigure</artifactId>
@@ -47,6 +47,10 @@
     <dependency>
       <groupId>org.bremersee</groupId>
       <artifactId>spring-integration-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -95,6 +99,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-webtestclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
       <scope>test</scope>
     </dependency>
@@ -105,7 +114,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mongodb</artifactId>
+      <artifactId>testcontainers-mongodb</artifactId>
       <version>${testcontainers.version}</version>
       <scope>test</scope>
     </dependency>
@@ -117,7 +126,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <version>${testcontainers.version}</version>
       <scope>test</scope>
     </dependency>

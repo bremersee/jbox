@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
+import tools.jackson.databind.json.JsonMapper.Builder;
 
 /**
  * The GeoJSON jackson 2 object mapper builder customizer.
@@ -42,16 +42,15 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnWebApplication
 @ConditionalOnClass(name = {
     "org.bremersee.geojson.GeoJsonObjectMapperModule",
-    "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
-    "com.fasterxml.jackson.databind.ObjectMapper"})
+    "tools.jackson.databind.json.JsonMapper"})
 @AutoConfiguration
 @AutoConfigureAfter(GeoJsonGeometryFactoryAutoConfiguration.class)
 @EnableConfigurationProperties(GeoJsonProperties.class)
-public class GeoJsonJackson2ObjectMapperBuilderCustomizer
-    implements Jackson2ObjectMapperBuilderCustomizer {
+public class GeoJsonJacksonJsonMapperBuilderCustomizer
+    implements JsonMapperBuilderCustomizer {
 
   private static final Log log = LogFactory
-      .getLog(GeoJsonJackson2ObjectMapperBuilderCustomizer.class);
+      .getLog(GeoJsonJacksonJsonMapperBuilderCustomizer.class);
 
   private final GeoJsonProperties properties;
 
@@ -63,7 +62,7 @@ public class GeoJsonJackson2ObjectMapperBuilderCustomizer
    * @param properties the properties
    * @param geometryFactory the geometry factory
    */
-  public GeoJsonJackson2ObjectMapperBuilderCustomizer(
+  public GeoJsonJacksonJsonMapperBuilderCustomizer(
       GeoJsonProperties properties,
       ObjectProvider<GeoJsonGeometryFactory> geometryFactory) {
     this.properties = properties;
@@ -86,13 +85,12 @@ public class GeoJsonJackson2ObjectMapperBuilderCustomizer
   }
 
   @Override
-  public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
+  public void customize(Builder jsonMapperBuilder) {
     GeoJsonObjectMapperModule module = new GeoJsonObjectMapperModule(
         geometryFactory,
         properties.isWithBoundingBox(),
         properties.isUseBigDecimal()
     );
-    jacksonObjectMapperBuilder.postConfigurer(objectMapper -> objectMapper
-        .registerModule(module));
+    jsonMapperBuilder.addModules(module);
   }
 }

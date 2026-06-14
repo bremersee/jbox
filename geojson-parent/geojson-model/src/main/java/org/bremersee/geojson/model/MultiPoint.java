@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+* Copyright 2018-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
 package org.bremersee.geojson.model;
 
 import static org.bremersee.geojson.GeoJsonConstants.COORDINATES;
+import static org.bremersee.geojson.GeoJsonConstants.TYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serial;
 import java.io.Serializable;
@@ -30,6 +32,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bremersee.geojson.GeoJsonConstants;
 
 /**
  * GeoJSON MultiPoint.
@@ -42,6 +45,11 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@JsonPropertyOrder({
+    TYPE,
+    GeoJsonConstants.BBOX,
+    COORDINATES
+})
 public class MultiPoint extends Geometry implements Serializable {
 
   @Serial

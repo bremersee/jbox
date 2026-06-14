@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 package org.bremersee.pagebuilder.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import java.util.ServiceLoader;
 import org.bremersee.pagebuilder.integration.components.IntegrationRestController;
 import org.bremersee.pagebuilder.testmodel.ObjectFactory;
@@ -27,10 +24,13 @@ import org.bremersee.xml.JaxbContextDataProvider;
 import org.bremersee.xml.JaxbContextMember;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 /**
  * The model integration test configuration.
@@ -71,16 +71,16 @@ public class ModelIntegrationTestConfiguration implements WebMvcConfigurer {
    * @return the jackson 2 object mapper builder customizer
    */
   @Bean
-  public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+  public JsonMapperBuilderCustomizer jsonCustomizer() {
     return builder -> {
-      builder.featuresToEnable(SerializationFeature.INDENT_OUTPUT);
-      builder.postConfigurer(objectMapper -> objectMapper
-          .activateDefaultTypingAsProperty(
-              BasicPolymorphicTypeValidator.builder()
-                  .allowIfSubType("org.bremersee.pagebuilder.")
-                  .build(),
-              DefaultTyping.JAVA_LANG_OBJECT,
-              "_type"));
+      builder.enable(SerializationFeature.INDENT_OUTPUT);
+      builder.activateDefaultTypingAsProperty(
+          BasicPolymorphicTypeValidator.builder()
+              .allowIfSubType("org.bremersee.pagebuilder.")
+              .build(),
+          DefaultTyping.JAVA_LANG_OBJECT,
+          "_type"
+      );
     };
   }
 

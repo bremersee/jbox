@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+* Copyright 2018-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import java.util.Objects;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
 import org.bremersee.geojson.converter.deserialization.JsonToGeometryConverter;
 import org.bson.Document;
+import org.jspecify.annotations.NonNull;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 
 /**
  * The abstract document to geometry converter.

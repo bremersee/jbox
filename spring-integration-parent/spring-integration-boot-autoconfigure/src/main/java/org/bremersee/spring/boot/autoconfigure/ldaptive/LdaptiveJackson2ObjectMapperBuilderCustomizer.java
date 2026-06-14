@@ -6,11 +6,11 @@ import org.bremersee.ldaptive.LdaptiveObjectMapperModule;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
+import tools.jackson.databind.json.JsonMapper.Builder;
 
 /**
  * The ldaptive jackson 2 object mapper builder customizer.
@@ -18,11 +18,11 @@ import org.springframework.util.ClassUtils;
 @ConditionalOnWebApplication
 @ConditionalOnClass(name = {
     "org.bremersee.ldaptive.LdaptiveObjectMapperModule",
-    "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
-    "com.fasterxml.jackson.databind.ObjectMapper"})
+    "org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer",
+    "tools.jackson.databind.json.JsonMapper"})
 @AutoConfiguration
 public class LdaptiveJackson2ObjectMapperBuilderCustomizer
-    implements Jackson2ObjectMapperBuilderCustomizer {
+    implements JsonMapperBuilderCustomizer {
 
   private static final Log log = LogFactory
       .getLog(LdaptiveJackson2ObjectMapperBuilderCustomizer.class);
@@ -48,9 +48,7 @@ public class LdaptiveJackson2ObjectMapperBuilderCustomizer
   }
 
   @Override
-  public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
-    jacksonObjectMapperBuilder.postConfigurer(objectMapper -> objectMapper
-        .registerModule(new LdaptiveObjectMapperModule()));
-
+  public void customize(Builder jsonMapperBuilder) {
+    jsonMapperBuilder.addModules(new LdaptiveObjectMapperModule());
   }
 }

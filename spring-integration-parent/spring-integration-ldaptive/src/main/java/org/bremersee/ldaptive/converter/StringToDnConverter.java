@@ -1,9 +1,9 @@
 package org.bremersee.ldaptive.converter;
 
 import org.bremersee.ldaptive.transcoder.ValueTranscoderFactory;
+import org.jspecify.annotations.NonNull;
 import org.ldaptive.dn.Dn;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 
 /**
  * The string to distinguished name converter.

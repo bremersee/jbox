@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ import org.bremersee.exception.annotation.ErrorCode;
 import org.bremersee.exception.model.Handler;
 import org.bremersee.exception.model.RestApiException;
 import org.bremersee.exception.model.StackTraceItem;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
@@ -68,7 +68,7 @@ public class RestApiExceptionMapperForWeb implements RestApiExceptionMapper {
   }
 
   /**
-   * Detect http status http status.
+   * Detect the http status.
    *
    * @param exception the exception
    * @param handler the handler

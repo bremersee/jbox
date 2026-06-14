@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.bremersee.spring.web.multipart.FileAwareMultipartFile;
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.lang.NonNull;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MimeType;
 import org.springframework.util.MultiValueMap;
@@ -213,7 +213,7 @@ public class MultipartFileBuilderImpl implements MultipartFileBuilder {
     return Flux.fromArray(parts)
         .flatMap(this::buildList)
         .filter(list -> !list.isEmpty())
-        .collectMap(list -> list.get(0).getName(), list -> list, LinkedHashMap::new)
+        .collectMap(list -> list.getFirst().getName(), list -> list, LinkedHashMap::new)
         .map(LinkedMultiValueMap::new);
   }
 

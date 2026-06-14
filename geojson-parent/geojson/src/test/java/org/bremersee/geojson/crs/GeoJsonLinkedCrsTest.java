@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The GeoJSON linked crs test.
@@ -83,7 +83,7 @@ class GeoJsonLinkedCrsTest {
    */
   @Test
   void json() throws Exception {
-    ObjectMapper om = new ObjectMapper();
+    JsonMapper om = JsonMapper.builder().build();
     GeoJsonLinkedCrs model = new GeoJsonLinkedCrs(
         "https://example.org",
         GeoJsonLinkedCrs.TYPE_PROJ4);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 the original author or authors.
+ * Copyright 2025-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import org.springframework.data.domain.Sort;
  *
  * @author Christian Bremer
  */
+@SuppressWarnings("unused")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "slice")
 @XmlType(name = "sliceType")
@@ -56,6 +57,7 @@ public class CommonSliceDto extends AbstractSliceDto<Object> {
    * Instantiates a new common slice data transfer object.
    */
   protected CommonSliceDto() {
+    super();
   }
 
   /**

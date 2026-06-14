@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,18 +32,19 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * The api exception resolver autoconfiguration.
  */
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(name = {
-    "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder",
+    "tools.jackson.databind.ObjectMapper",
     "org.bremersee.exception.RestApiExceptionMapperProperties",
     "org.bremersee.exception.servlet.ApiExceptionResolver"
 })
@@ -66,25 +67,25 @@ public class ApiExceptionResolverAutoConfiguration implements WebMvcConfigurer {
    *
    * @param properties the properties
    * @param apiExceptionMapper the api exception mapper
-   * @param objectMapperBuilder the object mapper builder
+   * @param jsonMapperBuilderProvider the json mapper builder provider
+   * @param xmlMapperBuilderProvider the xml mapper builder provider
    * @param restApiIdProvider the rest api id provider
    */
   public ApiExceptionResolverAutoConfiguration(
       RestApiExceptionMapperBootProperties properties,
       ObjectProvider<RestApiExceptionMapper> apiExceptionMapper,
-      ObjectProvider<Jackson2ObjectMapperBuilder> objectMapperBuilder,
+      ObjectProvider<JsonMapper.Builder> jsonMapperBuilderProvider,
+      ObjectProvider<XmlMapper.Builder> xmlMapperBuilderProvider,
       ObjectProvider<HttpServletRequestIdProvider> restApiIdProvider) {
 
     RestApiExceptionMapper mapper = apiExceptionMapper.getIfAvailable();
-    Jackson2ObjectMapperBuilder omBuilder = objectMapperBuilder
-        .getIfAvailable(Jackson2ObjectMapperBuilder::new);
     Assert.notNull(mapper, "Api exception resolver must be present.");
-    Assert.notNull(omBuilder, "Object mapper builder must be present.");
     this.properties = properties;
     this.apiExceptionResolver = new ApiExceptionResolver(
         properties.getApiPaths(),
         mapper,
-        omBuilder);
+        jsonMapperBuilderProvider.getIfAvailable(),
+        xmlMapperBuilderProvider.getIfAvailable());
     this.apiExceptionResolver.setRestApiExceptionIdProvider(restApiIdProvider.getIfAvailable());
   }
 
@@ -108,7 +109,7 @@ public class ApiExceptionResolverAutoConfiguration implements WebMvcConfigurer {
   public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
     log.info(String.format("Adding exception resolver [%s] to registry.",
         ClassUtils.getUserClass(apiExceptionResolver).getSimpleName()));
-    exceptionResolvers.add(0, apiExceptionResolver);
+    exceptionResolvers.addFirst(apiExceptionResolver);
   }
 
 }

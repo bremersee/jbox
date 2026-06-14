@@ -1,7 +1,5 @@
 package org.bremersee.ldaptive.serializable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -11,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The serializable ldap entry test.
@@ -18,15 +17,16 @@ import org.ldaptive.LdapEntry;
 @ExtendWith({SoftAssertionsExtension.class})
 class SerLdapEntryTest {
 
-  private static ObjectMapper objectMapper;
+  private static JsonMapper objectMapper;
 
   /**
    * Init object mapper.
    */
   @BeforeAll
   static void initObjectMapper() {
-    objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new LdaptiveObjectMapperModule());
+    objectMapper = JsonMapper.builder()
+        .addModules(new LdaptiveObjectMapperModule())
+        .build();
   }
 
   /**
@@ -104,10 +104,9 @@ class SerLdapEntryTest {
    * Json.
    *
    * @param softly the softly
-   * @throws JsonProcessingException the json processing exception
    */
   @Test
-  void json(SoftAssertions softly) throws JsonProcessingException {
+  void json(SoftAssertions softly) {
     LdapAttribute la0 = new LdapAttribute("say", "Hello world!", "How are you?");
     LdapAttribute la1 = new LdapAttribute("bin");
     la1.setBinary(true);

@@ -6,7 +6,7 @@
 
   <groupId>org.bremersee</groupId>
   <artifactId>common-parent</artifactId>
-  <version>5.1.2</version>
+  <version>6.0.0</version>
   <packaging>pom</packaging>
 
   <name>Common Parent</name>
@@ -50,44 +50,44 @@
     <java.version>21</java.version>
 
     <!-- see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
-    <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine> <!-- BUILD_SYSTEM -->
+    <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine> <!-- BUILD_SYSTEM | NOT_SPECIFIED -->
 
-    <jbox.version>5.1.2</jbox.version>
-    <spring-boot.version>3.5.15</spring-boot.version>
-    <spring-boot-admin.version>3.5.8</spring-boot-admin.version>
-    <spring-cloud.version>2025.0.3</spring-cloud.version>
-    <testcontainers.version>1.21.4</testcontainers.version>
-    <commons-io.version>2.21.0</commons-io.version>
+    <jbox.version>6.0.0</jbox.version>
+    <spring-boot.version>4.0.7</spring-boot.version>
+    <spring-boot-admin.version>4.0.3</spring-boot-admin.version>
+    <spring-cloud.version>2025.1.2</spring-cloud.version>
+    <testcontainers.version>2.0.5</testcontainers.version>
+    <commons-io.version>2.20.0</commons-io.version>
     <dataurl.version>2.0.0</dataurl.version>
-    <hibernate-orm.version>6.6.53.Final</hibernate-orm.version>
+    <hibernate-orm.version>7.2.19.Final</hibernate-orm.version>
     <immutables.version>2.12.2</immutables.version>
-    <javers.version>7.10.0</javers.version>
+    <javers.version>7.11.2</javers.version>
     <jts.version>1.20.0</jts.version>
     <ldaptive.version>2.5.0</ldaptive.version>
     <lombok.version>1.18.46</lombok.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     <mapstruct.version>1.6.3</mapstruct.version>
-    <minio.version>8.6.0</minio.version>
+    <minio.version>9.0.1</minio.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <passay.version>1.6.6</passay.version>
+    <passay.version>2.0.0</passay.version>
     <reflections.version>0.10.2</reflections.version>
-    <springdoc.version>2.8.16</springdoc.version>
-    <swagger-annotations-v3.version>2.2.49</swagger-annotations-v3.version>
+    <springdoc.version>3.0.2</springdoc.version>
+    <swagger-annotations-v3.version>2.2.43</swagger-annotations-v3.version>
 
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <buildnumber-maven-plugin.version>3.2.1</buildnumber-maven-plugin.version>
     <central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
-    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
     <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
+    <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-    <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
-    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-help-plugin.version>3.5.1</maven-help-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
@@ -97,10 +97,10 @@
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <!-- git clone doesn't work with version 3.3.0, pub-key error -->
     <maven-scm-publish-plugin.version>3.2.1</maven-scm-publish-plugin.version>
-    <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
+    <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
     <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
     <git-commit-id-plugin.version>4.9.10</git-commit-id-plugin.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>

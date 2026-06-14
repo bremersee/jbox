@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+* Copyright 2018-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.bremersee.geojson.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.math.BigDecimal;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The latitude longitude test.
@@ -72,11 +71,10 @@ class LatLonTest {
    * Json.
    *
    * @param softly the softly
-   * @throws IOException the io exception
    */
   @Test
-  void json(SoftAssertions softly) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper();
+  void json(SoftAssertions softly) {
+    JsonMapper objectMapper = JsonMapper.builder().build();
     LatLon model = new LatLon(
         new BigDecimal("1.2345"),
         new BigDecimal("5.6789"));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.bremersee.xml.http.codec.ReactiveJaxbDecoder;
 import org.bremersee.xml.http.codec.ReactiveJaxbEncoder;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+//import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.config.EnableWebFlux;
@@ -35,7 +35,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
  * @author Christian Bremer
  */
 @SpringBootConfiguration
-@EnableAutoConfiguration(exclude = {ReactiveSecurityAutoConfiguration.class})
+@EnableAutoConfiguration // (exclude = {ReactiveSecurityAutoConfiguration.class})
 @EnableWebFlux
 @ComponentScan(basePackageClasses = {WebConfiguration.class})
 public class WebConfiguration implements WebFluxConfigurer {

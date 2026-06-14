@@ -20,9 +20,9 @@ import static java.util.Objects.isNull;
 
 import java.util.List;
 import org.bremersee.comparator.model.SortOrder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.result.method.SyncHandlerMethodArgumentResolver;
@@ -66,7 +66,7 @@ public class ReactiveSortOrderHandlerMethodArgumentResolver
     }
 
     // Single empty parameter, e.g "sort="
-    if (parameterValues.size() == 1 && !StringUtils.hasText(parameterValues.get(0))) {
+    if (parameterValues.size() == 1 && !StringUtils.hasText(parameterValues.getFirst())) {
       return getDefaultFromAnnotationOrFallback(parameter);
     }
 

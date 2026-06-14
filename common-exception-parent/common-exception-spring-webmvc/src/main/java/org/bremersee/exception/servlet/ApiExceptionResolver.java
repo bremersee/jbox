@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import static java.util.Objects.requireNonNullElse;
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,11 +37,10 @@ import org.bremersee.exception.RestApiExceptionConstants;
 import org.bremersee.exception.RestApiExceptionMapper;
 import org.bremersee.exception.RestApiResponseType;
 import org.bremersee.exception.model.RestApiException;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.lang.NonNull;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,9 +48,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.AbstractView;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-import org.springframework.web.servlet.view.xml.MappingJackson2XmlView;
+import org.springframework.web.servlet.view.json.JacksonJsonView;
+import org.springframework.web.servlet.view.xml.JacksonXmlView;
 import org.springframework.web.util.WebUtils;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * The api exception resolver.
@@ -83,10 +83,10 @@ public class ApiExceptionResolver implements HandlerExceptionResolver {
   private final RestApiExceptionMapper exceptionMapper;
 
   @Getter(AccessLevel.PROTECTED)
-  private final ObjectMapper objectMapper;
+  private final JsonMapper.Builder jsonMapperBuilder;
 
   @Getter(AccessLevel.PROTECTED)
-  private final XmlMapper xmlMapper;
+  private final XmlMapper.Builder xmlMapperBuilder;
 
   /**
    * Instantiates a new api exception resolver.
@@ -97,7 +97,7 @@ public class ApiExceptionResolver implements HandlerExceptionResolver {
   public ApiExceptionResolver(
       List<String> apiPaths,
       RestApiExceptionMapper exceptionMapper) {
-    this(apiPaths, exceptionMapper, new Jackson2ObjectMapperBuilder());
+    this(apiPaths, exceptionMapper, null, null);
   }
 
   /**
@@ -105,36 +105,18 @@ public class ApiExceptionResolver implements HandlerExceptionResolver {
    *
    * @param apiPaths the api paths
    * @param exceptionMapper the exception mapper
-   * @param objectMapperBuilder the object mapper builder
+   * @param jsonMapperBuilder the json mapper builder
+   * @param xmlMapperBuilder the xml mapper builder
    */
   public ApiExceptionResolver(
       List<String> apiPaths,
       RestApiExceptionMapper exceptionMapper,
-      Jackson2ObjectMapperBuilder objectMapperBuilder) {
-    this(
-        apiPaths,
-        exceptionMapper,
-        objectMapperBuilder.build(),
-        objectMapperBuilder.createXmlMapper(true).build());
-  }
-
-  /**
-   * Instantiates a new api exception resolver.
-   *
-   * @param apiPaths the api paths
-   * @param exceptionMapper the exception mapper
-   * @param objectMapper the object mapper
-   * @param xmlMapper the xml mapper
-   */
-  public ApiExceptionResolver(
-      List<String> apiPaths,
-      RestApiExceptionMapper exceptionMapper,
-      ObjectMapper objectMapper,
-      XmlMapper xmlMapper) {
+      JsonMapper.Builder jsonMapperBuilder,
+      XmlMapper.Builder xmlMapperBuilder) {
     this.apiPaths = apiPaths;
     this.exceptionMapper = exceptionMapper;
-    this.objectMapper = objectMapper;
-    this.xmlMapper = xmlMapper;
+    this.jsonMapperBuilder = Objects.requireNonNullElseGet(jsonMapperBuilder, JsonMapper::builder);
+    this.xmlMapperBuilder = Objects.requireNonNullElseGet(xmlMapperBuilder, XmlMapper::builder);
   }
 
   @Override
@@ -160,20 +142,18 @@ public class ApiExceptionResolver implements HandlerExceptionResolver {
     ModelAndView modelAndView;
     switch (responseType) {
       case JSON:
-        MappingJackson2JsonView mjv = new MappingJackson2JsonView(objectMapper);
-        mjv.setContentType(responseType.getContentTypeValue());
-        mjv.setPrettyPrint(true);
-        mjv.setModelKey(MODEL_KEY);
-        mjv.setExtractValueFromSingleKeyModel(true); // removes the MODEL_KEY from the output
-        modelAndView = new ModelAndView(mjv, MODEL_KEY, payload);
+        JacksonJsonView jsonView = new JacksonJsonView(jsonMapperBuilder);
+        jsonView.setContentType(responseType.getContentTypeValue());
+        jsonView.setModelKey(MODEL_KEY);
+        jsonView.setExtractValueFromSingleKeyModel(true); // removes the MODEL_KEY from the output
+        modelAndView = new ModelAndView(jsonView, MODEL_KEY, payload);
         break;
 
       case XML:
-        MappingJackson2XmlView mxv = new MappingJackson2XmlView(xmlMapper);
-        mxv.setContentType(responseType.getContentTypeValue());
-        mxv.setPrettyPrint(true);
-        mxv.setModelKey(MODEL_KEY);
-        modelAndView = new ModelAndView(mxv, MODEL_KEY, payload);
+        JacksonXmlView xmlView = new JacksonXmlView(xmlMapperBuilder);
+        xmlView.setContentType(responseType.getContentTypeValue());
+        xmlView.setModelKey(MODEL_KEY);
+        modelAndView = new ModelAndView(xmlView, MODEL_KEY, payload);
         break;
 
       default:
@@ -190,7 +170,7 @@ public class ApiExceptionResolver implements HandlerExceptionResolver {
   }
 
   /**
-   * Is this exception handler responsible.
+   * Determines whether this exception handler is responsible or not.
    *
    * @param request the request
    * @param handler the handler

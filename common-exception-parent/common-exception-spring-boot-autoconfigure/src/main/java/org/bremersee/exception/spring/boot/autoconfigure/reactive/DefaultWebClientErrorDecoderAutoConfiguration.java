@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.util.ClassUtils;
 
 /**
- * The default web client error decoder auto configuration.
+ * The default web client error decoder autoconfiguration.
  *
  * @author Christian Bremer
  */
 @ConditionalOnWebApplication(type = Type.REACTIVE)
 @ConditionalOnClass(name = {
-    "com.fasterxml.jackson.databind.ObjectMapper",
+    "tools.jackson.databind.ObjectMapper",
     "org.bremersee.exception.webclient.DefaultWebClientErrorDecoder"
 })
 @AutoConfigureAfter({

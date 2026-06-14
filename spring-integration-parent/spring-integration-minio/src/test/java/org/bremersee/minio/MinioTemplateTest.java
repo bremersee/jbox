@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,22 @@ package org.bremersee.minio;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.minio.BucketExistsArgs;
 import io.minio.CloseableIterator;
 import io.minio.ComposeObjectArgs;
-import io.minio.ComposeSource;
 import io.minio.CopyObjectArgs;
-import io.minio.CopySource;
+import io.minio.DeleteBucketCorsArgs;
 import io.minio.DeleteBucketEncryptionArgs;
 import io.minio.DeleteBucketLifecycleArgs;
 import io.minio.DeleteBucketNotificationArgs;
@@ -43,6 +45,7 @@ import io.minio.DeleteObjectTagsArgs;
 import io.minio.DisableObjectLegalHoldArgs;
 import io.minio.DownloadObjectArgs;
 import io.minio.EnableObjectLegalHoldArgs;
+import io.minio.GetBucketCorsArgs;
 import io.minio.GetBucketEncryptionArgs;
 import io.minio.GetBucketLifecycleArgs;
 import io.minio.GetBucketNotificationArgs;
@@ -50,12 +53,17 @@ import io.minio.GetBucketPolicyArgs;
 import io.minio.GetBucketReplicationArgs;
 import io.minio.GetBucketTagsArgs;
 import io.minio.GetBucketVersioningArgs;
+import io.minio.GetObjectAclArgs;
 import io.minio.GetObjectArgs;
+import io.minio.GetObjectAttributesArgs;
+import io.minio.GetObjectAttributesResponse;
 import io.minio.GetObjectLockConfigurationArgs;
 import io.minio.GetObjectResponse;
 import io.minio.GetObjectRetentionArgs;
 import io.minio.GetObjectTagsArgs;
 import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.HeadObjectResponse;
+import io.minio.Http;
 import io.minio.IsObjectLegalHoldEnabledArgs;
 import io.minio.ListBucketsArgs;
 import io.minio.ListObjectsArgs;
@@ -64,13 +72,19 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.ObjectWriteResponse;
 import io.minio.PostPolicy;
+import io.minio.PromptObjectArgs;
+import io.minio.PromptObjectResponse;
 import io.minio.PutObjectArgs;
+import io.minio.PutObjectFanOutArgs;
+import io.minio.PutObjectFanOutResponse;
 import io.minio.RemoveBucketArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.RemoveObjectsArgs;
+import io.minio.RestoreObjectArgs;
 import io.minio.Result;
 import io.minio.SelectObjectContentArgs;
 import io.minio.SelectResponseStream;
+import io.minio.SetBucketCorsArgs;
 import io.minio.SetBucketEncryptionArgs;
 import io.minio.SetBucketLifecycleArgs;
 import io.minio.SetBucketNotificationArgs;
@@ -81,37 +95,39 @@ import io.minio.SetBucketVersioningArgs;
 import io.minio.SetObjectLockConfigurationArgs;
 import io.minio.SetObjectRetentionArgs;
 import io.minio.SetObjectTagsArgs;
+import io.minio.SourceObject;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
 import io.minio.Time;
 import io.minio.UploadObjectArgs;
 import io.minio.errors.ErrorResponseException;
-import io.minio.http.Method;
-import io.minio.messages.AndOperator;
-import io.minio.messages.Bucket;
-import io.minio.messages.DeleteError;
-import io.minio.messages.DeleteMarkerReplication;
-import io.minio.messages.DeleteObject;
+import io.minio.messages.AccessControlList;
+import io.minio.messages.AccessControlList.Grant;
+import io.minio.messages.AccessControlList.Grantee;
+import io.minio.messages.AccessControlList.Permission;
+import io.minio.messages.AccessControlList.Type;
+import io.minio.messages.AccessControlPolicy;
+import io.minio.messages.CORSConfiguration;
+import io.minio.messages.CORSConfiguration.CORSRule;
+import io.minio.messages.DeleteRequest.Object;
+import io.minio.messages.DeleteResult;
 import io.minio.messages.ErrorResponse;
-import io.minio.messages.Expiration;
+import io.minio.messages.Filter;
+import io.minio.messages.GetObjectAttributesOutput;
 import io.minio.messages.InputSerialization;
+import io.minio.messages.InputSerialization.JsonType;
 import io.minio.messages.Item;
 import io.minio.messages.LifecycleConfiguration;
-import io.minio.messages.LifecycleRule;
+import io.minio.messages.ListAllMyBucketsResult;
 import io.minio.messages.NotificationConfiguration;
 import io.minio.messages.NotificationRecords;
 import io.minio.messages.ObjectLockConfiguration;
 import io.minio.messages.OutputSerialization;
+import io.minio.messages.Owner;
 import io.minio.messages.ReplicationConfiguration;
-import io.minio.messages.ReplicationDestination;
-import io.minio.messages.ReplicationRule;
 import io.minio.messages.Retention;
-import io.minio.messages.RetentionDurationDays;
 import io.minio.messages.RetentionMode;
-import io.minio.messages.RuleFilter;
-import io.minio.messages.SseAlgorithm;
 import io.minio.messages.SseConfiguration;
-import io.minio.messages.SseConfigurationRule;
 import io.minio.messages.Status;
 import io.minio.messages.Tags;
 import io.minio.messages.VersioningConfiguration;
@@ -142,6 +158,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -251,6 +268,13 @@ class MinioTemplateTest {
     return mockMinio;
   }
 
+  private MinioTemplate minioMockTemplate(String methodName, MockMinioClientConfigurator config) {
+    log.info(String.format("Running '%s' with mocked minio client", methodName));
+    Optional.ofNullable(config)
+        .ifPresent(c -> c.configureMock(mockClient));
+    return mockMinio;
+  }
+
   /**
    * Clone minio template.
    */
@@ -271,7 +295,7 @@ class MinioTemplateTest {
 
     MinioTemplate minio = minioTemplate("makeAndRemoveBucket", mock -> {
       when(mock.bucketExists(any(BucketExistsArgs.class))).thenReturn(true);
-      Bucket bucket = Mockito.mock(Bucket.class);
+      ListAllMyBucketsResult.Bucket bucket = Mockito.mock(ListAllMyBucketsResult.Bucket.class);
       when(bucket.name()).thenReturn(bucketName);
       when(bucket.creationDate()).thenReturn(ZonedDateTime.now());
       when(mock.listBuckets(any(ListBucketsArgs.class))).thenReturn(List.of(new Result<>(bucket)));
@@ -280,10 +304,11 @@ class MinioTemplateTest {
     minio.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
     assertTrue(minio.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build()));
 
-    Iterable<Result<Bucket>> buckets = minio.listBuckets(ListBucketsArgs.builder().build());
+    Iterable<Result<ListAllMyBucketsResult.Bucket>> buckets = minio
+        .listBuckets(ListBucketsArgs.builder().build());
     assertNotNull(buckets);
-    List<Bucket> bucketList = new ArrayList<>();
-    for (Result<Bucket> result : buckets) {
+    List<ListAllMyBucketsResult.Bucket> bucketList = new ArrayList<>();
+    for (Result<ListAllMyBucketsResult.Bucket> result : buckets) {
       try {
         bucketList.add(result.get());
       } catch (Exception e) {
@@ -308,7 +333,7 @@ class MinioTemplateTest {
     String bucketName = newBucketName();
 
     MinioTemplate minio = minioTemplate("makeAndRemoveBucketWithObjectLock", mock -> {
-      Bucket bucket = Mockito.mock(Bucket.class);
+      ListAllMyBucketsResult.Bucket bucket = Mockito.mock(ListAllMyBucketsResult.Bucket.class);
       when(bucket.name()).thenReturn(bucketName);
       when(bucket.creationDate()).thenReturn(ZonedDateTime.now());
       when(mock.listBuckets()).thenReturn(List.of(bucket));
@@ -319,7 +344,7 @@ class MinioTemplateTest {
         .bucket(bucketName)
         .objectLock(true)
         .build());
-    List<Bucket> buckets = minio.listBuckets();
+    List<ListAllMyBucketsResult.Bucket> buckets = minio.listBuckets();
     assertNotNull(buckets);
     assertFalse(buckets.isEmpty());
     assertTrue(buckets.stream().anyMatch(bucket -> bucket.name().equals(bucketName)));
@@ -338,7 +363,7 @@ class MinioTemplateTest {
 
     MinioTemplate minio = minioTemplate("bucketEncryption", mock ->
         when(mock.getBucketEncryption(any(GetBucketEncryptionArgs.class)))
-            .thenReturn(new SseConfiguration(new SseConfigurationRule(SseAlgorithm.AES256, null)))
+            .thenReturn(SseConfiguration.newConfigWithSseS3Rule())
     );
 
     minio.makeBucket(MakeBucketArgs.builder()
@@ -349,7 +374,7 @@ class MinioTemplateTest {
     try {
       minio.setBucketEncryption(SetBucketEncryptionArgs.builder()
           .bucket(bucket)
-          .config(new SseConfiguration(new SseConfigurationRule(SseAlgorithm.AES256, null)))
+          .config(SseConfiguration.newConfigWithSseS3Rule())
           .build());
 
       SseConfiguration config = minio.getBucketEncryption(GetBucketEncryptionArgs.builder()
@@ -375,11 +400,11 @@ class MinioTemplateTest {
   @Test
   void bucketLifecycle() {
     final String bucket = newBucketName();
-    final LifecycleRule rule0 = new LifecycleRule(
+    final LifecycleConfiguration.Rule rule0 = new LifecycleConfiguration.Rule(
         Status.ENABLED,
         null,
-        new Expiration((ZonedDateTime) null, 365, null),
-        new RuleFilter("logs/"),
+        new LifecycleConfiguration.Expiration((ZonedDateTime) null, 365, null, null),
+        new Filter("logs/"),
         null,
         null,
         null,
@@ -410,7 +435,7 @@ class MinioTemplateTest {
       assertTrue(optionalConfig.isPresent());
       LifecycleConfiguration readConfig = optionalConfig.get();
       assertFalse(readConfig.rules().isEmpty());
-      LifecycleRule readRule0 = readConfig.rules().getFirst();
+      LifecycleConfiguration.Rule readRule0 = readConfig.rules().getFirst();
       assertEquals(Status.ENABLED, readRule0.status());
 
       minio.deleteBucketLifecycle(DeleteBucketLifecycleArgs.builder()
@@ -438,7 +463,11 @@ class MinioTemplateTest {
   @Order(40)
   @Test
   void bucketNotification() throws Exception {
-    NotificationConfiguration config = new NotificationConfiguration();
+    NotificationConfiguration config = new NotificationConfiguration(
+        null,
+        null,
+        null,
+        null);
     when(mockClient.getBucketNotification(any(GetBucketNotificationArgs.class)))
         .thenReturn(config);
     mockMinio.setBucketNotification(SetBucketNotificationArgs.builder()
@@ -528,10 +557,10 @@ class MinioTemplateTest {
     Map<String, String> tags = new HashMap<>();
     tags.put("key1", "value1");
     tags.put("key2", "value2");
-    ReplicationRule rule =
-        new ReplicationRule(
-            new DeleteMarkerReplication(Status.DISABLED),
-            new ReplicationDestination(
+    ReplicationConfiguration.Rule rule =
+        new ReplicationConfiguration.Rule(
+            Status.DISABLED,
+            new ReplicationConfiguration.Destination(
                 null,
                 null,
                 "REPLACE-WITH-ACTUAL-DESTINATION-BUCKET-ARN",
@@ -540,13 +569,14 @@ class MinioTemplateTest {
                 null,
                 null),
             null,
-            new RuleFilter(new AndOperator("TaxDocs", tags)),
+            null,
+            new Filter(new Filter.And("TaxDocs", tags, null, null)),
             "rule1",
             null,
             1,
             null,
-            Status.ENABLED);
-    List<ReplicationRule> rules = new LinkedList<>();
+            null);
+    List<ReplicationConfiguration.Rule> rules = new LinkedList<>();
     rules.add(rule);
     ReplicationConfiguration config = new ReplicationConfiguration("REPLACE-WITH-ACTUAL-ROLE",
         rules);
@@ -565,6 +595,48 @@ class MinioTemplateTest {
     mockMinio.deleteBucketReplication(DeleteBucketReplicationArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .build());
+  }
+
+  /**
+   * Bucket cors.
+   */
+  @Order(65)
+  @Test
+  void bucketCors() {
+    List<CORSRule> rules = List.of(
+        new CORSRule(
+            List.of("*"),
+            List.of("PUT", "POST", "DELETE"),
+            List.of("*"),
+            null,
+            null,
+            3000
+        )
+    );
+    CORSConfiguration corsConfiguration = new CORSConfiguration(rules);
+    MinioTemplate minio = minioTemplate("bucketCors", mock ->
+        when(mock.getBucketCors(any(GetBucketCorsArgs.class)))
+            .thenReturn(corsConfiguration)
+    );
+
+    SetBucketCorsArgs setBucketCorsArgs = SetBucketCorsArgs.builder()
+        .bucket(DEFAULT_BUCKET)
+        .config(corsConfiguration)
+        .build();
+    minio.setBucketCors(setBucketCorsArgs);
+
+    GetBucketCorsArgs getBucketCorsArgs = GetBucketCorsArgs.builder()
+        .bucket(DEFAULT_BUCKET)
+        .build();
+    CORSConfiguration actual = minio.getBucketCors(getBucketCorsArgs);
+    Assertions.assertThat(actual)
+        .usingRecursiveComparison()
+        .isEqualTo(corsConfiguration);
+
+    DeleteBucketCorsArgs deleteBucketCorsArgs = DeleteBucketCorsArgs.builder()
+        .bucket(DEFAULT_BUCKET)
+        .build();
+    minio.deleteBucketCors(deleteBucketCorsArgs);
   }
 
   /**
@@ -603,7 +675,7 @@ class MinioTemplateTest {
 
     final String bucketName = newBucketName();
     final VersioningConfiguration config = new VersioningConfiguration(
-        VersioningConfiguration.Status.ENABLED, false);
+        VersioningConfiguration.Status.ENABLED, null, null, false);
     MinioTemplate minio = minioTemplate("bucketVersioning", mock ->
         when(mock.getBucketVersioning(any(GetBucketVersioningArgs.class))).thenReturn(config)
     );
@@ -638,7 +710,7 @@ class MinioTemplateTest {
     final String bucketName = newBucketName();
     final ObjectLockConfiguration config = new ObjectLockConfiguration(
         RetentionMode.COMPLIANCE,
-        new RetentionDurationDays(100));
+        new ObjectLockConfiguration.RetentionDurationDays(100));
     MinioTemplate minio = minioTemplate("objectLockConfiguration", mock ->
         when(mock.getObjectLockConfiguration(any(GetObjectLockConfigurationArgs.class))).thenReturn(
             config)
@@ -698,7 +770,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -782,7 +854,7 @@ class MinioTemplateTest {
       String url = minio.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
           .bucket(DEFAULT_BUCKET)
           .object(objectName)
-          .method(Method.GET)
+          .method(Http.Method.GET)
           .expiry(3600 * 24)
           .build());
       assertNotNull(url);
@@ -835,7 +907,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -895,7 +967,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -904,7 +976,7 @@ class MinioTemplateTest {
       String url = minio.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
           .bucket(DEFAULT_BUCKET)
           .object(objectName)
-          .method(Method.GET)
+          .method(Http.Method.GET)
           .expiry(3600 * 24)
           .build());
       assertNotNull(url);
@@ -965,19 +1037,19 @@ class MinioTemplateTest {
               null
           ));
       when(mock.statObject(any(StatObjectArgs.class)))
-          .thenReturn(new StatObjectResponse(
+          .thenReturn(new StatObjectResponse(new HeadObjectResponse(
               Headers.of(Map.of(
                   "Content-Length", String.valueOf(value.length),
                   "Last-Modified", ZonedDateTime.now().format(Time.HTTP_HEADER_DATE_FORMAT))),
               DEFAULT_BUCKET,
               null,
               objectName
-          ));
+          )));
     });
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1017,19 +1089,19 @@ class MinioTemplateTest {
               null
           ));
       when(mock.statObject(any(StatObjectArgs.class)))
-          .thenReturn(new StatObjectResponse(
+          .thenReturn(new StatObjectResponse(new HeadObjectResponse(
               Headers.of(Map.of(
                   "Content-Length", String.valueOf(value.length),
                   "Last-Modified", ZonedDateTime.now().format(Time.HTTP_HEADER_DATE_FORMAT))),
               DEFAULT_BUCKET,
               null,
               objectName
-          ));
+          )));
     });
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1108,7 +1180,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1142,8 +1214,8 @@ class MinioTemplateTest {
             .bucket(DEFAULT_BUCKET)
             .object(UUID.randomUUID().toString())
             .sqlExpression("select * from S3Object")
-            .inputSerialization(new InputSerialization())
-            .outputSerialization(new OutputSerialization(';'))
+            .inputSerialization(InputSerialization.newJSON(null, JsonType.DOCUMENT))
+            .outputSerialization(OutputSerialization.newJSON(null))
             .build())) {
       assertNotNull(stream);
     }
@@ -1192,7 +1264,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName0)
-        .stream(new ByteArrayInputStream(value0), value0.length, -1)
+        .stream(new ByteArrayInputStream(value0), (long) value0.length, -1L)
         .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
         .build());
     assertNotNull(response);
@@ -1203,7 +1275,7 @@ class MinioTemplateTest {
     response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName1)
-        .stream(new ByteArrayInputStream(value1), value1.length, -1)
+        .stream(new ByteArrayInputStream(value1), (long) value1.length, -1L)
         .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
         .build());
     assertNotNull(response);
@@ -1211,18 +1283,20 @@ class MinioTemplateTest {
     boolean destObjectExists = false;
     minio.makeBucket(MakeBucketArgs.builder().bucket(destBucket).build());
     try {
+      // Version 9.0.1 needs a mutable list
+      List<SourceObject> sources = new ArrayList<>(List.of(
+          SourceObject.builder()
+              .bucket(DEFAULT_BUCKET)
+              .object(objectName0)
+              .build(),
+          SourceObject.builder()
+              .bucket(DEFAULT_BUCKET)
+              .object(objectName1)
+              .build()));
       response = minio.composeObject(ComposeObjectArgs.builder()
           .bucket(destBucket)
           .object(destObjectName)
-          .sources(List.of(
-              ComposeSource.builder()
-                  .bucket(DEFAULT_BUCKET)
-                  .object(objectName0)
-                  .build(),
-              ComposeSource.builder()
-                  .bucket(DEFAULT_BUCKET)
-                  .object(objectName1)
-                  .build()))
+          .sources(sources)
           .build());
       assertNotNull(response);
       destObjectExists = true;
@@ -1230,7 +1304,7 @@ class MinioTemplateTest {
       String url = minio.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
           .bucket(destBucket)
           .object(destObjectName)
-          .method(Method.GET)
+          .method(Http.Method.GET)
           .expiry(3600 * 24)
           .build());
       assertNotNull(url);
@@ -1291,14 +1365,14 @@ class MinioTemplateTest {
               null,
               null));
       when(mock.statObject(any(StatObjectArgs.class)))
-          .thenReturn(new StatObjectResponse(
+          .thenReturn(new StatObjectResponse(new HeadObjectResponse(
               Headers.of(Map.of(
                   "Content-Length", String.valueOf(value.length),
                   "Last-Modified", ZonedDateTime.now().format(Time.HTTP_HEADER_DATE_FORMAT))),
               destBucket,
               null,
               destObjectName
-          ));
+          )));
       when(mock.removeObjects(any(RemoveObjectsArgs.class)))
           .thenReturn(Collections.emptyList());
     });
@@ -1306,7 +1380,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(DEFAULT_BUCKET)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1317,7 +1391,7 @@ class MinioTemplateTest {
       ObjectWriteResponse copyResponse = minio.copyObject(CopyObjectArgs.builder()
           .bucket(destBucket)
           .object(destObjectName)
-          .source(CopySource.builder()
+          .source(SourceObject.builder()
               .bucket(DEFAULT_BUCKET)
               .object(objectName)
               .build())
@@ -1332,13 +1406,13 @@ class MinioTemplateTest {
       destObjectExists = true;
       assertEquals(value.length, (int) objectStat.size());
 
-      Iterable<Result<DeleteError>> errors = minio.removeObjects(RemoveObjectsArgs
+      Iterable<Result<DeleteResult.Error>> errors = minio.removeObjects(RemoveObjectsArgs
           .builder()
           .bucket(destBucket)
-          .objects(Collections.singletonList(new DeleteObject(destObjectName)))
+          .objects(Collections.singletonList(new Object(destObjectName)))
           .build());
       boolean hasError = false;
-      for (Result<DeleteError> error : errors) {
+      for (Result<DeleteResult.Error> error : errors) {
         hasError = error != null;
       }
       assertFalse(hasError);
@@ -1399,7 +1473,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(bucket)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1439,6 +1513,138 @@ class MinioTemplateTest {
   }
 
   /**
+   * Object acl.
+   */
+  @Order(1133)
+  @Test
+  void objectAcl() {
+
+    String bucket = newBucketName();
+    String objectName = UUID.randomUUID() + ".txt";
+
+    Owner owner = new Owner();
+    List<Grant> grants = List.of(
+        new Grant(
+            new Grantee("CanonicalUser", Type.CANONICAL_USER, null, null, null, null),
+            Permission.FULL_CONTROL)
+    );
+    AccessControlList accessControlList = new AccessControlList(grants);
+    AccessControlPolicy accessControlPolicy = new AccessControlPolicy(owner, accessControlList);
+
+    MinioTemplate minio = minioTemplate("objectAcl", mock -> {
+      when(mock.putObject(any(PutObjectArgs.class)))
+          .thenReturn(new ObjectWriteResponse(
+              Headers.of(Collections.emptyMap()),
+              bucket,
+              null,
+              objectName,
+              null,
+              null
+          ));
+      when(mock.getObjectAcl(any(GetObjectAclArgs.class)))
+          .thenReturn(accessControlPolicy);
+    });
+
+    minio.makeBucket(MakeBucketArgs.builder()
+        .bucket(bucket)
+        .objectLock(false)
+        .build());
+    byte[] value = "Hello Minio".getBytes(StandardCharsets.UTF_8);
+    ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
+        .bucket(bucket)
+        .object(objectName)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
+        .contentType(MediaType.TEXT_PLAIN_VALUE)
+        .build());
+    assertNotNull(response);
+
+    try {
+      GetObjectAclArgs getObjectAclArgs = GetObjectAclArgs.builder()
+          .bucket(bucket)
+          .object(objectName)
+          .build();
+      AccessControlPolicy actual = minio.getObjectAcl(getObjectAclArgs);
+      Assertions.assertThat(actual)
+          .usingRecursiveComparison()
+          .isEqualTo(accessControlPolicy);
+
+    } finally {
+      minio.removeObject(RemoveObjectArgs.builder()
+          .bucket(bucket)
+          .object(objectName)
+          .build());
+      minio.removeBucket(RemoveBucketArgs.builder()
+          .bucket(bucket)
+          .build());
+    }
+  }
+
+  /**
+   * Object acl.
+   */
+  @Order(1137)
+  @Test
+  void objectAttributes() {
+
+    String bucket = newBucketName();
+    String objectName = UUID.randomUUID() + ".txt";
+
+    GetObjectAttributesOutput output = mock(GetObjectAttributesOutput.class);
+    when(output.objectSize()).thenReturn(11L);
+    GetObjectAttributesResponse attributesResponse = mock(GetObjectAttributesResponse.class);
+    when(attributesResponse.result()).thenReturn(output);
+
+    MinioTemplate minio = minioTemplate("objectAttributes", mock -> {
+      when(mock.putObject(any(PutObjectArgs.class)))
+          .thenReturn(new ObjectWriteResponse(
+              Headers.of(Collections.emptyMap()),
+              bucket,
+              null,
+              objectName,
+              null,
+              null
+          ));
+      when(mock.getObjectAttributes(any(GetObjectAttributesArgs.class)))
+          .thenReturn(attributesResponse);
+    });
+
+    minio.makeBucket(MakeBucketArgs.builder()
+        .bucket(bucket)
+        .objectLock(false)
+        .build());
+    byte[] value = "Hello Minio".getBytes(StandardCharsets.UTF_8);
+    ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
+        .bucket(bucket)
+        .object(objectName)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
+        .contentType(MediaType.TEXT_PLAIN_VALUE)
+        .build());
+    assertNotNull(response);
+
+    try {
+      GetObjectAttributesArgs getObjectAttributesArgs = GetObjectAttributesArgs.builder()
+          .bucket(bucket)
+          .object(objectName)
+          .objectAttributes(List
+              .of("ETag", "Checksum", "ObjectParts", "StorageClass", "ObjectSize"))
+          .build();
+      GetObjectAttributesResponse actual = minio.getObjectAttributes(getObjectAttributesArgs);
+      assertNotNull(actual);
+      assertNotNull(actual.result());
+      assertEquals(11L, actual.result().objectSize());
+
+    } finally {
+      minio.removeObject(RemoveObjectArgs.builder()
+          .bucket(bucket)
+          .object(objectName)
+          .build());
+      minio.removeBucket(RemoveBucketArgs.builder()
+          .bucket(bucket)
+          .build());
+    }
+  }
+
+  /**
    * Object tags.
    */
   @Order(1140)
@@ -1470,7 +1676,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(bucket)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1544,7 +1750,7 @@ class MinioTemplateTest {
     ObjectWriteResponse response = minio.putObject(PutObjectArgs.builder()
         .bucket(bucket)
         .object(objectName)
-        .stream(new ByteArrayInputStream(value), value.length, -1)
+        .stream(new ByteArrayInputStream(value), (long) value.length, -1L)
         .contentType(MediaType.TEXT_PLAIN_VALUE)
         .build());
     assertNotNull(response);
@@ -1576,6 +1782,50 @@ class MinioTemplateTest {
           .bucket(bucket)
           .build());
     }
+  }
+
+  /**
+   * Prompt object.
+   */
+  @Order(1200)
+  @Test
+  void promptObject() {
+    PromptObjectResponse response = mock(PromptObjectResponse.class);
+    MinioTemplate minio = minioMockTemplate(
+        "promptObject",
+        minioClient -> when(minioClient.promptObject(any(PromptObjectArgs.class)))
+            .thenReturn(response));
+    try (PromptObjectResponse actual = minio.promptObject(mock(PromptObjectArgs.class))) {
+      assertEquals(response, actual);
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+  }
+
+  /**
+   * Put object fan out.
+   */
+  @Order(1210)
+  @Test
+  void putObjectFanOut() {
+    PutObjectFanOutResponse response = mock(PutObjectFanOutResponse.class);
+    MinioTemplate minio = minioMockTemplate(
+        "putObjectFanOut",
+        minioClient -> when(minioClient.putObjectFanOut(any(PutObjectFanOutArgs.class)))
+            .thenReturn(response));
+    PutObjectFanOutResponse actual = minio.putObjectFanOut(mock(PutObjectFanOutArgs.class));
+    assertEquals(response, actual);
+  }
+
+  /**
+   * Restore object.
+   */
+  @Order(1220)
+  @Test
+  void restoreObject() {
+    MinioTemplate minio = minioMockTemplate("restoreObject", minioClient -> {
+    });
+    assertDoesNotThrow(() -> minio.restoreObject(mock(RestoreObjectArgs.class)));
   }
 
   /**

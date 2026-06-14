@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+* Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package org.bremersee.exception.model.app;
 
 import java.util.Map;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
+import org.springframework.boot.webmvc.error.DefaultErrorAttributes;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,6 @@ import org.springframework.web.context.request.WebRequest;
  * @author Christian Bremer
  */
 @SpringBootConfiguration
-@EnableAutoConfiguration(exclude = {RedisAutoConfiguration.class})
 @ComponentScan(basePackageClasses = {TestConfiguration.class})
 public class TestConfiguration {
 
@@ -47,8 +46,9 @@ public class TestConfiguration {
   public static class CustomTestErrorAttributes extends DefaultErrorAttributes {
 
     @Override
-    public Map<String, Object> getErrorAttributes(
-        WebRequest webRequest, ErrorAttributeOptions options) {
+    @NonNull
+    public Map<String, @Nullable Object> getErrorAttributes(
+        @NonNull WebRequest webRequest, @NonNull ErrorAttributeOptions options) {
 
       Map<String, Object> errorAttributes =
           super.getErrorAttributes(webRequest, options);

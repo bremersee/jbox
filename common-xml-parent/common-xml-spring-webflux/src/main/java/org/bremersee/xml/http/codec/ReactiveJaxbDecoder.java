@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+* Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import org.bremersee.xml.JaxbContextBuilder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.AbstractDecoder;
@@ -49,8 +51,6 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.log.LogFormatUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.xml.XmlEventDecoder;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeType;
@@ -121,8 +121,8 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
   /**
    * Set the max number of bytes that can be buffered by this decoder. This is either the size of
    * the entire input when decoding as a whole, or when using async parsing with Aalto XML, it is
-   * the size of one top-level XML tree. When the limit is exceeded, {@link
-   * org.springframework.core.io.buffer.DataBufferLimitException} is raised.
+   * the size of one top-level XML tree. When the limit is exceeded,
+   * {@link org.springframework.core.io.buffer.DataBufferLimitException} is raised.
    *
    * <p>By default, this is set to 256K.
    *

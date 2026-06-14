@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.bremersee.minio;
 import io.minio.BucketExistsArgs;
 import io.minio.GetBucketVersioningArgs;
 import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.Http;
 import io.minio.ListObjectsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -30,9 +31,8 @@ import io.minio.Result;
 import io.minio.SetBucketVersioningArgs;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
-import io.minio.http.Method;
-import io.minio.messages.DeleteError;
-import io.minio.messages.DeleteObject;
+import io.minio.messages.DeleteRequest;
+import io.minio.messages.DeleteResult;
 import io.minio.messages.Item;
 import io.minio.messages.VersioningConfiguration;
 import io.minio.messages.VersioningConfiguration.Status;
@@ -158,7 +158,7 @@ public class MinioRepositoryImpl implements MinioRepository {
           minio.setBucketVersioning(SetBucketVersioningArgs.builder()
               .region(region)
               .bucket(bucket)
-              .config(new VersioningConfiguration(Status.SUSPENDED, false))
+              .config(new VersioningConfiguration(Status.SUSPENDED, null, null, false))
               .build());
         }
         break;
@@ -167,7 +167,7 @@ public class MinioRepositoryImpl implements MinioRepository {
           minio.setBucketVersioning(SetBucketVersioningArgs.builder()
               .region(region)
               .bucket(bucket)
-              .config(new VersioningConfiguration(Status.ENABLED, false))
+              .config(new VersioningConfiguration(Status.ENABLED, null, null, false))
               .build());
         }
         break;
@@ -199,7 +199,7 @@ public class MinioRepositoryImpl implements MinioRepository {
                 .contentType(StringUtils.hasText(file.getContentType())
                     ? file.getContentType()
                     : MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                .stream(in, file.getSize(), -1)
+                .stream(in, file.getSize(), -1L)
                 .region(region)
                 .bucket(bucket)
                 .object(id.getName())
@@ -297,20 +297,20 @@ public class MinioRepositoryImpl implements MinioRepository {
   }
 
   @Override
-  public List<DeleteError> deleteAll(Collection<MinioObjectId> ids) {
+  public List<DeleteResult.Error> deleteAll(Collection<MinioObjectId> ids) {
 
     if (ids == null || ids.isEmpty()) {
       return Collections.emptyList();
     }
-    Iterable<Result<DeleteError>> errors = minio.removeObjects(RemoveObjectsArgs.builder()
+    Iterable<Result<DeleteResult.Error>> errors = minio.removeObjects(RemoveObjectsArgs.builder()
         .region(region)
         .bucket(bucket)
         .objects(ids.stream()
-            .map(id -> new DeleteObject(id.getName(), id.getVersionId()))
+            .map(id -> new DeleteRequest.Object(id.getName(), id.getVersionId()))
             .collect(Collectors.toSet()))
         .build());
-    List<DeleteError> errorList = new ArrayList<>();
-    for (Result<DeleteError> error : errors) {
+    List<DeleteResult.Error> errorList = new ArrayList<>();
+    for (Result<DeleteResult.Error> error : errors) {
       try {
         errorList.add(error.get());
       } catch (Exception ignored) {
@@ -321,7 +321,7 @@ public class MinioRepositoryImpl implements MinioRepository {
   }
 
   @Override
-  public String getPresignedObjectUrl(MinioObjectId id, Method method, Duration duration) {
+  public String getPresignedObjectUrl(MinioObjectId id, Http.Method method, Duration duration) {
     Duration expiry = duration != null ? validateDuration(duration) : presignedObjectUrlDuration;
     return minio.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
         .expiry((int) expiry.toSeconds())

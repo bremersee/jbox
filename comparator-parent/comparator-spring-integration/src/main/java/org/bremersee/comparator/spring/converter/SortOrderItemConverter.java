@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package org.bremersee.comparator.spring.converter;
 import java.util.Optional;
 import org.bremersee.comparator.model.SortOrderItem;
 import org.bremersee.comparator.model.SortOrderTextSeparators;
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 
 /**
  * The sort order item converter.

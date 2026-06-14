@@ -36,6 +36,7 @@ import org.bremersee.spring.security.ldaptive.authentication.provider.NoAccountC
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetailsService;
+import org.jspecify.annotations.NonNull;
 import org.ldaptive.BindOperation;
 import org.ldaptive.BindResponse;
 import org.ldaptive.CompareRequest;
@@ -49,7 +50,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -243,7 +243,7 @@ public class LdaptiveAuthenticationManager
   }
 
   @Override
-  public boolean supports(Class<?> authentication) {
+  public boolean supports(@NonNull Class<?> authentication) {
     return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication)
         || isRememberMeAuthentication(authentication);
   }
@@ -265,6 +265,7 @@ public class LdaptiveAuthenticationManager
         .isPresent();
   }
 
+  @NonNull
   @Override
   public Authentication authenticate(Authentication authentication)
       throws AuthenticationException {
@@ -272,6 +273,7 @@ public class LdaptiveAuthenticationManager
     if (!supports(authentication.getClass())) {
       logger.debug(String.format("Authentication [%s] is not supported.",
           authentication.getClass().getName()));
+      //noinspection DataFlowIssue
       return null;
     }
     if (authentication instanceof RememberMeAuthenticationToken rma) {

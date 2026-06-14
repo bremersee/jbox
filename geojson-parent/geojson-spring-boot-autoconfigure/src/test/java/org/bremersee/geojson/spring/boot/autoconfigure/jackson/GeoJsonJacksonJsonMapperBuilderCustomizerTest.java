@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,25 +23,25 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.function.Consumer;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
+import org.bremersee.geojson.GeoJsonObjectMapperModule;
 import org.bremersee.geojson.spring.boot.autoconfigure.GeoJsonProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The geo json jackson 2 object mapper builder customizer test.
  *
  * @author Christian Bremer
  */
-class GeoJsonJackson2ObjectMapperBuilderCustomizerTest {
+class GeoJsonJacksonJsonMapperBuilderCustomizerTest {
 
-  private GeoJsonJackson2ObjectMapperBuilderCustomizer newInstance(GeoJsonProperties properties) {
+  private GeoJsonJacksonJsonMapperBuilderCustomizer newInstance(GeoJsonProperties properties) {
     //noinspection unchecked
     ObjectProvider<GeoJsonGeometryFactory> objectProvider = mock(ObjectProvider.class);
     when(objectProvider.getIfAvailable(any())).thenReturn(new GeoJsonGeometryFactory());
-    return new GeoJsonJackson2ObjectMapperBuilderCustomizer(properties, objectProvider);
+    return new GeoJsonJacksonJsonMapperBuilderCustomizer(properties, objectProvider);
   }
 
   /**
@@ -53,7 +53,7 @@ class GeoJsonJackson2ObjectMapperBuilderCustomizerTest {
     properties.setUseBigDecimal(true);
     properties.setWithBoundingBox(true);
     properties = spy(properties);
-    GeoJsonJackson2ObjectMapperBuilderCustomizer target = newInstance(properties);
+    GeoJsonJacksonJsonMapperBuilderCustomizer target = newInstance(properties);
     target.init();
     verify(properties, atLeast(1)).isUseBigDecimal();
     verify(properties, atLeast(1)).isWithBoundingBox();
@@ -68,11 +68,10 @@ class GeoJsonJackson2ObjectMapperBuilderCustomizerTest {
     properties.setUseBigDecimal(false);
     properties.setWithBoundingBox(false);
     properties = spy(properties);
-    GeoJsonJackson2ObjectMapperBuilderCustomizer target = newInstance(properties);
-    Jackson2ObjectMapperBuilder builder = mock(Jackson2ObjectMapperBuilder.class);
+    GeoJsonJacksonJsonMapperBuilderCustomizer target = newInstance(properties);
+    JsonMapper.Builder builder = mock(JsonMapper.Builder.class);
     target.customize(builder);
-    //noinspection unchecked
-    verify(builder).postConfigurer(any(Consumer.class));
+    verify(builder).addModules(any(GeoJsonObjectMapperModule.class));
     verify(properties, atLeast(1)).isUseBigDecimal();
     verify(properties, atLeast(1)).isWithBoundingBox();
   }
