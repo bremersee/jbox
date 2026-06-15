@@ -6,7 +6,7 @@
 
   <groupId>org.bremersee</groupId>
   <artifactId>common-parent</artifactId>
-  <version>6.0.0</version>
+  <version>6.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Common Parent</name>
@@ -52,7 +52,7 @@
     <!-- see https://www.eclemma.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
     <argLine>-Dorg.bremersee.test.executor=NOT_SPECIFIED</argLine> <!-- BUILD_SYSTEM | NOT_SPECIFIED -->
 
-    <jbox.version>6.0.0</jbox.version>
+    <jbox.version>6.0.1-SNAPSHOT</jbox.version>
     <spring-boot.version>4.0.7</spring-boot.version>
     <spring-boot-admin.version>4.0.3</spring-boot-admin.version>
     <spring-cloud.version>2025.1.2</spring-cloud.version>
