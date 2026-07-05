@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LdaptiveTemplate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Ldaptive</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.ldaptive</a> &gt; <span class="el_source">LdaptiveTemplate.java</span></div><h1>LdaptiveTemplate.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.ldaptive;
+
+import java.util.Objects;
+import java.util.Optional;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bremersee.exception.ServiceException;
+import org.ldaptive.AddOperation;
+import org.ldaptive.AddRequest;
+import org.ldaptive.BindOperation;
+import org.ldaptive.BindRequest;
+import org.ldaptive.BindResponse;
+import org.ldaptive.CompareOperation;
+import org.ldaptive.CompareRequest;
+import org.ldaptive.CompareResponse;
+import org.ldaptive.ConnectionFactory;
+import org.ldaptive.DeleteOperation;
+import org.ldaptive.DeleteRequest;
+import org.ldaptive.LdapAttribute;
+import org.ldaptive.LdapEntry;
+import org.ldaptive.LdapException;
+import org.ldaptive.ModifyDnOperation;
+import org.ldaptive.ModifyDnRequest;
+import org.ldaptive.ModifyOperation;
+import org.ldaptive.ModifyRequest;
+import org.ldaptive.Operation;
+import org.ldaptive.Request;
+import org.ldaptive.Result;
+import org.ldaptive.ResultCode;
+import org.ldaptive.SearchOperation;
+import org.ldaptive.SearchRequest;
+import org.ldaptive.SearchResponse;
+import org.ldaptive.extended.ExtendedOperation;
+import org.ldaptive.extended.ExtendedRequest;
+import org.ldaptive.extended.ExtendedResponse;
+import org.ldaptive.handler.ResultPredicate;
+
+/**
+ * The template for executing ldap operations.
+ *
+ * @author Christian Bremer
+ */
+public class LdaptiveTemplate implements LdaptiveOperations {
+
+<span class="fc" id="L61">  private static final Log log = LogFactory.getLog(LdaptiveTemplate.class);</span>
+
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">  private static final ResultPredicate NOT_COMPARE_RESULT = result -&gt; !result.isSuccess()</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.COMPARE_TRUE</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.COMPARE_FALSE;</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">  private static final ResultPredicate NOT_DELETE_RESULT = result -&gt; !result.isSuccess()</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">      &amp;&amp; result.getResultCode() != ResultCode.NO_SUCH_OBJECT;</span>
+
+<span class="fc" id="L70">  private static final ResultPredicate NOT_FIND_RESULT = NOT_DELETE_RESULT;</span>
+
+  private final ConnectionFactory connectionFactory;
+
+<span class="fc" id="L74">  private LdaptiveErrorHandler errorHandler = new DefaultLdaptiveErrorHandler();</span>
+
+  /**
+   * Instantiates a new ldaptive template.
+   *
+   * @param connectionFactory the connection factory
+   */
+<span class="fc" id="L81">  public LdaptiveTemplate(ConnectionFactory connectionFactory) {</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (Objects.isNull(connectionFactory)) {</span>
+<span class="nc" id="L83">      throw new IllegalArgumentException(&quot;Connection factory must not be present.&quot;);</span>
+    }
+<span class="fc" id="L85">    this.connectionFactory = connectionFactory;</span>
+<span class="fc" id="L86">  }</span>
+
+  @Override
+  public ConnectionFactory getConnectionFactory() {
+<span class="fc" id="L90">    return connectionFactory;</span>
+  }
+
+  /**
+   * Sets error handler.
+   *
+   * @param errorHandler the error handler
+   */
+  public void setErrorHandler(final LdaptiveErrorHandler errorHandler) {
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (errorHandler != null) {</span>
+<span class="fc" id="L100">      this.errorHandler = errorHandler;</span>
+    }
+<span class="fc" id="L102">  }</span>
+
+  @Override
+  public LdaptiveTemplate copy() {
+<span class="fc" id="L106">    return copy(null);</span>
+  }
+
+  @Override
+  public LdaptiveTemplate copy(LdaptiveErrorHandler errorHandler) {
+<span class="fc" id="L111">    final LdaptiveTemplate template = new LdaptiveTemplate(connectionFactory);</span>
+<span class="fc" id="L112">    template.setErrorHandler(errorHandler);</span>
+<span class="fc" id="L113">    return template;</span>
+  }
+
+  private &lt;Q extends Request, S extends Result&gt; S execute(Operation&lt;Q, S&gt; operation, Q request) {
+    try {
+<span class="fc" id="L118">      return operation.execute(request);</span>
+
+<span class="fc" id="L120">    } catch (Exception e) {</span>
+<span class="nc" id="L121">      errorHandler.handleError(e);</span>
+<span class="nc" id="L122">      return null;</span>
+    }
+  }
+
+  @Override
+  public void add(AddRequest request) {
+<span class="fc" id="L128">    execute(</span>
+<span class="fc" id="L129">        AddOperation.builder()</span>
+<span class="fc" id="L130">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L131">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L132">            .build(),</span>
+        request);
+<span class="fc" id="L134">  }</span>
+
+  @Override
+  public boolean bind(BindRequest request) {
+<span class="fc" id="L138">    return Optional.ofNullable(execute(new BindOperation(getConnectionFactory()), request))</span>
+<span class="fc" id="L139">        .map(BindResponse::isSuccess)</span>
+<span class="fc" id="L140">        .orElse(false);</span>
+  }
+
+  @Override
+  public boolean compare(CompareRequest request) {
+<span class="fc" id="L145">    return Optional.ofNullable(execute(</span>
+<span class="fc" id="L146">            CompareOperation.builder()</span>
+<span class="fc" id="L147">                .factory(getConnectionFactory())</span>
+<span class="fc" id="L148">                .throwIf(NOT_COMPARE_RESULT)</span>
+<span class="fc" id="L149">                .build(),</span>
+            request))
+<span class="fc" id="L151">        .map(CompareResponse::isTrue)</span>
+<span class="fc" id="L152">        .orElse(false);</span>
+  }
+
+  @Override
+  public void delete(DeleteRequest request) {
+<span class="fc" id="L157">    execute(</span>
+<span class="fc" id="L158">        DeleteOperation.builder()</span>
+<span class="fc" id="L159">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L160">            .throwIf(NOT_DELETE_RESULT)</span>
+<span class="fc" id="L161">            .build(),</span>
+        request);
+<span class="fc" id="L163">  }</span>
+
+  @Override
+  public ExtendedResponse executeExtension(ExtendedRequest request) {
+<span class="fc" id="L167">    return execute(</span>
+<span class="fc" id="L168">        ExtendedOperation.builder()</span>
+<span class="fc" id="L169">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L170">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L171">            .build(),</span>
+        request);
+  }
+
+  @Override
+  public void modify(ModifyRequest request) {
+<span class="pc bpc" id="L177" title="2 of 4 branches missed.">    if (request.getModifications() != null &amp;&amp; request.getModifications().length &gt; 0) {</span>
+<span class="fc" id="L178">      execute(</span>
+<span class="fc" id="L179">          ModifyOperation.builder()</span>
+<span class="fc" id="L180">              .factory(getConnectionFactory())</span>
+<span class="fc" id="L181">              .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L182">              .build(),</span>
+          request);
+    }
+<span class="fc" id="L185">  }</span>
+
+  @Override
+  public void modifyDn(ModifyDnRequest request) {
+<span class="fc" id="L189">    execute(</span>
+<span class="fc" id="L190">        ModifyDnOperation.builder()</span>
+<span class="fc" id="L191">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L192">            .throwIf(ResultPredicate.NOT_SUCCESS)</span>
+<span class="fc" id="L193">            .build(),</span>
+        request);
+<span class="fc" id="L195">  }</span>
+
+  @Override
+  public SearchResponse search(SearchRequest request) {
+<span class="fc" id="L199">    return execute(</span>
+<span class="fc" id="L200">        SearchOperation.builder()</span>
+<span class="fc" id="L201">            .factory(getConnectionFactory())</span>
+<span class="fc" id="L202">            .throwIf(NOT_FIND_RESULT)</span>
+<span class="fc" id="L203">            .build(),</span>
+        request);
+  }
+
+  @Override
+  public boolean exists(String dn) {
+    try {
+<span class="fc" id="L210">      SearchResponse response = SearchOperation.builder()</span>
+<span class="fc" id="L211">          .factory(getConnectionFactory())</span>
+<span class="fc" id="L212">          .throwIf(NOT_FIND_RESULT)</span>
+<span class="fc" id="L213">          .build()</span>
+<span class="fc" id="L214">          .execute(SearchRequest.objectScopeSearchRequest(dn));</span>
+<span class="fc" id="L215">      return response.isSuccess();</span>
+
+<span class="nc" id="L217">    } catch (LdapException e) {</span>
+<span class="nc" id="L218">      errorHandler.handleError(e);</span>
+<span class="nc" id="L219">      return false;</span>
+    }
+  }
+
+  @Override
+  public &lt;T&gt; T save(T domainObject, LdaptiveEntryMapper&lt;T&gt; entryMapper) {
+
+<span class="fc" id="L226">    String dn = entryMapper.mapDn(domainObject);</span>
+<span class="fc" id="L227">    SearchResponse searchResponse = execute(</span>
+<span class="fc" id="L228">        SearchOperation.builder()</span>
+<span class="fc" id="L229">            .factory(getConnectionFactory())</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">            .throwIf(result -&gt; result.getResultCode() != ResultCode.NO_SUCH_OBJECT</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">                &amp;&amp; result.getResultCode() != ResultCode.SUCCESS)</span>
+<span class="fc" id="L232">            .build(),</span>
+<span class="fc" id="L233">        SearchRequest.objectScopeSearchRequest(dn));</span>
+<span class="fc" id="L234">    return Optional.ofNullable(searchResponse)</span>
+<span class="fc" id="L235">        .map(SearchResponse::getEntry)</span>
+<span class="fc" id="L236">        .map(entry -&gt; entryMapper.mapAndComputeModifyRequest(domainObject, entry)</span>
+<span class="fc" id="L237">            .map(modReq -&gt; {</span>
+<span class="fc" id="L238">              modify(modReq);</span>
+<span class="fc" id="L239">              return entryMapper.map(entry);</span>
+            })
+<span class="fc" id="L241">            .orElse(domainObject))  // domain object exists, but nothing to modify</span>
+<span class="fc" id="L242">        .orElseGet(() -&gt; {          // otherwise, save new ldap entry</span>
+<span class="fc" id="L243">          String[] objectClasses = entryMapper.getObjectClasses();</span>
+<span class="pc bpc" id="L244" title="2 of 4 branches missed.">          if (objectClasses == null || objectClasses.length == 0) {</span>
+<span class="nc" id="L245">            final ServiceException se = ServiceException.internalServerError(</span>
+                &quot;Object classes must be specified to save a new ldap entry.&quot;,
+                &quot;org.bremersee:ldaptive-integration:d7aa5699-fd2e-45df-a863-97960e8095b8&quot;);
+<span class="nc" id="L248">            log.error(&quot;Saving domain object failed.&quot;, se);</span>
+<span class="nc" id="L249">            throw se;</span>
+          }
+<span class="fc" id="L251">          LdapEntry entry = new LdapEntry();</span>
+<span class="fc" id="L252">          entryMapper.map(domainObject, entry);</span>
+<span class="fc" id="L253">          entry.setDn(dn);</span>
+<span class="fc" id="L254">          entry.addAttributes(new LdapAttribute(&quot;objectclass&quot;, objectClasses));</span>
+<span class="fc" id="L255">          add(new AddRequest(dn, entry.getAttributes()));</span>
+<span class="fc" id="L256">          return entryMapper.map(entry);</span>
+        });
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

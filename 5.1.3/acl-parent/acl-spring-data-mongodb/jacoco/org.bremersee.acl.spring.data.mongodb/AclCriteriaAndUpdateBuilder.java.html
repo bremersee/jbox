@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AclCriteriaAndUpdateBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Acl for Spring Data MongoDB</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.acl.spring.data.mongodb</a> &gt; <span class="el_source">AclCriteriaAndUpdateBuilder.java</span></div><h1>AclCriteriaAndUpdateBuilder.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.acl.spring.data.mongodb;
+
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import org.bremersee.acl.AccessEvaluation;
+import org.bremersee.acl.Ace;
+import org.bremersee.acl.Acl;
+import org.bremersee.acl.AclUserContext;
+import org.bremersee.acl.annotation.AclHolder;
+import org.bremersee.acl.model.AccessControlEntryModifications;
+import org.bremersee.acl.model.AccessControlListModifications;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.util.Assert;
+
+/**
+ * The acl criteria and update builder.
+ *
+ * @author Christian Bremer
+ */
+public class AclCriteriaAndUpdateBuilder {
+
+  private final String aclPath;
+
+  /**
+   * Instantiates a new acl criteria and update builder.
+   *
+   * @param aclPath the acl path
+   */
+<span class="nc" id="L53">  public AclCriteriaAndUpdateBuilder(String aclPath) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">    this.aclPath = Objects.isNull(aclPath) ? &quot;&quot; : aclPath;</span>
+<span class="nc" id="L55">  }</span>
+
+  /**
+   * Instantiates a new acl criteria and update builder.
+   *
+   * @param entityClass the entity class
+   */
+<span class="fc" id="L62">  public AclCriteriaAndUpdateBuilder(Class&lt;?&gt; entityClass) {</span>
+<span class="fc" id="L63">    Assert.notNull(entityClass, &quot;Entity class must be present.&quot;);</span>
+<span class="fc" id="L64">    this.aclPath = Optional</span>
+<span class="fc" id="L65">        .ofNullable(findAnnotation(entityClass, AclHolder.class))</span>
+<span class="fc" id="L66">        .map(AclHolder::path)</span>
+<span class="pc" id="L67">        .orElseThrow(() -&gt; new IllegalArgumentException(String</span>
+<span class="nc" id="L68">            .format(</span>
+                &quot;Entity class %s must be annotated with %s.&quot;,
+<span class="nc" id="L70">                entityClass.getSimpleName(), AclHolder.class.getSimpleName())));</span>
+<span class="fc" id="L71">  }</span>
+
+  /**
+   * Build update acl modification update.
+   *
+   * @param accessControlListModifications the access control list modifications
+   * @return the acl modification update
+   */
+  public AclModificationUpdate buildUpdate(
+      AccessControlListModifications accessControlListModifications) {
+
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    Collection&lt;AccessControlEntryModifications&gt; mods = isEmpty(accessControlListModifications)</span>
+<span class="nc" id="L83">        ? List.of()</span>
+<span class="fc" id="L84">        : accessControlListModifications.getModificationsDistinct();</span>
+
+<span class="fc" id="L86">    Update addAndSetUpdate = new Update();</span>
+<span class="fc" id="L87">    Update removeUpdate = new Update();</span>
+<span class="fc" id="L88">    boolean isSomethingRemoved = false;</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    for (AccessControlEntryModifications mod : mods) {</span>
+
+      // guest
+<span class="fc" id="L93">      addAndSetUpdate = addAndSetUpdate.set(</span>
+<span class="fc" id="L94">          path(Acl.ENTRIES, mod.getPermission(), Ace.GUEST),</span>
+<span class="fc" id="L95">          mod.isGuest());</span>
+
+      // users
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (!mod.getAddUsers().isEmpty()) {</span>
+<span class="fc" id="L99">        addAndSetUpdate = addAndSetUpdate</span>
+<span class="fc" id="L100">            .addToSet(path(Acl.ENTRIES, mod.getPermission(), Ace.USERS))</span>
+<span class="fc" id="L101">            .each((Object[]) mod.getAddUsers().toArray(new String[0]));</span>
+      }
+<span class="fc bfc" id="L103" title="All 2 branches covered.">      if (!mod.getRemoveUsers().isEmpty()) {</span>
+<span class="fc" id="L104">        isSomethingRemoved = true;</span>
+<span class="fc" id="L105">        removeUpdate = removeUpdate.pullAll(</span>
+<span class="fc" id="L106">            path(Acl.ENTRIES, mod.getPermission(), Ace.USERS),</span>
+<span class="fc" id="L107">            mod.getRemoveUsers().toArray(new String[0]));</span>
+      }
+
+      // roles
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">      if (!mod.getAddRoles().isEmpty()) {</span>
+<span class="nc" id="L112">        addAndSetUpdate = addAndSetUpdate</span>
+<span class="nc" id="L113">            .addToSet(path(Acl.ENTRIES, mod.getPermission(), Ace.ROLES))</span>
+<span class="nc" id="L114">            .each((Object[]) mod.getAddRoles().toArray(new String[0]));</span>
+      }
+<span class="fc bfc" id="L116" title="All 2 branches covered.">      if (!mod.getRemoveRoles().isEmpty()) {</span>
+<span class="fc" id="L117">        isSomethingRemoved = true;</span>
+<span class="fc" id="L118">        removeUpdate = removeUpdate.pullAll(</span>
+<span class="fc" id="L119">            path(Acl.ENTRIES, mod.getPermission(), Ace.ROLES),</span>
+<span class="fc" id="L120">            mod.getRemoveRoles().toArray(new String[0]));</span>
+      }
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">      if (!mod.getAddGroups().isEmpty()) {</span>
+<span class="fc" id="L124">        addAndSetUpdate = addAndSetUpdate</span>
+<span class="fc" id="L125">            .addToSet(path(Acl.ENTRIES, mod.getPermission(), Ace.GROUPS))</span>
+<span class="fc" id="L126">            .each((Object[]) mod.getAddGroups().toArray(new String[0]));</span>
+      }
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">      if (!mod.getRemoveGroups().isEmpty()) {</span>
+<span class="nc" id="L129">        isSomethingRemoved = true;</span>
+<span class="nc" id="L130">        removeUpdate = removeUpdate.pullAll(</span>
+<span class="nc" id="L131">            path(Acl.ENTRIES, mod.getPermission(), Ace.GROUPS),</span>
+<span class="nc" id="L132">            mod.getRemoveGroups().toArray(new String[0]));</span>
+      }
+<span class="fc" id="L134">    }</span>
+<span class="fc" id="L135">    return AclModificationUpdate.builder()</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        .preparationUpdates(isSomethingRemoved ? List.of(addAndSetUpdate) : List.of())</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        .finalUpdate(isSomethingRemoved ? removeUpdate : addAndSetUpdate)</span>
+<span class="fc" id="L138">        .build();</span>
+  }
+
+  /**
+   * Build update.
+   *
+   * @param acl the acl
+   * @return the update
+   */
+  public Update buildUpdate(Acl acl) {
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    return Update.update(path(), isEmpty(acl) ? Acl.builder().build() : acl);</span>
+  }
+
+  /**
+   * Build update.
+   *
+   * @param newOwner the new owner
+   * @return the update
+   */
+  public Update buildUpdate(String newOwner) {
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">    return Update.update(path(Acl.OWNER), isEmpty(newOwner) ? &quot;&quot; : newOwner);</span>
+  }
+
+  /**
+   * Build update owner criteria.
+   *
+   * @param userContext the user context
+   * @return the criteria
+   */
+  public Criteria buildUpdateOwnerCriteria(AclUserContext userContext) {
+<span class="fc" id="L168">    Assert.notNull(userContext, &quot;User context must be present.&quot;);</span>
+<span class="fc" id="L169">    return Criteria.where(path(Acl.OWNER)).is(userContext.getName());</span>
+  }
+
+  /**
+   * Build permission criteria.
+   *
+   * @param userContext the user context
+   * @param accessEvaluation the access evaluation
+   * @param permissions the permissions
+   * @return the criteria
+   */
+  public Criteria buildPermissionCriteria(
+      AclUserContext userContext,
+      AccessEvaluation accessEvaluation,
+      Collection&lt;String&gt; permissions) {
+
+<span class="fc" id="L185">    Assert.notNull(userContext, &quot;User context must be present.&quot;);</span>
+<span class="fc" id="L186">    Assert.notNull(accessEvaluation, &quot;Access evaluation type must be present.&quot;);</span>
+<span class="fc" id="L187">    Assert.notEmpty(permissions, &quot;At least one permission must be present.&quot;);</span>
+
+<span class="fc" id="L189">    List&lt;Criteria&gt; permissionCriteriaList = Set.copyOf(permissions).stream()</span>
+<span class="fc" id="L190">        .map(permission -&gt; createAccessCriteria(userContext, permission))</span>
+<span class="fc" id="L191">        .toList();</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">    Criteria permissionCriteria = accessEvaluation.isAnyPermission()</span>
+<span class="fc" id="L193">        ? new Criteria().orOperator(permissionCriteriaList)</span>
+<span class="fc" id="L194">        : new Criteria().andOperator(permissionCriteriaList);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">    if (userContext.getName().isBlank()) {</span>
+<span class="fc" id="L196">      return permissionCriteria;</span>
+    }
+<span class="fc" id="L198">    Criteria ownerCriteria = Criteria.where(path(Acl.OWNER)).is(userContext.getName());</span>
+<span class="fc" id="L199">    return new Criteria().orOperator(ownerCriteria, permissionCriteria);</span>
+  }
+
+  private Criteria createAccessCriteria(
+      AclUserContext userContext,
+      String permission) {
+
+<span class="fc" id="L206">    List&lt;Criteria&gt; criteriaList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L207">    criteriaList.add(Criteria.where(path(Acl.ENTRIES, permission, Ace.GUEST)).is(true));</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">    if (!userContext.getName().isBlank()) {</span>
+<span class="fc" id="L209">      criteriaList.add(Criteria</span>
+<span class="fc" id="L210">          .where(path(Acl.ENTRIES, permission, Ace.USERS))</span>
+<span class="fc" id="L211">          .all(userContext.getName()));</span>
+    }
+<span class="fc" id="L213">    criteriaList.addAll(userContext.getRoles().stream()</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        .filter(role -&gt; !isEmpty(role))</span>
+<span class="fc" id="L215">        .map(role -&gt; Criteria.</span>
+<span class="fc" id="L216">            where(path(Acl.ENTRIES, permission, Ace.ROLES))</span>
+<span class="fc" id="L217">            .all(role))</span>
+<span class="fc" id="L218">        .toList()</span>
+    );
+<span class="fc" id="L220">    criteriaList.addAll(userContext.getGroups().stream()</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">        .filter(group -&gt; !isEmpty(group))</span>
+<span class="fc" id="L222">        .map(group -&gt; Criteria</span>
+<span class="fc" id="L223">            .where(path(Acl.ENTRIES, permission, Ace.GROUPS))</span>
+<span class="fc" id="L224">            .all(group))</span>
+<span class="fc" id="L225">        .toList()</span>
+    );
+<span class="fc" id="L227">    return new Criteria().orOperator(criteriaList);</span>
+  }
+
+  private String path(String... pathSegments) {
+<span class="fc bfc" id="L231" title="All 2 branches covered.">    if (isEmpty(pathSegments)) {</span>
+<span class="fc" id="L232">      return aclPath;</span>
+    }
+<span class="fc" id="L234">    return aclPath + &quot;.&quot; + String.join(&quot;.&quot;, pathSegments);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

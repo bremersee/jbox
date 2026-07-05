@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortOrder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Comparator</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.comparator.model</a> &gt; <span class="el_source">SortOrder.java</span></div><h1>SortOrder.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.comparator.model;
+
+import static java.util.Objects.isNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
+
+/**
+ * The sort order is a list of sort order items.
+ *
+ * @author Christian Bremer
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = &quot;sortOrder&quot;)
+@XmlType(name = &quot;sortOrderType&quot;)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(description = &quot;The sort order.&quot;)
+@EqualsAndHashCode
+public class SortOrder implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1;
+
+  /**
+   * The constant DEFAULT_SEPARATOR.
+   */
+  public static final String DEFAULT_SEPARATOR = &quot;;&quot;;
+
+  /**
+   * The items of the sort order.
+   */
+<span class="fc" id="L68">  @Schema(description = &quot;The sort order items.&quot;)</span>
+  @XmlElementRef
+  private final List&lt;SortOrderItem&gt; items = new ArrayList&lt;&gt;();
+
+  /**
+   * Instantiates an empty sort order.
+   */
+  protected SortOrder() {
+<span class="fc" id="L76">    super();</span>
+<span class="fc" id="L77">  }</span>
+
+  /**
+   * Instantiates a new unmodifiable sort order.
+   *
+   * @param sortOrderItems the sort order items
+   */
+  @JsonCreator
+<span class="fc" id="L85">  public SortOrder(@JsonProperty(&quot;items&quot;) Collection&lt;? extends SortOrderItem&gt; sortOrderItems) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (!isNull(sortOrderItems)) {</span>
+<span class="fc" id="L87">      this.items.addAll(sortOrderItems);</span>
+    }
+<span class="fc" id="L89">  }</span>
+
+  /**
+   * Gets the unmodifiable list of sort order items.
+   *
+   * @return the list of sort order items
+   */
+  public List&lt;SortOrderItem&gt; getItems() {
+<span class="fc" id="L97">    return Collections.unmodifiableList(items);</span>
+  }
+
+  /**
+   * Checks whether the list of items is empty or not.
+   *
+   * @return {@code true} if the list of items is empty, otherwise {@code false}
+   */
+  @XmlTransient
+  @JsonIgnore
+  public boolean isEmpty() {
+<span class="fc" id="L108">    return items.isEmpty();</span>
+  }
+
+  /**
+   * Checks whether this sort order contains any entries. If there are entries, this is sorted,
+   * otherwise it is unsorted.
+   *
+   * @return {@code true} if the list of sort orders is not empty (aka sorted), otherwise
+   *     {@code false}
+   */
+  @XmlTransient
+  @JsonIgnore
+  public boolean isSorted() {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    return !isEmpty();</span>
+  }
+
+  /**
+   * Checks whether this sort order contains any entries. If there are no entries, this is unsorted,
+   * otherwise it is sorted.
+   *
+   * @return {@code true} if the list of sort orders is empty (aka unsorted), otherwise
+   *     {@code false}
+   */
+  @XmlTransient
+  @JsonIgnore
+  public boolean isUnsorted() {
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">    return !isSorted();</span>
+  }
+
+  /**
+   * Creates the sort order text of this ordering descriptions.
+   *
+   * &lt;p&gt;The syntax of the ordering description is
+   * &lt;pre&gt;
+   * fieldNameOrPath0,direction,case-handling,null-handling;fieldNameOrPath1,direction,case-handling,null-handling
+   * &lt;/pre&gt;
+   *
+   * &lt;p&gt;For example
+   * &lt;pre&gt;
+   * created,desc;person.lastName,asc;person.firstName,asc
+   * &lt;/pre&gt;
+   *
+   * @return the sort order text
+   */
+  @JsonIgnore
+  @XmlTransient
+  public String getSortOrderText() {
+<span class="fc" id="L155">    return getSortOrderText(SortOrderTextSeparators.defaults());</span>
+  }
+
+  /**
+   * Creates the sort order text of this ordering descriptions.
+   *
+   * &lt;p&gt;The syntax of the ordering description is
+   * &lt;pre&gt;
+   * fieldNameOrPath0,direction,case-handling,null-handling;fieldNameOrPath1,direction,case-handling,null-handling
+   * &lt;/pre&gt;
+   *
+   * &lt;p&gt;For example
+   * &lt;pre&gt;
+   * created,desc;person.lastName,asc;person.firstName,asc
+   * &lt;/pre&gt;
+   *
+   * @param separators the separators
+   * @return the sort order text
+   */
+  public String getSortOrderText(SortOrderTextSeparators separators) {
+<span class="fc" id="L175">    String separator = Optional.ofNullable(separators)</span>
+<span class="fc" id="L176">        .orElseGet(SortOrderTextSeparators::defaults)</span>
+<span class="fc" id="L177">        .getChainSeparator();</span>
+<span class="fc" id="L178">    return items.stream()</span>
+<span class="fc" id="L179">        .map(item -&gt; item.getSortOrderText(separators))</span>
+<span class="fc" id="L180">        .collect(Collectors.joining(separator));</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="fc" id="L185">    return getSortOrderText();</span>
+  }
+
+  /**
+   * From sort order text.
+   *
+   * @param source the sort order text
+   * @return the sort order
+   */
+  public static SortOrder fromSortOrderText(String source) {
+<span class="fc" id="L195">    return fromSortOrderText(source, SortOrderTextSeparators.defaults());</span>
+  }
+
+  /**
+   * From sort order text.
+   *
+   * @param source the sort order text
+   * @param separators the separators
+   * @return the sort order
+   */
+  public static SortOrder fromSortOrderText(String source, SortOrderTextSeparators separators) {
+<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (isNull(source)) {</span>
+<span class="fc" id="L207">      return unsorted();</span>
+    }
+<span class="fc" id="L209">    String separator = Optional.ofNullable(separators)</span>
+<span class="fc" id="L210">        .orElseGet(SortOrderTextSeparators::defaults)</span>
+<span class="fc" id="L211">        .getChainSeparator();</span>
+<span class="fc" id="L212">    return Optional.of(source.trim())</span>
+<span class="fc" id="L213">        .map(text -&gt; {</span>
+<span class="fc" id="L214">          List&lt;SortOrderItem&gt; sortOrderItems = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L215">          StringTokenizer tokenizer = new StringTokenizer(text, separator);</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">          while (tokenizer.hasMoreTokens()) {</span>
+<span class="fc" id="L217">            sortOrderItems.add(SortOrderItem</span>
+<span class="fc" id="L218">                .fromSortOrderText(tokenizer.nextToken(), separators));</span>
+          }
+<span class="fc bfc" id="L220" title="All 2 branches covered.">          if (sortOrderItems.isEmpty()) {</span>
+<span class="fc" id="L221">            sortOrderItems.add(new SortOrderItem());</span>
+          }
+<span class="fc" id="L223">          return new SortOrder(sortOrderItems);</span>
+        })
+<span class="fc" id="L225">        .orElseGet(SortOrder::new);</span>
+  }
+
+  /**
+   * Creates new sort order with the given items.
+   *
+   * @param sortOrderItems the sort orders
+   * @return the sort order
+   */
+  public static SortOrder by(SortOrderItem... sortOrderItems) {
+<span class="fc" id="L235">    return Optional.ofNullable(sortOrderItems)</span>
+<span class="fc" id="L236">        .map(so -&gt; new SortOrder(Arrays.asList(so)))</span>
+<span class="fc" id="L237">        .orElseGet(SortOrder::new);</span>
+  }
+
+  /**
+   * Unsorted sort order.
+   *
+   * @return the unsorted sort order
+   */
+  public static SortOrder unsorted() {
+<span class="fc" id="L246">    return new SortOrder();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

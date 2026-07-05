@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractSliceDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PageBuilder</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.pagebuilder.model</a> &gt; <span class="el_source">AbstractSliceDto.java</span></div><h1>AbstractSliceDto.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.pagebuilder.model;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serial;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
+import org.bremersee.comparator.model.SortOrder;
+import org.bremersee.comparator.spring.mapper.SortMapper;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+
+/**
+ * The abstract slice data transfer object.
+ *
+ * @param &lt;T&gt; the type of the content
+ * @author Christian Bremer
+ */
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = &quot;abstractSliceType&quot;)
+@Setter(AccessLevel.PROTECTED)
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@Schema(description = &quot;The base slice.&quot;)
+public abstract class AbstractSliceDto&lt;T&gt; extends AbstractChunkDto&lt;T&gt; {
+
+  @Serial
+  private static final long serialVersionUID = 1;
+
+  /**
+   * The slice number starting with 0.
+   */
+  private int number;
+
+  /**
+   * The size of the slice (not the size of the content).
+   */
+  private int size;
+
+  /**
+   * Specifies whether a next slice is available or not.
+   */
+  private boolean nextAvailable;
+
+  /**
+   * Instantiates a new abstract slice data transfer object.
+   */
+  protected AbstractSliceDto() {
+<span class="fc" id="L70">    this(null, 0, 0, false, (SortOrder) null);</span>
+<span class="fc" id="L71">  }</span>
+
+  /**
+   * Instantiates a new abstract slice data transfer object.
+   *
+   * @param content the content
+   * @param number the number
+   * @param size the size
+   * @param hasNext the has next
+   */
+  protected AbstractSliceDto(
+      List&lt;? extends T&gt; content,
+      int number,
+      int size,
+      boolean hasNext) {
+<span class="fc" id="L86">    this(content, number, size, hasNext, Sort.unsorted());</span>
+<span class="fc" id="L87">  }</span>
+
+  /**
+   * Instantiates a new abstract slice data transfer object.
+   *
+   * @param content the content of the slice
+   * @param number the number of the slice starting with 0
+   * @param size the size of the slice (not the size of the content)
+   * @param hasNext the has next
+   * @param sort the sort oder
+   */
+  protected AbstractSliceDto(
+      List&lt;? extends T&gt; content,
+      int number,
+      int size,
+      boolean hasNext,
+      SortOrder sort) {
+<span class="fc" id="L104">    super(content, sort);</span>
+<span class="fc" id="L105">    this.number = number;</span>
+<span class="fc" id="L106">    this.size = size;</span>
+<span class="fc" id="L107">    this.nextAvailable = hasNext;</span>
+<span class="fc" id="L108">  }</span>
+
+  /**
+   * Instantiates a new abstract slice data transfer object.
+   *
+   * @param content the content
+   * @param number the number
+   * @param size the size
+   * @param hasNext the has next
+   * @param sort the sort
+   */
+  protected AbstractSliceDto(
+      List&lt;? extends T&gt; content,
+      int number,
+      int size,
+      boolean hasNext,
+      Sort sort) {
+<span class="fc" id="L125">    this(</span>
+        content,
+        number,
+        size,
+        hasNext,
+<span class="fc" id="L130">        SortMapper.defaultSortMapper().fromSort(sort));</span>
+<span class="fc" id="L131">  }</span>
+
+  /**
+   * Instantiates a new abstract slice data transfer object.
+   *
+   * @param slice the slice
+   */
+  protected AbstractSliceDto(Slice&lt;? extends T&gt; slice) {
+<span class="fc" id="L139">    this(</span>
+<span class="fc" id="L140">        slice.getContent(),</span>
+<span class="fc" id="L141">        slice.getNumber(),</span>
+<span class="fc" id="L142">        slice.getSize(),</span>
+<span class="fc" id="L143">        slice.hasNext(),</span>
+<span class="fc" id="L144">        slice.getSort());</span>
+<span class="fc" id="L145">  }</span>
+
+  @Override
+  public int getNumber() {
+<span class="fc" id="L149">    return number;</span>
+  }
+
+  @Override
+  public int getSize() {
+<span class="fc" id="L154">    return size;</span>
+  }
+
+  @Override
+  public boolean isNextAvailable() {
+<span class="fc" id="L159">    return nextAvailable;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
