@@ -51,6 +51,7 @@ pipeline {
             branch 'develop'
             branch 'main'
             branch 'bugfix/*'
+            branch 'release/*'
           }
         }
       }
@@ -67,6 +68,7 @@ pipeline {
             branch 'main'
             branch 'feature/*'
             branch 'bugfix/*'
+            branch 'release/*'
           }
         }
       }
