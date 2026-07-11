@@ -155,6 +155,11 @@ abstract class AbstractChunkDto<T> implements Serializable {
     return sort;
   }
 
+  /**
+   * Sets sort.
+   *
+   * @param sort the sort
+   */
   @JsonProperty(value = "sort")
   protected void setSort(SortOrder sort) {
     this.sort = sort;
