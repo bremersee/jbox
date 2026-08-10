@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.bremersee.exception.ServiceException;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -59,9 +60,21 @@ public class NormalizedAuthenticationTemplate implements NormalizedAuthenticatio
   }
 
   @Override
-  public <R> ResponseEntity<R> responseWithAuthentication(
+  public <R> R doWithOptionalAuthentication(
+      @NonNull Function<@Nullable NormalizedAuthentication, R> function) {
+    return function.apply(getAuthentication().orElse(null));
+  }
+
+  @Override
+  public @NonNull <R> ResponseEntity<R> responseWithAuthentication(
       @NonNull Function<NormalizedAuthentication, R> function) {
-    return ResponseEntity.ok(doWithAuthentication(function));
+    return ResponseEntity.of(Optional.ofNullable(doWithAuthentication(function)));
+  }
+
+  @Override
+  public @NonNull <R> ResponseEntity<R> responseWithOptionalAuthentication(
+      @NonNull Function<@Nullable NormalizedAuthentication, R> function) {
+    return ResponseEntity.of(Optional.ofNullable(doWithOptionalAuthentication(function)));
   }
 
 }

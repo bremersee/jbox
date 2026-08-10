@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.bremersee.exception.ServiceException;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -62,10 +63,27 @@ public class ReactiveNormalizedAuthenticationTemplate
   }
 
   @Override
+  public <R> Mono<R> oneWithOptionalAuthentication(
+      @NonNull Function<@Nullable NormalizedAuthentication, ? extends Mono<R>> function) {
+    return getAuthentication()
+        .flatMap(function)
+        .switchIfEmpty(function.apply(null));
+  }
+
+  @Override
   public <R> Flux<R> manyWithAuthentication(
       @NonNull Function<NormalizedAuthentication, ? extends Publisher<R>> function) {
     return getAuthentication()
         .switchIfEmpty(Mono.error(unauthenticatedExceptionSupplier))
         .flatMapMany(function);
   }
+
+  @Override
+  public <R> Flux<R> manyWithOptionalAuthentication(
+      @NonNull Function<@Nullable NormalizedAuthentication, ? extends Publisher<R>> function) {
+    return getAuthentication()
+        .flatMapMany(function)
+        .switchIfEmpty(function.apply(null));
+  }
+
 }
