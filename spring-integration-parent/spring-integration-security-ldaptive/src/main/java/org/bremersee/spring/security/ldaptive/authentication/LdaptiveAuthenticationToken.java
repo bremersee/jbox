@@ -19,6 +19,7 @@ package org.bremersee.spring.security.ldaptive.authentication;
 import java.io.Serial;
 import lombok.EqualsAndHashCode;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 /**
@@ -55,7 +56,7 @@ public class LdaptiveAuthenticationToken
   }
 
   @Override
-  public String getName() {
+  public @NonNull String getName() {
     return userDetails.getUsername();
   }
 

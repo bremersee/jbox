@@ -27,8 +27,8 @@ import java.util.Map;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.bremersee.spring.security.core.NormalizedPrincipal;
-import org.bremersee.spring.security.core.authority.mapping.CaseTransformation;
-import org.bremersee.spring.security.core.authority.mapping.NormalizedGrantedAuthoritiesMapper;
+import org.bremersee.spring.security.core.mapping.CaseTransformation;
+import org.bremersee.spring.security.core.mapping.authority.NormalizedGrantedAuthoritiesMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -49,20 +49,22 @@ class JsonPathJwtConverterTest {
    */
   @Test
   void convertWithScopes(SoftAssertions softly) {
-    JsonPathJwtConverter converter = new JsonPathJwtConverter(
-        "$.sub",
-        "$.given_name",
-        "$.family_name",
-        "$.email",
-        "$.scope",
-        false,
-        " ",
-        new NormalizedGrantedAuthoritiesMapper(
+    JsonPathJwtProperties properties = JsonPathJwtProperties.builder()
+        .nameJsonPath("$.sub")
+        .firstNameJsonPath("$.given_name")
+        .lastNameJsonPath("$.family_name")
+        .emailJsonPath("$.email")
+        .rolesJsonPath("$.scope")
+        .rolesValueList(false)
+        .rolesValueSeparator(" ")
+        .authoritiesMapper(new NormalizedGrantedAuthoritiesMapper(
             List.of("ROLE_USER"),
             null,
             null,
             CaseTransformation.TO_UPPER_CASE,
-            null));
+            null))
+        .build();
+    JsonPathJwtConverter converter = new JsonPathJwtConverter(properties);
     Jwt jwt = createJwt();
 
     NormalizedJwtAuthenticationToken actual = converter.convert(jwt);
@@ -98,20 +100,22 @@ class JsonPathJwtConverterTest {
    */
   @Test
   void convertWithRoles(SoftAssertions softly) {
-    JsonPathJwtConverter converter = new JsonPathJwtConverter(
-        "$.preferred_username",
-        null,
-        "$.family_name",
-        "$.email",
-        "$.realm_access.roles",
-        true,
-        " ",
-        new NormalizedGrantedAuthoritiesMapper(
+    JsonPathJwtProperties properties = JsonPathJwtProperties.builder()
+        .nameJsonPath("$.preferred_username")
+        .firstNameJsonPath(null)
+        .lastNameJsonPath("$.family_name")
+        .emailJsonPath("$.email")
+        .rolesJsonPath("$.realm_access.roles")
+        .rolesValueList(true)
+        .rolesValueSeparator(" ")
+        .authoritiesMapper(new NormalizedGrantedAuthoritiesMapper(
             List.of("ROLE_USER"),
             null,
             "ROLE_",
             CaseTransformation.NONE,
-            null));
+            null))
+        .build();
+    JsonPathJwtConverter converter = new JsonPathJwtConverter(properties);
     Jwt jwt = createJwt();
 
     NormalizedJwtAuthenticationToken actual = converter.convert(jwt);

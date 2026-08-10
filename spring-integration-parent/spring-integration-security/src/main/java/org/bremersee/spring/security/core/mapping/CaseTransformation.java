@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.bremersee.spring.security.core.authority.mapping;
+package org.bremersee.spring.security.core.mapping;
 
 /**
  * The case transformation.

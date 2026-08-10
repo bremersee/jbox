@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration;
 import org.bremersee.spring.security.core.EmailToUsernameResolver;
-import org.bremersee.spring.security.core.authority.mapping.NormalizedGrantedAuthoritiesMapper;
+import org.bremersee.spring.security.core.mapping.authority.NormalizedGrantedAuthoritiesMapper;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthentication;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager;
@@ -58,7 +58,7 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.util.ClassUtils;
 
 /**
- * The ldaptive authentication auto-configuration.
+ * The ldaptive authentication autoconfiguration.
  *
  * @author Christian Bremer
  */
@@ -146,7 +146,7 @@ public class LdaptiveAuthenticationAutoConfiguration {
    * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
    * @param emailToUsernameResolver the email to username resolver
    * @param accountControlEvaluator the account control evaluator
-   * @param grantedAuthoritiesMapper the granted authorities mapper
+   * @param grantedAuthoritiesMapper the groups mapper
    * @param tokenConverter the token converter
    * @return the ldaptive authentication manager
    */
@@ -186,7 +186,7 @@ public class LdaptiveAuthenticationAutoConfiguration {
    * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
    * @param emailToUsernameResolver the email to username resolver
    * @param accountControlEvaluator the account control evaluator
-   * @param grantedAuthoritiesMapper the granted authorities mapper
+   * @param grantedAuthoritiesMapper the groups mapper
    * @param tokenConverter the token converter
    * @return the reactive ldaptive authentication manager
    */

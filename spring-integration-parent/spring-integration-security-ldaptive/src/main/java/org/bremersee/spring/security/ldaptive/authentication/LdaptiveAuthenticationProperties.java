@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.bremersee.spring.security.core.authority.mapping.CaseTransformation;
+import org.bremersee.spring.security.core.mapping.CaseTransformation;
 import org.ldaptive.SearchScope;
 import org.springframework.util.ObjectUtils;
 

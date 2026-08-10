@@ -1,4 +1,6 @@
-package org.bremersee.spring.security.core.authority.mapping;
+package org.bremersee.spring.security.core.mapping.authority;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,15 +8,49 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
+import org.bremersee.spring.security.core.mapping.CaseTransformation;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
- * The normalized granted authorities mapper test.
+ * The normalized groups mapper test.
  */
 class NormalizedGrantedAuthoritiesMapperTest {
+
+  /**
+   * Gets string value.
+   */
+  @Test
+  void getStringValue() {
+    NormalizedGrantedAuthoritiesMapper target = createTarget(CaseTransformation.TO_LOWER_CASE);
+    GrantedAuthority source = new SimpleGrantedAuthority("a-role");
+    String actual = target.getStringValue(source);
+    assertThat(actual).isEqualTo("a-role");
+  }
+
+  /**
+   * Create target.
+   */
+  @Test
+  void createTarget() {
+    NormalizedGrantedAuthoritiesMapper target = createTarget(CaseTransformation.TO_LOWER_CASE);
+    GrantedAuthority actual = target.createTarget("a-role");
+    GrantedAuthority expected = new SimpleGrantedAuthority("a-role");
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  /**
+   * Gets default prefix.
+   */
+  @Test
+  void getDefaultPrefix() {
+    NormalizedGrantedAuthoritiesMapper target = createTarget(CaseTransformation.TO_LOWER_CASE);
+    String actual = target.getDefaultPrefix();
+    assertThat(actual).isEqualTo("ROLE_");
+  }
 
   /**
    * Map authorities.
