@@ -5,6 +5,7 @@ import static java.util.Objects.isNull;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.bremersee.exception.ServiceException;
+import org.bremersee.spring.security.core.NormalizedAuthentication.EmptyNormalizedAuthentication;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
@@ -66,8 +67,13 @@ public class ReactiveNormalizedAuthenticationTemplate
   public <R> Mono<R> oneWithOptionalAuthentication(
       @NonNull Function<@Nullable NormalizedAuthentication, ? extends Mono<R>> function) {
     return getAuthentication()
-        .flatMap(function)
-        .switchIfEmpty(function.apply(null));
+        .defaultIfEmpty(new EmptyNormalizedAuthentication())
+        .flatMap(authentication -> {
+          if (authentication instanceof EmptyNormalizedAuthentication) {
+            return function.apply(null);
+          }
+          return function.apply(authentication);
+        });
   }
 
   @Override
@@ -82,8 +88,13 @@ public class ReactiveNormalizedAuthenticationTemplate
   public <R> Flux<R> manyWithOptionalAuthentication(
       @NonNull Function<@Nullable NormalizedAuthentication, ? extends Publisher<R>> function) {
     return getAuthentication()
-        .flatMapMany(function)
-        .switchIfEmpty(function.apply(null));
+        .defaultIfEmpty(new EmptyNormalizedAuthentication())
+        .flatMapMany(authentication -> {
+          if (authentication instanceof EmptyNormalizedAuthentication) {
+            return function.apply(null);
+          }
+          return function.apply(authentication);
+        });
   }
 
 }

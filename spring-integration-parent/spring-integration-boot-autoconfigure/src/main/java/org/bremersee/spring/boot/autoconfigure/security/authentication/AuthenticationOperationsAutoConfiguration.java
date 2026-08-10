@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.ClassUtils;
 
+/**
+ * The authentication operations autoconfiguration.
+ */
 @AutoConfiguration
 @ConditionalOnClass(name = {
     "org.bremersee.spring.security.core.NormalizedAuthenticationTemplate",
@@ -21,6 +24,13 @@ import org.springframework.util.ClassUtils;
 public class AuthenticationOperationsAutoConfiguration {
 
   private static final Log log = LogFactory.getLog(AuthenticationOperationsAutoConfiguration.class);
+
+  /**
+   * Instantiates a new authentication operations autoconfiguration.
+   */
+  public AuthenticationOperationsAutoConfiguration() {
+    super();
+  }
 
   /**
    * Init.
@@ -35,12 +45,22 @@ public class AuthenticationOperationsAutoConfiguration {
         ClassUtils.getUserClass(getClass()).getSimpleName()));
   }
 
+  /**
+   * Creates the ormalized authentication template.
+   *
+   * @return the normalized authentication template
+   */
   @ConditionalOnWebApplication(type = Type.SERVLET)
   @Bean
   public NormalizedAuthenticationTemplate normalizedAuthenticationTemplate() {
     return new NormalizedAuthenticationTemplate();
   }
 
+  /**
+   * Creates the reactive normalized authentication template.
+   *
+   * @return the reactive normalized authentication template
+   */
   @ConditionalOnWebApplication(type = Type.REACTIVE)
   @Bean
   public ReactiveNormalizedAuthenticationTemplate reactiveNormalizedAuthenticationTemplate() {
