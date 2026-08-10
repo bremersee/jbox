@@ -18,8 +18,7 @@ import org.springframework.util.ClassUtils;
  */
 @AutoConfiguration
 @ConditionalOnClass(name = {
-    "org.bremersee.spring.security.core.NormalizedAuthenticationTemplate",
-    "org.bremersee.spring.security.core.ReactiveNormalizedAuthenticationTemplate"
+    "org.bremersee.spring.security.core.NormalizedAuthenticationTemplate"
 })
 public class AuthenticationOperationsAutoConfiguration {
 
