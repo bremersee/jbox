@@ -241,6 +241,11 @@
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
+        <artifactId>spring-integration-keycloak-webflux-client</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-ldaptive</artifactId>
         <version>${jbox.version}</version>
       </dependency>
