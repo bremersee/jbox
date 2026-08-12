@@ -61,6 +61,7 @@
     <testcontainers.version>2.0.5</testcontainers.version>
     <commons-io.version>2.20.0</commons-io.version>
     <dataurl.version>2.0.0</dataurl.version>
+    <feign-reactor.version>5.0.0</feign-reactor.version>
     <hibernate-orm.version>7.2.19.Final</hibernate-orm.version>
     <immutables.version>2.12.2</immutables.version>
     <javers.version>7.11.2</javers.version>
@@ -71,6 +72,7 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <minio.version>9.0.1</minio.version>
     <mock-server.version>5.15.0</mock-server.version>
+    <openapi-generator.version>7.24.0</openapi-generator.version>
     <passay.version>2.0.0</passay.version>
     <reflections.version>0.10.2</reflections.version>
     <springdoc.version>3.0.2</springdoc.version>

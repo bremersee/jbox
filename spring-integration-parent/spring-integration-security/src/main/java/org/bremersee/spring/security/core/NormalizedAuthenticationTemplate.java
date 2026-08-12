@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 
 /**
  * The normalized authentication template.
@@ -19,6 +22,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class NormalizedAuthenticationTemplate implements NormalizedAuthenticationOperations {
 
   private final Supplier<ServiceException> unauthenticatedExceptionSupplier;
+
+  private OAuth2AuthorizedClient authorizedClient;
+
+  private ReactiveOAuth2AuthorizedClientManager authorizedClientManager;
+
+  private ClientRegistration r;
 
   /**
    * Instantiates a new normalized authentication template.
