@@ -16,6 +16,7 @@
 
 package org.bremersee.spring.boot.autoconfigure.keycloak;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,18 +29,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Christian Bremer
  */
 @ConfigurationProperties(prefix = "bremersee.keycloak.client")
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString(exclude = {"password"})
-public class KeycloakClientProperties {
-
-  /**
-   * Instantiates new keycloak client properties.
-   */
-  public KeycloakClientProperties() {
-    super();
-  }
+@Data
+public class KeycloakProperties {
 
   /**
    * The keycloak base uri. For example {@code https://keycloak.example.org}.
@@ -47,23 +38,64 @@ public class KeycloakClientProperties {
   private String keycloakBaseUri;
 
   /**
-   * The login realm. Default is {@code master}.
+   * The default keycloak realm.
    */
-  private String loginRealm = "master";
+  private String realm;
 
   /**
-   * The client id. Default is {@code admin-cli}.
+   * The admin client properties.
    */
-  private String clientId = "admin-cli";
+  private KeycloakAdminClientProperties adminClient = new KeycloakAdminClientProperties();
 
   /**
-   * The usersame.
+   * Instantiates new keycloak client properties.
    */
-  private String username;
+  public KeycloakProperties() {
+    super();
+  }
 
   /**
-   * The password.
+   * The keycloak admin client properties.
+   *
+   * @author Christian Bremer
    */
-  private String password;
+  @Getter
+  @Setter
+  @EqualsAndHashCode
+  @ToString(exclude = {"password"})
+  public static class KeycloakAdminClientProperties {
+
+    /**
+     * Specifies whether the admin client should be created or not.
+     */
+    private boolean enabled;
+
+    /**
+     * The login realm. Default is {@code master}.
+     */
+    private String loginRealm = "master";
+
+    /**
+     * The client id. Default is {@code admin-cli}.
+     */
+    private String clientId = "admin-cli";
+
+    /**
+     * The usersame.
+     */
+    private String username;
+
+    /**
+     * The password.
+     */
+    private String password;
+
+    /**
+     * Instantiates a keycloak admin client properties.
+     */
+    public KeycloakAdminClientProperties() {
+      super();
+    }
+  }
 
 }

@@ -20,9 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import java.util.List;
 import org.bremersee.exception.RestApiExceptionParserImpl;
+import org.bremersee.exception.feign.FeignClientExceptionErrorDecoder;
 import org.bremersee.exception.webclient.DefaultWebClientErrorDecoder;
 import org.bremersee.keycloak.api.webflux.AdminApi;
+import org.bremersee.keycloak.api.webflux.KeycloakAdminClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
@@ -41,12 +44,13 @@ class ReactiveKeycloakClientAutoConfigurationTest {
    */
   @BeforeEach
   void setUp() {
-    KeycloakClientProperties properties = new KeycloakClientProperties();
+    KeycloakProperties properties = new KeycloakProperties();
     properties.setKeycloakBaseUri("https://localhost:8443");
-    properties.setLoginRealm("master");
-    properties.setClientId("admin-cli");
-    properties.setUsername("admin");
-    properties.setPassword("change-it");
+    properties.setRealm("junit");
+    properties.getAdminClient().setLoginRealm("master");
+    properties.getAdminClient().setClientId("admin-cli");
+    properties.getAdminClient().setUsername("admin");
+    properties.getAdminClient().setPassword("change-it");
     target = new ReactiveKeycloakClientAutoConfiguration(properties);
     target.init();
   }
@@ -63,7 +67,22 @@ class ReactiveKeycloakClientAutoConfigurationTest {
     doReturn(errorDecoder)
         .when(provider)
         .getIfAvailable();
-    AdminApi actual = target.keycloakAdminApi(provider);
+    FeignClientExceptionErrorDecoder feignErrorDecoder = new FeignClientExceptionErrorDecoder();
+    //noinspection unchecked
+    ObjectProvider<FeignClientExceptionErrorDecoder> feignProvider = mock(ObjectProvider.class);
+    doReturn(feignErrorDecoder)
+        .when(feignProvider)
+        .getIfAvailable();
+    AdminApi actual = target.keycloakAdminApi(List.of(), List.of(), provider, feignProvider);
     assertThat(actual).isNotNull();
+  }
+
+  /**
+   * Keycloak admin client.
+   */
+  @Test
+  void keycloakAdminClient() {
+    KeycloakAdminClient actial = target.keycloakAdminClient(mock(AdminApi.class));
+    assertThat(actial).isNotNull();
   }
 }

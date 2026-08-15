@@ -16,14 +16,19 @@
 
 package org.bremersee.spring.boot.autoconfigure.keycloak;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bremersee.exception.feign.FeignClientExceptionErrorDecoder;
 import org.bremersee.exception.webclient.DefaultWebClientErrorDecoder;
 import org.bremersee.keycloak.api.webflux.AdminApi;
+import org.bremersee.keycloak.api.webflux.KeycloakAdminClient;
 import org.bremersee.keycloak.api.webflux.KeycloakClientFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
@@ -32,7 +37,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import reactivefeign.client.statushandler.ReactiveStatusHandlers;
+import reactivefeign.webclient.WebClientFeignCustomizer;
 
 /**
  * The reactive keycloak client autoconfiguration.
@@ -40,22 +48,22 @@ import org.springframework.util.ClassUtils;
  * @author Christian Bremer
  */
 @ConditionalOnWebApplication(type = Type.REACTIVE)
-@ConditionalOnProperty(name = "bremersee.keycloak.client.keycloak-base-uri")
-@EnableConfigurationProperties(KeycloakClientProperties.class)
+@ConditionalOnProperty(name = "bremersee.keycloak.admin-client.enabled", havingValue = "true")
+@EnableConfigurationProperties(KeycloakProperties.class)
 @ConditionalOnClass(name = {"org.bremersee.keycloak.api.webflux.KeycloakClientFactory"})
 @AutoConfiguration
 public class ReactiveKeycloakClientAutoConfiguration {
 
   private static final Log log = LogFactory.getLog(ReactiveKeycloakClientAutoConfiguration.class);
 
-  private final KeycloakClientProperties properties;
+  private final KeycloakProperties properties;
 
   /**
    * Instantiates a new reactive keycloak client autoconfiguration.
    *
    * @param properties the properties
    */
-  public ReactiveKeycloakClientAutoConfiguration(KeycloakClientProperties properties) {
+  public ReactiveKeycloakClientAutoConfiguration(KeycloakProperties properties) {
     this.properties = properties;
   }
 
@@ -72,28 +80,72 @@ public class ReactiveKeycloakClientAutoConfiguration {
             * properties = %s
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(), properties));
+    if (properties.getAdminClient().isEnabled()) {
+      Assert.hasText(properties.getKeycloakBaseUri(), "Keycloak Base URI is required.");
+      Assert.hasText(properties.getAdminClient().getLoginRealm(),
+          "Keycloak Login Realm is required.");
+      Assert.hasText(properties.getAdminClient().getClientId(), "Keycloak Client ID is required.");
+      Assert.hasText(properties.getAdminClient().getUsername(),
+          "Keycloak Client Username is required.");
+      Assert.hasText(properties.getAdminClient().getPassword(),
+          "Keycloak Client Password is required.");
+    }
   }
 
   /**
-   * Keycloak admin api admin api.
+   * Creates keycloak admin api.
    *
    * @param errorDecoderProvider the error decoder provider
+   * @param feignErrorDecoderProvider the feign error decoder provider
    * @return the admin api
    */
+  @ConditionalOnMissingBean
   @Bean
   public AdminApi keycloakAdminApi(
-      ObjectProvider<DefaultWebClientErrorDecoder> errorDecoderProvider) {
+      List<WebClientFeignCustomizer> webClientCustomizers,
+      List<KeycloakAdminApiCustomizer> keycloakAdminApiCustomizers,
+      ObjectProvider<DefaultWebClientErrorDecoder> errorDecoderProvider,
+      ObjectProvider<FeignClientExceptionErrorDecoder> feignErrorDecoderProvider) {
 
-    KeycloakClientFactory factory = new KeycloakClientFactory(
-        properties.getKeycloakBaseUri(),
-        properties.getLoginRealm(),
-        properties.getClientId(),
-        properties.getUsername(),
-        properties.getPassword());
-    errorDecoderProvider.ifAvailable(decoder -> factory
-        .setWebClientBuilderCustomizer(builder -> builder
-            .defaultStatusHandler(HttpStatusCode::isError, decoder)));
+    List<WebClientFeignCustomizer> webClientExtendedCustomizers = new ArrayList<>();
+    errorDecoderProvider.ifAvailable(decoder -> webClientExtendedCustomizers
+        .add(builder -> builder.defaultStatusHandler(HttpStatusCode::isError, decoder)));
+    webClientExtendedCustomizers.addAll(webClientCustomizers);
+
+    List<KeycloakAdminApiCustomizer> keycloakAdminApiExtendedCustomizers = new ArrayList<>();
+    feignErrorDecoderProvider.ifAvailable(decoder -> keycloakAdminApiExtendedCustomizers
+        .add(builder -> builder.statusHandler(ReactiveStatusHandlers.errorDecoder(decoder))));
+    keycloakAdminApiExtendedCustomizers.addAll(keycloakAdminApiCustomizers);
+
+    KeycloakClientFactory factory = createKeycloakClientFactory();
+
+    factory.setWebClientBuilderCustomizer(builder -> webClientExtendedCustomizers
+        .forEach(c -> c.accept(builder)));
+    factory.setAdminApiCustomizer(builder -> keycloakAdminApiExtendedCustomizers
+        .forEach(c -> c.customize(builder)));
+
     return factory.newClient();
+  }
+
+  private KeycloakClientFactory createKeycloakClientFactory() {
+    return new KeycloakClientFactory(
+        properties.getKeycloakBaseUri(),
+        properties.getAdminClient().getLoginRealm(),
+        properties.getAdminClient().getClientId(),
+        properties.getAdminClient().getUsername(),
+        properties.getAdminClient().getPassword());
+  }
+
+  /**
+   * Creates keycloak admin client.
+   *
+   * @param adminApi the admin api
+   * @return the keycloak admin client
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public KeycloakAdminClient keycloakAdminClient(AdminApi adminApi) {
+    return new KeycloakAdminClient(adminApi);
   }
 
 }

@@ -23,8 +23,10 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,6 +46,8 @@ import reactivefeign.client.ReactiveHttpRequestInterceptors;
 import reactivefeign.webclient.WebClientFeignCustomizer;
 import reactivefeign.webclient.WebReactiveFeign;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 /**
  * The keycloak client factory.
@@ -102,12 +106,16 @@ public class KeycloakClientFactory {
    * @return the admin api
    */
   public AdminApi newClient() {
-    return WebReactiveFeign.<AdminApi>builder(WebClient.builder(), webClientBuilderCustomizer)
+    ReactiveFeign.Builder<AdminApi> builder = WebReactiveFeign
+        .<AdminApi>builder(WebClient.builder(), webClientBuilderCustomizer)
         .contract(new SpringMvcContract())
         .addRequestInterceptor(
             ReactiveHttpRequestInterceptors.addHeader("Cache-Control", "no-cache"))
-        .addRequestInterceptor(getLoginInterceptor())
-        .target(AdminApi.class, keycloakBaseUri);
+        .addRequestInterceptor(getLoginInterceptor());
+    if (nonNull(adminApiCustomizer)) {
+      adminApiCustomizer.accept(builder);
+    }
+    return builder.target(AdminApi.class, keycloakBaseUri);
   }
 
   /**
@@ -125,7 +133,7 @@ public class KeycloakClientFactory {
    *
    * @author Christian Bremer
    */
-  static class LoginInterceptor implements ReactiveHttpRequestInterceptor {
+  private static class LoginInterceptor implements ReactiveHttpRequestInterceptor {
 
     private static final Configuration jsonPathConf = Configuration.builder()
         .options(Option.SUPPRESS_EXCEPTIONS)
@@ -134,6 +142,8 @@ public class KeycloakClientFactory {
     private final WebClient webClient;
 
     private final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+
+    private Tuple2<String, Instant> lastAccessToken;
 
     /**
      * Instantiates a new Login interceptor.
@@ -145,7 +155,7 @@ public class KeycloakClientFactory {
      * @param password the password
      * @param webClientBuilderCustomizer the web client builder customizer
      */
-    public LoginInterceptor(
+    private LoginInterceptor(
         String keycloakBaseUri,
         String loginRealm,
         String clientId,
@@ -168,16 +178,41 @@ public class KeycloakClientFactory {
       body.add("password", password);
     }
 
-    @Override
-    public Mono<ReactiveHttpRequest> apply(ReactiveHttpRequest reactiveHttpRequest) {
+    private synchronized Mono<String> getLastAccessToken() {
+      return Mono.justOrEmpty(lastAccessToken)
+          .filter(tuple -> tuple.getT2()
+              .isAfter(Instant.now().plusSeconds(30L)))
+          .map(Tuple2::getT1);
+    }
+
+    private synchronized void setLastAccessToken(
+        Tuple2<String, Instant> lastAccessToken) {
+      this.lastAccessToken = lastAccessToken;
+    }
+
+    private Mono<String> getFreshAccessToken() {
       return webClient
           .post()
           .body(BodyInserters.fromFormData(body))
           .retrieve()
           .bodyToMono(String.class)
-          .map(json -> {
+          .flatMap(json -> {
             DocumentContext documentContext = JsonPath.parse(json, jsonPathConf);
-            String accessToken = documentContext.read("$.access_token", String.class);
+            return Mono.justOrEmpty(documentContext.read("$.access_token", String.class))
+                .map(token -> {
+                  Optional.ofNullable(documentContext.read("$.expires_in", Long.class))
+                      .ifPresent(expiresIn -> setLastAccessToken(
+                          Tuples.of(token, Instant.now().plusSeconds(expiresIn))));
+                  return token;
+                });
+          });
+    }
+
+    @Override
+    public Mono<ReactiveHttpRequest> apply(ReactiveHttpRequest reactiveHttpRequest) {
+      return getLastAccessToken()
+          .switchIfEmpty(getFreshAccessToken())
+          .map(accessToken -> {
             reactiveHttpRequest.headers()
                 .put(HttpHeaders.AUTHORIZATION, List.of("Bearer " + accessToken));
             return reactiveHttpRequest;

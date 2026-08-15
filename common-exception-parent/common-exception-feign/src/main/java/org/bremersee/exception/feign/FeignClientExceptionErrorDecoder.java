@@ -1,5 +1,5 @@
 /*
-* Copyright 2019-2026 the original author or authors.
+ * Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,7 +150,7 @@ public class FeignClientExceptionErrorDecoder implements ErrorDecoder {
   protected Optional<Long> determineRetryAfter(String retryAfter) {
     try {
       return Optional.ofNullable(retryAfter)
-          .filter(retryAfterValue -> retryAfterValue.matches("^[0-9]+\\.?0*$"))
+          .filter(retryAfterValue -> retryAfterValue.matches("^\\d+\\.?0*$"))
           .map(retryAfterValue -> retryAfterValue.replaceAll("\\.0*$", ""))
           .map(retryAfterValue -> TimeUnit.SECONDS.toMillis(Long.parseLong(retryAfterValue)))
           .map(deltaMillis -> currentTimeMillis() + deltaMillis)
