@@ -16,10 +16,16 @@
 
 package org.bremersee.spring.security.oauth2.server.resource.authentication;
 
+import static java.util.Objects.requireNonNullElseGet;
+
+import java.io.Serial;
 import java.util.Collection;
+import java.util.List;
 import lombok.EqualsAndHashCode;
+import org.bremersee.spring.security.core.Group;
 import org.bremersee.spring.security.core.NormalizedAuthentication;
 import org.bremersee.spring.security.core.NormalizedPrincipal;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Transient;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -35,10 +41,18 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public class NormalizedJwtAuthenticationToken extends JwtAuthenticationToken
     implements NormalizedAuthentication {
 
+  @Serial
+  private static final long serialVersionUID = 1L;
+
   /**
    * The principal.
    */
   private final NormalizedPrincipal principal;
+
+  /**
+   * The groups.
+   */
+  private final Collection<Group> groups;
 
   /**
    * Instantiates a new normalized jwt authentication token.
@@ -46,13 +60,16 @@ public class NormalizedJwtAuthenticationToken extends JwtAuthenticationToken
    * @param jwt the jwt
    * @param principal the principal
    * @param authorities the authorities
+   * @param groups the groups
    */
   public NormalizedJwtAuthenticationToken(
       Jwt jwt,
       NormalizedPrincipal principal,
-      Collection<? extends GrantedAuthority> authorities) {
+      Collection<? extends GrantedAuthority> authorities,
+      Collection<Group> groups) {
     super(jwt, authorities, principal.getName());
     this.principal = principal;
+    this.groups = groups;
   }
 
   @Override
@@ -60,4 +77,8 @@ public class NormalizedJwtAuthenticationToken extends JwtAuthenticationToken
     return principal;
   }
 
+  @Override
+  public @NonNull Collection<Group> getGroups() {
+    return requireNonNullElseGet(groups, List::of);
+  }
 }

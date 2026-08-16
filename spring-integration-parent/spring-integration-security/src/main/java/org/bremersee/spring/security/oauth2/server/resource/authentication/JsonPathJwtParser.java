@@ -1,5 +1,5 @@
 /*
-* Copyright 2020-2026 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.bremersee.spring.security.oauth2.server.resource.authentication;
 
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -30,8 +31,9 @@ import org.springframework.util.ObjectUtils;
  */
 public class JsonPathJwtParser {
 
-  private static final com.jayway.jsonpath.Configuration jsonPathConf
-      = com.jayway.jsonpath.Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
+  private static final Configuration jsonPathConf = Configuration.builder()
+      .options(Option.SUPPRESS_EXCEPTIONS)
+      .build();
 
   private final DocumentContext documentContext;
 

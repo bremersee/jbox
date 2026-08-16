@@ -18,6 +18,7 @@ package org.bremersee.spring.security.core;
 
 import java.io.Serializable;
 import java.security.Principal;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The normalized principal.
@@ -31,6 +32,7 @@ public interface NormalizedPrincipal extends Principal, Serializable {
    *
    * @return the first name
    */
+  @Nullable
   String getFirstName();
 
   /**
@@ -38,6 +40,7 @@ public interface NormalizedPrincipal extends Principal, Serializable {
    *
    * @return the last name
    */
+  @Nullable
   String getLastName();
 
   /**
@@ -45,6 +48,7 @@ public interface NormalizedPrincipal extends Principal, Serializable {
    *
    * @return the email
    */
+  @Nullable
   String getEmail();
 
 }

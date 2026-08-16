@@ -5,13 +5,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import org.bremersee.spring.security.core.mapping.group.GroupsMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
 /**
- * The type Jwt converter auto configuration test.
+ * The type Jwt converter autoconfiguration test.
  */
 class JwtConverterAutoConfigurationTest {
 
@@ -36,10 +37,14 @@ class JwtConverterAutoConfigurationTest {
   @Test
   void jwtConverter() {
     @SuppressWarnings("unchecked")
-    ObjectProvider<GrantedAuthoritiesMapper> mapper = mock(ObjectProvider.class);
+    ObjectProvider<GrantedAuthoritiesMapper> rolesMapper = mock(ObjectProvider.class);
     doReturn(mock(GrantedAuthoritiesMapper.class))
-        .when(mapper).getIfAvailable(any());
-    assertThat(target.jwtConverter(mapper))
+        .when(rolesMapper).getIfAvailable(any());
+    @SuppressWarnings("unchecked")
+    ObjectProvider<GroupsMapper> groupsMapper = mock(ObjectProvider.class);
+    doReturn(mock(GroupsMapper.class))
+        .when(groupsMapper).getIfAvailable(any());
+    assertThat(target.jwtConverter(rolesMapper, groupsMapper))
         .isNotNull();
   }
 }

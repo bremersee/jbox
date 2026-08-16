@@ -32,7 +32,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * The cors configuration source auto-configuration.
+ * The cors configuration source autoconfiguration.
  *
  * @author Christian Bremer
  */

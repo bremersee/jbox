@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>common-exception-parent</artifactId>
@@ -16,7 +16,7 @@
   <name>Common Exception Parent Module</name>
   <description>Common Exception Project</description>
   <inceptionYear>2022</inceptionYear>
-  <url>https://bremersee.github.io/jbox/common-exception-parent/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/common-exception-parent/index.html</url>
 
   <modules>
     <module>common-exception</module>

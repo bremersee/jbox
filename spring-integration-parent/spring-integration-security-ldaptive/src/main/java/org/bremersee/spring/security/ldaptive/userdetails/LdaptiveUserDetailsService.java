@@ -80,7 +80,7 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
   private final LdaptiveTemplate ldaptiveTemplate;
 
   /**
-   * The granted authorities mapper.
+   * The groups mapper.
    */
   private GrantedAuthoritiesMapper grantedAuthoritiesMapper;
 
@@ -123,9 +123,9 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
   }
 
   /**
-   * Sets granted authorities mapper.
+   * Sets groups mapper.
    *
-   * @param grantedAuthoritiesMapper the granted authorities mapper
+   * @param grantedAuthoritiesMapper the groups mapper
    */
   public void setGrantedAuthoritiesMapper(
       GrantedAuthoritiesMapper grantedAuthoritiesMapper) {

@@ -117,7 +117,7 @@ public class LdaptiveAuthenticationManager
   private AccountControlEvaluator accountControlEvaluator;
 
   /**
-   * The granted authorities mapper.
+   * The groups mapper.
    */
   @Getter(AccessLevel.PROTECTED)
   @Setter

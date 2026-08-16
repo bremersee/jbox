@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -49,6 +51,11 @@ public class AuthenticationProperties {
    * The ldaptive properties.
    */
   private LdaptiveProperties ldaptive = new LdaptiveProperties();
+
+  /**
+   * The actuator properties.
+   */
+  private ActuatorProperties actuator = new ActuatorProperties();
 
   /**
    * Instantiates new authentication properties.
@@ -158,7 +165,7 @@ public class AuthenticationProperties {
     /**
      * The role mappings.
      */
-    private List<RoleMapping> roleMapping = new ArrayList<>();
+    private List<SimpleMapping> roleMapping = new ArrayList<>();
 
     /**
      * The role prefix (like 'ROLE_' or 'SCOPE_').
@@ -176,6 +183,47 @@ public class AuthenticationProperties {
     private List<StringReplacement> roleStringReplacements;
 
     /**
+     * The json path to the groups.
+     */
+    private String groupsJsonPath = "$.groups";
+
+    /**
+     * Specifies whether the groups are represented as a json array or as a list separated by
+     * {@link #getGroupsValueSeparator()}.
+     */
+    private boolean groupsValueList = false; // keycloak: true
+
+    /**
+     * The groups separator to use if {@link #isGroupsValueList()} is set to {@code false}.
+     */
+    private String groupsValueSeparator = " ";
+
+    /**
+     * The default groups.
+     */
+    private List<String> defaultGroups = new ArrayList<>();
+
+    /**
+     * The group mappings.
+     */
+    private List<SimpleMapping> groupMapping = new ArrayList<>();
+
+    /**
+     * The group prefix (like 'GROUP_').
+     */
+    private String groupPrefix = "";
+
+    /**
+     * The group case transformation.
+     */
+    private CaseTransformation groupCaseTransformation;
+
+    /**
+     * The string replacements for groups.
+     */
+    private List<StringReplacement> groupStringReplacements;
+
+    /**
      * Instantiates new jwt converter properties.
      */
     public JwtConverterProperties() {
@@ -183,7 +231,7 @@ public class AuthenticationProperties {
     }
 
     /**
-     * To role mappings map.
+     * To role mappings.
      *
      * @return the map
      */
@@ -191,19 +239,49 @@ public class AuthenticationProperties {
       return Stream.ofNullable(getRoleMapping())
           .flatMap(Collection::stream)
           .collect(Collectors.toMap(
-              RoleMapping::getSource,
-              RoleMapping::getTarget,
+              SimpleMapping::getSource,
+              SimpleMapping::getTarget,
               (first, second) -> first,
               LinkedHashMap::new));
     }
 
     /**
-     * To role string replacements map.
+     * To group mappings.
+     *
+     * @return the map
+     */
+    public Map<String, String> toGroupMappings() {
+      return Stream.ofNullable(getGroupMapping())
+          .flatMap(Collection::stream)
+          .collect(Collectors.toMap(
+              SimpleMapping::getSource,
+              SimpleMapping::getTarget,
+              (first, second) -> first,
+              LinkedHashMap::new));
+    }
+
+    /**
+     * To role string replacements.
      *
      * @return the map
      */
     public Map<String, String> toRoleStringReplacements() {
       return Stream.ofNullable(getRoleStringReplacements())
+          .flatMap(Collection::stream)
+          .collect(Collectors.toMap(
+              StringReplacement::getRegex,
+              StringReplacement::getReplacement,
+              (first, second) -> first,
+              LinkedHashMap::new));
+    }
+
+    /**
+     * To group string replacements.
+     *
+     * @return the map
+     */
+    public Map<String, String> toGroupStringReplacements() {
+      return Stream.ofNullable(getGroupStringReplacements())
           .flatMap(Collection::stream)
           .collect(Collectors.toMap(
               StringReplacement::getRegex,
@@ -342,7 +420,7 @@ public class AuthenticationProperties {
     /**
      * The role mappings.
      */
-    private List<RoleMapping> roleMapping;
+    private List<SimpleMapping> roleMapping;
 
     /**
      * The default roles.
@@ -464,19 +542,19 @@ public class AuthenticationProperties {
   }
 
   /**
-   * The role mapping.
+   * The simple mapping.
    */
   @Data
-  public static class RoleMapping {
+  public static class SimpleMapping {
 
     private String source;
 
     private String target;
 
     /**
-     * Instantiates a new role mapping.
+     * Instantiates a new simple mapping.
      */
-    public RoleMapping() {
+    public SimpleMapping() {
       super();
     }
   }
@@ -524,6 +602,41 @@ public class AuthenticationProperties {
      */
     public StringReplacement() {
       super();
+    }
+  }
+
+  /**
+   * The type Actuator properties.
+   */
+  @Data
+  public static class ActuatorProperties {
+
+    private List<String> readRoles = new ArrayList<>();
+
+    private List<String> writeRoles = new ArrayList<>();
+
+    /**
+     * Gets read roles.
+     *
+     * @return the read roles
+     */
+    public List<String> getReadRoles() {
+      if (isEmpty(readRoles)) {
+        return List.of("ROLE_ADMIN", "ROLE_ACTUATOR", "ROLE_ACTUATOR_ADMIN");
+      }
+      return readRoles;
+    }
+
+    /**
+     * Gets write roles.
+     *
+     * @return the write roles
+     */
+    public List<String> getWriteRoles() {
+      if (isEmpty(writeRoles)) {
+        return List.of("ROLE_ADMIN", "ROLE_ACTUATOR_ADMIN");
+      }
+      return writeRoles;
     }
   }
 

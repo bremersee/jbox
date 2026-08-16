@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2026 the original author or authors.
+ * Copyright 2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package org.bremersee.spring.security.core.authority.mapping;
+package org.bremersee.spring.boot.autoconfigure.keycloak;
+
+import org.bremersee.keycloak.api.webflux.AdminApi;
+import reactivefeign.ReactiveFeign;
 
 /**
- * The case transformation.
+ * The keycloak admin api customizer.
+ *
+ * @author Christian Bremer
  */
-public enum CaseTransformation {
+public interface KeycloakAdminApiCustomizer {
 
   /**
-   * None case transformation.
+   * Customize.
+   *
+   * @param builder the builder
    */
-  NONE,
+  void customize(ReactiveFeign.Builder<AdminApi> builder);
 
-  /**
-   * To upper case transformation.
-   */
-  TO_UPPER_CASE,
-
-  /**
-   * To lower case transformation.
-   */
-  TO_LOWER_CASE
 }

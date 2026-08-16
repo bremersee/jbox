@@ -21,9 +21,12 @@ import static java.util.Objects.isNull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationProperties.JwtConverterProperties;
-import org.bremersee.spring.security.core.authority.mapping.CaseTransformation;
-import org.bremersee.spring.security.core.authority.mapping.NormalizedGrantedAuthoritiesMapper;
+import org.bremersee.spring.security.core.mapping.CaseTransformation;
+import org.bremersee.spring.security.core.mapping.authority.NormalizedGrantedAuthoritiesMapper;
+import org.bremersee.spring.security.core.mapping.group.GroupsMapper;
+import org.bremersee.spring.security.core.mapping.group.NormalizedGroupsMapper;
 import org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter;
+import org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -69,7 +72,7 @@ public class JwtConverterAutoConfiguration {
   private final JwtConverterProperties properties;
 
   /**
-   * Instantiates a new Jwt converter auto configuration.
+   * Instantiates a new Jwt converter autoconfiguration.
    *
    * @param properties the properties
    */
@@ -95,17 +98,19 @@ public class JwtConverterAutoConfiguration {
   /**
    * Creates jwt converter.
    *
-   * @param mapper the mapper
+   * @param rolesMapperProvider the mapper of roles
+   * @param groupsMapperProvider the mapper of groups
    * @return the converter
    */
   @ConditionalOnMissingBean({JwtAuthenticationConverter.class})
   @Bean
   public Converter<Jwt, AbstractAuthenticationToken> jwtConverter(
-      ObjectProvider<GrantedAuthoritiesMapper> mapper) {
+      ObjectProvider<GrantedAuthoritiesMapper> rolesMapperProvider,
+      ObjectProvider<GroupsMapper> groupsMapperProvider) {
 
     log.info("Creating new jwt authentication converter.");
 
-    GrantedAuthoritiesMapper grantedAuthoritiesMapper = mapper
+    GrantedAuthoritiesMapper grantedAuthoritiesMapper = rolesMapperProvider
         .getIfAvailable(() -> new NormalizedGrantedAuthoritiesMapper(
             properties.getDefaultRoles(),
             properties.toRoleMappings(),
@@ -113,16 +118,30 @@ public class JwtConverterAutoConfiguration {
             getCaseTransformation(properties.getRoleCaseTransformation()),
             properties.toRoleStringReplacements()));
 
-    return new JsonPathJwtConverter(
-        properties.getNameJsonPath(),
-        properties.getFirstNameJsonPath(),
-        properties.getLastNameJsonPath(),
-        properties.getEmailJsonPath(),
-        properties.getRolesJsonPath(),
-        properties.isRolesValueList(),
-        properties.getRolesValueSeparator(),
-        grantedAuthoritiesMapper
-    );
+    GroupsMapper groupsMapper = groupsMapperProvider
+        .getIfAvailable(() -> new NormalizedGroupsMapper(
+            properties.getDefaultGroups(),
+            properties.toGroupMappings(),
+            properties.getGroupPrefix(),
+            getCaseTransformation(properties.getGroupCaseTransformation()),
+            properties.toGroupStringReplacements()));
+
+    JsonPathJwtProperties jsonPathJwtProperties = JsonPathJwtProperties.builder()
+        .nameJsonPath(properties.getNameJsonPath())
+        .firstNameJsonPath(properties.getFirstNameJsonPath())
+        .lastNameJsonPath(properties.getLastNameJsonPath())
+        .emailJsonPath(properties.getEmailJsonPath())
+        .rolesJsonPath(properties.getRolesJsonPath())
+        .rolesValueList(properties.isRolesValueList())
+        .rolesValueSeparator(properties.getRolesValueSeparator())
+        .authoritiesMapper(grantedAuthoritiesMapper)
+        .groupsJsonPath(properties.getGroupsJsonPath())
+        .groupsValueList(properties.isGroupsValueList())
+        .groupsValueSeparator(properties.getGroupsValueSeparator())
+        .groupsMapper(groupsMapper)
+        .build();
+
+    return new JsonPathJwtConverter(jsonPathJwtProperties);
   }
 
   private CaseTransformation getCaseTransformation(

@@ -6,13 +6,13 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>pagebuilder</artifactId>
   <name>PageBuilder</name>
   <description>A page builder library</description>
-  <url>https://bremersee.github.io/jbox/pagebuilder/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/pagebuilder/index.html</url>
   <inceptionYear>2022</inceptionYear>
 
   <developers>

@@ -16,9 +16,14 @@
 
 package org.bremersee.spring.security.ldaptive.authentication;
 
+import static java.util.Objects.isNull;
+
 import java.io.Serial;
+import java.util.List;
 import lombok.EqualsAndHashCode;
+import org.bremersee.spring.security.core.NormalizedUser;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveUserDetails;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 
 /**
@@ -49,22 +54,29 @@ public class LdaptiveRememberMeAuthenticationToken
   public LdaptiveRememberMeAuthenticationToken(
       String key,
       LdaptiveAuthentication ldaptiveAuthentication) {
-    super(key, ldaptiveAuthentication.getPrincipal(), ldaptiveAuthentication.getAuthorities());
+    super(
+        key,
+        isNull(ldaptiveAuthentication) || isNull(ldaptiveAuthentication.getPrincipal())
+            ? NormalizedUser.empty()
+            : ldaptiveAuthentication.getPrincipal(),
+        isNull(ldaptiveAuthentication) ? List.of() : ldaptiveAuthentication.getAuthorities());
     this.delegate = ldaptiveAuthentication;
   }
 
   @Override
-  public LdaptiveUserDetails getPrincipal() {
-    return delegate.getPrincipal();
+  public @NonNull LdaptiveUserDetails getPrincipal() {
+    LdaptiveUserDetails principal = delegate.getPrincipal();
+    return isNull(principal) ? LdaptiveUserDetails.empty() : principal;
   }
 
   @Override
-  public Object getCredentials() {
-    return delegate.getCredentials();
+  public @NonNull Object getCredentials() {
+    Object credentials = delegate.getCredentials();
+    return isNull(credentials) ? "" : credentials;
   }
 
   @Override
-  public String getName() {
+  public @NonNull String getName() {
     return delegate.getName();
   }
 

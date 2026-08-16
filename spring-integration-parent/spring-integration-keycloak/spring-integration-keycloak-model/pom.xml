@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.bremersee</groupId>
+    <artifactId>spring-integration-keycloak</artifactId>
+    <version>6.0.2</version>
+  </parent>
+
+  <artifactId>spring-integration-keycloak-model</artifactId>
+
+  <name>Spring Integration Keycloak Model</name>
+  <description>
+    This project contains the keycloak model of the admin cli.
+  </description>
+
+  <developers>
+    <developer>
+      <id>bremersee</id>
+      <name>Christian Bremer</name>
+      <organization>bremersee.org</organization>
+      <organizationUrl>https://bremersee.org</organizationUrl>
+      <email>christian@bremersee.org</email>
+      <timezone>Europe/Berlin</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <organization>
+    <name>bremersee.org</name>
+    <url>https://bremersee.org</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <skipValidateSpec>true</skipValidateSpec>
+              <inputSpec>${project.parent.basedir}/src/main/resources/openapi/openapi.yml</inputSpec>
+              <generatorName>spring</generatorName>
+              <generateSupportingFiles>false</generateSupportingFiles>
+              <generateApis>false</generateApis>
+              <generateApiTests>false</generateApiTests>
+              <generateApiDocumentation>false</generateApiDocumentation>
+              <generateModels>true</generateModels>
+              <generateModelTests>false</generateModelTests>
+              <generateModelDocumentation>true</generateModelDocumentation>
+              <configOptions>
+                <reactive>true</reactive>
+                <includeHttpRequestContext>false</includeHttpRequestContext>
+                <openApiNullable>false</openApiNullable>
+                <interfaceOnly>true</interfaceOnly>
+                <useSpringBoot4>true</useSpringBoot4>
+                <useJackson3>true</useJackson3>
+                <skipDefaultInterface>true</skipDefaultInterface>
+                <library>spring-boot</library>
+                <modelPackage>${project.groupId}.keycloak.api.model</modelPackage>
+                <useResponseEntity>false</useResponseEntity>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

@@ -18,6 +18,7 @@ package org.bremersee.spring.security.core;
 
 import java.io.Serial;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 
 /**
@@ -85,6 +86,16 @@ public class NormalizedUser implements NormalizedPrincipal {
   @Override
   public String getEmail() {
     return email;
+  }
+
+  /**
+   * Empty normalized user.
+   *
+   * @return the normalized user
+   */
+  @NonNull
+  public static NormalizedUser empty() {
+    return new NormalizedUser("", null, null, null);
   }
 
 }

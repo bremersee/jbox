@@ -22,6 +22,7 @@ import org.bremersee.spring.security.core.NormalizedPrincipal;
 import org.immutables.serial.Serial;
 import org.immutables.value.Value;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,6 +61,7 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
   String getPassword();
 
   @Override
+  @NullMarked
   String getUsername();
 
   @Value.Default
@@ -103,6 +105,18 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
   @Nullable
   @Override
   String getEmail();
+
+  /**
+   * Empty ldaptive user details.
+   *
+   * @return the ldaptive user details
+   */
+  @NonNull
+  static LdaptiveUserDetails empty() {
+    return LdaptiveUserDetails.builder()
+        .username("")
+        .build();
+  }
 
   /**
    * Gets builder.

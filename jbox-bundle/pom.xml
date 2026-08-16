@@ -7,13 +7,13 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>jbox-bundle</artifactId>
   <name>JBox Bundle</name>
   <description>Dependency management of bremersee's libraries</description>
-  <url>https://bremersee.github.io/jbox/jbox-bundle/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/jbox-bundle/index.html</url>
   <inceptionYear>2025</inceptionYear>
   <packaging>pom</packaging>
 
@@ -241,6 +241,11 @@
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
+        <artifactId>spring-integration-keycloak-webflux-client</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-ldaptive</artifactId>
         <version>${jbox.version}</version>
       </dependency>
@@ -252,6 +257,11 @@
       <dependency>
         <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-security</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
+        <artifactId>spring-integration-security-test</artifactId>
         <version>${jbox.version}</version>
       </dependency>
       <dependency>

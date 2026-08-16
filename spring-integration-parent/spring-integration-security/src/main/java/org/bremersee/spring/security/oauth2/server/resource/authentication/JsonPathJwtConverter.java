@@ -1,5 +1,5 @@
 /*
-* Copyright 2020-2026 the original author or authors.
+ * Copyright 2020-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.bremersee.spring.security.oauth2.server.resource.authentication;
 
-import static java.util.Objects.requireNonNullElseGet;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.Arrays;
@@ -32,15 +31,16 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.bremersee.spring.security.core.Group;
+import org.bremersee.spring.security.core.NormalizedGroup;
 import org.bremersee.spring.security.core.NormalizedUser;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.util.Assert;
 
 /**
  * The json path jwt converter.
@@ -52,77 +52,16 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @EqualsAndHashCode
 public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-  /**
-   * The json path to the username.
-   */
-  private final String nameJsonPath;
-
-  /**
-   * The json path to the first name.
-   */
-  private final String firstNameJsonPath;
-
-  /**
-   * The json path to the last name.
-   */
-  private final String lastNameJsonPath;
-
-  /**
-   * The json path to the email.
-   */
-  private final String emailJsonPath;
-
-  /**
-   * The json path to the roles.
-   */
-  private final String rolesJsonPath;
-
-  /**
-   * Specifies whether the roles are represented as a json array or as a list separated by
-   * {@link #getRolesValueSeparator()}.
-   */
-  private final boolean rolesValueList;
-
-  /**
-   * The roles separator to use if {@link #isRolesValueList()} is set to {@code false}.
-   */
-  private final String rolesValueSeparator;
-
-  /**
-   * The authorities mapper.
-   */
-  private final GrantedAuthoritiesMapper authoritiesMapper;
+  private final JsonPathJwtProperties properties;
 
   /**
    * Instantiates a new Json path jwt converter.
    *
-   * @param nameJsonPath the name json path
-   * @param firstNameJsonPath the first name json path
-   * @param lastNameJsonPath the last name json path
-   * @param emailJsonPath the email json path
-   * @param rolesJsonPath the roles json path
-   * @param rolesValueList the roles value list
-   * @param rolesValueSeparator the roles value separator
-   * @param authoritiesMapper the authorities mapper
+   * @param properties the properties
    */
-  public JsonPathJwtConverter(
-      String nameJsonPath,
-      String firstNameJsonPath,
-      String lastNameJsonPath,
-      String emailJsonPath,
-      String rolesJsonPath,
-      boolean rolesValueList,
-      String rolesValueSeparator,
-      GrantedAuthoritiesMapper authoritiesMapper) {
-
-    this.nameJsonPath = nameJsonPath;
-    this.firstNameJsonPath = firstNameJsonPath;
-    this.lastNameJsonPath = lastNameJsonPath;
-    this.emailJsonPath = emailJsonPath;
-    this.rolesJsonPath = rolesJsonPath;
-    this.rolesValueList = rolesValueList;
-    this.rolesValueSeparator = rolesValueSeparator;
-    this.authoritiesMapper = requireNonNullElseGet(authoritiesMapper, SimpleAuthorityMapper::new);
+  public JsonPathJwtConverter(JsonPathJwtProperties properties) {
+    Assert.notNull(properties, "Properties must not be null.");
+    this.properties = properties;
   }
 
   @NonNull
@@ -136,22 +75,23 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
             getFirstName(parser),
             getLastName(parser),
             getEmail(parser)),
-        getGrantedAuthorities(parser));
+        getGrantedAuthorities(parser),
+        getGroups(parser));
   }
 
   /**
-   * Gets granted authorities.
+   * Gets groups.
    *
    * @param parser the parser
-   * @return the granted authorities
+   * @return the groups
    */
   protected Collection<? extends GrantedAuthority> getGrantedAuthorities(JsonPathJwtParser parser) {
-    Stream<String> values = isRolesValueList()
+    Stream<String> values = properties.isRolesValueList()
         ? getAuthoritiesFromList(parser)
         : getAuthoritiesFromValue(parser);
     Set<GrantedAuthority> authorities = values.map(SimpleGrantedAuthority::new)
         .collect(Collectors.toSet());
-    return authoritiesMapper.mapAuthorities(authorities);
+    return properties.getAuthoritiesMapper().mapAuthorities(authorities);
   }
 
   /**
@@ -162,7 +102,7 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    */
   protected Stream<String> getAuthoritiesFromList(JsonPathJwtParser parser) {
     //noinspection unchecked
-    return Stream.ofNullable(getRolesJsonPath())
+    return Stream.ofNullable(properties.getRolesJsonPath())
         .map(path -> parser.read(path, List.class))
         .filter(Objects::nonNull)
         .map(list -> (List<String>) list)
@@ -176,11 +116,57 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    * @return the authorities from value
    */
   protected Stream<String> getAuthoritiesFromValue(JsonPathJwtParser parser) {
-    return Stream.ofNullable(getRolesJsonPath())
-        .filter(path -> !isEmpty(getRolesValueSeparator()))
+    return Stream.ofNullable(properties.getRolesJsonPath())
+        .filter(path -> !isEmpty(properties.getRolesValueSeparator()))
         .map(path -> parser.read(path, String.class))
         .filter(Objects::nonNull)
-        .map(value -> value.split(Pattern.quote(getRolesValueSeparator())))
+        .map(value -> value.split(Pattern.quote(properties.getRolesValueSeparator())))
+        .flatMap(Arrays::stream)
+        .map(String::valueOf);
+  }
+
+  /**
+   * Gets groups.
+   *
+   * @param parser the parser
+   * @return the groups
+   */
+  protected Collection<Group> getGroups(JsonPathJwtParser parser) {
+    Stream<String> values = properties.isGroupsValueList()
+        ? getGroupsFromList(parser)
+        : getGroupsFromValue(parser);
+    Set<Group> groups = values.map(NormalizedGroup::of)
+        .collect(Collectors.toSet());
+    return properties.getGroupsMapper().mapGroups(groups);
+  }
+
+  /**
+   * Gets groups from list.
+   *
+   * @param parser the parser
+   * @return the groups from list
+   */
+  protected Stream<String> getGroupsFromList(JsonPathJwtParser parser) {
+    //noinspection unchecked
+    return Stream.ofNullable(properties.getGroupsJsonPath())
+        .map(path -> parser.read(path, List.class))
+        .filter(Objects::nonNull)
+        .map(list -> (List<String>) list)
+        .flatMap(Collection::stream);
+  }
+
+  /**
+   * Gets groups from value.
+   *
+   * @param parser the parser
+   * @return the groups from value
+   */
+  protected Stream<String> getGroupsFromValue(JsonPathJwtParser parser) {
+    return Stream.ofNullable(properties.getGroupsJsonPath())
+        .filter(path -> !isEmpty(properties.getGroupsValueSeparator()))
+        .map(path -> parser.read(path, String.class))
+        .filter(Objects::nonNull)
+        .map(value -> value.split(Pattern.quote(properties.getGroupsValueSeparator())))
         .flatMap(Arrays::stream)
         .map(String::valueOf);
   }
@@ -193,7 +179,7 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    * @return the username
    */
   protected String getUsername(Jwt source, JsonPathJwtParser parser) {
-    return Optional.ofNullable(getNameJsonPath())
+    return Optional.ofNullable(properties.getNameJsonPath())
         .filter(jsonPath -> !jsonPath.isBlank())
         .map(jsonPath -> parser.read(jsonPath, String.class))
         .orElseGet(source::getSubject);
@@ -206,7 +192,7 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    * @return the first name
    */
   protected String getFirstName(JsonPathJwtParser parser) {
-    return parser.read(getFirstNameJsonPath(), String.class);
+    return parser.read(properties.getFirstNameJsonPath(), String.class);
   }
 
   /**
@@ -216,7 +202,7 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    * @return the last name
    */
   protected String getLastName(JsonPathJwtParser parser) {
-    return parser.read(getLastNameJsonPath(), String.class);
+    return parser.read(properties.getLastNameJsonPath(), String.class);
   }
 
   /**
@@ -226,7 +212,7 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    * @return the email
    */
   protected String getEmail(JsonPathJwtParser parser) {
-    return parser.read(getEmailJsonPath(), String.class);
+    return parser.read(properties.getEmailJsonPath(), String.class);
   }
 
 }

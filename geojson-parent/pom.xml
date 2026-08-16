@@ -6,11 +6,11 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>geojson-parent</artifactId>
-  <version>6.0.1</version>
+  <version>6.0.2</version>
   <packaging>pom</packaging>
   <!-- Change version in GeoJsonObjectMapperModule, too. -->
 
@@ -19,7 +19,7 @@
     This project contains modules for reading and writing GeoJSON.
   </description>
   <inceptionYear>2015</inceptionYear>
-  <url>https://bremersee.github.io/jbox/geojson-parent/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/geojson-parent/index.html</url>
 
   <modules>
     <module>geojson-model</module>

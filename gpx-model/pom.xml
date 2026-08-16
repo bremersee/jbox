@@ -7,13 +7,13 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>gpx-model</artifactId>
   <name>GPX Model</name>
   <inceptionYear>2019</inceptionYear>
-  <url>https://bremersee.github.io/jbox/gpx-model/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/gpx-model/index.html</url>
 
   <developers>
     <developer>

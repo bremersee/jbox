@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>comparator-parent</artifactId>
@@ -15,7 +15,7 @@
   <name>Comparator Parent Module</name>
   <description>A general object comparator (parent module)</description>
   <inceptionYear>2019</inceptionYear>
-  <url>https://bremersee.github.io/jbox/comparator/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/comparator/index.html</url>
 
   <modules>
     <module>comparator</module>

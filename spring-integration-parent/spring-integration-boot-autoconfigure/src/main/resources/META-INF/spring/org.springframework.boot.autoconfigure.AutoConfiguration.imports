@@ -1,4 +1,5 @@
 org.bremersee.spring.boot.autoconfigure.data.mongo.MongoCustomConversionsAutoConfiguration
+org.bremersee.spring.boot.autoconfigure.keycloak.ReactiveKeycloakClientAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveJackson2ObjectMapperBuilderCustomizer
 org.bremersee.spring.boot.autoconfigure.minio.MinioAutoConfiguration

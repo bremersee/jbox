@@ -7,7 +7,7 @@
   <parent>
     <artifactId>common-parent</artifactId>
     <groupId>org.bremersee</groupId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
   </parent>
 
   <artifactId>common-service-parent</artifactId>
@@ -15,7 +15,7 @@
 
   <name>Common Service Parent</name>
   <description>Common parent module of spring boot services.</description>
-  <url>https://bremersee.github.io/jbox/common-service-parent/index.html</url>
+  <url>https://bremersee.github.io/jbox/${jbox.version}/common-service-parent/index.html</url>
 
   <properties>
     <openapi.skip>true</openapi.skip>
