@@ -16,8 +16,11 @@
 
 package org.bremersee.spring.security.oauth2.server.resource.authentication;
 
+import static java.util.Objects.requireNonNullElseGet;
+
 import java.io.Serial;
 import java.util.Collection;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import org.bremersee.spring.security.core.Group;
 import org.bremersee.spring.security.core.NormalizedAuthentication;
@@ -76,6 +79,6 @@ public class NormalizedJwtAuthenticationToken extends JwtAuthenticationToken
 
   @Override
   public @NonNull Collection<Group> getGroups() {
-    return groups;
+    return requireNonNullElseGet(groups, List::of);
   }
 }

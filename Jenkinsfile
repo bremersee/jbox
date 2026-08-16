@@ -1,13 +1,13 @@
 pipeline {
   agent {
-    label 'jdk21&&maven&&docker&&AVX'
+    label 'jdk21 && maven && docker && AVX'
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
     TEST = true
     DEPLOY = true
-    SITE = false
-    SNAPSHOT_SITE = true
+    SITE = true
+    SNAPSHOT_SITE = false
     RELEASE_SITE = false
     DEPLOY_FEATURE = false
     CLEAN = true
@@ -81,11 +81,11 @@ pipeline {
           rm -rf target/gh-pages
         '''
       }
-      post {
-        always {
-          sh 'curl -s https://codecov.io/bash | bash -s - -t ${CODECOV_TOKEN}'
-        }
-      }
+      // post {
+      //  always {
+      //    sh 'curl -s https://codecov.io/bash | bash -s - -t ${CODECOV_TOKEN}'
+      //  }
+      // }
     }
     stage('Snapshot Site') {
       when {

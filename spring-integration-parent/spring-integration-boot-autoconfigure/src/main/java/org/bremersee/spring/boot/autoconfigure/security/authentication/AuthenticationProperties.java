@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -49,6 +51,11 @@ public class AuthenticationProperties {
    * The ldaptive properties.
    */
   private LdaptiveProperties ldaptive = new LdaptiveProperties();
+
+  /**
+   * The actuator properties.
+   */
+  private ActuatorProperties actuator = new ActuatorProperties();
 
   /**
    * Instantiates new authentication properties.
@@ -595,6 +602,41 @@ public class AuthenticationProperties {
      */
     public StringReplacement() {
       super();
+    }
+  }
+
+  /**
+   * The type Actuator properties.
+   */
+  @Data
+  public static class ActuatorProperties {
+
+    private List<String> readRoles = new ArrayList<>();
+
+    private List<String> writeRoles = new ArrayList<>();
+
+    /**
+     * Gets read roles.
+     *
+     * @return the read roles
+     */
+    public List<String> getReadRoles() {
+      if (isEmpty(readRoles)) {
+        return List.of("ROLE_ADMIN", "ROLE_ACTUATOR", "ROLE_ACTUATOR_ADMIN");
+      }
+      return readRoles;
+    }
+
+    /**
+     * Gets write roles.
+     *
+     * @return the write roles
+     */
+    public List<String> getWriteRoles() {
+      if (isEmpty(writeRoles)) {
+        return List.of("ROLE_ADMIN", "ROLE_ACTUATOR_ADMIN");
+      }
+      return writeRoles;
     }
   }
 
