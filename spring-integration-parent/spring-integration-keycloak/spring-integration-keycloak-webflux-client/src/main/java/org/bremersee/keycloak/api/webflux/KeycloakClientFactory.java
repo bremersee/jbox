@@ -211,7 +211,10 @@ public class KeycloakClientFactory {
     @Override
     public Mono<ReactiveHttpRequest> apply(ReactiveHttpRequest reactiveHttpRequest) {
       return getLastAccessToken()
-          .switchIfEmpty(getFreshAccessToken())
+          .singleOptional()
+          .flatMap(optAccessToken -> optAccessToken
+              .map(Mono::just)
+              .orElseGet(this::getFreshAccessToken))
           .map(accessToken -> {
             reactiveHttpRequest.headers()
                 .put(HttpHeaders.AUTHORIZATION, List.of("Bearer " + accessToken));
