@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtConverterAutoConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Boot Autoconfiguration</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.boot.autoconfigure.security.authentication</a> &gt; <span class="el_source">JwtConverterAutoConfiguration.java</span></div><h1>JwtConverterAutoConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.boot.autoconfigure.security.authentication;
+
+import static java.util.Objects.isNull;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationProperties.JwtConverterProperties;
+import org.bremersee.spring.security.core.mapping.CaseTransformation;
+import org.bremersee.spring.security.core.mapping.authority.NormalizedGrantedAuthoritiesMapper;
+import org.bremersee.spring.security.core.mapping.group.GroupsMapper;
+import org.bremersee.spring.security.core.mapping.group.NormalizedGroupsMapper;
+import org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter;
+import org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtProperties;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.security.autoconfigure.web.reactive.ReactiveWebSecurityAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.util.ClassUtils;
+
+/**
+ * The jwt converter autoconfiguration.
+ *
+ * @author Christian Bremer
+ */
+@ConditionalOnClass(name = {
+    &quot;org.bremersee.spring.security.oauth2.server.resource.authentication.JsonPathJwtConverter&quot;,
+    &quot;org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter&quot;,
+    &quot;org.springframework.boot.security.autoconfigure.web.reactive.ReactiveWebSecurityAutoConfiguration&quot;,
+    &quot;org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration&quot;
+})
+@AutoConfiguration(
+    before = {
+        ServletWebSecurityAutoConfiguration.class,
+        ReactiveWebSecurityAutoConfiguration.class
+    })
+@ConditionalOnProperty(
+    prefix = &quot;spring.security.oauth2.resourceserver.jwt&quot;,
+    name = &quot;jwk-set-uri&quot;)
+@EnableConfigurationProperties(AuthenticationProperties.class)
+public class JwtConverterAutoConfiguration {
+
+<span class="fc" id="L70">  private static final Log log = LogFactory.getLog(JwtConverterAutoConfiguration.class);</span>
+
+  private final JwtConverterProperties properties;
+
+  /**
+   * Instantiates a new Jwt converter auto configuration.
+   *
+   * @param properties the properties
+   */
+<span class="fc" id="L79">  public JwtConverterAutoConfiguration(AuthenticationProperties properties) {</span>
+<span class="fc" id="L80">    this.properties = properties.getJwtConverter();</span>
+<span class="fc" id="L81">  }</span>
+
+  /**
+   * Init.
+   */
+  @EventListener(ApplicationReadyEvent.class)
+  public void init() {
+<span class="fc" id="L88">    log.info(String.format(&quot;&quot;&quot;</span>
+            
+            *********************************************************************************
+            * %s
+            * properties = %s
+            *********************************************************************************&quot;&quot;&quot;,
+<span class="fc" id="L94">        ClassUtils.getUserClass(getClass()).getSimpleName(),</span>
+        properties));
+<span class="fc" id="L96">  }</span>
+
+  /**
+   * Creates jwt converter.
+   *
+   * @param rolesMapperProvider the mapper of roles
+   * @param groupsMapperProvider the mapper of groups
+   * @return the converter
+   */
+  @ConditionalOnMissingBean({JwtAuthenticationConverter.class})
+  @Bean
+  public Converter&lt;Jwt, AbstractAuthenticationToken&gt; jwtConverter(
+      ObjectProvider&lt;GrantedAuthoritiesMapper&gt; rolesMapperProvider,
+      ObjectProvider&lt;GroupsMapper&gt; groupsMapperProvider) {
+
+<span class="fc" id="L111">    log.info(&quot;Creating new jwt authentication converter.&quot;);</span>
+
+<span class="fc" id="L113">    GrantedAuthoritiesMapper grantedAuthoritiesMapper = rolesMapperProvider</span>
+<span class="pc" id="L114">        .getIfAvailable(() -&gt; new NormalizedGrantedAuthoritiesMapper(</span>
+<span class="nc" id="L115">            properties.getDefaultRoles(),</span>
+<span class="nc" id="L116">            properties.toRoleMappings(),</span>
+<span class="nc" id="L117">            properties.getRolePrefix(),</span>
+<span class="nc" id="L118">            getCaseTransformation(properties.getRoleCaseTransformation()),</span>
+<span class="nc" id="L119">            properties.toRoleStringReplacements()));</span>
+
+<span class="fc" id="L121">    GroupsMapper groupsMapper = groupsMapperProvider</span>
+<span class="pc" id="L122">        .getIfAvailable(() -&gt; new NormalizedGroupsMapper(</span>
+<span class="nc" id="L123">            properties.getDefaultGroups(),</span>
+<span class="nc" id="L124">            properties.toGroupMappings(),</span>
+<span class="nc" id="L125">            properties.getGroupPrefix(),</span>
+<span class="nc" id="L126">            getCaseTransformation(properties.getGroupCaseTransformation()),</span>
+<span class="nc" id="L127">            properties.toGroupStringReplacements()));</span>
+
+<span class="fc" id="L129">    JsonPathJwtProperties jsonPathJwtProperties = JsonPathJwtProperties.builder()</span>
+<span class="fc" id="L130">        .nameJsonPath(properties.getNameJsonPath())</span>
+<span class="fc" id="L131">        .firstNameJsonPath(properties.getFirstNameJsonPath())</span>
+<span class="fc" id="L132">        .lastNameJsonPath(properties.getLastNameJsonPath())</span>
+<span class="fc" id="L133">        .emailJsonPath(properties.getEmailJsonPath())</span>
+<span class="fc" id="L134">        .rolesJsonPath(properties.getRolesJsonPath())</span>
+<span class="fc" id="L135">        .rolesValueList(properties.isRolesValueList())</span>
+<span class="fc" id="L136">        .rolesValueSeparator(properties.getRolesValueSeparator())</span>
+<span class="fc" id="L137">        .authoritiesMapper(grantedAuthoritiesMapper)</span>
+<span class="fc" id="L138">        .groupsJsonPath(properties.getGroupsJsonPath())</span>
+<span class="fc" id="L139">        .groupsValueList(properties.isGroupsValueList())</span>
+<span class="fc" id="L140">        .groupsValueSeparator(properties.getGroupsValueSeparator())</span>
+<span class="fc" id="L141">        .groupsMapper(groupsMapper)</span>
+<span class="fc" id="L142">        .build();</span>
+
+<span class="fc" id="L144">    return new JsonPathJwtConverter(jsonPathJwtProperties);</span>
+  }
+
+  private CaseTransformation getCaseTransformation(
+      AuthenticationProperties.CaseTransformation source) {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    return isNull(source) ? CaseTransformation.NONE : CaseTransformation.valueOf(source.name());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

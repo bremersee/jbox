@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Spring Integration Keycloak WebFlux Client,org.bremersee.keycloak.api.webflux,KeycloakClientFactory,0,80,1,1,0,19,1,3,0,3
+Spring Integration Keycloak WebFlux Client,org.bremersee.keycloak.api.webflux,AdminApiMock,827,0,0,0,414,0,413,0,413,0
+Spring Integration Keycloak WebFlux Client,org.bremersee.keycloak.api.webflux,KeycloakAdminClient,0,197,0,2,0,51,0,14,0,13
+Spring Integration Keycloak WebFlux Client,org.bremersee.keycloak.api.webflux,KeycloakClientFactory.LoginInterceptor,93,66,1,1,25,17,10,2,9,2

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NormalizedAuthentication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Security</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.security.core</a> &gt; <span class="el_source">NormalizedAuthentication.java</span></div><h1>NormalizedAuthentication.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.security.core;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.ObjectUtils;
+
+/**
+ * The normalized authentication token.
+ *
+ * @author Christian Bremer
+ */
+public interface NormalizedAuthentication extends Authentication {
+
+  /**
+   * Returns the normalized principal.
+   *
+   * @return the normalized principal
+   */
+  @Override
+  NormalizedPrincipal getPrincipal();
+
+  /**
+   * Gets granted authority names.
+   *
+   * @return the granted authority names
+   */
+  @NonNull
+  default Set&lt;String&gt; getGrantedAuthorityNames() {
+<span class="nc" id="L53">    Collection&lt;? extends GrantedAuthority&gt; authorities = getAuthorities();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">    if (ObjectUtils.isEmpty(authorities)) {</span>
+<span class="nc" id="L55">      return Set.of();</span>
+    }
+<span class="nc" id="L57">    return authorities.stream()</span>
+<span class="nc" id="L58">        .map(GrantedAuthority::getAuthority)</span>
+<span class="nc" id="L59">        .collect(Collectors.toSet());</span>
+  }
+
+  /**
+   * Gets groups.
+   *
+   * @return the groups
+   */
+  @NonNull
+  default Collection&lt;Group&gt; getGroups() {
+<span class="nc" id="L69">    return List.of();</span>
+  }
+
+  /**
+   * Gets group names.
+   *
+   * @return the group names
+   */
+  @NonNull
+  default Set&lt;String&gt; getGroupNames() {
+<span class="nc" id="L79">    Collection&lt;Group&gt; groups = getGroups();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (ObjectUtils.isEmpty(groups)) {</span>
+<span class="nc" id="L81">      return Set.of();</span>
+    }
+<span class="nc" id="L83">    return groups.stream()</span>
+<span class="nc" id="L84">        .map(Group::getName)</span>
+<span class="nc" id="L85">        .collect(Collectors.toSet());</span>
+  }
+
+  /**
+   * Has granted authority.
+   *
+   * @param authority the authority
+   * @return the boolean
+   */
+  default boolean hasGrantedAuthority(@Nullable String authority) {
+<span class="nc" id="L95">    return Optional.ofNullable(authority)</span>
+<span class="nc" id="L96">        .map(a -&gt; getGrantedAuthorityNames().contains(a))</span>
+<span class="nc" id="L97">        .orElse(false);</span>
+  }
+
+  /**
+   * Has any granted authority.
+   *
+   * @param authorities the authorities
+   * @return the boolean
+   */
+  default boolean hasAnyGrantedAuthority(@Nullable Collection&lt;String&gt; authorities) {
+<span class="nc" id="L107">    return Optional.ofNullable(authorities)</span>
+<span class="nc" id="L108">        .map(col -&gt; col.stream().anyMatch(this::hasGrantedAuthority))</span>
+<span class="nc" id="L109">        .orElse(false);</span>
+  }
+
+  /**
+   * Has any granted authority.
+   *
+   * @param authorities the authorities
+   * @return the boolean
+   */
+  default boolean hasAnyGrantedAuthority(@Nullable String... authorities) {
+<span class="nc" id="L119">    return Optional.ofNullable(authorities)</span>
+<span class="nc" id="L120">        .map(arr -&gt; hasAnyGrantedAuthority(Arrays.asList(arr)))</span>
+<span class="nc" id="L121">        .orElse(false);</span>
+  }
+
+  /**
+   * Is in group.
+   *
+   * @param groupName the group name
+   * @return the boolean
+   */
+  default boolean isInGroup(@Nullable String groupName) {
+<span class="nc" id="L131">    return Optional.ofNullable(groupName)</span>
+<span class="nc" id="L132">        .map(group -&gt; getGroupNames().contains(group))</span>
+<span class="nc" id="L133">        .orElse(false);</span>
+  }
+
+  /**
+   * Is in any group.
+   *
+   * @param groupNames the group names
+   * @return the boolean
+   */
+  default boolean isInAnyGroup(@Nullable Collection&lt;String&gt; groupNames) {
+<span class="nc" id="L143">    return Optional.ofNullable(groupNames)</span>
+<span class="nc" id="L144">        .map(col -&gt; col.stream().anyMatch(this::isInGroup))</span>
+<span class="nc" id="L145">        .orElse(false);</span>
+  }
+
+  /**
+   * Is in any group.
+   *
+   * @param groupNames the group names
+   * @return the boolean
+   */
+  default boolean isInAnyGroup(@Nullable String... groupNames) {
+<span class="nc" id="L155">    return Optional.ofNullable(groupNames)</span>
+<span class="nc" id="L156">        .map(arr -&gt; isInAnyGroup(Arrays.asList(arr)))</span>
+<span class="nc" id="L157">        .orElse(false);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
