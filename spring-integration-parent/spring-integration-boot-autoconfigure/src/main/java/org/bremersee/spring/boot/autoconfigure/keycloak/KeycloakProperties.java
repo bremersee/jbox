@@ -28,7 +28,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Christian Bremer
  */
-@ConfigurationProperties(prefix = "bremersee.keycloak.client")
+@ConfigurationProperties(prefix = "bremersee.keycloak")
 @Data
 public class KeycloakProperties {
 
