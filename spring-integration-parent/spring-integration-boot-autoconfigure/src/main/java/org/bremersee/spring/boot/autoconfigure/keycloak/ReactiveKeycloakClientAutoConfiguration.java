@@ -23,13 +23,13 @@ import org.apache.commons.logging.LogFactory;
 import org.bremersee.exception.feign.FeignClientExceptionErrorDecoder;
 import org.bremersee.exception.webclient.DefaultWebClientErrorDecoder;
 import org.bremersee.keycloak.api.webflux.AdminApi;
+import org.bremersee.keycloak.api.webflux.AdminApiMock;
 import org.bremersee.keycloak.api.webflux.KeycloakAdminClient;
 import org.bremersee.keycloak.api.webflux.KeycloakClientFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -48,7 +48,6 @@ import reactivefeign.webclient.WebClientFeignCustomizer;
  * @author Christian Bremer
  */
 @ConditionalOnWebApplication(type = Type.REACTIVE)
-@ConditionalOnProperty(name = "bremersee.keycloak.admin-client.enabled", havingValue = "true")
 @EnableConfigurationProperties(KeycloakProperties.class)
 @ConditionalOnClass(name = {"org.bremersee.keycloak.api.webflux.KeycloakClientFactory"})
 @AutoConfiguration
@@ -106,6 +105,11 @@ public class ReactiveKeycloakClientAutoConfiguration {
       List<KeycloakAdminApiCustomizer> keycloakAdminApiCustomizers,
       ObjectProvider<DefaultWebClientErrorDecoder> errorDecoderProvider,
       ObjectProvider<FeignClientExceptionErrorDecoder> feignErrorDecoderProvider) {
+
+    if (!properties.getAdminClient().isEnabled()) {
+      log.warn("Keycloak Admin Client is disabled. Creating admin api MOCK!");
+      return new AdminApiMock();
+    }
 
     List<WebClientFeignCustomizer> webClientExtendedCustomizers = new ArrayList<>();
     errorDecoderProvider.ifAvailable(decoder -> webClientExtendedCustomizers
