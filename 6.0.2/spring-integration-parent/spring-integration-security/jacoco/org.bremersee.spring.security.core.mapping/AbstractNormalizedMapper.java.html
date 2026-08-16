@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractNormalizedMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Security</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.security.core.mapping</a> &gt; <span class="el_source">AbstractNormalizedMapper.java</span></div><h1>AbstractNormalizedMapper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.security.core.mapping;
+
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNullElse;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
+import org.springframework.util.Assert;
+
+/**
+ * The abstract normalized mapper.
+ *
+ * @param &lt;T&gt; the type parameter
+ * @author Christian Bremer
+ */
+public abstract class AbstractNormalizedMapper&lt;T&gt; {
+
+  /**
+   * The default values.
+   */
+  private final List&lt;String&gt; defaultValues;
+
+  /**
+   * The value mapping.
+   */
+  private final Map&lt;String, String&gt; valueMapping;
+
+  /**
+   * The value prefix.
+   */
+  private final String valuePrefix;
+
+  /**
+   * The value case transformation.
+   */
+  private final CaseTransformation valueCaseTransformation;
+
+  /**
+   * The value string replacements.
+   */
+  private final Map&lt;String, String&gt; valueStringReplacements;
+
+  /**
+   * Instantiates a new normalized mapper.
+   *
+   * @param defaultValues the default values
+   * @param valueMapping the value mapping
+   * @param valuePrefix the value prefix
+   * @param valueCaseTransformation the value case transformation
+   * @param valueStringReplacements the value string replacements
+   */
+  protected AbstractNormalizedMapper(
+      List&lt;String&gt; defaultValues,
+      Map&lt;String, String&gt; valueMapping,
+      String valuePrefix,
+      CaseTransformation valueCaseTransformation,
+<span class="fc" id="L81">      Map&lt;String, String&gt; valueStringReplacements) {</span>
+<span class="fc" id="L82">    this.defaultValues = defaultValues;</span>
+<span class="fc" id="L83">    this.valueMapping = valueMapping;</span>
+<span class="fc" id="L84">    this.valuePrefix = requireNonNullElse(valuePrefix, getDefaultPrefix());</span>
+<span class="fc" id="L85">    this.valueCaseTransformation = valueCaseTransformation;</span>
+<span class="fc" id="L86">    this.valueStringReplacements = valueStringReplacements;</span>
+<span class="fc" id="L87">  }</span>
+
+  /**
+   * Map collection.
+   *
+   * @param sourceCollection the source collection
+   * @return the target collection
+   */
+  @NonNull
+  protected Collection&lt;T&gt; map(
+      @NonNull Collection&lt;? extends T&gt; sourceCollection) {
+<span class="fc" id="L98">    Stream&lt;T&gt; defaultTargets = defaultValues.stream()</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        .filter(target -&gt; !isEmpty(target))</span>
+<span class="fc" id="L100">        .map(this::createTarget);</span>
+<span class="fc" id="L101">    Stream&lt;T&gt; givenTargets = Stream.ofNullable(sourceCollection)</span>
+<span class="fc" id="L102">        .flatMap(Collection::stream)</span>
+<span class="fc" id="L103">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L104">        .map(this::getStringValue)</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">        .filter(target -&gt; !isEmpty(target))</span>
+<span class="fc" id="L106">        .map(this::normalize);</span>
+<span class="fc" id="L107">    return Stream.concat(defaultTargets, givenTargets)</span>
+<span class="fc" id="L108">        .collect(Collectors.toSet());</span>
+  }
+
+  /**
+   * Normalize source.
+   *
+   * @param source the source
+   * @return the target
+   */
+  @NonNull
+  protected T normalize(@NonNull String source) {
+<span class="fc" id="L119">    Assert.hasText(source, &quot;Source must be present.&quot;);</span>
+<span class="fc" id="L120">    Optional&lt;T&gt; mappedValue = Stream.ofNullable(valueMapping)</span>
+<span class="fc" id="L121">        .flatMap(m -&gt; m.entrySet().stream())</span>
+<span class="fc" id="L122">        .filter(e -&gt; source.equalsIgnoreCase(e.getKey()))</span>
+<span class="fc" id="L123">        .findFirst()</span>
+<span class="fc" id="L124">        .map(Entry::getValue)</span>
+<span class="fc" id="L125">        .map(this::createTarget);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (mappedValue.isPresent()) {</span>
+<span class="fc" id="L127">      return mappedValue.get();</span>
+    }
+<span class="fc" id="L129">    String value = source;</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">    if (nonNull(valueCaseTransformation)) {</span>
+<span class="fc bfc" id="L131" title="All 3 branches covered.">      value = switch (valueCaseTransformation) {</span>
+<span class="fc" id="L132">        case TO_LOWER_CASE -&gt; value.toLowerCase();</span>
+<span class="fc" id="L133">        case TO_UPPER_CASE -&gt; value.toUpperCase();</span>
+<span class="fc" id="L134">        case NONE -&gt; value;</span>
+      };
+    }
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (!isEmpty(valueStringReplacements)) {</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; replacement : valueStringReplacements.entrySet()) {</span>
+<span class="fc" id="L139">        value = value.replaceAll(replacement.getKey(), replacement.getValue());</span>
+<span class="fc" id="L140">      }</span>
+    }
+<span class="pc bpc" id="L142" title="2 of 4 branches missed.">    if (!isEmpty(valuePrefix) &amp;&amp; !value.startsWith(valuePrefix)) {</span>
+<span class="fc" id="L143">      value = valuePrefix + value;</span>
+    }
+<span class="fc" id="L145">    return createTarget(value);</span>
+  }
+
+  /**
+   * Gets string value.
+   *
+   * @param value the value
+   * @return the string value
+   */
+  @NonNull
+  protected abstract String getStringValue(@NonNull T value);
+
+  /**
+   * Create target t.
+   *
+   * @param mappedValue the mapped value
+   * @return the t
+   */
+  @NonNull
+  protected abstract T createTarget(@NonNull String mappedValue);
+
+  /**
+   * Gets default prefix.
+   *
+   * @return the default prefix
+   */
+  @NonNull
+  protected abstract String getDefaultPrefix();
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KeycloakClientFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Keycloak WebFlux Client</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.keycloak.api.webflux</a> &gt; <span class="el_source">KeycloakClientFactory.java</span></div><h1>KeycloakClientFactory.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.keycloak.api.webflux;
+
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNullElse;
+
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.cloud.openfeign.support.SpringMvcContract;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.Assert;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactivefeign.ReactiveFeign;
+import reactivefeign.client.ReactiveHttpRequest;
+import reactivefeign.client.ReactiveHttpRequestInterceptor;
+import reactivefeign.client.ReactiveHttpRequestInterceptors;
+import reactivefeign.webclient.WebClientFeignCustomizer;
+import reactivefeign.webclient.WebReactiveFeign;
+import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
+
+/**
+ * The keycloak client factory.
+ *
+ * @author Christian Bremer
+ */
+public class KeycloakClientFactory {
+
+  private final String keycloakBaseUri;
+
+  private final String loginRealm;
+
+  private final String clientId;
+
+  private final String username;
+
+  private final String password;
+
+  @Getter(AccessLevel.PROTECTED)
+  @Setter
+  private WebClientFeignCustomizer webClientBuilderCustomizer;
+
+  @Getter(AccessLevel.PROTECTED)
+  @Setter
+  private Consumer&lt;ReactiveFeign.Builder&lt;AdminApi&gt;&gt; adminApiCustomizer;
+
+  /**
+   * Instantiates a new Keycloak client factory.
+   *
+   * @param keycloakBaseUri the keycloak base uri
+   * @param loginRealm the login realm
+   * @param clientId the client id
+   * @param username the username
+   * @param password the password
+   */
+  public KeycloakClientFactory(
+      String keycloakBaseUri,
+      String loginRealm,
+      String clientId,
+      String username,
+<span class="fc" id="L91">      String password) {</span>
+
+<span class="fc" id="L93">    Assert.hasText(keycloakBaseUri, &quot;keycloakBaseUri must not be null or empty.&quot;);</span>
+<span class="fc" id="L94">    Assert.hasText(username, &quot;username must not be null or empty.&quot;);</span>
+<span class="fc" id="L95">    Assert.hasText(password, &quot;password must not be null or empty.&quot;);</span>
+<span class="fc" id="L96">    this.keycloakBaseUri = keycloakBaseUri;</span>
+<span class="fc" id="L97">    this.loginRealm = requireNonNullElse(loginRealm, &quot;master&quot;);</span>
+<span class="fc" id="L98">    this.clientId = requireNonNullElse(clientId, &quot;admin-cli&quot;);</span>
+<span class="fc" id="L99">    this.username = username;</span>
+<span class="fc" id="L100">    this.password = password;</span>
+<span class="fc" id="L101">  }</span>
+
+  /**
+   * New client admin api.
+   *
+   * @return the admin api
+   */
+  public AdminApi newClient() {
+    ReactiveFeign.Builder&lt;AdminApi&gt; builder = WebReactiveFeign
+<span class="fc" id="L110">        .&lt;AdminApi&gt;builder(WebClient.builder(), webClientBuilderCustomizer)</span>
+<span class="fc" id="L111">        .contract(new SpringMvcContract())</span>
+<span class="fc" id="L112">        .addRequestInterceptor(</span>
+<span class="fc" id="L113">            ReactiveHttpRequestInterceptors.addHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;))</span>
+<span class="fc" id="L114">        .addRequestInterceptor(getLoginInterceptor());</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    if (nonNull(adminApiCustomizer)) {</span>
+<span class="fc" id="L116">      adminApiCustomizer.accept(builder);</span>
+    }
+<span class="fc" id="L118">    return builder.target(AdminApi.class, keycloakBaseUri);</span>
+  }
+
+  /**
+   * Gets login interceptor.
+   *
+   * @return the login interceptor
+   */
+  protected ReactiveHttpRequestInterceptor getLoginInterceptor() {
+<span class="fc" id="L127">    return new LoginInterceptor(</span>
+        keycloakBaseUri, loginRealm, clientId, username, password, webClientBuilderCustomizer);
+  }
+
+  /**
+   * The login interceptor.
+   *
+   * @author Christian Bremer
+   */
+  private static class LoginInterceptor implements ReactiveHttpRequestInterceptor {
+
+<span class="fc" id="L138">    private static final Configuration jsonPathConf = Configuration.builder()</span>
+<span class="fc" id="L139">        .options(Option.SUPPRESS_EXCEPTIONS)</span>
+<span class="fc" id="L140">        .build();</span>
+
+    private final WebClient webClient;
+
+<span class="fc" id="L144">    private final MultiValueMap&lt;String, String&gt; body = new LinkedMultiValueMap&lt;&gt;();</span>
+
+    private Tuple2&lt;String, Instant&gt; lastAccessToken;
+
+    /**
+     * Instantiates a new Login interceptor.
+     *
+     * @param keycloakBaseUri the keycloak base uri
+     * @param loginRealm the login realm
+     * @param clientId the client id
+     * @param username the username
+     * @param password the password
+     * @param webClientBuilderCustomizer the web client builder customizer
+     */
+    private LoginInterceptor(
+        String keycloakBaseUri,
+        String loginRealm,
+        String clientId,
+        String username,
+        String password,
+<span class="fc" id="L164">        Consumer&lt;WebClient.Builder&gt; webClientBuilderCustomizer) {</span>
+
+<span class="fc" id="L166">      WebClient.Builder builder = WebClient.builder()</span>
+<span class="fc" id="L167">          .baseUrl(keycloakBaseUri + &quot;/realms/{loginRealm}/protocol/openid-connect/token&quot;)</span>
+<span class="fc" id="L168">          .defaultUriVariables(Map.of(&quot;loginRealm&quot;, loginRealm))</span>
+<span class="fc" id="L169">          .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);</span>
+
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">      if (nonNull(webClientBuilderCustomizer)) {</span>
+<span class="fc" id="L172">        webClientBuilderCustomizer.accept(builder);</span>
+      }
+<span class="fc" id="L174">      webClient = builder.build();</span>
+<span class="fc" id="L175">      body.add(&quot;client_id&quot;, clientId);</span>
+<span class="fc" id="L176">      body.add(&quot;grant_type&quot;, &quot;password&quot;);</span>
+<span class="fc" id="L177">      body.add(&quot;username&quot;, username);</span>
+<span class="fc" id="L178">      body.add(&quot;password&quot;, password);</span>
+<span class="fc" id="L179">    }</span>
+
+    private synchronized Mono&lt;String&gt; getLastAccessToken() {
+<span class="nc" id="L182">      return Mono.justOrEmpty(lastAccessToken)</span>
+<span class="nc" id="L183">          .filter(tuple -&gt; tuple.getT2()</span>
+<span class="nc" id="L184">              .isAfter(Instant.now().plusSeconds(30L)))</span>
+<span class="nc" id="L185">          .map(Tuple2::getT1);</span>
+    }
+
+    private synchronized void setLastAccessToken(
+        Tuple2&lt;String, Instant&gt; lastAccessToken) {
+<span class="nc" id="L190">      this.lastAccessToken = lastAccessToken;</span>
+<span class="nc" id="L191">    }</span>
+
+    private Mono&lt;String&gt; getFreshAccessToken() {
+<span class="nc" id="L194">      return webClient</span>
+<span class="nc" id="L195">          .post()</span>
+<span class="nc" id="L196">          .body(BodyInserters.fromFormData(body))</span>
+<span class="nc" id="L197">          .retrieve()</span>
+<span class="nc" id="L198">          .bodyToMono(String.class)</span>
+<span class="nc" id="L199">          .flatMap(json -&gt; {</span>
+<span class="nc" id="L200">            DocumentContext documentContext = JsonPath.parse(json, jsonPathConf);</span>
+<span class="nc" id="L201">            return Mono.justOrEmpty(documentContext.read(&quot;$.access_token&quot;, String.class))</span>
+<span class="nc" id="L202">                .map(token -&gt; {</span>
+<span class="nc" id="L203">                  Optional.ofNullable(documentContext.read(&quot;$.expires_in&quot;, Long.class))</span>
+<span class="nc" id="L204">                      .ifPresent(expiresIn -&gt; setLastAccessToken(</span>
+<span class="nc" id="L205">                          Tuples.of(token, Instant.now().plusSeconds(expiresIn))));</span>
+<span class="nc" id="L206">                  return token;</span>
+                });
+          });
+    }
+
+    @Override
+    public Mono&lt;ReactiveHttpRequest&gt; apply(ReactiveHttpRequest reactiveHttpRequest) {
+<span class="nc" id="L213">      return getLastAccessToken()</span>
+<span class="nc" id="L214">          .switchIfEmpty(getFreshAccessToken())</span>
+<span class="nc" id="L215">          .map(accessToken -&gt; {</span>
+<span class="nc" id="L216">            reactiveHttpRequest.headers()</span>
+<span class="nc" id="L217">                .put(HttpHeaders.AUTHORIZATION, List.of(&quot;Bearer &quot; + accessToken));</span>
+<span class="nc" id="L218">            return reactiveHttpRequest;</span>
+          });
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

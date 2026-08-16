@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NormalizedGrantedAuthoritiesMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Security</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.security.core.mapping.authority</a> &gt; <span class="el_source">NormalizedGrantedAuthoritiesMapper.java</span></div><h1>NormalizedGrantedAuthoritiesMapper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2024-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.security.core.mapping.authority;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import org.bremersee.spring.security.core.mapping.AbstractNormalizedMapper;
+import org.bremersee.spring.security.core.mapping.CaseTransformation;
+import org.jspecify.annotations.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+
+/**
+ * The normalized mapper of granted authorities.
+ *
+ * @author Christian Bremer
+ */
+public class NormalizedGrantedAuthoritiesMapper extends AbstractNormalizedMapper&lt;GrantedAuthority&gt;
+    implements GrantedAuthoritiesMapper {
+
+  /**
+   * Instantiates a new normalized mapper of granted authorities.
+   *
+   * @param defaultRoles the default roles
+   * @param roleMapping the role mapping
+   * @param rolePrefix the role prefix
+   * @param roleCaseTransformation the role case transformation
+   * @param roleStringReplacements the role string replacements
+   */
+  public NormalizedGrantedAuthoritiesMapper(
+      List&lt;String&gt; defaultRoles,
+      Map&lt;String, String&gt; roleMapping,
+      String rolePrefix,
+      CaseTransformation roleCaseTransformation,
+      Map&lt;String, String&gt; roleStringReplacements) {
+<span class="fc" id="L53">    super(defaultRoles, roleMapping, rolePrefix, roleCaseTransformation, roleStringReplacements);</span>
+<span class="fc" id="L54">  }</span>
+
+  @Override
+  protected @NonNull String getStringValue(@NonNull GrantedAuthority value) {
+<span class="fc" id="L58">    String authority = value.getAuthority();</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">    return Objects.isNull(authority) ? &quot;&quot; : authority;</span>
+  }
+
+  @Override
+  protected @NonNull GrantedAuthority createTarget(@NonNull String mappedValue) {
+<span class="fc" id="L64">    return new SimpleGrantedAuthority(mappedValue);</span>
+  }
+
+  @Override
+  protected @NonNull String getDefaultPrefix() {
+<span class="fc" id="L69">    return &quot;ROLE_&quot;;</span>
+  }
+
+  @NonNull
+  @Override
+  public Collection&lt;GrantedAuthority&gt; mapAuthorities(
+      @NonNull Collection&lt;? extends GrantedAuthority&gt; authorities) {
+
+<span class="fc" id="L77">    return map(authorities);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

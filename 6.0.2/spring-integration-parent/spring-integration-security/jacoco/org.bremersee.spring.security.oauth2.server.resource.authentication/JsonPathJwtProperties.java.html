@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonPathJwtProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Security</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.security.oauth2.server.resource.authentication</a> &gt; <span class="el_source">JsonPathJwtProperties.java</span></div><h1>JsonPathJwtProperties.java</h1><pre class="source lang-java linenums">package org.bremersee.spring.security.oauth2.server.resource.authentication;
+
+import static java.util.Objects.isNull;
+
+import java.util.List;
+import lombok.Builder;
+import lombok.Data;
+import org.bremersee.spring.security.core.mapping.group.GroupsMapper;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+
+/**
+ * The json path jwt properties.
+ */
+@Data
+@Builder(toBuilder = true)
+public class JsonPathJwtProperties {
+
+  /**
+   * The json path to the username.
+   */
+  private final String nameJsonPath;
+
+  /**
+   * The json path to the first name.
+   */
+  private final String firstNameJsonPath;
+
+  /**
+   * The json path to the last name.
+   */
+  private final String lastNameJsonPath;
+
+  /**
+   * The json path to the email.
+   */
+  private final String emailJsonPath;
+
+  /**
+   * The json path to the roles.
+   */
+  private final String rolesJsonPath;
+
+  /**
+   * Specifies whether the roles are represented as a json array or as a list separated by
+   * {@link #getRolesValueSeparator()}.
+   */
+  private final boolean rolesValueList;
+
+  /**
+   * The roles separator to use if {@link #isRolesValueList()} is set to {@code false}.
+   */
+  private final String rolesValueSeparator;
+
+  /**
+   * The mapper of authorities.
+   */
+  private final GrantedAuthoritiesMapper authoritiesMapper;
+
+
+  /**
+   * The json path to the groups.
+   */
+  private final String groupsJsonPath;
+
+  /**
+   * Specifies whether the groups are represented as a json array or as a list separated by
+   * {@link #getGroupsValueSeparator()}.
+   */
+  private final boolean groupsValueList;
+
+  /**
+   * The groups separator to use if {@link #isGroupsValueList()} is set to {@code false}.
+   */
+  private final String groupsValueSeparator;
+
+  /**
+   * The mapper of groups.
+   */
+  private final GroupsMapper groupsMapper;
+
+  /**
+   * Gets authorities mapper.
+   *
+   * @return the authorities mapper
+   */
+  public GrantedAuthoritiesMapper getAuthoritiesMapper() {
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">    if (isNull(authoritiesMapper)) {</span>
+<span class="nc" id="L88">      return col -&gt; col;</span>
+    }
+<span class="fc" id="L90">    return authoritiesMapper;</span>
+  }
+
+  /**
+   * Gets groups mapper.
+   *
+   * @return the groups mapper
+   */
+  public GroupsMapper getGroupsMapper() {
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">    if (isNull(groupsMapper)) {</span>
+<span class="fc" id="L100">      return List::copyOf;</span>
+    }
+<span class="nc" id="L102">    return groupsMapper;</span>
+  }
+
+  /**
+   * Gets groups value separator.
+   *
+   * @return the groups value separator
+   */
+  public String getGroupsValueSeparator() {
+<span class="nc bnc" id="L111" title="All 4 branches missed.">    if (isNull(groupsValueSeparator) || groupsValueSeparator.isEmpty()) {</span>
+<span class="nc" id="L112">      return &quot; &quot;;</span>
+    }
+<span class="nc" id="L114">    return groupsValueSeparator;</span>
+  }
+
+  /**
+   * Gets roles value separator.
+   *
+   * @return the roles value separator
+   */
+  public String getRolesValueSeparator() {
+<span class="pc bpc" id="L123" title="2 of 4 branches missed.">    if (isNull(rolesValueSeparator) || rolesValueSeparator.isEmpty()) {</span>
+<span class="nc" id="L124">      return &quot; &quot;;</span>
+    }
+<span class="fc" id="L126">    return rolesValueSeparator;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
