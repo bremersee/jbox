@@ -7,7 +7,7 @@
   <parent>
     <artifactId>common-exception-parent</artifactId>
     <groupId>org.bremersee</groupId>
-    <version>6.0.2</version>
+    <version>6.0.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>common-exception-spring-boot-webflux-starter</artifactId>
