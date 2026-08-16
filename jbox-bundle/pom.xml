@@ -261,6 +261,11 @@
       </dependency>
       <dependency>
         <groupId>org.bremersee</groupId>
+        <artifactId>spring-integration-security-test</artifactId>
+        <version>${jbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bremersee</groupId>
         <artifactId>spring-integration-security-ldaptive</artifactId>
         <version>${jbox.version}</version>
       </dependency>

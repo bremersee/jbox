@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bremersee.spring.boot.autoconfigure.web.CorsProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -40,6 +41,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @ConditionalOnClass(name = {
     "org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource"
 })
+@ConditionalOnProperty(prefix = "bremersee.web.cors", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(CorsProperties.class)
 @AutoConfiguration
 public class CorsConfigurationSourceAutoConfiguration {
