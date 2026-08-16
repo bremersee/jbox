@@ -72,7 +72,7 @@ public class JwtConverterAutoConfiguration {
   private final JwtConverterProperties properties;
 
   /**
-   * Instantiates a new Jwt converter auto configuration.
+   * Instantiates a new Jwt converter autoconfiguration.
    *
    * @param properties the properties
    */
