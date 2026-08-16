@@ -3,7 +3,6 @@ org.bremersee.spring.boot.autoconfigure.keycloak.ReactiveKeycloakClientAutoConfi
 org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveJackson2ObjectMapperBuilderCustomizer
 org.bremersee.spring.boot.autoconfigure.minio.MinioAutoConfiguration
-org.bremersee.spring.boot.autoconfigure.security.authentication.AuthenticationOperationsAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.security.authentication.JwtConverterAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.security.authentication.LdaptiveAuthenticationAutoConfiguration
 org.bremersee.spring.boot.autoconfigure.security.authentication.LdaptiveRememberMeAutoConfiguration

@@ -20,6 +20,7 @@ import java.util.function.Function;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
+import org.springframework.security.core.Authentication;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +29,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Christian Bremer
  */
-public interface ReactiveNormalizedAuthenticationOperations {
+public interface ReactiveAuthenticationOperations<A extends Authentication> {
 
   /**
    * One with authentication.
@@ -38,7 +39,7 @@ public interface ReactiveNormalizedAuthenticationOperations {
    * @return the mono
    */
   <R> Mono<R> oneWithAuthentication(
-      @NonNull Function<NormalizedAuthentication, ? extends Mono<R>> function);
+      @NonNull Function<A, ? extends Mono<R>> function);
 
   /**
    * One with optional authentication mono.
@@ -48,7 +49,7 @@ public interface ReactiveNormalizedAuthenticationOperations {
    * @return the mono
    */
   <R> Mono<R> oneWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, ? extends Mono<R>> function);
+      @NonNull Function<@Nullable A, ? extends Mono<R>> function);
 
   /**
    * Many with authentication.
@@ -58,7 +59,7 @@ public interface ReactiveNormalizedAuthenticationOperations {
    * @return the flux
    */
   <R> Flux<R> manyWithAuthentication(
-      @NonNull Function<NormalizedAuthentication, ? extends Publisher<R>> function);
+      @NonNull Function<A, ? extends Publisher<R>> function);
 
   /**
    * Many with optional authentication flux.
@@ -68,6 +69,6 @@ public interface ReactiveNormalizedAuthenticationOperations {
    * @return the flux
    */
   <R> Flux<R> manyWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, ? extends Publisher<R>> function);
+      @NonNull Function<@Nullable A, ? extends Publisher<R>> function);
 
 }

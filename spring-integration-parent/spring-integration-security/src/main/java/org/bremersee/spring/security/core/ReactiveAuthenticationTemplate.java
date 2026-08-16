@@ -18,13 +18,14 @@ package org.bremersee.spring.security.core;
 
 import static java.util.Objects.isNull;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.bremersee.exception.ServiceException;
-import org.bremersee.spring.security.core.NormalizedAuthentication.EmptyNormalizedAuthentication;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.reactivestreams.Publisher;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -34,17 +35,18 @@ import reactor.core.publisher.Mono;
 /**
  * The reactive normalized authentication template.
  *
+ * @param <A> the type parameter
  * @author Christian Bremer
  */
-public class ReactiveNormalizedAuthenticationTemplate
-    implements ReactiveNormalizedAuthenticationOperations {
+public class ReactiveAuthenticationTemplate<A extends Authentication>
+    implements ReactiveAuthenticationOperations<A> {
 
   private final Supplier<ServiceException> unauthenticatedExceptionSupplier;
 
   /**
    * Instantiates a new reactive normalized authentication template.
    */
-  public ReactiveNormalizedAuthenticationTemplate() {
+  public ReactiveAuthenticationTemplate() {
     this(null);
   }
 
@@ -53,7 +55,7 @@ public class ReactiveNormalizedAuthenticationTemplate
    *
    * @param unauthenticatedExceptionSupplier the unauthenticated exception supplier
    */
-  public ReactiveNormalizedAuthenticationTemplate(
+  public ReactiveAuthenticationTemplate(
       Supplier<ServiceException> unauthenticatedExceptionSupplier) {
     this.unauthenticatedExceptionSupplier = isNull(unauthenticatedExceptionSupplier)
         ? ServiceException::forbidden
@@ -65,54 +67,77 @@ public class ReactiveNormalizedAuthenticationTemplate
    *
    * @return the authentication
    */
-  Mono<NormalizedAuthentication> getAuthentication() {
+  Mono<Authentication> getAuthentication() {
     return ReactiveSecurityContextHolder.getContext()
         .mapNotNull(SecurityContext::getAuthentication)
-        .filter(Authentication::isAuthenticated)
-        .filter(NormalizedAuthentication.class::isInstance)
-        .cast(NormalizedAuthentication.class);
+        .filter(Authentication::isAuthenticated);
   }
 
   @Override
   public <R> Mono<R> oneWithAuthentication(
-      @NonNull Function<NormalizedAuthentication, ? extends Mono<R>> function) {
+      @NonNull Function<A, ? extends Mono<R>> function) {
+    //noinspection unchecked
     return getAuthentication()
+        .map(auth -> (A) auth)
         .switchIfEmpty(Mono.error(unauthenticatedExceptionSupplier))
         .flatMap(function);
   }
 
   @Override
   public <R> Mono<R> oneWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, ? extends Mono<R>> function) {
+      @NonNull Function<@Nullable A, ? extends Mono<R>> function) {
     return getAuthentication()
-        .defaultIfEmpty(new EmptyNormalizedAuthentication())
+        .defaultIfEmpty(new EmptyAuthentication())
         .flatMap(authentication -> {
-          if (authentication instanceof EmptyNormalizedAuthentication) {
+          if (authentication instanceof EmptyAuthentication) {
             return function.apply(null);
           }
-          return function.apply(authentication);
+          //noinspection unchecked
+          return function.apply((A) authentication);
         });
   }
 
   @Override
   public <R> Flux<R> manyWithAuthentication(
-      @NonNull Function<NormalizedAuthentication, ? extends Publisher<R>> function) {
+      @NonNull Function<A, ? extends Publisher<R>> function) {
+    //noinspection unchecked
     return getAuthentication()
         .switchIfEmpty(Mono.error(unauthenticatedExceptionSupplier))
-        .flatMapMany(function);
+        .flatMapMany(authentication -> function.apply((A) authentication));
   }
 
   @Override
   public <R> Flux<R> manyWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, ? extends Publisher<R>> function) {
+      @NonNull Function<@Nullable A, ? extends Publisher<R>> function) {
     return getAuthentication()
-        .defaultIfEmpty(new EmptyNormalizedAuthentication())
+        .defaultIfEmpty(new EmptyAuthentication())
         .flatMapMany(authentication -> {
-          if (authentication instanceof EmptyNormalizedAuthentication) {
+          if (authentication instanceof EmptyAuthentication) {
             return function.apply(null);
           }
-          return function.apply(authentication);
+          //noinspection unchecked
+          return function.apply((A) authentication);
         });
+  }
+
+  private static final class EmptyAuthentication extends AbstractAuthenticationToken {
+
+    /**
+     * Instantiates a new empty authentication.
+     */
+    EmptyAuthentication() {
+      super(List.of());
+    }
+
+    @Override
+    public @Nullable Object getCredentials() {
+      return null;
+    }
+
+    @Override
+    public @Nullable Object getPrincipal() {
+      return null;
+    }
   }
 
 }

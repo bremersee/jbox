@@ -30,27 +30,28 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * The normalized authentication template.
+ * The authentication template.
  *
  * @author Christian Bremer
  */
-public class NormalizedAuthenticationTemplate implements NormalizedAuthenticationOperations {
+public class AuthenticationTemplate<A extends Authentication>
+    implements AuthenticationOperations<A> {
 
   private final Supplier<ServiceException> unauthenticatedExceptionSupplier;
 
   /**
-   * Instantiates a new normalized authentication template.
+   * Instantiates a new authentication template.
    */
-  public NormalizedAuthenticationTemplate() {
+  public AuthenticationTemplate() {
     this(null);
   }
 
   /**
-   * Instantiates a new normalized authentication template.
+   * Instantiates a new authentication template.
    *
    * @param unauthenticatedExceptionSupplier the unauthenticated exception supplier
    */
-  public NormalizedAuthenticationTemplate(
+  public AuthenticationTemplate(
       Supplier<ServiceException> unauthenticatedExceptionSupplier) {
     this.unauthenticatedExceptionSupplier = isNull(unauthenticatedExceptionSupplier)
         ? ServiceException::forbidden
@@ -62,16 +63,15 @@ public class NormalizedAuthenticationTemplate implements NormalizedAuthenticatio
    *
    * @return the authentication
    */
-  Optional<NormalizedAuthentication> getAuthentication() {
-    return Optional.of(SecurityContextHolder.getContext())
+  Optional<A> getAuthentication() {
+    //noinspection unchecked
+    return (Optional<A>) Optional.of(SecurityContextHolder.getContext())
         .map(SecurityContext::getAuthentication)
-        .filter(Authentication::isAuthenticated)
-        .filter(NormalizedAuthentication.class::isInstance)
-        .map(NormalizedAuthentication.class::cast);
+        .filter(Authentication::isAuthenticated);
   }
 
   @Override
-  public <R> R doWithAuthentication(@NonNull Function<NormalizedAuthentication, R> function) {
+  public <R> R doWithAuthentication(@NonNull Function<A, R> function) {
     return getAuthentication()
         .map(function)
         .orElseThrow(unauthenticatedExceptionSupplier);
@@ -79,19 +79,19 @@ public class NormalizedAuthenticationTemplate implements NormalizedAuthenticatio
 
   @Override
   public <R> R doWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, R> function) {
+      @NonNull Function<@Nullable A, R> function) {
     return function.apply(getAuthentication().orElse(null));
   }
 
   @Override
   public @NonNull <R> ResponseEntity<R> responseWithAuthentication(
-      @NonNull Function<NormalizedAuthentication, R> function) {
+      @NonNull Function<A, R> function) {
     return ResponseEntity.of(Optional.ofNullable(doWithAuthentication(function)));
   }
 
   @Override
   public @NonNull <R> ResponseEntity<R> responseWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, R> function) {
+      @NonNull Function<@Nullable A, R> function) {
     return ResponseEntity.of(Optional.ofNullable(doWithOptionalAuthentication(function)));
   }
 

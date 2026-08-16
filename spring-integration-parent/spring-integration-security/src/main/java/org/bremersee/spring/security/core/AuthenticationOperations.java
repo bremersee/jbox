@@ -20,13 +20,15 @@ import java.util.function.Function;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 /**
- * The normalized authentication operations.
+ * The authentication operations.
  *
+ * @param <A> the type parameter
  * @author Christian Bremer
  */
-public interface NormalizedAuthenticationOperations {
+public interface AuthenticationOperations<A extends Authentication> {
 
   /**
    * Do with authentication.
@@ -35,7 +37,7 @@ public interface NormalizedAuthenticationOperations {
    * @param function the function
    * @return the r
    */
-  @Nullable <R> R doWithAuthentication(@NonNull Function<NormalizedAuthentication, R> function);
+  @Nullable <R> R doWithAuthentication(@NonNull Function<A, R> function);
 
   /**
    * Do with optional authentication r.
@@ -45,7 +47,7 @@ public interface NormalizedAuthenticationOperations {
    * @return the r
    */
   @Nullable <R> R doWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, R> function);
+      @NonNull Function<@Nullable A, R> function);
 
   /**
    * Response with authentication.
@@ -55,7 +57,7 @@ public interface NormalizedAuthenticationOperations {
    * @return the response entity
    */
   @NonNull <R> ResponseEntity<R> responseWithAuthentication(
-      @NonNull Function<NormalizedAuthentication, R> function);
+      @NonNull Function<A, R> function);
 
   /**
    * Response with optional authentication response entity.
@@ -65,5 +67,5 @@ public interface NormalizedAuthenticationOperations {
    * @return the response entity
    */
   @NonNull <R> ResponseEntity<R> responseWithOptionalAuthentication(
-      @NonNull Function<@Nullable NormalizedAuthentication, R> function);
+      @NonNull Function<@Nullable A, R> function);
 }
