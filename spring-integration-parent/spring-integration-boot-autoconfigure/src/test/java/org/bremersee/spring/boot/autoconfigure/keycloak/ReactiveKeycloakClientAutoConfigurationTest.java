@@ -45,7 +45,7 @@ class ReactiveKeycloakClientAutoConfigurationTest {
   @BeforeEach
   void setUp() {
     KeycloakProperties properties = new KeycloakProperties();
-    properties.setKeycloakBaseUri("https://localhost:8443");
+    properties.setBaseUri("https://localhost:8443");
     properties.setRealm("junit");
     properties.getAdminClient().setLoginRealm("master");
     properties.getAdminClient().setClientId("admin-cli");

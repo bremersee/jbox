@@ -80,7 +80,7 @@ public class ReactiveKeycloakClientAutoConfiguration {
             *********************************************************************************""",
         ClassUtils.getUserClass(getClass()).getSimpleName(), properties));
     if (properties.getAdminClient().isEnabled()) {
-      Assert.hasText(properties.getKeycloakBaseUri(), "Keycloak Base URI is required.");
+      Assert.hasText(properties.getBaseUri(), "Keycloak Base URI is required.");
       Assert.hasText(properties.getAdminClient().getLoginRealm(),
           "Keycloak Login Realm is required.");
       Assert.hasText(properties.getAdminClient().getClientId(), "Keycloak Client ID is required.");
@@ -133,7 +133,7 @@ public class ReactiveKeycloakClientAutoConfiguration {
 
   private KeycloakClientFactory createKeycloakClientFactory() {
     return new KeycloakClientFactory(
-        properties.getKeycloakBaseUri(),
+        properties.getBaseUri(),
         properties.getAdminClient().getLoginRealm(),
         properties.getAdminClient().getClientId(),
         properties.getAdminClient().getUsername(),

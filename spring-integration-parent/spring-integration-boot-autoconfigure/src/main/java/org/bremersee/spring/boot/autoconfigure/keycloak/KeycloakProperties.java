@@ -35,7 +35,7 @@ public class KeycloakProperties {
   /**
    * The keycloak base uri. For example {@code https://keycloak.example.org}.
    */
-  private String keycloakBaseUri;
+  private String baseUri;
 
   /**
    * The default keycloak realm.

@@ -18,6 +18,8 @@ package org.bremersee.spring.security.core.mapping;
 
 /**
  * The case transformation.
+ *
+ * @author Christian Bremer
  */
 public enum CaseTransformation {
 
