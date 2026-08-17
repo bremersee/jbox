@@ -75,7 +75,7 @@
     <openapi-generator.version>7.24.0</openapi-generator.version>
     <passay.version>2.0.0</passay.version>
     <reflections.version>0.10.2</reflections.version>
-    <springdoc.version>3.0.2</springdoc.version>
+    <springdoc.version>3.1.0</springdoc.version>
     <swagger-annotations-v3.version>2.2.43</swagger-annotations-v3.version>
 
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>

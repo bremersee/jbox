@@ -17,6 +17,7 @@
 package org.bremersee.keycloak.api;
 
 import org.immutables.value.Value;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -97,6 +98,7 @@ public interface GetGroupsParameters {
    *
    * @return the get user parameters
    */
+  @NonNull
   static GetGroupsParameters defaults() {
     return GetGroupsParameters.builder().build();
   }

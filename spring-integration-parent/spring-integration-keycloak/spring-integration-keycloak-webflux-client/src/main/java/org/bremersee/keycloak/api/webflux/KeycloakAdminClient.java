@@ -34,19 +34,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Christian Bremer
  */
-public class KeycloakAdminClient {
-
-  private final AdminApi adminApi;
-
-  /**
-   * Instantiates a new Keycloak admin client.
-   *
-   * @param adminApi the admin api
-   */
-  public KeycloakAdminClient(AdminApi adminApi) {
-    Assert.notNull(adminApi, "adminApi must not be null.");
-    this.adminApi = adminApi;
-  }
+public record KeycloakAdminClient(@NonNull AdminApi adminApi) {
 
   /**
    * Returns a stream of users. Note that the 'credentials' field in the returned UserRepresentation
@@ -245,6 +233,33 @@ public class KeycloakAdminClient {
             .adminRealmsRealmGroupsGroupIdChildrenPost(realm, groupId, Mono.just(group))
             .then(adminApi.adminRealmsRealmGroupByPathPathGet(
                 realm, parentGroup.getPath() + "/" + group.getName())));
+  }
+
+  /**
+   * Gets subgroups.
+   *
+   * @param realm the realm
+   * @param groupId the group id
+   * @param parameters the parameters
+   * @return the subgroups
+   */
+  public Flux<GroupRepresentation> getSubGroups(
+      @NonNull String realm,
+      @NonNull String groupId,
+      @Nullable GetGroupsParameters parameters) {
+
+    Assert.hasText(realm, "Realm must not be null or empty.");
+    Assert.hasText(groupId, "Group ID must not be null or empty.");
+    GetGroupsParameters params = requireNonNullElseGet(parameters, GetGroupsParameters::defaults);
+    return adminApi.adminRealmsRealmGroupsGroupIdChildrenGet(
+        realm,
+        groupId,
+        params.getBriefRepresentation(),
+        params.getExact(),
+        params.getFirst(),
+        params.getMax(),
+        params.getSearch(),
+        params.getSubGroupsCount());
   }
 
   /**
