@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KeycloakAdminClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Keycloak WebFlux Client</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.keycloak.api.webflux</a> &gt; <span class="el_source">KeycloakAdminClient.java</span></div><h1>KeycloakAdminClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.keycloak.api.webflux;
+
+import static java.util.Objects.requireNonNullElseGet;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import org.bremersee.keycloak.api.GetGroupsParameters;
+import org.bremersee.keycloak.api.GetUsersParameters;
+import org.bremersee.keycloak.api.model.GroupRepresentation;
+import org.bremersee.keycloak.api.model.UserRepresentation;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.springframework.util.Assert;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+/**
+ * The keycloak admin client.
+ *
+ * @author Christian Bremer
+ */
+<span class="fc" id="L37">public record KeycloakAdminClient(@NonNull AdminApi adminApi) {</span>
+
+  /**
+   * Returns a stream of users. Note that the 'credentials' field in the returned UserRepresentation
+   * objects is typically not populated for performance reasons. If specific credential metadata is
+   * required, use the dedicated 'GET /admin/realms/{realm}/users/{user-id}/credentials' endpoint.
+   *
+   * @param realm the realm name
+   * @param parameters the parameters
+   * @return the stream of users
+   */
+  public Flux&lt;UserRepresentation&gt; getUsers(
+      @NonNull String realm,
+      @Nullable GetUsersParameters parameters) {
+
+<span class="fc" id="L52">    GetUsersParameters params = requireNonNullElseGet(parameters, GetUsersParameters::defaults);</span>
+<span class="fc" id="L53">    return adminApi.adminRealmsRealmUsersGet(</span>
+        realm,
+<span class="fc" id="L55">        params.getBriefRepresentation(),</span>
+<span class="fc" id="L56">        params.getCreatedAfterAsString(),</span>
+<span class="fc" id="L57">        params.getCreatedBeforeAsString(),</span>
+<span class="fc" id="L58">        params.getEmail(),</span>
+<span class="fc" id="L59">        params.getEmailVerified(),</span>
+<span class="fc" id="L60">        params.getEnabled(),</span>
+<span class="fc" id="L61">        params.getExact(),</span>
+<span class="fc" id="L62">        params.getFirst(),</span>
+<span class="fc" id="L63">        params.getFirstName(),</span>
+<span class="fc" id="L64">        params.getIdpAlias(),</span>
+<span class="fc" id="L65">        params.getIdpUserId(),</span>
+<span class="fc" id="L66">        params.getLastName(),</span>
+<span class="fc" id="L67">        params.getMax(),</span>
+<span class="fc" id="L68">        params.getQuery(),</span>
+<span class="fc" id="L69">        params.getSearch(),</span>
+<span class="fc" id="L70">        params.getUsername());</span>
+  }
+
+  /**
+   * Get representation of the user.
+   *
+   * @param realm the realm name
+   * @param userId the user ID
+   * @param userProfileMetadata Indicates if the user profile metadata should be added to the
+   *     response
+   * @return the user
+   */
+  public Mono&lt;UserRepresentation&gt; getUserById(
+      @NonNull String realm,
+      @NonNull String userId,
+      @Nullable Boolean userProfileMetadata) {
+<span class="fc" id="L86">    return adminApi.adminRealmsRealmUsersUserIdGet(realm, userId, userProfileMetadata);</span>
+  }
+
+  /**
+   * Adds the given user to the given group.
+   *
+   * @param realm the realm name
+   * @param userId the user ID
+   * @param groupId the group ID
+   * @return void
+   */
+  public Mono&lt;Void&gt; addUserToGroup(
+      @NonNull String realm,
+      @NonNull String userId,
+      @NonNull String groupId) {
+<span class="fc" id="L101">    return adminApi.adminRealmsRealmUsersUserIdGroupsGroupIdPut(realm, userId, groupId);</span>
+  }
+
+  /**
+   * Removes the given user from the given group.
+   *
+   * @param realm the realm name
+   * @param userId the user ID
+   * @param groupId the group ID
+   * @return void
+   */
+  public Mono&lt;Void&gt; removeUserFromGroup(
+      @NonNull String realm,
+      @NonNull String userId,
+      @NonNull String groupId) {
+<span class="fc" id="L116">    return adminApi.adminRealmsRealmUsersUserIdGroupsGroupIdDelete(realm, userId, groupId);</span>
+  }
+
+  /**
+   * Get group hierarchy. Only `name` and `id` are returned. `subGroups` are only returned when
+   * using the `search` or `q` parameter. If none of these parameters is provided, the top-level
+   * groups are returned without `subGroups` being filled.
+   *
+   * @param realm the realm name
+   * @param parameters the parameters
+   * @return the stream of groups
+   */
+  public Flux&lt;GroupRepresentation&gt; getGroups(
+      @NonNull String realm,
+      @Nullable GetGroupsParameters parameters) {
+
+<span class="fc" id="L132">    GetGroupsParameters params = requireNonNullElseGet(parameters, GetGroupsParameters::defaults);</span>
+<span class="fc" id="L133">    return adminApi.adminRealmsRealmGroupsGet(</span>
+        realm,
+<span class="fc" id="L135">        params.getBriefRepresentation(),</span>
+<span class="fc" id="L136">        params.getExact(),</span>
+<span class="fc" id="L137">        params.getFirst(),</span>
+<span class="fc" id="L138">        params.getMax(),</span>
+<span class="fc" id="L139">        params.getPopulateHierarchy(),</span>
+<span class="fc" id="L140">        params.getQuery(),</span>
+<span class="fc" id="L141">        params.getSearch(),</span>
+<span class="fc" id="L142">        params.getSubGroupsCount());</span>
+  }
+
+  /**
+   * Gets group by ID.
+   *
+   * @param realm the realm name
+   * @param groupId the group ID
+   * @return the group
+   */
+  public Mono&lt;GroupRepresentation&gt; getGroupById(
+      @NonNull String realm,
+      @NonNull String groupId) {
+<span class="fc" id="L155">    return adminApi.adminRealmsRealmGroupsGroupIdGet(realm, groupId);</span>
+  }
+
+  /**
+   * Gets group by path.
+   *
+   * @param realm the realm name
+   * @param path the group path (e.g. '/groupname-1/groupsname-2')
+   * @return the group
+   */
+  public Mono&lt;GroupRepresentation&gt; getGroupByPath(@NonNull String realm, @NonNull String path) {
+<span class="fc" id="L166">    return adminApi.adminRealmsRealmGroupByPathPathGet(realm, path);</span>
+  }
+
+  /**
+   * Gets group members.
+   *
+   * @param realm the realm name
+   * @param groupId the group ID
+   * @param briefRepresentation Only return basic information (only guaranteed to return id,
+   *     username, created, first and last name, email, enabled state, email verification state,
+   *     federation link, and access. Note that it means that namely user attributes, required
+   *     actions, and not before are not returned.)
+   * @param first Pagination offset
+   * @param max Maximum results size (defaults to 100)
+   * @return the group members
+   */
+  public Flux&lt;UserRepresentation&gt; getGroupMembers(
+      @NonNull String realm,
+      @NonNull String groupId,
+      @Nullable Boolean briefRepresentation,
+      @Nullable Integer first,
+      @Nullable Integer max) {
+
+<span class="fc" id="L189">    return adminApi.adminRealmsRealmGroupsGroupIdMembersGet(</span>
+        realm,
+        groupId,
+        briefRepresentation,
+        first,
+        max);
+  }
+
+  /**
+   * Creates or updates a group.
+   *
+   * @param realm the realm name
+   * @param group the group
+   * @return the group
+   */
+  public Mono&lt;GroupRepresentation&gt; saveGroup(
+      @NonNull String realm,
+      @NonNull GroupRepresentation group) {
+
+<span class="fc" id="L208">    Assert.hasText(group.getName(), &quot;Group name must not be null or empty.&quot;);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">    if (isEmpty(group.getId())) {</span>
+<span class="fc" id="L210">      return adminApi.adminRealmsRealmGroupsPost(realm, Mono.just(group))</span>
+<span class="fc" id="L211">          .then(adminApi.adminRealmsRealmGroupByPathPathGet(realm, &quot;/&quot; + group.getName()));</span>
+    }
+<span class="fc" id="L213">    return adminApi.adminRealmsRealmGroupsGroupIdPut(realm, group.getId(), Mono.just(group))</span>
+<span class="fc" id="L214">        .then(adminApi.adminRealmsRealmGroupsGroupIdGet(realm, group.getId()));</span>
+  }
+
+  /**
+   * Creates a subgroup.
+   *
+   * @param realm the realm name
+   * @param groupId the parent group ID
+   * @param group the subgroup
+   * @return the subgroup
+   */
+  public Mono&lt;GroupRepresentation&gt; createSubGroup(
+      @NonNull String realm,
+      @NonNull String groupId,
+      @NonNull GroupRepresentation group) {
+
+<span class="fc" id="L230">    Assert.hasText(group.getName(), &quot;Group name must not be null or empty.&quot;);</span>
+<span class="fc" id="L231">    return getGroupById(realm, groupId)</span>
+<span class="fc" id="L232">        .flatMap(parentGroup -&gt; adminApi</span>
+<span class="fc" id="L233">            .adminRealmsRealmGroupsGroupIdChildrenPost(realm, groupId, Mono.just(group))</span>
+<span class="fc" id="L234">            .then(adminApi.adminRealmsRealmGroupByPathPathGet(</span>
+<span class="fc" id="L235">                realm, parentGroup.getPath() + &quot;/&quot; + group.getName())));</span>
+  }
+
+  /**
+   * Gets subgroups.
+   *
+   * @param realm the realm
+   * @param groupId the group id
+   * @param parameters the parameters
+   * @return the subgroups
+   */
+  public Flux&lt;GroupRepresentation&gt; getSubGroups(
+      @NonNull String realm,
+      @NonNull String groupId,
+      @Nullable GetGroupsParameters parameters) {
+
+<span class="fc" id="L251">    Assert.hasText(realm, &quot;Realm must not be null or empty.&quot;);</span>
+<span class="fc" id="L252">    Assert.hasText(groupId, &quot;Group ID must not be null or empty.&quot;);</span>
+<span class="fc" id="L253">    GetGroupsParameters params = requireNonNullElseGet(parameters, GetGroupsParameters::defaults);</span>
+<span class="fc" id="L254">    return adminApi.adminRealmsRealmGroupsGroupIdChildrenGet(</span>
+        realm,
+        groupId,
+<span class="fc" id="L257">        params.getBriefRepresentation(),</span>
+<span class="fc" id="L258">        params.getExact(),</span>
+<span class="fc" id="L259">        params.getFirst(),</span>
+<span class="fc" id="L260">        params.getMax(),</span>
+<span class="fc" id="L261">        params.getSearch(),</span>
+<span class="fc" id="L262">        params.getSubGroupsCount());</span>
+  }
+
+  /**
+   * Deletes group.
+   *
+   * @param realm the realm name
+   * @param groupId the group ID
+   * @return void
+   */
+  public Mono&lt;Void&gt; deleteGroup(@NonNull String realm, @NonNull String groupId) {
+<span class="fc" id="L273">    return adminApi.adminRealmsRealmGroupsGroupIdDelete(realm, groupId);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>RegexFlagsTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../testapidocs/org/bremersee/spring/core/regex/RegexFlagsTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> org.bremersee.spring.core.regex;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> java.util.regex.Pattern;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> org.assertj.core.api.SoftAssertions;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.extension.ExtendWith;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> * The regex flags test.</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  @ExtendWith(SoftAssertionsExtension.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">class</strong> <a name="RegexFlagsTest" href="../../../../../org/bremersee/spring/core/regex/RegexFlagsTest.html#RegexFlagsTest">RegexFlagsTest</a> {
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment">   * Email regex from &lt;a href="<a href="https://emailregex.com/" target="alexandria_uri">https://emailregex.com/</a>"&gt;emailregex.com&lt;/a&gt; (RFC 5322 Official</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">   * Standard).</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;RFC 6530 is not supported.</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String EMAIL_REGEX = <span class="jxr_string">"(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+"</span>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>        + <span class="jxr_string">"(?:&#92;&#92;.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*"</span>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>        + <span class="jxr_string">"|\&quot;(?:[&#92;&#92;x01-&#92;&#92;x08&#92;&#92;x0b&#92;&#92;x0c&#92;&#92;x0e-&#92;&#92;x1f&#92;&#92;x21&#92;&#92;x23-&#92;&#92;x5b&#92;&#92;x5d-&#92;&#92;x7f]"</span>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>        + <span class="jxr_string">"|&#92;&#92;&#92;&#92;[&#92;&#92;x01-&#92;&#92;x09&#92;&#92;x0b&#92;&#92;x0c&#92;&#92;x0e-&#92;&#92;x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?&#92;&#92;.)+"</span>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>        + <span class="jxr_string">"[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|&#92;&#92;[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)&#92;&#92;.){3}"</span>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>        + <span class="jxr_string">"(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:"</span>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>        + <span class="jxr_string">"(?:[&#92;&#92;x01-&#92;&#92;x08&#92;&#92;x0b&#92;&#92;x0c&#92;&#92;x0e-&#92;&#92;x1f&#92;&#92;x21-&#92;&#92;x5a&#92;&#92;x53-&#92;&#92;x7f]"</span>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>        + <span class="jxr_string">"|&#92;&#92;&#92;&#92;[&#92;&#92;x01-&#92;&#92;x09&#92;&#92;x0b&#92;&#92;x0c&#92;&#92;x0e-&#92;&#92;x7f])+)])"</span>;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">   * To regex flags.</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @Test
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">void</strong> toRegexFlags(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      RegexFlags none = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      softly.assertThat(none.toRegexFlags()).isEmpty();
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      softly.assertThat(none.toString()).doesNotContain(<span class="jxr_string">"true"</span>);
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      RegexFlags one = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      one.setUnixLines(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      softly.assertThat(one.toRegexFlags()).isPresent();
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      softly.assertThat(one.toString()).contains(<span class="jxr_string">"true"</span>);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      RegexFlags some = one.toBuilder()
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          .caseInsensitive(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          .unicodeCase(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .build();
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      softly.assertThat(some.toRegexFlags())
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          .hasValue(Pattern.UNIX_LINES | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      softly.assertThat(some.toString()).contains(<span class="jxr_string">"true"</span>);
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      RegexFlags all = <strong class="jxr_keyword">new</strong> RegexFlags(
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      softly.assertThat(all.toRegexFlags())
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          .hasValue(Pattern.UNIX_LINES
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              | Pattern.CASE_INSENSITIVE
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              | Pattern.COMMENTS
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              | Pattern.MULTILINE
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              | Pattern.LITERAL
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              | Pattern.DOTALL
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              | Pattern.UNICODE_CASE
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              | Pattern.CANON_EQ
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              | Pattern.UNICODE_CHARACTER_CLASS);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      softly.assertThat(all.toString()).doesNotContain(<span class="jxr_string">"false"</span>);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   * Compile.</em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    @Test
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">void</strong> compile(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      Pattern caseInsensitivePattern = RegexFlags.builder().caseInsensitive(<strong class="jxr_keyword">true</strong>).build()
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          .compile(EMAIL_REGEX);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      softly.assertThat(caseInsensitivePattern.matcher(<span class="jxr_string">"FOO@example.com"</span>).matches()).isTrue();
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      Pattern pattern = <strong class="jxr_keyword">new</strong> RegexFlags().compile(EMAIL_REGEX);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      softly.assertThat(pattern.matcher(<span class="jxr_string">"FOO@example.com"</span>).matches()).isFalse();
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      Pattern empty = <strong class="jxr_keyword">new</strong> RegexFlags().compile(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      softly.assertThat(empty).isNull();
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">   * Is unix lines.</em>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>   @Test
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> isUnixLines(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     flags.setUnixLines(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.UNIX_LINES);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().unixLines(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   }
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">   * Is case-insensitive.</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>   @Test
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <strong class="jxr_keyword">void</strong> isCaseInsensitive(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     flags.setCaseInsensitive(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.CASE_INSENSITIVE);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().caseInsensitive(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> <em class="jxr_javadoccomment">   * Is comments.</em>
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>   @Test
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">void</strong> isComments(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     flags.setComments(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.COMMENTS);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().comments(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>   }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> 
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">   * Is multi line.</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>   @Test
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">void</strong> isMultiLine(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     flags.setMultiLine(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.MULTILINE);
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().multiLine(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>   }
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> 
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> <em class="jxr_javadoccomment">   * Is literal.</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>   @Test
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>   <strong class="jxr_keyword">void</strong> isLiteral(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>     flags.setLiteral(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.LITERAL);
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().literal(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">   * Is dot all.</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>   @Test
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>   <strong class="jxr_keyword">void</strong> isDotAll(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>     flags.setDotAll(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.DOTALL);
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().dotAll(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>   }
+<a class="jxr_linenumber" name="L172" href="#L172">172</a> 
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">   * Is unicode-case.</em>
+<a class="jxr_linenumber" name="L175" href="#L175">175</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>   @Test
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>   <strong class="jxr_keyword">void</strong> isUnicodeCase(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>     flags.setUnicodeCase(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.UNICODE_CASE);
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().unicodeCase(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>   }
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> 
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L187" href="#L187">187</a> <em class="jxr_javadoccomment">   * Is canon eq.</em>
+<a class="jxr_linenumber" name="L188" href="#L188">188</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L189" href="#L189">189</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L190" href="#L190">190</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>   @Test
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>   <strong class="jxr_keyword">void</strong> isCanonEq(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>     flags.setCanonEq(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.CANON_EQ);
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().canonEq(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>   }
+<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L200" href="#L200">200</a> <em class="jxr_javadoccomment">   * Is unicode-character class.</em>
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L202" href="#L202">202</a> <em class="jxr_javadoccomment">   * @param softly the softly</em>
+<a class="jxr_linenumber" name="L203" href="#L203">203</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>   @Test
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>   <strong class="jxr_keyword">void</strong> isUnicodeCharacterClass(SoftAssertions softly) {
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>     RegexFlags flags = <strong class="jxr_keyword">new</strong> RegexFlags();
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>     flags.setUnicodeCharacterClass(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>     softly.assertThat(flags.toRegexFlags()).hasValue(Pattern.UNICODE_CHARACTER_CLASS);
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>     softly.assertThat(flags).isEqualTo(RegexFlags.builder().unicodeCharacterClass(<strong class="jxr_keyword">true</strong>).build());
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>   }
+<a class="jxr_linenumber" name="L211" href="#L211">211</a> 
+<a class="jxr_linenumber" name="L212" href="#L212">212</a> }
+</pre>
+<hr/>
+<div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>
+</body>
+</html>

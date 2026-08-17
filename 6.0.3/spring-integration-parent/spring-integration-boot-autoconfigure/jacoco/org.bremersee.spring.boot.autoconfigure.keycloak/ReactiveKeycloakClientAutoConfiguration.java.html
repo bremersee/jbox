@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReactiveKeycloakClientAutoConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Boot Autoconfiguration</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.spring.boot.autoconfigure.keycloak</a> &gt; <span class="el_source">ReactiveKeycloakClientAutoConfiguration.java</span></div><h1>ReactiveKeycloakClientAutoConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.spring.boot.autoconfigure.keycloak;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bremersee.exception.feign.FeignClientExceptionErrorDecoder;
+import org.bremersee.exception.webclient.DefaultWebClientErrorDecoder;
+import org.bremersee.keycloak.api.webflux.AdminApi;
+import org.bremersee.keycloak.api.webflux.AdminApiMock;
+import org.bremersee.keycloak.api.webflux.KeycloakAdminClient;
+import org.bremersee.keycloak.api.webflux.KeycloakClientFactory;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import reactivefeign.client.statushandler.ReactiveStatusHandlers;
+import reactivefeign.webclient.WebClientFeignCustomizer;
+
+/**
+ * The reactive keycloak client autoconfiguration.
+ *
+ * @author Christian Bremer
+ */
+@ConditionalOnWebApplication(type = Type.REACTIVE)
+@EnableConfigurationProperties(KeycloakProperties.class)
+@ConditionalOnClass(name = {&quot;org.bremersee.keycloak.api.webflux.KeycloakClientFactory&quot;})
+@AutoConfiguration
+public class ReactiveKeycloakClientAutoConfiguration {
+
+<span class="fc" id="L56">  private static final Log log = LogFactory.getLog(ReactiveKeycloakClientAutoConfiguration.class);</span>
+
+  private final KeycloakProperties properties;
+
+  /**
+   * Instantiates a new reactive keycloak client autoconfiguration.
+   *
+   * @param properties the properties
+   */
+<span class="fc" id="L65">  public ReactiveKeycloakClientAutoConfiguration(KeycloakProperties properties) {</span>
+<span class="fc" id="L66">    this.properties = properties;</span>
+<span class="fc" id="L67">  }</span>
+
+  /**
+   * Init.
+   */
+  @EventListener(ApplicationReadyEvent.class)
+  public void init() {
+<span class="fc" id="L74">    log.info(String.format(&quot;&quot;&quot;</span>
+            
+            *********************************************************************************
+            * %s
+            *********************************************************************************
+            * properties = %s
+            *********************************************************************************&quot;&quot;&quot;,
+<span class="fc" id="L81">        ClassUtils.getUserClass(getClass()).getSimpleName(), properties));</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (properties.getAdminClient().isEnabled()) {</span>
+<span class="nc" id="L83">      Assert.hasText(properties.getBaseUri(), &quot;Keycloak Base URI is required.&quot;);</span>
+<span class="nc" id="L84">      Assert.hasText(properties.getAdminClient().getLoginRealm(),</span>
+          &quot;Keycloak Login Realm is required.&quot;);
+<span class="nc" id="L86">      Assert.hasText(properties.getAdminClient().getClientId(), &quot;Keycloak Client ID is required.&quot;);</span>
+<span class="nc" id="L87">      Assert.hasText(properties.getAdminClient().getUsername(),</span>
+          &quot;Keycloak Client Username is required.&quot;);
+<span class="nc" id="L89">      Assert.hasText(properties.getAdminClient().getPassword(),</span>
+          &quot;Keycloak Client Password is required.&quot;);
+    }
+<span class="fc" id="L92">  }</span>
+
+  /**
+   * Creates keycloak admin api.
+   *
+   * @param webClientCustomizers the web client customizers
+   * @param keycloakAdminApiCustomizers the keycloak admin api customizers
+   * @param errorDecoderProvider the error decoder provider
+   * @param feignErrorDecoderProvider the feign error decoder provider
+   * @return the admin api
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public AdminApi keycloakAdminApi(
+      List&lt;WebClientFeignCustomizer&gt; webClientCustomizers,
+      List&lt;KeycloakAdminApiCustomizer&gt; keycloakAdminApiCustomizers,
+      ObjectProvider&lt;DefaultWebClientErrorDecoder&gt; errorDecoderProvider,
+      ObjectProvider&lt;FeignClientExceptionErrorDecoder&gt; feignErrorDecoderProvider) {
+
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">    if (!properties.getAdminClient().isEnabled()) {</span>
+<span class="fc" id="L112">      log.warn(&quot;Keycloak Admin Client is disabled. Creating admin api MOCK!&quot;);</span>
+<span class="fc" id="L113">      return new AdminApiMock();</span>
+    }
+
+<span class="nc" id="L116">    List&lt;WebClientFeignCustomizer&gt; webClientExtendedCustomizers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L117">    errorDecoderProvider.ifAvailable(decoder -&gt; webClientExtendedCustomizers</span>
+<span class="nc" id="L118">        .add(builder -&gt; builder.defaultStatusHandler(HttpStatusCode::isError, decoder)));</span>
+<span class="nc" id="L119">    webClientExtendedCustomizers.addAll(webClientCustomizers);</span>
+
+<span class="nc" id="L121">    List&lt;KeycloakAdminApiCustomizer&gt; keycloakAdminApiExtendedCustomizers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L122">    feignErrorDecoderProvider.ifAvailable(decoder -&gt; keycloakAdminApiExtendedCustomizers</span>
+<span class="nc" id="L123">        .add(builder -&gt; builder.statusHandler(ReactiveStatusHandlers.errorDecoder(decoder))));</span>
+<span class="nc" id="L124">    keycloakAdminApiExtendedCustomizers.addAll(keycloakAdminApiCustomizers);</span>
+
+<span class="nc" id="L126">    KeycloakClientFactory factory = createKeycloakClientFactory();</span>
+
+<span class="nc" id="L128">    factory.setWebClientBuilderCustomizer(builder -&gt; webClientExtendedCustomizers</span>
+<span class="nc" id="L129">        .forEach(c -&gt; c.accept(builder)));</span>
+<span class="nc" id="L130">    factory.setAdminApiCustomizer(builder -&gt; keycloakAdminApiExtendedCustomizers</span>
+<span class="nc" id="L131">        .forEach(c -&gt; c.customize(builder)));</span>
+
+<span class="nc" id="L133">    return factory.newClient();</span>
+  }
+
+  private KeycloakClientFactory createKeycloakClientFactory() {
+<span class="nc" id="L137">    return new KeycloakClientFactory(</span>
+<span class="nc" id="L138">        properties.getBaseUri(),</span>
+<span class="nc" id="L139">        properties.getAdminClient().getLoginRealm(),</span>
+<span class="nc" id="L140">        properties.getAdminClient().getClientId(),</span>
+<span class="nc" id="L141">        properties.getAdminClient().getUsername(),</span>
+<span class="nc" id="L142">        properties.getAdminClient().getPassword());</span>
+  }
+
+  /**
+   * Creates keycloak admin client.
+   *
+   * @param adminApi the admin api
+   * @return the keycloak admin client
+   */
+  @ConditionalOnMissingBean
+  @Bean
+  public KeycloakAdminClient keycloakAdminClient(AdminApi adminApi) {
+<span class="fc" id="L154">    return new KeycloakAdminClient(adminApi);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
