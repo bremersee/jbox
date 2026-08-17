@@ -606,7 +606,7 @@ public class AuthenticationProperties {
   }
 
   /**
-   * The type Actuator properties.
+   * The actuator properties.
    */
   @Data
   public static class ActuatorProperties {
@@ -614,6 +614,13 @@ public class AuthenticationProperties {
     private List<String> readRoles = new ArrayList<>();
 
     private List<String> writeRoles = new ArrayList<>();
+
+    /**
+     * Instantiates actuator properties.
+     */
+    public ActuatorProperties() {
+      super();
+    }
 
     /**
      * Gets read roles.

@@ -20,11 +20,18 @@ import org.bremersee.keycloak.api.webflux.AdminApi;
 import reactivefeign.ReactiveFeign.Builder;
 
 /**
- * The decode not found keycloak admin api customizer.
+ * The decode-not-found keycloak admin api customizer.
  *
  * @author Christian Bremer
  */
 public class DecodeNotFoundKeycloakAdminApiCustomizer implements KeycloakAdminApiCustomizer {
+
+  /**
+   * Instantiates a new decode-not-found keycloak admin api customizer.
+   */
+  public DecodeNotFoundKeycloakAdminApiCustomizer() {
+    super();
+  }
 
   @Override
   public void customize(Builder<AdminApi> builder) {
