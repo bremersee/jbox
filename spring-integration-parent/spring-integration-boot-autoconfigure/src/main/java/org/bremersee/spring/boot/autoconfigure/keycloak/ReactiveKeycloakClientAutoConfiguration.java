@@ -94,6 +94,8 @@ public class ReactiveKeycloakClientAutoConfiguration {
   /**
    * Creates keycloak admin api.
    *
+   * @param webClientCustomizers the web client customizers
+   * @param keycloakAdminApiCustomizers the keycloak admin api customizers
    * @param errorDecoderProvider the error decoder provider
    * @param feignErrorDecoderProvider the feign error decoder provider
    * @return the admin api

@@ -23,6 +23,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
 import java.util.UUID;
 import org.bremersee.keycloak.api.model.GroupRepresentation;
 import org.bremersee.keycloak.api.model.UserRepresentation;
@@ -249,6 +250,23 @@ class KeycloakAdminClientTest {
     GroupRepresentation actual = target.createSubGroup(REALM, GROUP_ID, subGroup).block();
     assertThat(actual)
         .isEqualTo(subGroup);
+  }
+
+  /**
+   * Gets subgroups.
+   */
+  @Test
+  void getSubGroups() {
+    GroupRepresentation subGroup = mock(GroupRepresentation.class);
+    List<GroupRepresentation> expected = List.of(subGroup);
+    doReturn(Flux.fromIterable(expected))
+        .when(adminApi)
+        .adminRealmsRealmGroupsGroupIdChildrenGet(
+            eq(REALM), eq(GROUP_ID), any(), any(), any(), any(), any(), any());
+    List<GroupRepresentation> actual = target.getSubGroups(REALM, GROUP_ID, null)
+        .collectList().block();
+    assertThat(actual)
+        .isEqualTo(expected);
   }
 
   /**

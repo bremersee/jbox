@@ -27,6 +27,7 @@ import reactor.core.publisher.Mono;
 /**
  * The reactive normalized authentication operations.
  *
+ * @param <A> the type parameter
  * @author Christian Bremer
  */
 public interface ReactiveAuthenticationOperations<A extends Authentication> {

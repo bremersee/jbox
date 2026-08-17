@@ -1,5 +1,5 @@
 /*
-* Copyright 2019-2026 the original author or authors.
+ * Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -317,8 +317,10 @@ public class ReactiveLdaptiveTemplate implements ReactiveLdaptiveOperations {
   @Override
   public <T> Mono<T> save(T domainObject, LdaptiveEntryMapper<T> entryMapper) {
     return findOne(SearchRequest.objectScopeSearchRequest(entryMapper.mapDn(domainObject)))
-        .flatMap(entry -> modify(domainObject, entry, entryMapper))
-        .switchIfEmpty(add(domainObject, entryMapper));
+        .singleOptional()
+        .flatMap(optExisting -> optExisting
+            .map(existing -> modify(domainObject, existing, entryMapper))
+            .orElseGet(() -> add(domainObject, entryMapper)));
   }
 
   private static class FutureAwareResultHandler<T> implements ResultHandler {

@@ -50,6 +50,7 @@ final class WithNormalizedUserSecurityContextFactory
    *
    * @param securityContextHolderStrategy the security context holder strategy
    */
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired(required = false)
   void setSecurityContextHolderStrategy(
       SecurityContextHolderStrategy securityContextHolderStrategy) {

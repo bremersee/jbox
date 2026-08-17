@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.bremersee</groupId>
     <artifactId>common-parent</artifactId>
-    <version>6.0.2</version>
+    <version>6.0.3</version>
   </parent>
 
   <artifactId>garmin-model</artifactId>
