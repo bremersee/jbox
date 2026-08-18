@@ -7,7 +7,7 @@
   <parent>
     <artifactId>geojson-parent</artifactId>
     <groupId>org.bremersee</groupId>
-    <version>6.0.3</version>
+    <version>6.0.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>geojson-spring-boot-autoconfigure</artifactId>
