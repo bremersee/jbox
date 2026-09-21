@@ -17,6 +17,7 @@
 package org.bremersee.xml.http.codec;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -24,11 +25,14 @@ import jakarta.xml.bind.UnmarshalException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchema;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.xml.XMLConstants;
@@ -47,10 +51,12 @@ import org.springframework.core.codec.CodecException;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.core.codec.Hints;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.log.LogFormatUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.xml.XmlEventDecoder;
+import org.springframework.http.codec.xml.XmlEventDecoder.ReceivedByteTracker;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeType;
@@ -102,7 +108,7 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
   }
 
   /**
-   * Instantiates a new Reactive jaxb decoder.
+   * Instantiates a new reactive jaxb decoder.
    *
    * @param jaxbContextBuilder the jaxb context builder
    * @param ignoreReadingClasses the ignore reading classes
@@ -164,12 +170,14 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
       @Nullable MimeType mimeType,
       @Nullable Map<String, Object> hints) {
 
+    ReceivedByteTracker byteTracker = new ReceivedByteTracker(this.maxInMemorySize);
+
     Flux<XMLEvent> xmlEventFlux = this.xmlEventDecoder.decode(
         inputStream, ResolvableType.forClass(XMLEvent.class), mimeType, hints);
 
     Class<?> outputClass = elementType.toClass();
-    QName typeName = toQualifiedName(outputClass);
-    Flux<List<XMLEvent>> splitEvents = split(xmlEventFlux, typeName);
+    Set<QName> names = toQualifiedNames(outputClass);
+    Flux<List<XMLEvent>> splitEvents = split(xmlEventFlux, names, byteTracker);
 
     return splitEvents.map(events -> {
       Object value = unmarshal(events, outputClass);
@@ -233,45 +241,6 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
   }
 
   /**
-   * Returns the qualified name for the given class, according to the mapping rules in the JAXB
-   * specification.
-   *
-   * @param outputClass the output class
-   * @return the q name
-   */
-  QName toQualifiedName(Class<?> outputClass) {
-    String localPart;
-    String namespaceUri;
-
-    if (outputClass.isAnnotationPresent(XmlRootElement.class)) {
-      XmlRootElement annotation = outputClass.getAnnotation(XmlRootElement.class);
-      localPart = annotation.name();
-      namespaceUri = annotation.namespace();
-    } else if (outputClass.isAnnotationPresent(XmlType.class)) {
-      XmlType annotation = outputClass.getAnnotation(XmlType.class);
-      localPart = annotation.name();
-      namespaceUri = annotation.namespace();
-    } else {
-      throw new IllegalArgumentException("Output class [" + outputClass.getName()
-          + "] is neither annotated with @XmlRootElement nor @XmlType");
-    }
-
-    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(localPart)) {
-      localPart = ClassUtils.getShortNameAsProperty(outputClass);
-    }
-    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(namespaceUri)) {
-      Package outputClassPackage = outputClass.getPackage();
-      if (outputClassPackage != null && outputClassPackage.isAnnotationPresent(XmlSchema.class)) {
-        XmlSchema annotation = outputClassPackage.getAnnotation(XmlSchema.class);
-        namespaceUri = annotation.namespace();
-      } else {
-        namespaceUri = XMLConstants.NULL_NS_URI;
-      }
-    }
-    return new QName(namespaceUri, localPart);
-  }
-
-  /**
    * Split a flux of {@link XMLEvent XMLEvents} into a flux of XMLEvent lists, one list for each
    * branch of the tree that starts with the given qualified name. That is, given the XMLEvents
    * shown {@linkplain XmlEventDecoder here}, and the {@code desiredName} "{@code child}", this
@@ -294,17 +263,82 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
    * </ol>
    *
    * @param xmlEventFlux the xml event as flux
-   * @param desiredName the desired name
+   * @param desiredNames the desired names
+   * @param byteTracker the byte tracker
    * @return the list of xml events as flux
    */
-  Flux<List<XMLEvent>> split(Flux<XMLEvent> xmlEventFlux, QName desiredName) {
-    return xmlEventFlux.handle(new SplitHandler(desiredName));
+  private static Flux<List<XMLEvent>> split(
+      Flux<XMLEvent> xmlEventFlux,
+      Set<QName> desiredNames,
+      XmlEventDecoder.ReceivedByteTracker byteTracker) {
+    return xmlEventFlux.handle(new SplitHandler(desiredNames, byteTracker));
+  }
+
+  private static Set<QName> toQualifiedNames(Class<?> outputClass) {
+    Set<QName> result = HashSet.newHashSet(1);
+    findQNames(outputClass, result, new HashSet<>());
+    return result;
+  }
+
+  private static void findQNames(Class<?> clazz, Set<QName> qNames, Set<Class<?>> completedClasses) {
+    // safety against circular XmlSeeAlso references
+    if (completedClasses.contains(clazz)) {
+      return;
+    }
+    if (clazz.isAnnotationPresent(XmlRootElement.class)) {
+      XmlRootElement annotation = clazz.getAnnotation(XmlRootElement.class);
+      qNames.add(new QName(namespace(annotation.namespace(), clazz),
+          localPart(annotation.name(), clazz)));
+    }
+    else if (clazz.isAnnotationPresent(XmlType.class)) {
+      XmlType annotation = clazz.getAnnotation(XmlType.class);
+      qNames.add(new QName(namespace(annotation.namespace(), clazz),
+          localPart(annotation.name(), clazz)));
+    }
+    else {
+      throw new IllegalArgumentException("Output class [" + clazz.getName() +
+          "] is neither annotated with @XmlRootElement nor @XmlType");
+    }
+    completedClasses.add(clazz);
+    if (clazz.isAnnotationPresent(XmlSeeAlso.class)) {
+      XmlSeeAlso annotation = clazz.getAnnotation(XmlSeeAlso.class);
+      for (Class<?> seeAlso : annotation.value()) {
+        findQNames(seeAlso, qNames, completedClasses);
+      }
+    }
+  }
+
+  private static String localPart(String value, Class<?> outputClass) {
+    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(value)) {
+      return ClassUtils.getShortNameAsProperty(outputClass);
+    }
+    else {
+      return value;
+    }
+  }
+
+  private static String namespace(String value, Class<?> outputClass) {
+    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(value)) {
+      Package outputClassPackage = outputClass.getPackage();
+      if (nonNull(outputClassPackage) && outputClassPackage.isAnnotationPresent(XmlSchema.class)) {
+        XmlSchema annotation = outputClassPackage.getAnnotation(XmlSchema.class);
+        return annotation.namespace();
+      }
+      else {
+        return XMLConstants.NULL_NS_URI;
+      }
+    }
+    else {
+      return value;
+    }
   }
 
   private static class SplitHandler implements
       BiConsumer<XMLEvent, SynchronousSink<List<XMLEvent>>> {
 
-    private final QName desiredName;
+    private final Set<QName> names;
+
+    private final ReceivedByteTracker byteTracker;
 
     private List<XMLEvent> events;
 
@@ -315,10 +349,12 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
     /**
      * Instantiates a new split handler.
      *
-     * @param desiredName the desired name
+     * @param names the names
+     * @param byteTracker the byte tracker
      */
-    public SplitHandler(QName desiredName) {
-      this.desiredName = desiredName;
+    public SplitHandler(Set<QName> names, ReceivedByteTracker byteTracker) {
+      this.names = names;
+      this.byteTracker = Optional.ofNullable(byteTracker).orElse(ReceivedByteTracker.NO_OP);
     }
 
     @Override
@@ -326,7 +362,7 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
       if (event.isStartElement()) {
         if (this.barrier == Integer.MAX_VALUE) {
           QName startElementName = event.asStartElement().getName();
-          if (this.desiredName.equals(startElementName)) {
+          if (this.names.contains(startElementName)) {
             this.events = new ArrayList<>();
             this.barrier = this.elementDepth;
           }
@@ -340,10 +376,17 @@ public class ReactiveJaxbDecoder extends AbstractDecoder<Object> {
       if (event.isEndElement()) {
         this.elementDepth--;
         if (this.elementDepth == this.barrier) {
-          this.barrier = Integer.MAX_VALUE;
           Assert.state(this.events != null, "No XMLEvent List");
           sink.next(this.events);
+          this.barrier = Integer.MAX_VALUE;
+          this.events = null;
         }
+      }
+      if (isNull(this.events)) {
+        this.byteTracker.reset();
+      } else if (this.byteTracker.isMaxInMemorySizeExceeded()) {
+        throw new DataBufferLimitException(
+            "Exceeded limit on max bytes per XML node: " + this.byteTracker.getMaxInMemorySize());
       }
     }
   }
