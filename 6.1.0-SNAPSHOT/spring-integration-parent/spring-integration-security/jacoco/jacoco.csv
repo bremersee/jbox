@@ -1,0 +1,18 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Spring Integration Security,org.bremersee.spring.security.core,NormalizedAuthentication,138,0,4,0,31,0,17,0,15,0
+Spring Integration Security,org.bremersee.spring.security.core,ReactiveAuthenticationTemplate.EmptyAuthentication,8,0,0,0,4,0,3,0,3,0
+Spring Integration Security,org.bremersee.spring.security.core,EmailToUsernameResolver,0,6,0,0,0,1,0,1,0,1
+Spring Integration Security,org.bremersee.spring.security.core,NormalizedGroup.Builder,0,3,0,0,0,1,0,1,0,1
+Spring Integration Security,org.bremersee.spring.security.core,NormalizedGroup,0,9,0,0,0,2,0,2,0,2
+Spring Integration Security,org.bremersee.spring.security.core,NormalizedUser,0,35,0,0,0,11,0,6,0,6
+Spring Integration Security,org.bremersee.spring.security.core,NormalizedUsernamePasswordAuthenticationToken,0,41,0,0,0,10,0,6,0,6
+Spring Integration Security,org.bremersee.spring.security.core,ReactiveAuthenticationTemplate,95,0,6,0,29,0,14,0,11,0
+Spring Integration Security,org.bremersee.spring.security.core,AuthenticationTemplate,50,0,2,0,16,0,8,0,7,0
+Spring Integration Security,org.bremersee.spring.security.oauth2.server.resource.authentication,NormalizedJwtAuthenticationToken,6,16,0,0,1,5,1,2,1,2
+Spring Integration Security,org.bremersee.spring.security.oauth2.server.resource.authentication,JsonPathJwtConverter,50,223,5,5,6,49,10,19,6,18
+Spring Integration Security,org.bremersee.spring.security.oauth2.server.resource.authentication,JsonPathJwtProperties,22,24,8,4,6,6,8,3,2,3
+Spring Integration Security,org.bremersee.spring.security.oauth2.server.resource.authentication,JsonPathJwtParser,0,36,0,2,0,10,0,4,0,3
+Spring Integration Security,org.bremersee.spring.security.core.mapping.authority,NormalizedGrantedAuthoritiesMapper,2,27,1,1,0,7,1,5,0,5
+Spring Integration Security,org.bremersee.spring.security.core.mapping,CaseTransformation,0,21,0,0,0,4,0,1,0,1
+Spring Integration Security,org.bremersee.spring.security.core.mapping,AbstractNormalizedMapper,2,163,5,14,0,40,5,12,0,7
+Spring Integration Security,org.bremersee.spring.security.core.mapping.group,NormalizedGroupsMapper,0,20,0,0,0,6,0,5,0,5
