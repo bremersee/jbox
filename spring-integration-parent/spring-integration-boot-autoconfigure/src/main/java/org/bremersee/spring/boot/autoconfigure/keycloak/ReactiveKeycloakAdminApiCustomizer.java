@@ -20,11 +20,11 @@ import org.bremersee.keycloak.api.webflux.AdminApi;
 import reactivefeign.ReactiveFeign;
 
 /**
- * The keycloak admin api customizer.
+ * The reactive keycloak admin api customizer.
  *
  * @author Christian Bremer
  */
-public interface KeycloakAdminApiCustomizer {
+public interface ReactiveKeycloakAdminApiCustomizer {
 
   /**
    * Customize.

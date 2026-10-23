@@ -26,20 +26,20 @@ import org.junit.jupiter.api.Test;
 import reactivefeign.ReactiveFeign.Builder;
 
 /**
- * Decode not found keycloak admin api customizer test.
+ * Reactive decode not found keycloak admin api customizer test.
  *
  * @author Christian Bremer
  */
-class DecodeNotFoundKeycloakAdminApiCustomizerTest {
+class ReactiveDecodeNotFoundKeycloakAdminApiCustomizerTest {
 
-  private DecodeNotFoundKeycloakAdminApiCustomizer target;
+  private ReactiveDecodeNotFoundKeycloakAdminApiCustomizer target;
 
   /**
    * Sets up.
    */
   @BeforeEach
   void setUp() {
-    target = new DecodeNotFoundKeycloakAdminApiCustomizer();
+    target = new ReactiveDecodeNotFoundKeycloakAdminApiCustomizer();
   }
 
   /**

@@ -17,24 +17,25 @@
 package org.bremersee.spring.boot.autoconfigure.keycloak;
 
 import org.bremersee.keycloak.api.webflux.AdminApi;
-import reactivefeign.ReactiveFeign.Builder;
+import reactivefeign.ReactiveFeign;
 
 /**
- * The decode-not-found keycloak admin api customizer.
+ * The reactive decode-not-found keycloak admin api customizer.
  *
  * @author Christian Bremer
  */
-public class DecodeNotFoundKeycloakAdminApiCustomizer implements KeycloakAdminApiCustomizer {
+public class ReactiveDecodeNotFoundKeycloakAdminApiCustomizer
+    implements ReactiveKeycloakAdminApiCustomizer {
 
   /**
-   * Instantiates a new decode-not-found keycloak admin api customizer.
+   * Instantiates a reactive new decode-not-found keycloak admin api customizer.
    */
-  public DecodeNotFoundKeycloakAdminApiCustomizer() {
+  public ReactiveDecodeNotFoundKeycloakAdminApiCustomizer() {
     super();
   }
 
   @Override
-  public void customize(Builder<AdminApi> builder) {
+  public void customize(ReactiveFeign.Builder<AdminApi> builder) {
     builder.decode404();
   }
 }

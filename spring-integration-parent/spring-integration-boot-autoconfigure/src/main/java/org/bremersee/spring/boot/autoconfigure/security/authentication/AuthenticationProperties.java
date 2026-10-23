@@ -136,6 +136,8 @@ public class AuthenticationProperties {
 
   /**
    * The jwt converter properties.
+   *
+   * @author Christian Bremer
    */
   @Data
   public static class JwtConverterProperties {
@@ -313,6 +315,8 @@ public class AuthenticationProperties {
 
   /**
    * The ldaptive properties.
+   *
+   * @author Christian Bremer
    */
   @Data
   public static class LdaptiveProperties {
@@ -562,6 +566,8 @@ public class AuthenticationProperties {
 
   /**
    * The simple mapping.
+   *
+   * @author Christian Bremer
    */
   @Data
   public static class SimpleMapping {
@@ -601,6 +607,8 @@ public class AuthenticationProperties {
 
   /**
    * The string replacement.
+   *
+   * @author Christian Bremer
    */
   @Data
   public static class StringReplacement {
@@ -626,6 +634,8 @@ public class AuthenticationProperties {
 
   /**
    * The actuator properties.
+   *
+   * @author Christian Bremer
    */
   @Data
   public static class ActuatorProperties {
@@ -668,6 +678,8 @@ public class AuthenticationProperties {
 
   /**
    * The in-memory properties.
+   *
+   * @author Christian Bremer
    */
   @Data
   public static class InMemoryProperties {
@@ -711,6 +723,8 @@ public class AuthenticationProperties {
 
   /**
    * The simple user.
+   *
+   * @author Christian Bremer
    */
   @Getter
   @Setter
@@ -752,7 +766,7 @@ public class AuthenticationProperties {
     private List<String> authorities = new ArrayList<>();
 
     /**
-     * Instantiates a new Simple user.
+     * Instantiates a new simple user.
      */
     public SimpleUser() {
       super();
