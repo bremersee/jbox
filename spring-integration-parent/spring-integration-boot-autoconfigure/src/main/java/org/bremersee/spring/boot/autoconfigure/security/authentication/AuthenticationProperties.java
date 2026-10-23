@@ -16,8 +16,13 @@
 
 package org.bremersee.spring.boot.autoconfigure.security.authentication;
 
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNullElseGet;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -26,7 +31,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.bremersee.spring.security.core.NormalizedPrincipalDetails;
+import org.bremersee.spring.security.core.NormalizedUserDetails;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * The authentication properties.
@@ -56,6 +70,11 @@ public class AuthenticationProperties {
    * The actuator properties.
    */
   private ActuatorProperties actuator = new ActuatorProperties();
+
+  /**
+   * The in-memory properties.
+   */
+  private InMemoryProperties inMemory = new InMemoryProperties();
 
   /**
    * Instantiates new authentication properties.
@@ -644,6 +663,99 @@ public class AuthenticationProperties {
         return List.of("ROLE_ADMIN", "ROLE_ACTUATOR_ADMIN");
       }
       return writeRoles;
+    }
+  }
+
+  /**
+   * The in-memory properties.
+   */
+  @Data
+  public static class InMemoryProperties {
+
+    /**
+     * Specifies whether an in-memory user details service should be created or not. Default is
+     * {@code false}.
+     */
+    private boolean enabled;
+
+    /**
+     * The users.
+     */
+    private List<SimpleUser> users = new ArrayList<>();
+
+    /**
+     * Build user details.
+     *
+     * @param passwordEncoder the password encoder
+     * @return the list
+     */
+    public List<NormalizedPrincipalDetails> buildUserDetails(PasswordEncoder passwordEncoder) {
+      PasswordEncoder encoder = requireNonNullElseGet(
+          passwordEncoder,
+          PasswordEncoderFactories::createDelegatingPasswordEncoder);
+      return getUsers().stream()
+          .map(user -> NormalizedUserDetails.builder()
+              .username(user.getName())
+              .password(nonNull(user.getPassword()) ? encoder.encode(user.getPassword()) : null)
+              .firstName(user.getFirstName())
+              .lastName(user.getLastName())
+              .email(user.getEmail())
+              .authorities(user.getAuthorities().stream()
+                  .map(SimpleGrantedAuthority::new)
+                  .toList())
+              .build())
+          .map(NormalizedPrincipalDetails.class::cast)
+          .toList();
+    }
+  }
+
+  /**
+   * The simple user.
+   */
+  @Getter
+  @Setter
+  @ToString(exclude = "password")
+  @EqualsAndHashCode(exclude = "password")
+  public static class SimpleUser implements Serializable, Principal {
+
+    @Serial
+    private static final long serialVersionUID = -1393400622632455935L;
+
+    /**
+     * The username.
+     */
+    private String name;
+
+    /**
+     * The password.
+     */
+    private String password;
+
+    /**
+     * The first name (optional).
+     */
+    private String firstName;
+
+    /**
+     * The last name (optional).
+     */
+    private String lastName;
+
+    /**
+     * The email (optional).
+     */
+    private String email;
+
+    /**
+     * The granted authorities.
+     */
+    private List<String> authorities = new ArrayList<>();
+
+    /**
+     * Instantiates a new Simple user.
+     */
+    public SimpleUser() {
+      super();
     }
   }
 

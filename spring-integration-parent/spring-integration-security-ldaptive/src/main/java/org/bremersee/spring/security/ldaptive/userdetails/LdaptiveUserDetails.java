@@ -16,16 +16,12 @@
 
 package org.bremersee.spring.security.ldaptive.userdetails;
 
-import java.util.Collection;
-import java.util.List;
-import org.bremersee.spring.security.core.NormalizedPrincipal;
+import org.bremersee.spring.security.core.NormalizedPrincipalDetails;
 import org.immutables.serial.Serial;
 import org.immutables.value.Value;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * The ldaptive user details.
@@ -40,7 +36,7 @@ import org.springframework.security.core.userdetails.UserDetails;
     get = {"get*", "is*"})
 @Value.Immutable
 @Serial.Version(1L)
-public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
+public interface LdaptiveUserDetails extends NormalizedPrincipalDetails {
 
   /**
    * Gets the distinguished name.
@@ -49,13 +45,6 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
    */
   String getDn();
 
-  @Value.Default
-  @NonNull
-  @Override
-  default Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
-  }
-
   @Nullable
   @Override
   String getPassword();
@@ -63,36 +52,6 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
   @Override
   @NullMarked
   String getUsername();
-
-  @Value.Default
-  @Override
-  default boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @Value.Default
-  @Override
-  default boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Value.Default
-  @Override
-  default boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Value.Default
-  @Override
-  default boolean isEnabled() {
-    return true;
-  }
-
-  @Value.Lazy
-  @Override
-  default String getName() {
-    return getUsername();
-  }
 
   @Nullable
   @Override
@@ -113,8 +72,9 @@ public interface LdaptiveUserDetails extends UserDetails, NormalizedPrincipal {
    */
   @NonNull
   static LdaptiveUserDetails empty() {
-    return LdaptiveUserDetails.builder()
+    return builder()
         .username("")
+        .dn("")
         .build();
   }
 
