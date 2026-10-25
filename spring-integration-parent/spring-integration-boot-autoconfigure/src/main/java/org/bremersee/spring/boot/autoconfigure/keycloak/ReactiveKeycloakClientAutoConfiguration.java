@@ -104,7 +104,7 @@ public class ReactiveKeycloakClientAutoConfiguration {
   @Bean
   public AdminApi keycloakAdminApi(
       List<WebClientFeignCustomizer> webClientCustomizers,
-      List<KeycloakAdminApiCustomizer> keycloakAdminApiCustomizers,
+      List<ReactiveKeycloakAdminApiCustomizer> keycloakAdminApiCustomizers,
       ObjectProvider<DefaultWebClientErrorDecoder> errorDecoderProvider,
       ObjectProvider<FeignClientExceptionErrorDecoder> feignErrorDecoderProvider) {
 
@@ -118,7 +118,7 @@ public class ReactiveKeycloakClientAutoConfiguration {
         .add(builder -> builder.defaultStatusHandler(HttpStatusCode::isError, decoder)));
     webClientExtendedCustomizers.addAll(webClientCustomizers);
 
-    List<KeycloakAdminApiCustomizer> keycloakAdminApiExtendedCustomizers = new ArrayList<>();
+    List<ReactiveKeycloakAdminApiCustomizer> keycloakAdminApiExtendedCustomizers = new ArrayList<>();
     feignErrorDecoderProvider.ifAvailable(decoder -> keycloakAdminApiExtendedCustomizers
         .add(builder -> builder.statusHandler(ReactiveStatusHandlers.errorDecoder(decoder))));
     keycloakAdminApiExtendedCustomizers.addAll(keycloakAdminApiCustomizers);

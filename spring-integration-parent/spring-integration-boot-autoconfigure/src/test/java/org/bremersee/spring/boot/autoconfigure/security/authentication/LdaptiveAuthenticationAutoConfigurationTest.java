@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.bremersee.spring.security.core.EmailToUsernameResolver;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthentication;
 import org.bremersee.spring.security.ldaptive.userdetails.LdaptiveRememberMeTokenProvider;
@@ -59,7 +58,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
   void ldaptiveAuthenticationManager() {
     ConnectionConfig connectionConfig = ConnectionConfig.builder().build();
     //ObjectProvider<>
-    ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver = mock();
     ObjectProvider<AccountControlEvaluator> accountControlEvaluator = mock();
     ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper = mock();
     ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter = mock();
@@ -70,7 +68,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
             mock(),
             target.ldaptivePasswordEncoderProvider(),
             LdaptiveRememberMeTokenProvider.invalid(),
-            emailToUsernameResolver,
             accountControlEvaluator,
             grantedAuthoritiesMapper,
             tokenConverter))
@@ -83,7 +80,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
   @Test
   void reactiveLdaptiveAuthenticationManager() {
     ConnectionConfig connectionConfig = ConnectionConfig.builder().build();
-    ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver = mock();
     ObjectProvider<AccountControlEvaluator> accountControlEvaluator = mock();
     ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper = mock();
     ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter = mock();
@@ -94,7 +90,6 @@ class LdaptiveAuthenticationAutoConfigurationTest {
             mock(),
             target.ldaptivePasswordEncoderProvider(),
             LdaptiveRememberMeTokenProvider.invalid(),
-            emailToUsernameResolver,
             accountControlEvaluator,
             grantedAuthoritiesMapper,
             tokenConverter))

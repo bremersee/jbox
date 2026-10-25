@@ -16,9 +16,6 @@
 
 package org.bremersee.spring.security.ldaptive.app;
 
-import org.bremersee.ldaptive.LdaptiveTemplate;
-import org.bremersee.spring.security.core.EmailToUsernameResolver;
-import org.bremersee.spring.security.ldaptive.authentication.EmailToUsernameResolverByLdapAttribute;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationManager;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
 import org.bremersee.spring.security.ldaptive.authentication.provider.OpenLdapTemplate;
@@ -88,40 +85,20 @@ public class TestConfiguration {
   }
 
   /**
-   * Email to username converter email to username converter.
-   *
-   * @param connectionFactory the connection factory
-   * @param authenticationProperties the authentication properties
-   * @return the email to username converter
-   */
-  @Bean
-  public EmailToUsernameResolver emailToUsernameConverter(
-      ConnectionFactory connectionFactory,
-      LdaptiveAuthenticationProperties authenticationProperties) {
-    return new EmailToUsernameResolverByLdapAttribute(
-        authenticationProperties,
-        new LdaptiveTemplate(connectionFactory));
-  }
-
-  /**
    * Authentication manager ldaptive authentication manager.
    *
    * @param connectionFactory the connection factory
    * @param authenticationProperties the authentication properties
-   * @param emailToUsernameResolver the email to username converter
    * @return the ldaptive authentication manager
    */
   @Bean
   public LdaptiveAuthenticationManager authenticationManager(
       ConnectionFactory connectionFactory,
-      LdaptiveAuthenticationProperties authenticationProperties,
-      EmailToUsernameResolver emailToUsernameResolver) {
-    LdaptiveAuthenticationManager authenticationManager = new LdaptiveAuthenticationManager(
+      LdaptiveAuthenticationProperties authenticationProperties) {
+    return new LdaptiveAuthenticationManager(
         connectionFactory.getConnectionConfig(),
         authenticationProperties,
         null);
-    authenticationManager.setEmailToUsernameResolver(emailToUsernameResolver);
-    return authenticationManager;
   }
 
 }

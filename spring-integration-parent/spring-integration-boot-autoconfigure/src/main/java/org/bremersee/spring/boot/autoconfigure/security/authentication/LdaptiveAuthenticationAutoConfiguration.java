@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.boot.autoconfigure.ldaptive.LdaptiveAutoConfiguration;
-import org.bremersee.spring.security.core.EmailToUsernameResolver;
 import org.bremersee.spring.security.core.mapping.authority.NormalizedGrantedAuthoritiesMapper;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthentication;
@@ -144,7 +143,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
    * @param ldaptiveTemplateProvider the ldaptive template provider
    * @param ldaptivePasswordEncoderProvider the ldaptive password encoder provider
    * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
-   * @param emailToUsernameResolver the email to username resolver
    * @param accountControlEvaluator the account control evaluator
    * @param grantedAuthoritiesMapper the groups mapper
    * @param tokenConverter the token converter
@@ -158,7 +156,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
       ObjectProvider<LdaptiveTemplate> ldaptiveTemplateProvider,
       LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider,
       LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider,
-      ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver,
       ObjectProvider<AccountControlEvaluator> accountControlEvaluator,
       ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper,
       ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter) {
@@ -169,7 +166,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
         rememberMeKey);
     manager.setPasswordEncoder(ldaptivePasswordEncoderProvider.get());
     manager.setPasswordProvider(ldaptiveRememberMeTokenProvider);
-    emailToUsernameResolver.ifAvailable(manager::setEmailToUsernameResolver);
     accountControlEvaluator.ifAvailable(manager::setAccountControlEvaluator);
     manager.setGrantedAuthoritiesMapper(getGrantedAuthoritiesMapper(grantedAuthoritiesMapper));
     tokenConverter.ifAvailable(manager::setTokenConverter);
@@ -184,7 +180,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
    * @param ldaptiveTemplateProvider the ldaptive template provider
    * @param ldaptivePasswordEncoderProvider the ldaptive password encoder provider
    * @param ldaptiveRememberMeTokenProvider the ldaptive remember-me token provider
-   * @param emailToUsernameResolver the email to username resolver
    * @param accountControlEvaluator the account control evaluator
    * @param grantedAuthoritiesMapper the groups mapper
    * @param tokenConverter the token converter
@@ -198,7 +193,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
       ObjectProvider<LdaptiveTemplate> ldaptiveTemplateProvider,
       LdaptivePasswordEncoderProvider ldaptivePasswordEncoderProvider,
       LdaptiveRememberMeTokenProvider ldaptiveRememberMeTokenProvider,
-      ObjectProvider<EmailToUsernameResolver> emailToUsernameResolver,
       ObjectProvider<AccountControlEvaluator> accountControlEvaluator,
       ObjectProvider<GrantedAuthoritiesMapper> grantedAuthoritiesMapper,
       ObjectProvider<Converter<LdaptiveUserDetails, LdaptiveAuthentication>> tokenConverter) {
@@ -209,7 +203,6 @@ public class LdaptiveAuthenticationAutoConfiguration {
             ldaptiveTemplateProvider,
             ldaptivePasswordEncoderProvider,
             ldaptiveRememberMeTokenProvider,
-            emailToUsernameResolver,
             accountControlEvaluator,
             grantedAuthoritiesMapper,
             tokenConverter));

@@ -35,12 +35,14 @@ public class ActiveDirectoryTemplate
    * Instantiates a new Active directory template.
    */
   public ActiveDirectoryTemplate() {
+    var findOne = "(&(objectClass=user)(|(sAMAccountName={0})(userPrincipalName={0})(mail={0})))";
     setUserObjectClass("user");
     setUsernameAttribute("sAMAccountName");
     setPasswordAttribute(""); // userPassword
     setFirstNameAttribute("givenName");
     setLastNameAttribute("sn");
     setEmailAttribute("mail");
+    setUserFindOneFilter(findOne);
     setUserFindOneSearchScope(SearchScope.ONELEVEL);
     setMemberAttribute("memberOf");
     setPasswordLastSetAttribute("pwdLastSet");
