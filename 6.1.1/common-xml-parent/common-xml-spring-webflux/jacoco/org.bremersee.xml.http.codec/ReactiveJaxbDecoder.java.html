@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReactiveJaxbDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Common Xml Spring WebFlux</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.xml.http.codec</a> &gt; <span class="el_source">ReactiveJaxbDecoder.java</span></div><h1>ReactiveJaxbDecoder.java</h1><pre class="source lang-java linenums">/*
+* Copyright 2019-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.xml.http.codec;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.UnmarshalException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchema;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+import org.bremersee.xml.JaxbContextBuilder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.reactivestreams.Publisher;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.codec.AbstractDecoder;
+import org.springframework.core.codec.CodecException;
+import org.springframework.core.codec.DecodingException;
+import org.springframework.core.codec.Hints;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.log.LogFormatUtils;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.xml.XmlEventDecoder;
+import org.springframework.http.codec.xml.XmlEventDecoder.ReceivedByteTracker;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.xml.StaxUtils;
+import reactor.core.Exceptions;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.SynchronousSink;
+
+/**
+ * Decode from a bytes stream containing XML elements to a stream of {@code Object}s (POJOs).
+ *
+ * &lt;p&gt;The decoding parts are taken from {@link org.springframework.http.codec.xml.Jaxb2XmlDecoder}.
+ *
+ * @author Sebastien Deleuze
+ * @author Arjen Poutsma
+ * @author Christian Bremer
+ */
+public class ReactiveJaxbDecoder extends AbstractDecoder&lt;Object&gt; {
+
+  /**
+   * The default value for JAXB annotations.
+   *
+   * @see XmlRootElement#name()
+   * @see XmlRootElement#namespace()
+   * @see XmlType#name()
+   * @see XmlType#namespace()
+   */
+  private static final String JAXB_DEFAULT_ANNOTATION_VALUE = &quot;##default&quot;;
+
+<span class="fc" id="L91">  private static final XMLInputFactory inputFactory = StaxUtils.createDefensiveInputFactory();</span>
+
+<span class="fc" id="L93">  private final XmlEventDecoder xmlEventDecoder = new XmlEventDecoder();</span>
+
+  private final JaxbContextBuilder jaxbContextBuilder;
+
+  private final Set&lt;Class&lt;?&gt;&gt; ignoreReadingClasses;
+
+<span class="fc" id="L99">  private int maxInMemorySize = 256 * 1024;</span>
+
+  /**
+   * Instantiates a new reactive jaxb decoder.
+   *
+   * @param jaxbContextBuilder the jaxb context builder
+   */
+  public ReactiveJaxbDecoder(JaxbContextBuilder jaxbContextBuilder) {
+<span class="fc" id="L107">    this(jaxbContextBuilder, null);</span>
+<span class="fc" id="L108">  }</span>
+
+  /**
+   * Instantiates a new reactive jaxb decoder.
+   *
+   * @param jaxbContextBuilder the jaxb context builder
+   * @param ignoreReadingClasses the ignore reading classes
+   */
+  public ReactiveJaxbDecoder(
+      JaxbContextBuilder jaxbContextBuilder,
+      Set&lt;Class&lt;?&gt;&gt; ignoreReadingClasses) {
+
+<span class="fc" id="L120">    super(MimeTypeUtils.APPLICATION_XML, MimeTypeUtils.TEXT_XML,</span>
+        new MediaType(&quot;application&quot;, &quot;*+xml&quot;));
+<span class="fc" id="L122">    Assert.notNull(jaxbContextBuilder, &quot;JaxbContextBuilder must be present.&quot;);</span>
+<span class="fc" id="L123">    this.jaxbContextBuilder = jaxbContextBuilder;</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    this.ignoreReadingClasses = isNull(ignoreReadingClasses) ? Set.of() : ignoreReadingClasses;</span>
+<span class="fc" id="L125">  }</span>
+
+  /**
+   * Set the max number of bytes that can be buffered by this decoder. This is either the size of
+   * the entire input when decoding as a whole, or when using async parsing with Aalto XML, it is
+   * the size of one top-level XML tree. When the limit is exceeded,
+   * {@link org.springframework.core.io.buffer.DataBufferLimitException} is raised.
+   *
+   * &lt;p&gt;By default, this is set to 256K.
+   *
+   * @param byteCount the max number of bytes to buffer, or -1 for unlimited
+   */
+  public void setMaxInMemorySize(int byteCount) {
+<span class="fc" id="L138">    this.maxInMemorySize = byteCount;</span>
+<span class="fc" id="L139">    this.xmlEventDecoder.setMaxInMemorySize(byteCount);</span>
+<span class="fc" id="L140">  }</span>
+
+  /**
+   * Return the {@link #setMaxInMemorySize configured} byte count limit.
+   *
+   * @return the max in memory size
+   */
+  public int getMaxInMemorySize() {
+<span class="fc" id="L148">    return this.maxInMemorySize;</span>
+  }
+
+  @Override
+  public boolean canDecode(
+      @NonNull ResolvableType elementType,
+      @Nullable MimeType mimeType) {
+
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (super.canDecode(elementType, mimeType)) {</span>
+<span class="fc" id="L157">      final Class&lt;?&gt; outputClass = elementType.getRawClass();</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">      return !ignoreReadingClasses.contains(outputClass)</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">          &amp;&amp; jaxbContextBuilder.canUnmarshal(outputClass);</span>
+    } else {
+<span class="fc" id="L161">      return false;</span>
+    }
+  }
+
+  @NonNull
+  @Override
+  public Flux&lt;Object&gt; decode(
+      @NonNull Publisher&lt;DataBuffer&gt; inputStream,
+      ResolvableType elementType,
+      @Nullable MimeType mimeType,
+      @Nullable Map&lt;String, Object&gt; hints) {
+
+<span class="nc" id="L173">    ReceivedByteTracker byteTracker = new ReceivedByteTracker(this.maxInMemorySize);</span>
+
+<span class="nc" id="L175">    Flux&lt;XMLEvent&gt; xmlEventFlux = this.xmlEventDecoder.decode(</span>
+<span class="nc" id="L176">        inputStream, ResolvableType.forClass(XMLEvent.class), mimeType, hints);</span>
+
+<span class="nc" id="L178">    Class&lt;?&gt; outputClass = elementType.toClass();</span>
+<span class="nc" id="L179">    Set&lt;QName&gt; names = toQualifiedNames(outputClass);</span>
+<span class="nc" id="L180">    Flux&lt;List&lt;XMLEvent&gt;&gt; splitEvents = split(xmlEventFlux, names, byteTracker);</span>
+
+<span class="nc" id="L182">    return splitEvents.map(events -&gt; {</span>
+<span class="nc" id="L183">      Object value = unmarshal(events, outputClass);</span>
+<span class="nc" id="L184">      LogFormatUtils.traceDebug(logger, traceOn -&gt; {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        String formatted = LogFormatUtils.formatValue(value, !traceOn);</span>
+<span class="nc" id="L186">        return Hints.getLogPrefix(hints) + &quot;Decoded [&quot; + formatted + &quot;]&quot;;</span>
+      });
+<span class="nc" id="L188">      return value;</span>
+    });
+  }
+
+  @NonNull
+  @Override
+  @SuppressWarnings({&quot;rawtypes&quot;, &quot;unchecked&quot;, &quot;cast&quot;})
+  // XMLEventReader is Iterator&lt;Object&gt; on JDK 9
+  public Object decode(
+      DataBuffer dataBuffer,
+      ResolvableType targetType,
+      @Nullable MimeType mimeType,
+      @Nullable Map&lt;String, Object&gt; hints) throws DecodingException {
+
+    try {
+<span class="fc" id="L203">      Iterator eventReader = inputFactory.createXMLEventReader(dataBuffer.asInputStream());</span>
+<span class="fc" id="L204">      List&lt;XMLEvent&gt; events = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L205">      eventReader.forEachRemaining(event -&gt; events.add((XMLEvent) event));</span>
+<span class="fc" id="L206">      return unmarshal(events, targetType.toClass());</span>
+<span class="nc" id="L207">    } catch (XMLStreamException ex) {</span>
+<span class="nc" id="L208">      throw Exceptions.propagate(ex);</span>
+    } finally {
+<span class="fc" id="L210">      DataBufferUtils.release(dataBuffer);</span>
+    }
+  }
+
+  @NonNull
+  @Override
+  public Mono&lt;Object&gt; decodeToMono(
+      @NonNull Publisher&lt;DataBuffer&gt; input,
+      @NonNull ResolvableType elementType,
+      @Nullable MimeType mimeType,
+      @Nullable Map&lt;String, Object&gt; hints) {
+
+<span class="fc" id="L222">    return DataBufferUtils.join(input, this.maxInMemorySize)</span>
+<span class="fc" id="L223">        .map(dataBuffer -&gt; decode(dataBuffer, elementType, mimeType, hints));</span>
+  }
+
+  private Object unmarshal(List&lt;XMLEvent&gt; events, Class&lt;?&gt; outputClass) {
+    try {
+<span class="fc" id="L228">      Unmarshaller unmarshaller = jaxbContextBuilder.buildUnmarshaller(outputClass);</span>
+<span class="fc" id="L229">      XMLEventReader eventReader = StaxUtils.createXMLEventReader(events);</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">      if (outputClass.isAnnotationPresent(XmlRootElement.class)) {</span>
+<span class="fc" id="L231">        return unmarshaller.unmarshal(eventReader);</span>
+      } else {
+<span class="nc" id="L233">        JAXBElement&lt;?&gt; jaxbElement = unmarshaller.unmarshal(eventReader, outputClass);</span>
+<span class="nc" id="L234">        return jaxbElement.getValue();</span>
+      }
+<span class="nc" id="L236">    } catch (UnmarshalException ex) {</span>
+<span class="nc" id="L237">      throw new DecodingException(&quot;Could not unmarshal XML to &quot; + outputClass, ex);</span>
+<span class="nc" id="L238">    } catch (JAXBException ex) {</span>
+<span class="nc" id="L239">      throw new CodecException(&quot;Invalid JAXB configuration&quot;, ex);</span>
+    }
+  }
+
+  /**
+   * Split a flux of {@link XMLEvent XMLEvents} into a flux of XMLEvent lists, one list for each
+   * branch of the tree that starts with the given qualified name. That is, given the XMLEvents
+   * shown {@linkplain XmlEventDecoder here}, and the {@code desiredName} &quot;{@code child}&quot;, this
+   * method returns a flux of two lists, each of which containing the events of a particular branch
+   * of the tree that starts with &quot;{@code child}&quot;.
+   * &lt;ol&gt;
+   * &lt;li&gt;The first list, dealing with the first branch of the tree:
+   * &lt;ol&gt;
+   * &lt;li&gt;{@link javax.xml.stream.events.StartElement} {@code child}&lt;/li&gt;
+   * &lt;li&gt;{@link javax.xml.stream.events.Characters} {@code foo}&lt;/li&gt;
+   * &lt;li&gt;{@link javax.xml.stream.events.EndElement} {@code child}&lt;/li&gt;
+   * &lt;/ol&gt;
+   * &lt;li&gt;The second list, dealing with the second branch of the tree:
+   * &lt;ol&gt;
+   * &lt;li&gt;{@link javax.xml.stream.events.StartElement} {@code child}&lt;/li&gt;
+   * &lt;li&gt;{@link javax.xml.stream.events.Characters} {@code bar}&lt;/li&gt;
+   * &lt;li&gt;{@link javax.xml.stream.events.EndElement} {@code child}&lt;/li&gt;
+   * &lt;/ol&gt;
+   * &lt;/li&gt;
+   * &lt;/ol&gt;
+   *
+   * @param xmlEventFlux the xml event as flux
+   * @param desiredNames the desired names
+   * @param byteTracker the byte tracker
+   * @return the list of xml events as flux
+   */
+  private static Flux&lt;List&lt;XMLEvent&gt;&gt; split(
+      Flux&lt;XMLEvent&gt; xmlEventFlux,
+      Set&lt;QName&gt; desiredNames,
+      XmlEventDecoder.ReceivedByteTracker byteTracker) {
+<span class="nc" id="L274">    return xmlEventFlux.handle(new SplitHandler(desiredNames, byteTracker));</span>
+  }
+
+  private static Set&lt;QName&gt; toQualifiedNames(Class&lt;?&gt; outputClass) {
+<span class="nc" id="L278">    Set&lt;QName&gt; result = HashSet.newHashSet(1);</span>
+<span class="nc" id="L279">    findQNames(outputClass, result, new HashSet&lt;&gt;());</span>
+<span class="nc" id="L280">    return result;</span>
+  }
+
+  private static void findQNames(Class&lt;?&gt; clazz, Set&lt;QName&gt; qNames, Set&lt;Class&lt;?&gt;&gt; completedClasses) {
+    // safety against circular XmlSeeAlso references
+<span class="nc bnc" id="L285" title="All 2 branches missed.">    if (completedClasses.contains(clazz)) {</span>
+<span class="nc" id="L286">      return;</span>
+    }
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (clazz.isAnnotationPresent(XmlRootElement.class)) {</span>
+<span class="nc" id="L289">      XmlRootElement annotation = clazz.getAnnotation(XmlRootElement.class);</span>
+<span class="nc" id="L290">      qNames.add(new QName(namespace(annotation.namespace(), clazz),</span>
+<span class="nc" id="L291">          localPart(annotation.name(), clazz)));</span>
+<span class="nc" id="L292">    }</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">    else if (clazz.isAnnotationPresent(XmlType.class)) {</span>
+<span class="nc" id="L294">      XmlType annotation = clazz.getAnnotation(XmlType.class);</span>
+<span class="nc" id="L295">      qNames.add(new QName(namespace(annotation.namespace(), clazz),</span>
+<span class="nc" id="L296">          localPart(annotation.name(), clazz)));</span>
+<span class="nc" id="L297">    }</span>
+    else {
+<span class="nc" id="L299">      throw new IllegalArgumentException(&quot;Output class [&quot; + clazz.getName() +</span>
+          &quot;] is neither annotated with @XmlRootElement nor @XmlType&quot;);
+    }
+<span class="nc" id="L302">    completedClasses.add(clazz);</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">    if (clazz.isAnnotationPresent(XmlSeeAlso.class)) {</span>
+<span class="nc" id="L304">      XmlSeeAlso annotation = clazz.getAnnotation(XmlSeeAlso.class);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">      for (Class&lt;?&gt; seeAlso : annotation.value()) {</span>
+<span class="nc" id="L306">        findQNames(seeAlso, qNames, completedClasses);</span>
+      }
+    }
+<span class="nc" id="L309">  }</span>
+
+  private static String localPart(String value, Class&lt;?&gt; outputClass) {
+<span class="nc bnc" id="L312" title="All 2 branches missed.">    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(value)) {</span>
+<span class="nc" id="L313">      return ClassUtils.getShortNameAsProperty(outputClass);</span>
+    }
+    else {
+<span class="nc" id="L316">      return value;</span>
+    }
+  }
+
+  private static String namespace(String value, Class&lt;?&gt; outputClass) {
+<span class="nc bnc" id="L321" title="All 2 branches missed.">    if (JAXB_DEFAULT_ANNOTATION_VALUE.equals(value)) {</span>
+<span class="nc" id="L322">      Package outputClassPackage = outputClass.getPackage();</span>
+<span class="nc bnc" id="L323" title="All 4 branches missed.">      if (nonNull(outputClassPackage) &amp;&amp; outputClassPackage.isAnnotationPresent(XmlSchema.class)) {</span>
+<span class="nc" id="L324">        XmlSchema annotation = outputClassPackage.getAnnotation(XmlSchema.class);</span>
+<span class="nc" id="L325">        return annotation.namespace();</span>
+      }
+      else {
+<span class="nc" id="L328">        return XMLConstants.NULL_NS_URI;</span>
+      }
+    }
+    else {
+<span class="nc" id="L332">      return value;</span>
+    }
+  }
+
+  private static class SplitHandler implements
+      BiConsumer&lt;XMLEvent, SynchronousSink&lt;List&lt;XMLEvent&gt;&gt;&gt; {
+
+    private final Set&lt;QName&gt; names;
+
+    private final ReceivedByteTracker byteTracker;
+
+    private List&lt;XMLEvent&gt; events;
+
+<span class="nc" id="L345">    private int elementDepth = 0;</span>
+
+<span class="nc" id="L347">    private int barrier = Integer.MAX_VALUE;</span>
+
+    /**
+     * Instantiates a new split handler.
+     *
+     * @param names the names
+     * @param byteTracker the byte tracker
+     */
+<span class="nc" id="L355">    public SplitHandler(Set&lt;QName&gt; names, ReceivedByteTracker byteTracker) {</span>
+<span class="nc" id="L356">      this.names = names;</span>
+<span class="nc" id="L357">      this.byteTracker = Optional.ofNullable(byteTracker).orElse(ReceivedByteTracker.NO_OP);</span>
+<span class="nc" id="L358">    }</span>
+
+    @Override
+    public void accept(XMLEvent event, SynchronousSink&lt;List&lt;XMLEvent&gt;&gt; sink) {
+<span class="nc bnc" id="L362" title="All 2 branches missed.">      if (event.isStartElement()) {</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        if (this.barrier == Integer.MAX_VALUE) {</span>
+<span class="nc" id="L364">          QName startElementName = event.asStartElement().getName();</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">          if (this.names.contains(startElementName)) {</span>
+<span class="nc" id="L366">            this.events = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L367">            this.barrier = this.elementDepth;</span>
+          }
+        }
+<span class="nc" id="L370">        this.elementDepth++;</span>
+      }
+<span class="nc bnc" id="L372" title="All 2 branches missed.">      if (this.elementDepth &gt; this.barrier) {</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">        Assert.state(this.events != null, &quot;No XMLEvent List&quot;);</span>
+<span class="nc" id="L374">        this.events.add(event);</span>
+      }
+<span class="nc bnc" id="L376" title="All 2 branches missed.">      if (event.isEndElement()) {</span>
+<span class="nc" id="L377">        this.elementDepth--;</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">        if (this.elementDepth == this.barrier) {</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">          Assert.state(this.events != null, &quot;No XMLEvent List&quot;);</span>
+<span class="nc" id="L380">          sink.next(this.events);</span>
+<span class="nc" id="L381">          this.barrier = Integer.MAX_VALUE;</span>
+<span class="nc" id="L382">          this.events = null;</span>
+        }
+      }
+<span class="nc bnc" id="L385" title="All 2 branches missed.">      if (isNull(this.events)) {</span>
+<span class="nc" id="L386">        this.byteTracker.reset();</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">      } else if (this.byteTracker.isMaxInMemorySizeExceeded()) {</span>
+<span class="nc" id="L388">        throw new DataBufferLimitException(</span>
+<span class="nc" id="L389">            &quot;Exceeded limit on max bytes per XML node: &quot; + this.byteTracker.getMaxInMemorySize());</span>
+      }
+<span class="nc" id="L391">    }</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
