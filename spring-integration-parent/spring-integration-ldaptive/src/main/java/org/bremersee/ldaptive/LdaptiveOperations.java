@@ -1,5 +1,5 @@
 /*
-* Copyright 2019-2026 the original author or authors.
+ * Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,20 @@
 
 package org.bremersee.ldaptive;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.ldaptive.AddRequest;
+import org.ldaptive.BindConnectionInitializer;
 import org.ldaptive.BindRequest;
 import org.ldaptive.CompareRequest;
 import org.ldaptive.ConnectionFactory;
+import org.ldaptive.ConnectionInitializer;
 import org.ldaptive.DeleteRequest;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.ModifyDnRequest;
@@ -66,6 +71,21 @@ public interface LdaptiveOperations {
    * @return the new instance of this ldap operations
    */
   LdaptiveOperations copy(LdaptiveErrorHandler errorHandler);
+
+  /**
+   * Determines whether a bind connection initializer is used or not.
+   *
+   * @return {@code true} if there is a bind connection initializer, otherwise {@code false}
+   */
+  default boolean hasBindConnectionInitializer() {
+    ConnectionInitializer[] initializers = getConnectionFactory().getConnectionConfig()
+        .getConnectionInitializers();
+    if (isEmpty(initializers)) {
+      return false;
+    }
+    return Arrays.stream(initializers)
+        .anyMatch(BindConnectionInitializer.class::isInstance);
+  }
 
 
   /**

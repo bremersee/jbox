@@ -36,6 +36,7 @@ import org.bremersee.ldaptive.LdaptiveTemplate;
 import org.bremersee.spring.security.ldaptive.authentication.AccountControlEvaluator;
 import org.bremersee.spring.security.ldaptive.authentication.LdaptiveAuthenticationProperties;
 import org.bremersee.spring.security.ldaptive.authentication.provider.NoAccountControlEvaluator;
+import org.jspecify.annotations.NonNull;
 import org.ldaptive.FilterTemplate;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
@@ -157,8 +158,9 @@ public class LdaptiveUserDetailsService implements UserDetailsService {
     }
   }
 
+  @NonNull
   @Override
-  public LdaptiveUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public LdaptiveUserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
     logger.debug(String.format("Loading user '%s' ...", username));
     LdapEntry ldapEntry = findUser(username)
         .orElseThrow(() -> new UsernameNotFoundException(String

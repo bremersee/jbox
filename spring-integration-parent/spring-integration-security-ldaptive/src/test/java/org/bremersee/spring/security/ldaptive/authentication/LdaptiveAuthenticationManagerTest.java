@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -77,7 +78,6 @@ class LdaptiveAuthenticationManagerTest {
         .isThrownBy(target::init);
 
     target.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
-    target.setEmailToUsernameResolver(null); // has no effect
     target.setAccountControlEvaluator(null); // has no effect
     target.init();
   }
@@ -184,6 +184,9 @@ class LdaptiveAuthenticationManagerTest {
     doReturn(true)
         .when(ldaptiveTemplate)
         .compare(compareCaptor.capture());
+    doReturn(ldaptiveTemplate)
+        .when(target)
+        .getLdaptiveTemplate(anyString(), anyString());
 
     LdaptiveAuthentication actual = (LdaptiveAuthentication) target
         .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret"));
@@ -236,6 +239,7 @@ class LdaptiveAuthenticationManagerTest {
    * Authenticate with simple bind.
    *
    * @param softly the softly
+   * @throws LdapException the ldap exception
    */
   @Test
   void authenticateWithSimpleBind(SoftAssertions softly) throws LdapException {
@@ -269,6 +273,9 @@ class LdaptiveAuthenticationManagerTest {
     doReturn(bindResponse)
         .when(bindOperation)
         .execute(any(BindRequest.class));
+    doReturn(ldaptiveTemplate)
+        .when(target)
+        .getLdaptiveTemplate(anyString(), anyString());
 
     LdaptiveAuthentication actual = (LdaptiveAuthentication) target
         .authenticate(new UsernamePasswordAuthenticationToken("junit", "secret"));
@@ -291,6 +298,10 @@ class LdaptiveAuthenticationManagerTest {
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
         ldaptiveTemplate, properties, REMEMBER_ME_KEY));
 
+    doNothing()
+        .when(target)
+        .checkPassword(anyString(), anyString());
+
     target.init();
 
     LdaptiveUserDetailsService userDetailsService = mock(LdaptiveUserDetailsService.class);
@@ -299,7 +310,7 @@ class LdaptiveAuthenticationManagerTest {
         .loadUserByUsername(anyString());
     doReturn(userDetailsService)
         .when(target)
-        .getUserDetailsService();
+        .getUserDetailsService(anyString(), anyString());
 
     var token = new UsernamePasswordAuthenticationToken("junit", "secret");
     assertThatExceptionOfType(UsernameNotFoundException.class)
@@ -308,6 +319,8 @@ class LdaptiveAuthenticationManagerTest {
 
   /**
    * Authenticate with simple bind and bad credentials.
+   *
+   * @throws LdapException the ldap exception
    */
   @Test
   void authenticateWithSimpleBindAndBadCredentials() throws LdapException {
@@ -361,7 +374,26 @@ class LdaptiveAuthenticationManagerTest {
     LdaptiveAuthenticationManager target = spy(new LdaptiveAuthenticationManager(
         ldaptiveTemplate, properties, REMEMBER_ME_KEY));
 
+    doNothing()
+        .when(target)
+        .checkPassword(anyString(), anyString());
+
     target.init();
+
+    LdaptiveUserDetailsService userDetailsService = mock(LdaptiveUserDetailsService.class);
+    doThrow(new UsernameNotFoundException("junit not found"))
+        .when(userDetailsService)
+        .loadUserByUsername(anyString());
+    doReturn(userDetailsService)
+        .when(target)
+        .getUserDetailsService(anyString(), anyString());
+    LdaptiveUserDetails userDetails = mock(LdaptiveUserDetails.class);
+    doReturn("refused")
+        .when(userDetails)
+        .getUsername();
+    doReturn(userDetails)
+        .when(userDetailsService)
+        .loadUserByUsername("refused");
 
     var token = new UsernamePasswordAuthenticationToken("refused", "secret");
     assertThatExceptionOfType(DisabledException.class)
@@ -444,6 +476,8 @@ class LdaptiveAuthenticationManagerTest {
   private static void assertActual(LdaptiveAuthentication authentication, SoftAssertions softly) {
     List<GrantedAuthority> actualAuthorities = new ArrayList<>(authentication.getAuthorities());
     List<GrantedAuthority> expectedAuthorities = List.of(new SimpleGrantedAuthority("ROLE_tester"));
+    assertThat(authentication.getPrincipal())
+        .isNotNull();
     softly
         .assertThat(actualAuthorities)
         .containsExactlyInAnyOrderElementsOf(expectedAuthorities);

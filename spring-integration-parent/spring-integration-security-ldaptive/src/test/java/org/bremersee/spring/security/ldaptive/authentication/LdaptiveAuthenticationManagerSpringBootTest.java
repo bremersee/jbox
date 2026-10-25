@@ -16,11 +16,12 @@
 
 package org.bremersee.spring.security.ldaptive.authentication;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.bremersee.spring.security.core.EmailToUsernameResolver;
 import org.bremersee.spring.security.ldaptive.app.TestConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -63,9 +64,6 @@ class LdaptiveAuthenticationManagerSpringBootTest {
   @Autowired
   private LdaptiveAuthenticationManager authenticationManager;
 
-  @Autowired
-  private EmailToUsernameResolver emailToUsernameResolver;
-
   @LocalServerPort
   private int port;
 
@@ -95,8 +93,10 @@ class LdaptiveAuthenticationManagerSpringBootTest {
     // authenticate successfully
     LdaptiveAuthentication authenticationToken = (LdaptiveAuthentication) authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(
-            "anna.livia@bremersee.org", "topsecret"));
+            "anna", "topsecret"));
 
+    assertThat(authenticationToken.getPrincipal())
+        .isNotNull();
     softly
         .assertThat(authenticationToken.isAuthenticated())
         .isTrue();
@@ -153,21 +153,6 @@ class LdaptiveAuthenticationManagerSpringBootTest {
     softly
         .assertThat(helloResponse)
         .isEqualTo("Hello!");
-  }
-
-  /**
-   * Email to username.
-   *
-   * @param softly the softly
-   */
-  @Test
-  void emailToUsername(SoftAssertions softly) {
-    softly
-        .assertThat(emailToUsernameResolver.getUsernameByEmail("anna.livia@bremersee.org"))
-        .hasValue("anna");
-    softly
-        .assertThat(emailToUsernameResolver.getUsernameByEmail("anna"))
-        .isEmpty();
   }
 
 }

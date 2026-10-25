@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.security.ldaptive.authentication;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bremersee.spring.security.core.mapping.CaseTransformation;
 import org.ldaptive.SearchScope;
-import org.springframework.util.ObjectUtils;
 
 /**
  * The ldaptive authentication properties.
@@ -258,9 +259,9 @@ public class LdaptiveAuthenticationProperties implements Serializable {
      */
     @Override
     public String getUserFindOneFilter() {
-      if (ObjectUtils.isEmpty(userFindOneFilter)
-          && !ObjectUtils.isEmpty(getUserObjectClass())
-          && !ObjectUtils.isEmpty(getUsernameAttribute())) {
+      if (isEmpty(userFindOneFilter)
+          && !isEmpty(getUserObjectClass())
+          && !isEmpty(getUsernameAttribute())) {
         return String
             .format("(&(objectClass=%s)(%s={0}))", getUserObjectClass(), getUsernameAttribute());
       }
