@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.security.core;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +28,6 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.util.ObjectUtils;
 
 /**
  * The normalized authentication token.
@@ -51,7 +52,7 @@ public interface NormalizedAuthentication extends Authentication {
   @NonNull
   default Set<String> getGrantedAuthorityNames() {
     Collection<? extends GrantedAuthority> authorities = getAuthorities();
-    if (ObjectUtils.isEmpty(authorities)) {
+    if (isEmpty(authorities)) {
       return Set.of();
     }
     return authorities.stream()
@@ -77,7 +78,7 @@ public interface NormalizedAuthentication extends Authentication {
   @NonNull
   default Set<String> getGroupNames() {
     Collection<Group> groups = getGroups();
-    if (ObjectUtils.isEmpty(groups)) {
+    if (isEmpty(groups)) {
       return Set.of();
     }
     return groups.stream()
