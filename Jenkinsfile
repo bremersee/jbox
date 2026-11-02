@@ -7,8 +7,6 @@ pipeline {
     TEST = true
     DEPLOY = true
     SITE = true
-    SNAPSHOT_SITE = false
-    RELEASE_SITE = false
     DEPLOY_FEATURE = false
     CLEAN = true
   }
@@ -80,42 +78,6 @@ pipeline {
           git -C target/gh-pages push
           rm -rf target/gh-pages
         '''
-      }
-      // post {
-      //  always {
-      //    sh 'curl -s https://codecov.io/bash | bash -s - -t ${CODECOV_TOKEN}'
-      //  }
-      // }
-    }
-    stage('Snapshot Site') {
-      when {
-        allOf {
-          environment name: 'SNAPSHOT_SITE', value: 'true'
-          anyOf {
-            branch 'develop'
-            branch 'feature/*'
-            branch 'bugfix/*'
-          }
-        }
-      }
-      steps {
-        sh 'mvn -B -P build-system clean site-deploy'
-      }
-      post {
-        always {
-          sh 'curl -s https://codecov.io/bash | bash -s - -t ${CODECOV_TOKEN}'
-        }
-      }
-    }
-    stage('Release Site') {
-      when {
-        allOf {
-          branch 'main'
-          environment name: 'RELEASE_SITE', value: 'true'
-        }
-      }
-      steps {
-        sh 'mvn -B -P build-system,gh-pages-site site site:stage scm-publish:publish-scm'
       }
       post {
         always {

@@ -59,7 +59,7 @@ public class ReactiveInMemoryUserDetailsManagerAutoConfiguration {
   }
 
   /**
-   * Creates reactive user details service.
+   * Creates a reactive user details service.
    *
    * @return the reactive user details service
    */
