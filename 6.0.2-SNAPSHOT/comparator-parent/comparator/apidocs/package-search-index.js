@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.bremersee.comparator"},{"l":"org.bremersee.comparator.model"}];updateSearchResults();
