@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.spring.web.reactive.multipart","l":"MultipartFileBuilder"},{"p":"org.bremersee.spring.web.reactive.multipart","l":"MultipartFileBuilderImpl"}];updateSearchResults();

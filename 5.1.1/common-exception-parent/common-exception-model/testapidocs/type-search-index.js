@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.exception.model.app","l":"TestConfiguration.CustomTestErrorAttributes"},{"p":"org.bremersee.exception.model.app","l":"TestConfiguration.ErrorRestController"},{"p":"org.bremersee.exception.model.app","l":"TestConfiguration"}];updateSearchResults();

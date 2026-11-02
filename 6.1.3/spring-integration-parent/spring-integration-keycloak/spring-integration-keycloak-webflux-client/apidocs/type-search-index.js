@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"org.bremersee.keycloak.api.webflux","l":"AdminApi"},{"p":"org.bremersee.keycloak.api.webflux","l":"AdminApiMock"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.bremersee.keycloak.api.webflux","l":"KeycloakAdminClient"},{"p":"org.bremersee.keycloak.api.webflux","l":"KeycloakClientFactory"}];updateSearchResults();

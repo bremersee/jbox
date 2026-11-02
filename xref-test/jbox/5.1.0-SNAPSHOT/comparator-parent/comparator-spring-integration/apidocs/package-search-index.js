@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.bremersee.comparator.spring.converter"},{"l":"org.bremersee.comparator.spring.mapper"},{"l":"org.bremersee.comparator.spring.web"}];updateSearchResults();

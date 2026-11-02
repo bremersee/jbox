@@ -1,1 +1,0 @@
-typeSearchIndex = [{"p":"org.bremersee.acl.annotation","l":"AclHolderTest"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"}];updateSearchResults();

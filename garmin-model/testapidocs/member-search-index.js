@@ -1,1 +1,0 @@
-memberSearchIndex = [{"p":"org.bremersee.garmin","c":"JaxbContextBuilderTest","l":"JaxbContextBuilderTest()","u":"%3Cinit%3E()"},{"p":"org.bremersee.garmin","c":"JaxbContextBuilderTest","l":"testXml(SoftAssertions)","u":"testXml(org.assertj.core.api.SoftAssertions)"}];updateSearchResults();
