@@ -4,11 +4,11 @@ pipeline {
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
-    TEST = true
-    DEPLOY = true
-    SITE = true
+    TEST = false
+    DEPLOY = false
+    SITE = false
     DEPLOY_FEATURE = false
-    CLEAN = true
+    CLEAN = false
   }
   tools {
     jdk 'jdk21'
