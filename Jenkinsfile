@@ -5,8 +5,8 @@ pipeline {
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
     TEST = true
-    DEPLOY = true
-    SITE = true
+    DEPLOY = false
+    SITE = false
     CLEAN = true
   }
   tools {
@@ -58,7 +58,7 @@ pipeline {
             usernameVariable: 'MAVEN_GPG_KEYNAME',
             passwordVariable: 'MAVEN_GPG_PASSPHRASE')
         ]) {
-          sh 'mvn -B -P build-system,sign deploy'
+          sh 'mvn -B -P build-system,sign -DskipTests deploy'
         }
       }
     }
