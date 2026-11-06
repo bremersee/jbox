@@ -6,7 +6,7 @@
 
   <groupId>org.bremersee</groupId>
   <artifactId>common-parent</artifactId>
-  <version>6.1.4</version>
+  <version>6.1.5</version>
   <packaging>pom</packaging>
 
   <name>Common Parent</name>
@@ -54,7 +54,7 @@
     <repreproBinary>/opt/homebrew/bin/reprepro</repreproBinary>
     <debianRepoDir>/Volumes/debian</debianRepoDir>
 
-    <jbox.version>6.1.4</jbox.version>
+    <jbox.version>6.1.5</jbox.version>
     <spring-boot.version>4.1.2</spring-boot.version>
     <spring-boot-admin.version>4.1.2</spring-boot-admin.version>
     <spring-cloud.version>2025.1.4</spring-cloud.version>
@@ -168,15 +168,13 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>central</id>
-      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+      <id>bremersee-snapshots</id>
+      <url>https://mvn-repo.eixe.bremersee.org/snapshots</url>
     </snapshotRepository>
-    <site>
-      <id>bremersee-sites</id>
-      <url>
-        dav:https://nexus.bremersee.org/repository/maven-sites/common-parent/${project.version}
-      </url>
-    </site>
+    <repository>
+      <id>bremersee-releases</id>
+      <url>https://mvn-repo.eixe.bremersee.org/releases</url>
+    </repository>
   </distributionManagement>
 
   <dependencyManagement>
@@ -582,7 +580,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${maven-pmd-plugin.version}</version>
-          <!--
+          <!-- Pmd dependencies
           <dependencies>
             <dependency>
               <groupId>net.sourceforge.pmd</groupId>
@@ -681,7 +679,7 @@
                   </excludes>
                   <message>
                     Please consider using the maven-invoker-plugin
-                    (http://maven.apache.org/plugins/maven-invoker-plugin/)!
+                    (https://maven.apache.org/plugins/maven-invoker-plugin/)!
                   </message>
                 </bannedPlugins>
                 <requireMavenVersion>
@@ -689,8 +687,8 @@
                   <message>Invalid Maven version. It should, at least, be 3.3.1</message>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>1.8</version>
-                  <message>Invalid Java version. It should, at least, be 1.8</message>
+                  <version>${java.version}</version>
+                  <message>Invalid Java version. It should, at least, be ${java.version}</message>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -831,7 +829,7 @@
     </profile>
 
     <profile>
-      <id>deploy</id>
+      <id>sign</id>
       <build>
         <plugins>
           <plugin>
@@ -847,7 +845,37 @@
                 </goals>
                 <configuration>
                   <keyname>${gpg.keyname}</keyname>
+                  <!-- Uses environment variable MAVEN_GPG_PASSPHRASE
                   <passphrase>${gpg.passphrase}</passphrase>
+                  -->
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sonatype</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts-for-sonatype</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <keyname>${gpg.keyname}</keyname>
+                  <!-- Uses environment variable MAVEN_GPG_PASSPHRASE
+                  <passphrase>${gpg.passphrase}</passphrase>
+                  -->
                 </configuration>
               </execution>
             </executions>
@@ -883,7 +911,11 @@
             <version>${maven-site-plugin.version}</version>
             <configuration>
               <generateReports>true</generateReports>
+              <!-- Adds version to gh-pages -->
+              <stagingDirectory>${gh-pages-staging-dir}</stagingDirectory>
+              <!-- Only last build
               <stagingDirectory>${gh-pages-staging-dir}/${project.version}</stagingDirectory>
+              -->
             </configuration>
           </plugin>
           <plugin>
@@ -896,24 +928,6 @@
               <pubScmUrl>scm:git:ssh://git@github.com/bremersee/${github.repo}.git</pubScmUrl>
               <scmBranch>gh-pages</scmBranch>
               <content>${gh-pages-staging-dir}</content>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>feature</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <version>${maven-deploy-plugin.version}</version>
-            <configuration>
-              <altSnapshotDeploymentRepository>
-                bremersee-snapshots::https://nexus.bremersee.org/repository/maven-snapshots
-              </altSnapshotDeploymentRepository>
             </configuration>
           </plugin>
         </plugins>
