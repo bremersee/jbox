@@ -4,10 +4,9 @@ pipeline {
   }
   environment {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
-    TEST = false
-    DEPLOY = false
+    TEST = true
+    DEPLOY = true
     SITE = false
-    DEPLOY_FEATURE = false
     CLEAN = false
   }
   tools {
@@ -53,7 +52,14 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -B -P build-system,deploy deploy'
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'maven-gpg-key',
+            usernameVariable: 'MAVEN_GPG_KEYNAME',
+            passwordVariable: 'MAVEN_GPG_PASSPHRASE')
+        ]) {
+          sh 'mvn -B -P build-system,sign deploy'
+        }
       }
     }
     stage('Site') {
@@ -83,17 +89,6 @@ pipeline {
         always {
           sh 'curl -s https://codecov.io/bash | bash -s - -t ${CODECOV_TOKEN}'
         }
-      }
-    }
-    stage('Deploy Feature') {
-      when {
-        allOf {
-          branch 'feature/*'
-          environment name: 'DEPLOY_FEATURE', value: 'true'
-        }
-      }
-      steps {
-        sh 'mvn -B -P build-system,feature,allow-features clean deploy'
       }
     }
     stage('Clean') {
