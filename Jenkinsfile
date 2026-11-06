@@ -6,8 +6,8 @@ pipeline {
     CODECOV_TOKEN = credentials('jbox-codecov-token')
     TEST = true
     DEPLOY = true
-    SITE = false
-    CLEAN = false
+    SITE = true
+    CLEAN = true
   }
   tools {
     jdk 'jdk21'
