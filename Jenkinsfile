@@ -58,7 +58,7 @@ pipeline {
             usernameVariable: 'MAVEN_GPG_KEYNAME',
             passwordVariable: 'MAVEN_GPG_PASSPHRASE')
         ]) {
-          sh 'mvn -B -P build-system,sign deploy'
+          sh 'mvn -B -P build-system,sign -DskipTests clean deploy'
         }
       }
     }

@@ -6,7 +6,7 @@
 
   <groupId>org.bremersee</groupId>
   <artifactId>common-parent</artifactId>
-  <version>6.1.5</version>
+  <version>6.1.6</version>
   <packaging>pom</packaging>
 
   <name>Common Parent</name>
@@ -54,7 +54,7 @@
     <repreproBinary>/opt/homebrew/bin/reprepro</repreproBinary>
     <debianRepoDir>/Volumes/debian</debianRepoDir>
 
-    <jbox.version>6.1.5</jbox.version>
+    <jbox.version>6.1.6</jbox.version>
     <spring-boot.version>4.1.2</spring-boot.version>
     <spring-boot-admin.version>4.1.2</spring-boot-admin.version>
     <spring-cloud.version>2025.1.4</spring-cloud.version>
@@ -175,6 +175,12 @@
       <id>bremersee-releases</id>
       <url>https://mvn-repo.eixe.bremersee.org/releases</url>
     </repository>
+    <site>
+      <id>bremersee-sites</id>
+      <url>
+        dav:https://webdav.eixe.bremersee.org/maven-sites/jbox/${project.version}
+      </url>
+    </site>
   </distributionManagement>
 
   <dependencyManagement>
@@ -897,12 +903,6 @@
 
     <profile>
       <id>gh-pages-site</id>
-      <distributionManagement>
-        <site>
-          <id>github</id>
-          <url>dav:https://bremersee.github.io/${github.repo}</url>
-        </site>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
@@ -911,11 +911,7 @@
             <version>${maven-site-plugin.version}</version>
             <configuration>
               <generateReports>true</generateReports>
-              <!-- Adds version to gh-pages -->
-              <stagingDirectory>${gh-pages-staging-dir}</stagingDirectory>
-              <!-- Only last build
               <stagingDirectory>${gh-pages-staging-dir}/${project.version}</stagingDirectory>
-              -->
             </configuration>
           </plugin>
           <plugin>
