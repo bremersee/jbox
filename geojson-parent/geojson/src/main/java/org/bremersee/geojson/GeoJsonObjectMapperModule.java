@@ -79,17 +79,16 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
    * @param geometryFactory the geometry factory
    */
   public GeoJsonObjectMapperModule(GeometryFactory geometryFactory) {
-    this(geometryFactory, false, false);
+    this(geometryFactory, false);
   }
 
   /**
    * Instantiates a new geo json object mapper module.
    *
    * @param withBoundingBox with bounding box
-   * @param useBigDecimal the use big decimal
    */
-  public GeoJsonObjectMapperModule(boolean withBoundingBox, boolean useBigDecimal) {
-    this(new GeometryFactory(), withBoundingBox, useBigDecimal);
+  public GeoJsonObjectMapperModule(boolean withBoundingBox) {
+    this(new GeometryFactory(), withBoundingBox);
   }
 
   /**
@@ -97,16 +96,14 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
    *
    * @param geometryFactory the geometry factory
    * @param withBoundingBox the with bounding box
-   * @param useBigDecimal the use big decimal
    */
   public GeoJsonObjectMapperModule(
       GeometryFactory geometryFactory,
-      boolean withBoundingBox,
-      boolean useBigDecimal) {
+      boolean withBoundingBox) {
 
     super(TYPE_ID, getVersion());
     setDeserializers(new SimpleDeserializers(getDeserializers(geometryFactory)));
-    addSerializer(Geometry.class, new JacksonGeometrySerializer(withBoundingBox, useBigDecimal));
+    addSerializer(Geometry.class, new JacksonGeometrySerializer(withBoundingBox));
   }
 
   private static Version getVersion(String version) {

@@ -45,7 +45,7 @@ class GeoJsonObjectMapperModuleTest {
   private static final GeoJsonGeometryFactory geometryFactory = new GeoJsonGeometryFactory();
 
   private static final JsonMapper target = JsonMapper.builder()
-      .addModules(new GeoJsonObjectMapperModule(geometryFactory, true, true))
+      .addModules(new GeoJsonObjectMapperModule(geometryFactory, true))
       .build();
 
   /**
@@ -55,8 +55,6 @@ class GeoJsonObjectMapperModuleTest {
   void mapPoint() {
     var expected = geometryFactory.createPoint(1.234, 5.6789);
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, Point.class);
     //noinspection unchecked
     assertThat(actual).isEqualTo(expected);
@@ -70,8 +68,6 @@ class GeoJsonObjectMapperModuleTest {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "LINESTRING (0 0, 0 1, 1 1, 1 0, 0 0)");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, LineString.class);
     //noinspection unchecked
     assertThat(actual).isEqualTo(expected);
@@ -85,8 +81,6 @@ class GeoJsonObjectMapperModuleTest {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, Polygon.class);
     //noinspection unchecked
     assertThat(actual).isEqualTo(expected);
@@ -100,8 +94,6 @@ class GeoJsonObjectMapperModuleTest {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "MULTIPOINT ((1 2), (6 7))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, MultiPoint.class);
     //noinspection unchecked
     assertThat(actual).isEqualTo(expected);
@@ -115,8 +107,6 @@ class GeoJsonObjectMapperModuleTest {
     var expected = geometryFactory.createGeometryFromWellKnownText(
         "MULTILINESTRING ((0 0, 0 1, 1 1, 1 0, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, MultiLineString.class);
     //noinspection unchecked
     assertThat(actual).isEqualTo(expected);
@@ -132,8 +122,6 @@ class GeoJsonObjectMapperModuleTest {
             + "(0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2 0.1, 0.1 0.1), "
             + "(0.8 0.8, 0.8 0.9, 0.9 0.9, 0.9 0.8, 0.8 0.8)))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, MultiPolygon.class);
     //noinspection unchecked
     assertThat(actual).isEqualTo(expected);
@@ -153,8 +141,6 @@ class GeoJsonObjectMapperModuleTest {
             + "(0.8 0.8, 0.8 0.9, 0.9 0.9, 0.9 0.8, 0.8 0.8))), "
             + "GEOMETRYCOLLECTION (POINT (17.8 6.001)))");
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
-
     var actual = target.readValue(json, GeometryCollection.class);
     assertThat(GeoJsonGeometryFactory.equals(actual, expected))
         .isTrue();
@@ -173,7 +159,6 @@ class GeoJsonObjectMapperModuleTest {
         true,
         Map.of("foo", "bar"));
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
     GeoJsonFeature<Geometry, Map<String, Object>> actual = target
         .readValue(json, new TypeReference<>() {
         });
@@ -200,7 +185,6 @@ class GeoJsonObjectMapperModuleTest {
         Map.of("foo", "bar"));
     var expected = new GeoJsonFeatureCollection<>(List.of(f0, f1), true);
     var json = target.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
-    System.out.println(json);
     GeoJsonFeatureCollection<Geometry, Object> actual = target
         .readValue(json, new TypeReference<>() {
         });

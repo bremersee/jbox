@@ -89,17 +89,16 @@ public class GeometryToJsonConverter implements Serializable {
    * Instantiates a new geometry to json converter.
    */
   public GeometryToJsonConverter() {
-    this(false, false);
+    this(false);
   }
 
   /**
    * Instantiates a new geometry to json converter.
    *
    * @param withBoundingBox with bounding box
-   * @param useBigDecimal use big decimal
    */
-  public GeometryToJsonConverter(boolean withBoundingBox, boolean useBigDecimal) {
-    CoordinateToListConverter coordinateConverter = new CoordinateToListConverter(useBigDecimal);
+  public GeometryToJsonConverter(boolean withBoundingBox) {
+    CoordinateToListConverter coordinateConverter = new CoordinateToListConverter();
     CoordinateSequenceToListConverter coordinateSequenceConverter
         = new CoordinateSequenceToListConverter(coordinateConverter);
 

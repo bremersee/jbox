@@ -39,18 +39,17 @@ public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
    * Instantiates a new Jackson geometry serializer.
    */
   public JacksonGeometrySerializer() {
-    this(false, false);
+    this(false);
   }
 
   /**
    * Instantiates a new Jackson geometry serializer.
    *
    * @param withBoundingBox the with bounding box
-   * @param useBigDecimal the use big decimal
    */
-  public JacksonGeometrySerializer(boolean withBoundingBox, boolean useBigDecimal) {
+  public JacksonGeometrySerializer(boolean withBoundingBox) {
     super(Geometry.class);
-    this.converter = new GeometryToJsonConverter(withBoundingBox, useBigDecimal);
+    this.converter = new GeometryToJsonConverter(withBoundingBox);
   }
 
   @Override
