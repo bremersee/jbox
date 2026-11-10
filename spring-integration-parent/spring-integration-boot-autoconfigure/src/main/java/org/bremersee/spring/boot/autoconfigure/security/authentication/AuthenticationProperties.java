@@ -715,6 +715,7 @@ public class AuthenticationProperties {
               .lastName(user.getLastName())
               .email(user.getEmail())
               .authorities(user.getAuthorities().stream()
+                  .filter(auth -> !isEmpty(auth))
                   .map(SimpleGrantedAuthority::new)
                   .toList())
               .build())
