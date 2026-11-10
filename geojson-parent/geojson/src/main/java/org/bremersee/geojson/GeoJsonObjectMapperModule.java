@@ -59,6 +59,8 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  private static final String VERSION = "6.1.7-SNAPSHOT";
+
   /**
    * The constant TYPE_ID.
    */
@@ -107,41 +109,30 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
     addSerializer(Geometry.class, new JacksonGeometrySerializer(withBoundingBox, useBigDecimal));
   }
 
-  private static Version getVersion() {
-
-    int defaultMajor = 6;
-    int defaultMinor = 0;
-    int defaultPatchLevel = 0;
-    String defaultSnapshotInfo = "SNAPSHOT";
-
-    int major = defaultMajor;
-    int minor = defaultMinor;
-    int patchLevel = defaultPatchLevel;
-    String snapshotInfo = defaultSnapshotInfo;
-
-    String version = GeoJsonObjectMapperModule.class.getPackage().getImplementationVersion();
-    if (version != null) {
-      try {
-        int i = version.indexOf('-');
-        if (i < 0) {
-          snapshotInfo = null;
-        } else {
-          snapshotInfo = version.substring(i + 1);
-          String[] a = version.substring(0, i).split(Pattern.quote("."));
-          major = Integer.parseInt(a[0]);
-          minor = Integer.parseInt(a[1]);
-          patchLevel = Integer.parseInt(a[2]);
-        }
-
-      } catch (RuntimeException e) {
-        major = defaultMajor;
-        minor = defaultMinor;
-        snapshotInfo = defaultSnapshotInfo;
+  private static Version getVersion(String version) {
+    try {
+      String snapshotInfo;
+      int i = version.indexOf('-');
+      if (i > 0) {
+        snapshotInfo = version.substring(i + 1);
+      } else {
+        snapshotInfo = null;
+        i = version.length();
       }
-    }
+      String[] a = version.substring(0, i).split(Pattern.quote("."));
+      int major = Integer.parseInt(a[0]);
+      int minor = Integer.parseInt(a[1]);
+      int patchLevel = Integer.parseInt(a[2]);
+      return new Version(major, minor, patchLevel, snapshotInfo, "org.bremersee", "geojson");
 
-    return new Version(major, minor, patchLevel, snapshotInfo, "org.bremersee",
-        "geojson");
+    } catch (RuntimeException e) {
+      return getVersion(VERSION);
+    }
+  }
+
+  private static Version getVersion() {
+    String version = GeoJsonObjectMapperModule.class.getPackage().getImplementationVersion();
+    return getVersion(version);
   }
 
   private static Map<Class<?>, ValueDeserializer<?>> getDeserializers(
