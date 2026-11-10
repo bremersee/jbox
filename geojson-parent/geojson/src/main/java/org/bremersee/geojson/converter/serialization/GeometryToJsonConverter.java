@@ -28,9 +28,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.bremersee.geojson.GeoJsonConstants;
 import org.bremersee.geojson.GeoJsonGeometryFactory;
+import org.jspecify.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LineString;
@@ -124,52 +124,48 @@ public class GeometryToJsonConverter implements Serializable {
    * @param source the source
    * @return the map
    */
+  @Nullable
   public Map<String, Object> convert(Geometry source) {
     if (isNull(source)) {
       return null;
     }
-    if (source instanceof Point point) {
-      return pointConverter.convert(point);
-    }
-
-    if (source instanceof LineString lineString) {
-      return lineStringConverter.convert(lineString);
-    }
-
-    if (source instanceof Polygon polygon) {
-      return polygonConverter.convert(polygon);
-    }
-
-    if (source instanceof MultiPoint multiPoint) {
-      return multiPointConverter.convert(multiPoint);
-    }
-
-    if (source instanceof MultiLineString multiLineString) {
-      return multiLineStringConverter.convert(multiLineString);
-    }
-
-    if (source instanceof MultiPolygon multiPolygon) {
-      return multiPolygonConverter.convert(multiPolygon);
-    }
-
-    if (source instanceof GeometryCollection) {
-      List<Map<String, Object>> geometries = new ArrayList<>(source.getNumGeometries());
-      for (int i = 0; i < source.getNumGeometries(); i++) {
-        geometries.add(convert(source.getGeometryN(i)));
+    switch (source) {
+      case Point point -> {
+        return pointConverter.convert(point);
       }
-      Map<String, Object> map = new LinkedHashMap<>();
-      map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);
-      if (withBoundingBox) {
-        Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))
-            .map(bbox -> Arrays.stream(bbox).boxed().toList())
-            .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
+      case LineString lineString -> {
+        return lineStringConverter.convert(lineString);
       }
-      map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));
-      return unmodifiableMap(map);
+      case Polygon polygon -> {
+        return polygonConverter.convert(polygon);
+      }
+      case MultiPoint multiPoint -> {
+        return multiPointConverter.convert(multiPoint);
+      }
+      case MultiLineString multiLineString -> {
+        return multiLineStringConverter.convert(multiLineString);
+      }
+      case MultiPolygon multiPolygon -> {
+        return multiPolygonConverter.convert(multiPolygon);
+      }
+      case GeometryCollection geometryCol -> {
+        List<Map<String, Object>> geometries = new ArrayList<>(geometryCol.getNumGeometries());
+        for (int i = 0; i < geometryCol.getNumGeometries(); i++) {
+          geometries.add(convert(geometryCol.getGeometryN(i)));
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);
+        if (withBoundingBox) {
+          Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(geometryCol))
+              .map(bbox -> Arrays.stream(bbox).boxed().toList())
+              .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
+        }
+        map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));
+        return unmodifiableMap(map);
+      }
+      default -> throw new IllegalArgumentException("Geometry [" + source + "] is unsupported. It "
+          + "must be an instance of Point, LineString, Polygon, MultiPoint, MultiLineString, "
+          + "MultiPolygon or GeometryCollection.");
     }
-
-    throw new IllegalArgumentException("Geometry [" + source + "] is unsupported. It must be "
-        + "an instance of Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon "
-        + "or GeometryCollection.");
   }
 }
