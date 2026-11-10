@@ -149,23 +149,28 @@ public class GeometryToJsonConverter implements Serializable {
         return multiPolygonConverter.convert(multiPolygon);
       }
       case GeometryCollection geometryCol -> {
-        List<Map<String, Object>> geometries = new ArrayList<>(geometryCol.getNumGeometries());
-        for (int i = 0; i < geometryCol.getNumGeometries(); i++) {
-          geometries.add(convert(geometryCol.getGeometryN(i)));
-        }
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);
-        if (withBoundingBox) {
-          Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(geometryCol))
-              .map(bbox -> Arrays.stream(bbox).boxed().toList())
-              .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
-        }
-        map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));
-        return unmodifiableMap(map);
+        return convert(geometryCol);
       }
       default -> throw new IllegalArgumentException("Geometry [" + source + "] is unsupported. It "
           + "must be an instance of Point, LineString, Polygon, MultiPoint, MultiLineString, "
           + "MultiPolygon or GeometryCollection.");
     }
   }
+
+  private Map<String, Object> convert(GeometryCollection source) {
+    List<Map<String, Object>> geometries = new ArrayList<>(source.getNumGeometries());
+    for (int i = 0; i < source.getNumGeometries(); i++) {
+      geometries.add(convert(source.getGeometryN(i)));
+    }
+    Map<String, Object> map = new LinkedHashMap<>();
+    map.put(GeoJsonConstants.TYPE, GeoJsonConstants.GEOMETRY_COLLECTION);
+    if (withBoundingBox) {
+      Optional.ofNullable(GeoJsonGeometryFactory.getBoundingBox(source))
+          .map(bbox -> Arrays.stream(bbox).boxed().toList())
+          .ifPresent(bbox -> map.put(GeoJsonConstants.BBOX, bbox));
+    }
+    map.put(GeoJsonConstants.GEOMETRIES, unmodifiableList(geometries));
+    return unmodifiableMap(map);
+  }
+
 }

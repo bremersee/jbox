@@ -16,7 +16,9 @@
 
 package org.bremersee.geojson.converter.serialization;
 
+import java.util.Map;
 import org.locationtech.jts.geom.Geometry;
+import org.springframework.util.ObjectUtils;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ser.std.StdSerializer;
@@ -57,10 +59,11 @@ public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
       JsonGenerator jgen,
       SerializationContext serializationContext) {
 
-    if (value == null) {
+    Map<String, Object> json = converter.convert(value);
+    if (ObjectUtils.isEmpty(json)) {
       jgen.writeNull();
     } else {
-      jgen.writePOJO(converter.convert(value));
+      jgen.writePOJO(json);
     }
   }
 
