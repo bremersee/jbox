@@ -366,6 +366,7 @@ public class SortOrderItem implements Serializable {
   /**
    * The direction.
    */
+  @Schema(enumAsRef = true)
   public enum Direction {
 
     /**
@@ -418,6 +419,7 @@ public class SortOrderItem implements Serializable {
   /**
    * The case-handling.
    */
+  @Schema(enumAsRef = true)
   public enum CaseHandling {
 
     /**
@@ -470,6 +472,7 @@ public class SortOrderItem implements Serializable {
   /**
    * The null-handling.
    */
+  @Schema(enumAsRef = true)
   public enum NullHandling {
 
     /**
