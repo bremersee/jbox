@@ -90,7 +90,7 @@ public class AclCriteriaAndUpdateBuilder {
     for (AccessControlEntryModifications mod : mods) {
 
       // guest
-      addAndSetUpdate = addAndSetUpdate.set(
+      addAndSetUpdate.set(
           path(Acl.ENTRIES, mod.getPermission(), Ace.GUEST),
           mod.isGuest());
 
@@ -102,7 +102,7 @@ public class AclCriteriaAndUpdateBuilder {
       }
       if (!mod.getRemoveUsers().isEmpty()) {
         isSomethingRemoved = true;
-        removeUpdate = removeUpdate.pullAll(
+        removeUpdate.pullAll(
             path(Acl.ENTRIES, mod.getPermission(), Ace.USERS),
             mod.getRemoveUsers().toArray(new String[0]));
       }
@@ -115,7 +115,7 @@ public class AclCriteriaAndUpdateBuilder {
       }
       if (!mod.getRemoveRoles().isEmpty()) {
         isSomethingRemoved = true;
-        removeUpdate = removeUpdate.pullAll(
+        removeUpdate.pullAll(
             path(Acl.ENTRIES, mod.getPermission(), Ace.ROLES),
             mod.getRemoveRoles().toArray(new String[0]));
       }
@@ -127,7 +127,7 @@ public class AclCriteriaAndUpdateBuilder {
       }
       if (!mod.getRemoveGroups().isEmpty()) {
         isSomethingRemoved = true;
-        removeUpdate = removeUpdate.pullAll(
+        removeUpdate.pullAll(
             path(Acl.ENTRIES, mod.getPermission(), Ace.GROUPS),
             mod.getRemoveGroups().toArray(new String[0]));
       }

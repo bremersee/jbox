@@ -4,4 +4,4 @@
 
 A bundle of bremersee maven projects.
 
-[Maven-Site](https://bremersee.github.io/jbox/6.1.6/index.html)
+[Maven-Site](https://bremersee.github.io/jbox/6.1.7/index.html)

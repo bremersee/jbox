@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
 /**
- * The type Geometry to json converter test.
+ * The geometry to json converter test.
  *
  * @author Christian Bremer
  */

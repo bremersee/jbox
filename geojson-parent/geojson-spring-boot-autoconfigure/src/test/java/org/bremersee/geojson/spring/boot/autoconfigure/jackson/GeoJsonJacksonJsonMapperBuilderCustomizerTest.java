@@ -50,12 +50,10 @@ class GeoJsonJacksonJsonMapperBuilderCustomizerTest {
   @Test
   void init() {
     GeoJsonProperties properties = new GeoJsonProperties();
-    properties.setUseBigDecimal(true);
     properties.setWithBoundingBox(true);
     properties = spy(properties);
     GeoJsonJacksonJsonMapperBuilderCustomizer target = newInstance(properties);
     target.init();
-    verify(properties, atLeast(1)).isUseBigDecimal();
     verify(properties, atLeast(1)).isWithBoundingBox();
   }
 
@@ -65,14 +63,12 @@ class GeoJsonJacksonJsonMapperBuilderCustomizerTest {
   @Test
   void customize() {
     GeoJsonProperties properties = new GeoJsonProperties();
-    properties.setUseBigDecimal(false);
     properties.setWithBoundingBox(false);
     properties = spy(properties);
     GeoJsonJacksonJsonMapperBuilderCustomizer target = newInstance(properties);
     JsonMapper.Builder builder = mock(JsonMapper.Builder.class);
     target.customize(builder);
     verify(builder).addModules(any(GeoJsonObjectMapperModule.class));
-    verify(properties, atLeast(1)).isUseBigDecimal();
     verify(properties, atLeast(1)).isWithBoundingBox();
   }
 }

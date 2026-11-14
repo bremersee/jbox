@@ -16,7 +16,9 @@
 
 package org.bremersee.geojson.converter.serialization;
 
+import java.util.Map;
 import org.locationtech.jts.geom.Geometry;
+import org.springframework.util.ObjectUtils;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ser.std.StdSerializer;
@@ -37,18 +39,17 @@ public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
    * Instantiates a new Jackson geometry serializer.
    */
   public JacksonGeometrySerializer() {
-    this(false, false);
+    this(false);
   }
 
   /**
    * Instantiates a new Jackson geometry serializer.
    *
    * @param withBoundingBox the with bounding box
-   * @param useBigDecimal the use big decimal
    */
-  public JacksonGeometrySerializer(boolean withBoundingBox, boolean useBigDecimal) {
+  public JacksonGeometrySerializer(boolean withBoundingBox) {
     super(Geometry.class);
-    this.converter = new GeometryToJsonConverter(withBoundingBox, useBigDecimal);
+    this.converter = new GeometryToJsonConverter(withBoundingBox);
   }
 
   @Override
@@ -57,10 +58,11 @@ public class JacksonGeometrySerializer extends StdSerializer<Geometry> {
       JsonGenerator jgen,
       SerializationContext serializationContext) {
 
-    if (value == null) {
+    Map<String, Object> json = converter.convert(value);
+    if (ObjectUtils.isEmpty(json)) {
       jgen.writeNull();
     } else {
-      jgen.writePOJO(converter.convert(value));
+      jgen.writePOJO(json);
     }
   }
 

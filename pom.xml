@@ -6,7 +6,7 @@
 
   <groupId>org.bremersee</groupId>
   <artifactId>common-parent</artifactId>
-  <version>6.1.6</version>
+  <version>6.1.7</version>
   <packaging>pom</packaging>
 
   <name>Common Parent</name>
@@ -54,7 +54,7 @@
     <repreproBinary>/opt/homebrew/bin/reprepro</repreproBinary>
     <debianRepoDir>/Volumes/debian</debianRepoDir>
 
-    <jbox.version>6.1.6</jbox.version>
+    <jbox.version>6.1.7</jbox.version>
     <spring-boot.version>4.1.2</spring-boot.version>
     <spring-boot-admin.version>4.1.2</spring-boot-admin.version>
     <spring-cloud.version>2025.1.4</spring-cloud.version>
@@ -72,7 +72,7 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <minio.version>9.0.3</minio.version>
     <mock-server.version>5.15.0</mock-server.version>
-    <openapi-generator.version>7.26.0</openapi-generator.version>
+    <openapi-generator.version>7.27.0</openapi-generator.version>
     <passay.version>2.0.0</passay.version>
     <reflections.version>0.10.2</reflections.version>
     <springdoc.version>3.1.1</springdoc.version>

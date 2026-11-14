@@ -59,6 +59,8 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  private static final String VERSION = "6.1.7";
+
   /**
    * The constant TYPE_ID.
    */
@@ -77,17 +79,16 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
    * @param geometryFactory the geometry factory
    */
   public GeoJsonObjectMapperModule(GeometryFactory geometryFactory) {
-    this(geometryFactory, false, false);
+    this(geometryFactory, false);
   }
 
   /**
    * Instantiates a new geo json object mapper module.
    *
    * @param withBoundingBox with bounding box
-   * @param useBigDecimal the use big decimal
    */
-  public GeoJsonObjectMapperModule(boolean withBoundingBox, boolean useBigDecimal) {
-    this(new GeometryFactory(), withBoundingBox, useBigDecimal);
+  public GeoJsonObjectMapperModule(boolean withBoundingBox) {
+    this(new GeometryFactory(), withBoundingBox);
   }
 
   /**
@@ -95,53 +96,40 @@ public class GeoJsonObjectMapperModule extends SimpleModule {
    *
    * @param geometryFactory the geometry factory
    * @param withBoundingBox the with bounding box
-   * @param useBigDecimal the use big decimal
    */
   public GeoJsonObjectMapperModule(
       GeometryFactory geometryFactory,
-      boolean withBoundingBox,
-      boolean useBigDecimal) {
+      boolean withBoundingBox) {
 
     super(TYPE_ID, getVersion());
     setDeserializers(new SimpleDeserializers(getDeserializers(geometryFactory)));
-    addSerializer(Geometry.class, new JacksonGeometrySerializer(withBoundingBox, useBigDecimal));
+    addSerializer(Geometry.class, new JacksonGeometrySerializer(withBoundingBox));
+  }
+
+  private static Version getVersion(String version) {
+    try {
+      String snapshotInfo;
+      int i = version.indexOf('-');
+      if (i > 0) {
+        snapshotInfo = version.substring(i + 1);
+      } else {
+        snapshotInfo = null;
+        i = version.length();
+      }
+      String[] a = version.substring(0, i).split(Pattern.quote("."));
+      int major = Integer.parseInt(a[0]);
+      int minor = Integer.parseInt(a[1]);
+      int patchLevel = Integer.parseInt(a[2]);
+      return new Version(major, minor, patchLevel, snapshotInfo, "org.bremersee", "geojson");
+
+    } catch (RuntimeException e) {
+      return getVersion(VERSION);
+    }
   }
 
   private static Version getVersion() {
-
-    int defaultMajor = 6;
-    int defaultMinor = 0;
-    int defaultPatchLevel = 0;
-    String defaultSnapshotInfo = "SNAPSHOT";
-
-    int major = defaultMajor;
-    int minor = defaultMinor;
-    int patchLevel = defaultPatchLevel;
-    String snapshotInfo = defaultSnapshotInfo;
-
     String version = GeoJsonObjectMapperModule.class.getPackage().getImplementationVersion();
-    if (version != null) {
-      try {
-        int i = version.indexOf('-');
-        if (i < 0) {
-          snapshotInfo = null;
-        } else {
-          snapshotInfo = version.substring(i + 1);
-          String[] a = version.substring(0, i).split(Pattern.quote("."));
-          major = Integer.parseInt(a[0]);
-          minor = Integer.parseInt(a[1]);
-          patchLevel = Integer.parseInt(a[2]);
-        }
-
-      } catch (RuntimeException e) {
-        major = defaultMajor;
-        minor = defaultMinor;
-        snapshotInfo = defaultSnapshotInfo;
-      }
-    }
-
-    return new Version(major, minor, patchLevel, snapshotInfo, "org.bremersee",
-        "geojson");
+    return getVersion(version);
   }
 
   private static Map<Class<?>, ValueDeserializer<?>> getDeserializers(

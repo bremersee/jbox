@@ -35,6 +35,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Exclude;
 import org.bremersee.spring.security.core.NormalizedPrincipalDetails;
 import org.bremersee.spring.security.core.NormalizedUserDetails;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -94,6 +95,7 @@ public class AuthenticationProperties {
     /**
      * The key.
      */
+    @Exclude
     private String key;
 
     /**
@@ -713,6 +715,7 @@ public class AuthenticationProperties {
               .lastName(user.getLastName())
               .email(user.getEmail())
               .authorities(user.getAuthorities().stream()
+                  .filter(auth -> !isEmpty(auth))
                   .map(SimpleGrantedAuthority::new)
                   .toList())
               .build())

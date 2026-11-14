@@ -60,15 +60,11 @@ class CoordinateToListConverter implements Serializable {
     TEST_NUMBER_FORMAT.setGroupingUsed(false);
   }
 
-  private final boolean useBigDecimal;
-
   /**
    * Instantiates a new Coordinate to list converter.
-   *
-   * @param useBigDecimal the use big decimal
    */
-  CoordinateToListConverter(boolean useBigDecimal) {
-    this.useBigDecimal = useBigDecimal;
+  CoordinateToListConverter() {
+    super();
   }
 
   /**
@@ -97,9 +93,9 @@ class CoordinateToListConverter implements Serializable {
     }
     if (formatValue(value)) {
       String strValue = NUMBER_FORMAT.format(value);
-      return useBigDecimal ? new BigDecimal(strValue) : new BigDecimal(strValue).doubleValue();
+      return new BigDecimal(strValue).doubleValue();
     }
-    return useBigDecimal ? BigDecimal.valueOf(value) : value;
+    return value;
   }
 
   private boolean formatValue(final double value) {

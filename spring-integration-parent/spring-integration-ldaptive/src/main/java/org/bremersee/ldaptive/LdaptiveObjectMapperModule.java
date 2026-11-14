@@ -19,6 +19,8 @@ public class LdaptiveObjectMapperModule extends SimpleModule {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  private static final String VERSION = "6.1.7";
+
   /**
    * The constant TYPE_ID.
    */
@@ -35,41 +37,31 @@ public class LdaptiveObjectMapperModule extends SimpleModule {
     addSerializer(LdapEntry.class, new JacksonLdapEntrySerializer());
   }
 
-  private static Version getVersion() {
-
-    int defaultMajor = 6;
-    int defaultMinor = 0;
-    int defaultPatchLevel = 0;
-    String defaultSnapshotInfo = "SNAPSHOT";
-
-    int major = defaultMajor;
-    int minor = defaultMinor;
-    int patchLevel = defaultPatchLevel;
-    String snapshotInfo = defaultSnapshotInfo;
-
-    String version = LdaptiveObjectMapperModule.class.getPackage().getImplementationVersion();
-    if (version != null) {
-      try {
-        int i = version.indexOf('-');
-        if (i < 0) {
-          snapshotInfo = null;
-        } else {
-          snapshotInfo = version.substring(i + 1);
-          String[] a = version.substring(0, i).split(Pattern.quote("."));
-          major = Integer.parseInt(a[0]);
-          minor = Integer.parseInt(a[1]);
-          patchLevel = Integer.parseInt(a[2]);
-        }
-
-      } catch (RuntimeException e) {
-        major = defaultMajor;
-        minor = defaultMinor;
-        snapshotInfo = defaultSnapshotInfo;
+  private static Version getVersion(String version) {
+    try {
+      String snapshotInfo;
+      int i = version.indexOf('-');
+      if (i > 0) {
+        snapshotInfo = version.substring(i + 1);
+      } else {
+        snapshotInfo = null;
+        i = version.length();
       }
-    }
+      String[] a = version.substring(0, i).split(Pattern.quote("."));
+      int major = Integer.parseInt(a[0]);
+      int minor = Integer.parseInt(a[1]);
+      int patchLevel = Integer.parseInt(a[2]);
+      return new Version(major, minor, patchLevel, snapshotInfo, "org.bremersee",
+          "spring-integration-ldaptive");
 
-    return new Version(major, minor, patchLevel, snapshotInfo, "org.bremersee",
-        "spring-integration-ldaptive");
+    } catch (RuntimeException e) {
+      return getVersion(VERSION);
+    }
+  }
+
+  private static Version getVersion() {
+    String version = LdaptiveObjectMapperModule.class.getPackage().getImplementationVersion();
+    return getVersion(version);
   }
 
 }

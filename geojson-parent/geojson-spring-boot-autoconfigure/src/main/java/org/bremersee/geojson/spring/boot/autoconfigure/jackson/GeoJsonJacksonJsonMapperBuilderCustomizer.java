@@ -88,8 +88,7 @@ public class GeoJsonJacksonJsonMapperBuilderCustomizer
   public void customize(Builder jsonMapperBuilder) {
     GeoJsonObjectMapperModule module = new GeoJsonObjectMapperModule(
         geometryFactory,
-        properties.isWithBoundingBox(),
-        properties.isUseBigDecimal()
+        properties.isWithBoundingBox()
     );
     jsonMapperBuilder.addModules(module);
   }
