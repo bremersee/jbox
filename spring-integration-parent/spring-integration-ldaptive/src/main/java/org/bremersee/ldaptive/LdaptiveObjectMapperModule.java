@@ -19,7 +19,7 @@ public class LdaptiveObjectMapperModule extends SimpleModule {
   @Serial
   private static final long serialVersionUID = 1L;
 
-  private static final String VERSION = "6.1.8-SNAPSHOT";
+  private static final String VERSION = "6.1.8";
 
   /**
    * The constant TYPE_ID.
