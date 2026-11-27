@@ -1,0 +1,2678 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminApiMock.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Spring Integration Keycloak WebFlux Client</a> &gt; <a href="index.source.html" class="el_package">org.bremersee.keycloak.api.webflux</a> &gt; <span class="el_source">AdminApiMock.java</span></div><h1>AdminApiMock.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.bremersee.keycloak.api.webflux;
+
+import java.util.List;
+import java.util.Map;
+import org.bremersee.keycloak.api.model.AbstractPolicyRepresentation;
+import org.bremersee.keycloak.api.model.AccessToken;
+import org.bremersee.keycloak.api.model.AdminEventRepresentation;
+import org.bremersee.keycloak.api.model.AuthenticationExecutionInfoRepresentation;
+import org.bremersee.keycloak.api.model.AuthenticationExecutionRepresentation;
+import org.bremersee.keycloak.api.model.AuthenticationFlowRepresentation;
+import org.bremersee.keycloak.api.model.AuthenticatorConfigInfoRepresentation;
+import org.bremersee.keycloak.api.model.AuthenticatorConfigRepresentation;
+import org.bremersee.keycloak.api.model.CertificateRepresentation;
+import org.bremersee.keycloak.api.model.ClientInitialAccessCreatePresentation;
+import org.bremersee.keycloak.api.model.ClientInitialAccessPresentation;
+import org.bremersee.keycloak.api.model.ClientPoliciesRepresentation;
+import org.bremersee.keycloak.api.model.ClientProfilesRepresentation;
+import org.bremersee.keycloak.api.model.ClientRepresentation;
+import org.bremersee.keycloak.api.model.ClientScopeRepresentation;
+import org.bremersee.keycloak.api.model.ClientTypesRepresentation;
+import org.bremersee.keycloak.api.model.ComponentRepresentation;
+import org.bremersee.keycloak.api.model.ComponentTypeRepresentation;
+import org.bremersee.keycloak.api.model.ConfigPropertyRepresentation;
+import org.bremersee.keycloak.api.model.CredentialRepresentation;
+import org.bremersee.keycloak.api.model.EventRepresentation;
+import org.bremersee.keycloak.api.model.FederatedIdentityRepresentation;
+import org.bremersee.keycloak.api.model.GlobalRequestResult;
+import org.bremersee.keycloak.api.model.GroupRepresentation;
+import org.bremersee.keycloak.api.model.IDToken;
+import org.bremersee.keycloak.api.model.IdentityProviderMapperRepresentation;
+import org.bremersee.keycloak.api.model.IdentityProviderMapperTypeRepresentation;
+import org.bremersee.keycloak.api.model.IdentityProviderRepresentation;
+import org.bremersee.keycloak.api.model.KeyStoreConfig;
+import org.bremersee.keycloak.api.model.KeysMetadataRepresentation;
+import org.bremersee.keycloak.api.model.ManagementPermissionReference;
+import org.bremersee.keycloak.api.model.MappingsRepresentation;
+import org.bremersee.keycloak.api.model.MemberRepresentation;
+import org.bremersee.keycloak.api.model.OrganizationInvitationRepresentation;
+import org.bremersee.keycloak.api.model.OrganizationRepresentation;
+import org.bremersee.keycloak.api.model.PolicyEvaluationRequest;
+import org.bremersee.keycloak.api.model.PolicyEvaluationResponse;
+import org.bremersee.keycloak.api.model.PolicyProviderRepresentation;
+import org.bremersee.keycloak.api.model.PolicyRepresentation;
+import org.bremersee.keycloak.api.model.ProtocolMapperEvaluationRepresentation;
+import org.bremersee.keycloak.api.model.ProtocolMapperRepresentation;
+import org.bremersee.keycloak.api.model.RealmEventsConfigRepresentation;
+import org.bremersee.keycloak.api.model.RealmRepresentation;
+import org.bremersee.keycloak.api.model.RequiredActionConfigInfoRepresentation;
+import org.bremersee.keycloak.api.model.RequiredActionConfigRepresentation;
+import org.bremersee.keycloak.api.model.RequiredActionProviderRepresentation;
+import org.bremersee.keycloak.api.model.ResourceRepresentation;
+import org.bremersee.keycloak.api.model.ResourceServerRepresentation;
+import org.bremersee.keycloak.api.model.RoleRepresentation;
+import org.bremersee.keycloak.api.model.SamlExampleResponse;
+import org.bremersee.keycloak.api.model.ScopeRepresentation;
+import org.bremersee.keycloak.api.model.UPConfig;
+import org.bremersee.keycloak.api.model.UserProfileMetadata;
+import org.bremersee.keycloak.api.model.UserRepresentation;
+import org.bremersee.keycloak.api.model.UserSessionRepresentation;
+import org.bremersee.keycloak.api.model.WorkflowRepresentation;
+import org.jspecify.annotations.Nullable;
+import org.springframework.core.io.Resource;
+import org.springframework.validation.annotation.Validated;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+/**
+ * The admin api mock.
+ *
+ * @author Christian Bremer
+ */
+@Validated
+public class AdminApiMock implements AdminApi {
+
+  /**
+   * Instantiates a new admin api mock.
+   */
+  public AdminApiMock() {
+<span class="nc" id="L95">    super();</span>
+<span class="nc" id="L96">  }</span>
+
+  @Override
+  public Flux&lt;RealmRepresentation&gt; adminRealmsGet(Boolean briefRepresentation) {
+<span class="nc" id="L100">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsPost(Mono&lt;Resource&gt; body) {
+<span class="nc" id="L105">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAdminEventsDelete(String realm) {
+<span class="nc" id="L110">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;AdminEventRepresentation&gt; adminRealmsRealmAdminEventsGet(String realm,
+      @Nullable String authClient, @Nullable String authIpAddress,
+      @Nullable String authRealm, @Nullable String authUser,
+      @Nullable String dateFrom, @Nullable String dateTo,
+      @Nullable String direction, @Nullable Integer first,
+      @Nullable Integer max, @Nullable List&lt;String&gt; operationTypes,
+      @Nullable String resourcePath, @Nullable List&lt;String&gt; resourceTypes) {
+<span class="nc" id="L121">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAttackDetectionBruteForceUsersDelete(String realm) {
+<span class="nc" id="L126">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAttackDetectionBruteForceUsersUserIdDelete(String realm,
+      String userId) {
+<span class="nc" id="L132">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmAttackDetectionBruteForceUsersUserIdGet(
+      String realm, String userId) {
+<span class="nc" id="L138">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmAuthenticationAuthenticatorProvidersGet(
+      String realm) {
+<span class="nc" id="L144">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmAuthenticationClientAuthenticatorProvidersGet(
+      String realm) {
+<span class="nc" id="L150">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AuthenticatorConfigInfoRepresentation&gt; adminRealmsRealmAuthenticationConfigDescriptionProviderIdGet(
+      String realm, String providerId) {
+<span class="nc" id="L156">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationConfigIdDelete(String realm, String id) {
+<span class="nc" id="L161">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AuthenticatorConfigRepresentation&gt; adminRealmsRealmAuthenticationConfigIdGet(
+      String realm, String id) {
+<span class="nc" id="L167">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationConfigIdPut(String realm, String id,
+      Mono&lt;AuthenticatorConfigRepresentation&gt; authenticatorConfigRepresentation) {
+<span class="nc" id="L173">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationConfigPost(String realm,
+      Mono&lt;AuthenticatorConfigRepresentation&gt; authenticatorConfigRepresentation) {
+<span class="nc" id="L179">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AuthenticatorConfigRepresentation&gt; adminRealmsRealmAuthenticationExecutionsExecutionIdConfigIdGet(
+      String realm, String executionId, String id) {
+<span class="nc" id="L185">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationExecutionsExecutionIdConfigPost(String realm,
+      String executionId,
+      Mono&lt;AuthenticatorConfigRepresentation&gt; authenticatorConfigRepresentation) {
+<span class="nc" id="L192">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationExecutionsExecutionIdDelete(String realm,
+      String executionId) {
+<span class="nc" id="L198">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AuthenticationExecutionRepresentation&gt; adminRealmsRealmAuthenticationExecutionsExecutionIdGet(
+      String realm, String executionId) {
+<span class="nc" id="L204">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationExecutionsExecutionIdLowerPriorityPost(
+      String realm, String executionId) {
+<span class="nc" id="L210">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationExecutionsExecutionIdRaisePriorityPost(
+      String realm, String executionId) {
+<span class="nc" id="L216">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationExecutionsPost(String realm,
+      Mono&lt;AuthenticationExecutionRepresentation&gt; authenticationExecutionRepresentation) {
+<span class="nc" id="L222">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsFlowAliasCopyPost(String realm,
+      String flowAlias, Mono&lt;Map&lt;String, String&gt;&gt; requestBody) {
+<span class="nc" id="L228">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsFlowAliasExecutionsExecutionPost(
+      String realm, String flowAlias, Mono&lt;Map&lt;String, Object&gt;&gt; requestBody) {
+<span class="nc" id="L234">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsFlowAliasExecutionsFlowPost(String realm,
+      String flowAlias, Mono&lt;Map&lt;String, Object&gt;&gt; requestBody) {
+<span class="nc" id="L240">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;AuthenticationExecutionInfoRepresentation&gt; adminRealmsRealmAuthenticationFlowsFlowAliasExecutionsGet(
+      String realm, String flowAlias) {
+<span class="nc" id="L246">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsFlowAliasExecutionsPut(String realm,
+      String flowAlias,
+      Mono&lt;AuthenticationExecutionInfoRepresentation&gt; authenticationExecutionInfoRepresentation) {
+<span class="nc" id="L253">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;AuthenticationFlowRepresentation&gt; adminRealmsRealmAuthenticationFlowsGet(
+      String realm) {
+<span class="nc" id="L259">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsIdDelete(String realm, String id) {
+<span class="nc" id="L264">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AuthenticationFlowRepresentation&gt; adminRealmsRealmAuthenticationFlowsIdGet(
+      String realm, String id) {
+<span class="nc" id="L270">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsIdPut(String realm, String id,
+      Mono&lt;AuthenticationFlowRepresentation&gt; authenticationFlowRepresentation) {
+<span class="nc" id="L276">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationFlowsPost(String realm,
+      Mono&lt;AuthenticationFlowRepresentation&gt; authenticationFlowRepresentation) {
+<span class="nc" id="L282">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmAuthenticationFormActionProvidersGet(
+      String realm) {
+<span class="nc" id="L288">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmAuthenticationFormProvidersGet(String realm) {
+<span class="nc" id="L293">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, List&lt;ConfigPropertyRepresentation&gt;&gt;&gt; adminRealmsRealmAuthenticationPerClientConfigDescriptionGet(
+      String realm) {
+<span class="nc" id="L299">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRegisterRequiredActionPost(String realm,
+      Mono&lt;Map&lt;String, String&gt;&gt; requestBody) {
+<span class="nc" id="L305">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRequiredActionsAliasConfigDelete(String realm,
+      String alias) {
+<span class="nc" id="L311">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RequiredActionConfigInfoRepresentation&gt; adminRealmsRealmAuthenticationRequiredActionsAliasConfigDescriptionGet(
+      String realm, String alias) {
+<span class="nc" id="L317">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RequiredActionConfigRepresentation&gt; adminRealmsRealmAuthenticationRequiredActionsAliasConfigGet(
+      String realm, String alias) {
+<span class="nc" id="L323">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRequiredActionsAliasConfigPut(String realm,
+      String alias,
+      Mono&lt;RequiredActionConfigRepresentation&gt; requiredActionConfigRepresentation) {
+<span class="nc" id="L330">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRequiredActionsAliasDelete(String realm,
+      String alias) {
+<span class="nc" id="L336">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RequiredActionProviderRepresentation&gt; adminRealmsRealmAuthenticationRequiredActionsAliasGet(
+      String realm, String alias) {
+<span class="nc" id="L342">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRequiredActionsAliasLowerPriorityPost(
+      String realm, String alias) {
+<span class="nc" id="L348">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRequiredActionsAliasPut(String realm,
+      String alias,
+      Mono&lt;RequiredActionProviderRepresentation&gt; requiredActionProviderRepresentation) {
+<span class="nc" id="L355">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmAuthenticationRequiredActionsAliasRaisePriorityPost(
+      String realm, String alias) {
+<span class="nc" id="L361">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RequiredActionProviderRepresentation&gt; adminRealmsRealmAuthenticationRequiredActionsGet(
+      String realm) {
+<span class="nc" id="L367">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, String&gt;&gt; adminRealmsRealmAuthenticationUnregisteredRequiredActionsGet(
+      String realm) {
+<span class="nc" id="L373">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientRepresentation&gt; adminRealmsRealmClientDescriptionConverterPost(String realm,
+      Mono&lt;String&gt; body) {
+<span class="nc" id="L379">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientPoliciesRepresentation&gt; adminRealmsRealmClientPoliciesPoliciesGet(String realm,
+      @Nullable Boolean includeGlobalPolicies) {
+<span class="nc" id="L385">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientPoliciesPoliciesPut(String realm,
+      Mono&lt;ClientPoliciesRepresentation&gt; clientPoliciesRepresentation) {
+<span class="nc" id="L391">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientProfilesRepresentation&gt; adminRealmsRealmClientPoliciesProfilesGet(String realm,
+      @Nullable Boolean includeGlobalProfiles) {
+<span class="nc" id="L397">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientPoliciesProfilesPut(String realm,
+      Mono&lt;ClientProfilesRepresentation&gt; clientProfilesRepresentation) {
+<span class="nc" id="L403">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ComponentTypeRepresentation&gt; adminRealmsRealmClientRegistrationPolicyProvidersGet(
+      String realm) {
+<span class="nc" id="L409">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdDelete(String realm,
+      String clientScopeId) {
+<span class="nc" id="L415">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientScopeRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdGet(String realm,
+      String clientScopeId) {
+<span class="nc" id="L421">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersAddModelsPost(
+      String realm, String clientScopeId,
+      Flux&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L428">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersModelsGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L434">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersModelsIdDelete(
+      String realm, String clientScopeId, String id) {
+<span class="nc" id="L440">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersModelsIdGet(
+      String realm, String clientScopeId, String id) {
+<span class="nc" id="L446">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersModelsIdPut(
+      String realm, String clientScopeId, String id,
+      Mono&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L453">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersModelsPost(String realm,
+      String clientScopeId,
+      Mono&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L460">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdProtocolMappersProtocolProtocolGet(
+      String realm, String clientScopeId, String protocol) {
+<span class="nc" id="L466">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdPut(String realm, String clientScopeId,
+      Mono&lt;ClientScopeRepresentation&gt; clientScopeRepresentation) {
+<span class="nc" id="L472">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsClientsClientAvailableGet(
+      String realm, String clientScopeId, String client) {
+<span class="nc" id="L478">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsClientsClientCompositeGet(
+      String realm, String clientScopeId, String client, Boolean briefRepresentation) {
+<span class="nc" id="L484">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsClientsClientDelete(
+      String realm, String clientScopeId, String client,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L491">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsClientsClientGet(
+      String realm, String clientScopeId, String client) {
+<span class="nc" id="L497">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsClientsClientPost(
+      String realm, String clientScopeId, String client,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L504">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MappingsRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L510">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsRealmAvailableGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L516">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsRealmCompositeGet(
+      String realm, String clientScopeId, Boolean briefRepresentation) {
+<span class="nc" id="L522">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsRealmDelete(String realm,
+      String clientScopeId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L528">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsRealmGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L534">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesClientScopeIdScopeMappingsRealmPost(String realm,
+      String clientScopeId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L540">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientScopeRepresentation&gt; adminRealmsRealmClientScopesGet(String realm) {
+<span class="nc" id="L545">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientScopesPost(String realm,
+      Mono&lt;ClientScopeRepresentation&gt; clientScopeRepresentation) {
+<span class="nc" id="L551">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, String&gt;&gt; adminRealmsRealmClientSessionStatsGet(String realm) {
+<span class="nc" id="L556">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdDelete(String realm,
+      String clientScopeId) {
+<span class="nc" id="L562">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientScopeRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L568">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersAddModelsPost(
+      String realm, String clientScopeId,
+      Flux&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L575">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersModelsGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L581">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersModelsIdDelete(
+      String realm, String clientScopeId, String id) {
+<span class="nc" id="L587">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersModelsIdGet(
+      String realm, String clientScopeId, String id) {
+<span class="nc" id="L593">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersModelsIdPut(
+      String realm, String clientScopeId, String id,
+      Mono&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L600">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersModelsPost(
+      String realm, String clientScopeId,
+      Mono&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L607">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdProtocolMappersProtocolProtocolGet(
+      String realm, String clientScopeId, String protocol) {
+<span class="nc" id="L613">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdPut(String realm,
+      String clientScopeId, Mono&lt;ClientScopeRepresentation&gt; clientScopeRepresentation) {
+<span class="nc" id="L619">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsClientsClientAvailableGet(
+      String realm, String clientScopeId, String client) {
+<span class="nc" id="L625">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsClientsClientCompositeGet(
+      String realm, String clientScopeId, String client, Boolean briefRepresentation) {
+<span class="nc" id="L631">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsClientsClientDelete(
+      String realm, String clientScopeId, String client,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L638">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsClientsClientGet(
+      String realm, String clientScopeId, String client) {
+<span class="nc" id="L644">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsClientsClientPost(
+      String realm, String clientScopeId, String client,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L651">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MappingsRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L657">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsRealmAvailableGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L663">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsRealmCompositeGet(
+      String realm, String clientScopeId, Boolean briefRepresentation) {
+<span class="nc" id="L669">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsRealmDelete(
+      String realm, String clientScopeId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L675">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsRealmGet(
+      String realm, String clientScopeId) {
+<span class="nc" id="L681">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesClientScopeIdScopeMappingsRealmPost(String realm,
+      String clientScopeId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L687">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientScopeRepresentation&gt; adminRealmsRealmClientTemplatesGet(String realm) {
+<span class="nc" id="L692">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTemplatesPost(String realm,
+      Mono&lt;ClientScopeRepresentation&gt; clientScopeRepresentation) {
+<span class="nc" id="L698">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientTypesRepresentation&gt; adminRealmsRealmClientTypesGet(String realm) {
+<span class="nc" id="L703">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientTypesPut(String realm,
+      Mono&lt;ClientTypesRepresentation&gt; clientTypesRepresentation) {
+<span class="nc" id="L709">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ResourceServerRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L715">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerImportPost(String realm,
+      String clientUuid, Mono&lt;ResourceServerRepresentation&gt; resourceServerRepresentation) {
+<span class="nc" id="L721">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;PolicyEvaluationResponse&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPermissionEvaluatePost(
+      String realm, String clientUuid,
+      Mono&lt;PolicyEvaluationRequest&gt; policyEvaluationRequest) {
+<span class="nc" id="L728">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;AbstractPolicyRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPermissionGet(
+      String realm, String clientUuid, @Nullable String fields,
+      @Nullable Integer first, @Nullable Integer max, @Nullable String name,
+      @Nullable String owner, @Nullable Boolean permission,
+      @Nullable String policyId, @Nullable String resource,
+      @Nullable String resourceType, @Nullable String scope,
+      @Nullable String type) {
+<span class="nc" id="L739">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPermissionPost(String realm,
+      String clientUuid, Mono&lt;String&gt; body) {
+<span class="nc" id="L745">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;PolicyProviderRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPermissionProvidersGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L751">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AbstractPolicyRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPermissionSearchGet(
+      String realm, String clientUuid, @Nullable String fields,
+      @Nullable String name) {
+<span class="nc" id="L758">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;PolicyEvaluationResponse&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPolicyEvaluatePost(
+      String realm, String clientUuid,
+      Mono&lt;PolicyEvaluationRequest&gt; policyEvaluationRequest) {
+<span class="nc" id="L765">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;AbstractPolicyRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPolicyGet(
+      String realm, String clientUuid, @Nullable String fields,
+      @Nullable Integer first, @Nullable Integer max, @Nullable String name,
+      @Nullable String owner, @Nullable Boolean permission,
+      @Nullable String policyId, @Nullable String resource,
+      @Nullable String resourceType, @Nullable String scope,
+      @Nullable String type) {
+<span class="nc" id="L776">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPolicyPost(String realm,
+      String clientUuid, Mono&lt;String&gt; body) {
+<span class="nc" id="L782">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;PolicyProviderRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPolicyProvidersGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L788">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AbstractPolicyRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPolicySearchGet(
+      String realm, String clientUuid, @Nullable String fields,
+      @Nullable String name) {
+<span class="nc" id="L795">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerPut(String realm,
+      String clientUuid, Mono&lt;ResourceServerRepresentation&gt; resourceServerRepresentation) {
+<span class="nc" id="L801">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ResourceRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceGet(
+      String realm, String clientUuid, @Nullable String id, @Nullable Boolean deep,
+      @Nullable Boolean exactName, @Nullable Integer first,
+      @Nullable Boolean matchingUri, @Nullable Integer max,
+      @Nullable String name, @Nullable String owner, @Nullable String scope,
+      @Nullable String type, @Nullable String uri) {
+<span class="nc" id="L811">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ResourceRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourcePost(
+      String realm, String clientUuid, @Nullable String id, @Nullable Boolean deep,
+      @Nullable Boolean exactName, @Nullable Integer first,
+      @Nullable Boolean matchingUri, @Nullable Integer max,
+      @Nullable String name, @Nullable String owner, @Nullable String scope,
+      @Nullable String type, @Nullable String uri,
+      Mono&lt;ResourceRepresentation&gt; resourceRepresentation) {
+<span class="nc" id="L822">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceResourceIdAttributesGet(
+      String realm, String clientUuid, String resourceId, @Nullable String id,
+      @Nullable Boolean deep, @Nullable Boolean exactName,
+      @Nullable Integer first, @Nullable Boolean matchingUri,
+      @Nullable Integer max, @Nullable String name, @Nullable String owner,
+      @Nullable String scope, @Nullable String type, @Nullable String uri) {
+<span class="nc" id="L832">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceResourceIdDelete(
+      String realm, String clientUuid, String resourceId, @Nullable String id,
+      @Nullable Boolean deep, @Nullable Boolean exactName,
+      @Nullable Integer first, @Nullable Boolean matchingUri,
+      @Nullable Integer max, @Nullable String name, @Nullable String owner,
+      @Nullable String scope, @Nullable String type, @Nullable String uri) {
+<span class="nc" id="L842">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ResourceRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceResourceIdGet(
+      String realm, String clientUuid, String resourceId, @Nullable String id,
+      @Nullable Boolean deep, @Nullable Boolean exactName,
+      @Nullable Integer first, @Nullable Boolean matchingUri,
+      @Nullable Integer max, @Nullable String name, @Nullable String owner,
+      @Nullable String scope, @Nullable String type, @Nullable String uri) {
+<span class="nc" id="L852">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;PolicyRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceResourceIdPermissionsGet(
+      String realm, String clientUuid, String resourceId, @Nullable String id,
+      @Nullable Boolean deep, @Nullable Boolean exactName,
+      @Nullable Integer first, @Nullable Boolean matchingUri,
+      @Nullable Integer max, @Nullable String name, @Nullable String owner,
+      @Nullable String scope, @Nullable String type, @Nullable String uri) {
+<span class="nc" id="L862">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceResourceIdPut(
+      String realm, String clientUuid, String resourceId, @Nullable String id,
+      @Nullable Boolean deep, @Nullable Boolean exactName,
+      @Nullable Integer first, @Nullable Boolean matchingUri,
+      @Nullable Integer max, @Nullable String name, @Nullable String owner,
+      @Nullable String scope, @Nullable String type, @Nullable String uri,
+      Mono&lt;ResourceRepresentation&gt; resourceRepresentation) {
+<span class="nc" id="L873">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ScopeRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceResourceIdScopesGet(
+      String realm, String clientUuid, String resourceId, @Nullable String id,
+      @Nullable Boolean deep, @Nullable Boolean exactName,
+      @Nullable Integer first, @Nullable Boolean matchingUri,
+      @Nullable Integer max, @Nullable String name, @Nullable String owner,
+      @Nullable String scope, @Nullable String type, @Nullable String uri) {
+<span class="nc" id="L883">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ResourceRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerResourceSearchGet(
+      String realm, String clientUuid, @Nullable String id, @Nullable Boolean deep,
+      @Nullable Boolean exactName, @Nullable Integer first,
+      @Nullable Boolean matchingUri, @Nullable Integer max,
+      @Nullable String owner, @Nullable String scope, @Nullable String type,
+      @Nullable String uri, @Nullable String name) {
+<span class="nc" id="L893">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ScopeRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeGet(
+      String realm, String clientUuid, @Nullable Integer first, @Nullable Integer max,
+      @Nullable String name, @Nullable String scopeId) {
+<span class="nc" id="L900">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopePost(String realm,
+      String clientUuid, Mono&lt;ScopeRepresentation&gt; scopeRepresentation) {
+<span class="nc" id="L906">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeScopeIdDelete(
+      String realm, String clientUuid, String scopeId) {
+<span class="nc" id="L912">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ScopeRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeScopeIdGet(
+      String realm, String clientUuid, String scopeId) {
+<span class="nc" id="L918">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;PolicyRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeScopeIdPermissionsGet(
+      String realm, String clientUuid, String scopeId) {
+<span class="nc" id="L924">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeScopeIdPut(
+      String realm, String clientUuid, String scopeId,
+      Mono&lt;ScopeRepresentation&gt; scopeRepresentation) {
+<span class="nc" id="L931">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ResourceRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeScopeIdResourcesGet(
+      String realm, String clientUuid, String scopeId) {
+<span class="nc" id="L937">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ScopeRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerScopeSearchGet(
+      String realm, String clientUuid, @Nullable String name) {
+<span class="nc" id="L943">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ResourceServerRepresentation&gt; adminRealmsRealmClientsClientUuidAuthzResourceServerSettingsGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L949">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Resource&gt; adminRealmsRealmClientsClientUuidCertificatesAttrDownloadPost(String realm,
+      String clientUuid, String attr, Mono&lt;KeyStoreConfig&gt; keyStoreConfig) {
+<span class="nc" id="L955">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Resource&gt; adminRealmsRealmClientsClientUuidCertificatesAttrGenerateAndDownloadPost(
+      String realm, String clientUuid, String attr, Mono&lt;KeyStoreConfig&gt; keyStoreConfig) {
+<span class="nc" id="L961">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CertificateRepresentation&gt; adminRealmsRealmClientsClientUuidCertificatesAttrGeneratePost(
+      String realm, String clientUuid, String attr) {
+<span class="nc" id="L967">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CertificateRepresentation&gt; adminRealmsRealmClientsClientUuidCertificatesAttrGet(
+      String realm, String clientUuid, String attr) {
+<span class="nc" id="L973">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CertificateRepresentation&gt; adminRealmsRealmClientsClientUuidCertificatesAttrUploadCertificatePost(
+      String realm, String clientUuid, String attr) {
+<span class="nc" id="L979">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CertificateRepresentation&gt; adminRealmsRealmClientsClientUuidCertificatesAttrUploadPost(
+      String realm, String clientUuid, String attr) {
+<span class="nc" id="L985">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CredentialRepresentation&gt; adminRealmsRealmClientsClientUuidClientSecretGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L991">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CredentialRepresentation&gt; adminRealmsRealmClientsClientUuidClientSecretPost(
+      String realm, String clientUuid) {
+<span class="nc" id="L997">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidClientSecretRotatedDelete(String realm,
+      String clientUuid) {
+<span class="nc" id="L1003">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CredentialRepresentation&gt; adminRealmsRealmClientsClientUuidClientSecretRotatedGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1009">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidDefaultClientScopesClientScopeIdDelete(
+      String realm, String clientUuid, String clientScopeId) {
+<span class="nc" id="L1015">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidDefaultClientScopesClientScopeIdPut(
+      String realm, String clientUuid, String clientScopeId) {
+<span class="nc" id="L1021">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientScopeRepresentation&gt; adminRealmsRealmClientsClientUuidDefaultClientScopesGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1027">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidDelete(String realm, String clientUuid) {
+<span class="nc" id="L1032">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;AccessToken&gt; adminRealmsRealmClientsClientUuidEvaluateScopesGenerateExampleAccessTokenGet(
+      String realm, String clientUuid, @Nullable String audience,
+      @Nullable String scope, @Nullable String userId) {
+<span class="nc" id="L1039">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;IDToken&gt; adminRealmsRealmClientsClientUuidEvaluateScopesGenerateExampleIdTokenGet(
+      String realm, String clientUuid, @Nullable String audience,
+      @Nullable String scope, @Nullable String userId) {
+<span class="nc" id="L1046">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;SamlExampleResponse&gt; adminRealmsRealmClientsClientUuidEvaluateScopesGenerateExampleSamlResponseGet(
+      String realm, String clientUuid, @Nullable String audience,
+      @Nullable String scope, @Nullable String userId) {
+<span class="nc" id="L1053">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Object&gt; adminRealmsRealmClientsClientUuidEvaluateScopesGenerateExampleUserinfoGet(
+      String realm, String clientUuid, @Nullable String scope,
+      @Nullable String userId) {
+<span class="nc" id="L1060">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperEvaluationRepresentation&gt; adminRealmsRealmClientsClientUuidEvaluateScopesProtocolMappersGet(
+      String realm, String clientUuid, @Nullable String scope) {
+<span class="nc" id="L1066">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidEvaluateScopesScopeMappingsRoleContainerIdGrantedGet(
+      String realm, String clientUuid, String roleContainerId, @Nullable String scope) {
+<span class="nc" id="L1072">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidEvaluateScopesScopeMappingsRoleContainerIdNotGrantedGet(
+      String realm, String clientUuid, String roleContainerId, @Nullable String scope) {
+<span class="nc" id="L1078">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientRepresentation&gt; adminRealmsRealmClientsClientUuidGet(String realm,
+      String clientUuid) {
+<span class="nc" id="L1084">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidInstallationProvidersProviderIdGet(
+      String realm, String clientUuid, String providerId) {
+<span class="nc" id="L1090">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmClientsClientUuidManagementPermissionsGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1096">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmClientsClientUuidManagementPermissionsPut(
+      String realm, String clientUuid,
+      Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L1103">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidNodesNodeDelete(String realm,
+      String clientUuid, String node) {
+<span class="nc" id="L1109">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidNodesPost(String realm, String clientUuid,
+      Mono&lt;Map&lt;String, String&gt;&gt; requestBody) {
+<span class="nc" id="L1115">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, Long&gt;&gt; adminRealmsRealmClientsClientUuidOfflineSessionCountGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1121">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserSessionRepresentation&gt; adminRealmsRealmClientsClientUuidOfflineSessionsGet(
+      String realm, String clientUuid, @Nullable Integer first,
+      @Nullable Integer max) {
+<span class="nc" id="L1128">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidOptionalClientScopesClientScopeIdDelete(
+      String realm, String clientUuid, String clientScopeId) {
+<span class="nc" id="L1134">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidOptionalClientScopesClientScopeIdPut(
+      String realm, String clientUuid, String clientScopeId) {
+<span class="nc" id="L1140">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientScopeRepresentation&gt; adminRealmsRealmClientsClientUuidOptionalClientScopesGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1146">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidProtocolMappersAddModelsPost(String realm,
+      String clientUuid, Flux&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L1152">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientsClientUuidProtocolMappersModelsGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1158">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidProtocolMappersModelsIdDelete(String realm,
+      String clientUuid, String id) {
+<span class="nc" id="L1164">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientsClientUuidProtocolMappersModelsIdGet(
+      String realm, String clientUuid, String id) {
+<span class="nc" id="L1170">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidProtocolMappersModelsIdPut(String realm,
+      String clientUuid, String id,
+      Mono&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L1177">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidProtocolMappersModelsPost(String realm,
+      String clientUuid, Mono&lt;ProtocolMapperRepresentation&gt; protocolMapperRepresentation) {
+<span class="nc" id="L1183">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ProtocolMapperRepresentation&gt; adminRealmsRealmClientsClientUuidProtocolMappersProtocolProtocolGet(
+      String realm, String clientUuid, String protocol) {
+<span class="nc" id="L1189">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GlobalRequestResult&gt; adminRealmsRealmClientsClientUuidPushRevocationPost(String realm,
+      String clientUuid) {
+<span class="nc" id="L1195">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidPut(String realm, String clientUuid,
+      Mono&lt;ClientRepresentation&gt; clientRepresentation) {
+<span class="nc" id="L1201">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientRepresentation&gt; adminRealmsRealmClientsClientUuidRegistrationAccessTokenPost(
+      String realm, String clientUuid) {
+<span class="nc" id="L1207">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidRolesGet(String realm,
+      String clientUuid, Boolean briefRepresentation, @Nullable Integer first,
+      @Nullable Integer max, String search) {
+<span class="nc" id="L1214">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidRolesPost(String realm, String clientUuid,
+      Mono&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1220">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidRolesRoleNameCompositesClientsTargetClientUuidGet(
+      String realm, String clientUuid, String roleName, String targetClientUuid) {
+<span class="nc" id="L1226">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidRolesRoleNameCompositesDelete(String realm,
+      String clientUuid, String roleName, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1232">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidRolesRoleNameCompositesGet(
+      String realm, String clientUuid, String roleName) {
+<span class="nc" id="L1238">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidRolesRoleNameCompositesPost(String realm,
+      String clientUuid, String roleName, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1244">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidRolesRoleNameCompositesRealmGet(
+      String realm, String clientUuid, String roleName) {
+<span class="nc" id="L1250">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidRolesRoleNameDelete(String realm,
+      String clientUuid, String roleName) {
+<span class="nc" id="L1256">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidRolesRoleNameGet(String realm,
+      String clientUuid, String roleName) {
+<span class="nc" id="L1262">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserRepresentation&gt; adminRealmsRealmClientsClientUuidRolesRoleNameGroupsGet(
+      String realm, String clientUuid, String roleName, @Nullable Integer max,
+      Boolean briefRepresentation, @Nullable Integer first) {
+<span class="nc" id="L1269">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmClientsClientUuidRolesRoleNameManagementPermissionsGet(
+      String realm, String clientUuid, String roleName) {
+<span class="nc" id="L1275">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmClientsClientUuidRolesRoleNameManagementPermissionsPut(
+      String realm, String clientUuid, String roleName,
+      Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L1282">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidRolesRoleNamePut(String realm,
+      String clientUuid, String roleName, Mono&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1288">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserRepresentation&gt; adminRealmsRealmClientsClientUuidRolesRoleNameUsersGet(
+      String realm, String clientUuid, String roleName,
+      @Nullable Boolean briefRepresentation, @Nullable Integer first,
+      @Nullable Integer max) {
+<span class="nc" id="L1296">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsClientsClientAvailableGet(
+      String realm, String clientUuid, String client) {
+<span class="nc" id="L1302">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsClientsClientCompositeGet(
+      String realm, String clientUuid, String client, Boolean briefRepresentation) {
+<span class="nc" id="L1308">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidScopeMappingsClientsClientDelete(String realm,
+      String clientUuid, String client, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1314">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsClientsClientGet(
+      String realm, String clientUuid, String client) {
+<span class="nc" id="L1320">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidScopeMappingsClientsClientPost(String realm,
+      String clientUuid, String client, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1326">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MappingsRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1332">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsRealmAvailableGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1338">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsRealmCompositeGet(
+      String realm, String clientUuid, Boolean briefRepresentation) {
+<span class="nc" id="L1344">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidScopeMappingsRealmDelete(String realm,
+      String clientUuid, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1350">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmClientsClientUuidScopeMappingsRealmGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1356">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsClientUuidScopeMappingsRealmPost(String realm,
+      String clientUuid, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1362">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;UserRepresentation&gt; adminRealmsRealmClientsClientUuidServiceAccountUserGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1368">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, Long&gt;&gt; adminRealmsRealmClientsClientUuidSessionCountGet(String realm,
+      String clientUuid) {
+<span class="nc" id="L1374">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GlobalRequestResult&gt; adminRealmsRealmClientsClientUuidTestNodesAvailableGet(
+      String realm, String clientUuid) {
+<span class="nc" id="L1380">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserSessionRepresentation&gt; adminRealmsRealmClientsClientUuidUserSessionsGet(
+      String realm, String clientUuid, @Nullable Integer first,
+      @Nullable Integer max) {
+<span class="nc" id="L1387">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientRepresentation&gt; adminRealmsRealmClientsGet(String realm,
+      @Nullable String clientId, @Nullable Integer first,
+      @Nullable Integer max, @Nullable String q, Boolean search,
+      Boolean viewableOnly) {
+<span class="nc" id="L1395">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientInitialAccessPresentation&gt; adminRealmsRealmClientsInitialAccessGet(
+      String realm) {
+<span class="nc" id="L1401">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsInitialAccessIdDelete(String realm, String id) {
+<span class="nc" id="L1406">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ClientInitialAccessCreatePresentation&gt; adminRealmsRealmClientsInitialAccessPost(
+      String realm,
+      Mono&lt;ClientInitialAccessCreatePresentation&gt; clientInitialAccessCreatePresentation) {
+<span class="nc" id="L1413">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmClientsPost(String realm,
+      Mono&lt;ClientRepresentation&gt; clientRepresentation) {
+<span class="nc" id="L1419">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ComponentRepresentation&gt; adminRealmsRealmComponentsGet(String realm,
+      @Nullable String name, @Nullable String parent,
+      @Nullable String providerId, @Nullable String type) {
+<span class="nc" id="L1426">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmComponentsIdDelete(String realm, String id) {
+<span class="nc" id="L1431">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ComponentRepresentation&gt; adminRealmsRealmComponentsIdGet(String realm, String id) {
+<span class="nc" id="L1436">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmComponentsIdPut(String realm, String id,
+      Mono&lt;ComponentRepresentation&gt; componentRepresentation) {
+<span class="nc" id="L1442">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ComponentTypeRepresentation&gt; adminRealmsRealmComponentsIdSubComponentTypesGet(
+      String realm, String id, @Nullable String type) {
+<span class="nc" id="L1448">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmComponentsPost(String realm,
+      Mono&lt;ComponentRepresentation&gt; componentRepresentation) {
+<span class="nc" id="L1454">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;List&lt;String&gt;&gt; adminRealmsRealmCredentialRegistratorsGet(String realm) {
+<span class="nc" id="L1459">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDefaultDefaultClientScopesClientScopeIdDelete(String realm,
+      String clientScopeId) {
+<span class="nc" id="L1465">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDefaultDefaultClientScopesClientScopeIdPut(String realm,
+      String clientScopeId) {
+<span class="nc" id="L1471">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientScopeRepresentation&gt; adminRealmsRealmDefaultDefaultClientScopesGet(
+      String realm) {
+<span class="nc" id="L1477">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmDefaultGroupsGet(String realm) {
+<span class="nc" id="L1482">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDefaultGroupsGroupIdDelete(String realm, String groupId) {
+<span class="nc" id="L1487">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDefaultGroupsGroupIdPut(String realm, String groupId) {
+<span class="nc" id="L1492">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDefaultOptionalClientScopesClientScopeIdDelete(String realm,
+      String clientScopeId) {
+<span class="nc" id="L1498">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDefaultOptionalClientScopesClientScopeIdPut(String realm,
+      String clientScopeId) {
+<span class="nc" id="L1504">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;ClientScopeRepresentation&gt; adminRealmsRealmDefaultOptionalClientScopesGet(
+      String realm) {
+<span class="nc" id="L1510">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmDelete(String realm) {
+<span class="nc" id="L1515">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RealmEventsConfigRepresentation&gt; adminRealmsRealmEventsConfigGet(String realm) {
+<span class="nc" id="L1520">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmEventsConfigPut(String realm,
+      Mono&lt;RealmEventsConfigRepresentation&gt; realmEventsConfigRepresentation) {
+<span class="nc" id="L1526">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmEventsDelete(String realm) {
+<span class="nc" id="L1531">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;EventRepresentation&gt; adminRealmsRealmEventsGet(String realm,
+      @Nullable String client, @Nullable String dateFrom,
+      @Nullable String dateTo, @Nullable String direction,
+      @Nullable Integer first, @Nullable String ipAddress,
+      @Nullable Integer max, @Nullable List&lt;String&gt; type,
+      @Nullable String user) {
+<span class="nc" id="L1541">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RealmRepresentation&gt; adminRealmsRealmGet(String realm) {
+<span class="nc" id="L1546">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GroupRepresentation&gt; adminRealmsRealmGroupByPathPathGet(String realm, String path) {
+<span class="nc" id="L1551">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, Long&gt;&gt; adminRealmsRealmGroupsCountGet(String realm,
+      @Nullable String search, Boolean top) {
+<span class="nc" id="L1557">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmGroupsGet(String realm,
+      Boolean briefRepresentation, Boolean exact, @Nullable Integer first,
+      @Nullable Integer max, Boolean populateHierarchy, @Nullable String q,
+      @Nullable String search, Boolean subGroupsCount) {
+<span class="nc" id="L1565">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmGroupsGroupIdChildrenGet(String realm,
+      String groupId, Boolean briefRepresentation, @Nullable Boolean exact,
+      @Nullable Integer first, @Nullable Integer max, @Nullable String search,
+      Boolean subGroupsCount) {
+<span class="nc" id="L1573">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdChildrenPost(String realm, String groupId,
+      Mono&lt;GroupRepresentation&gt; groupRepresentation) {
+<span class="nc" id="L1579">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdDelete(String realm, String groupId) {
+<span class="nc" id="L1584">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GroupRepresentation&gt; adminRealmsRealmGroupsGroupIdGet(String realm, String groupId) {
+<span class="nc" id="L1589">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmGroupsGroupIdManagementPermissionsGet(
+      String realm, String groupId) {
+<span class="nc" id="L1595">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmGroupsGroupIdManagementPermissionsPut(
+      String realm, String groupId,
+      Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L1602">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserRepresentation&gt; adminRealmsRealmGroupsGroupIdMembersGet(String realm,
+      String groupId, @Nullable Boolean briefRepresentation, @Nullable Integer first,
+      @Nullable Integer max) {
+<span class="nc" id="L1609">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdPut(String realm, String groupId,
+      Mono&lt;GroupRepresentation&gt; groupRepresentation) {
+<span class="nc" id="L1615">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsClientsClientIdAvailableGet(
+      String realm, String groupId, String clientId) {
+<span class="nc" id="L1621">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsClientsClientIdCompositeGet(
+      String realm, String groupId, String clientId, Boolean briefRepresentation) {
+<span class="nc" id="L1627">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdRoleMappingsClientsClientIdDelete(String realm,
+      String groupId, String clientId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1633">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsClientsClientIdGet(
+      String realm, String groupId, String clientId) {
+<span class="nc" id="L1639">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdRoleMappingsClientsClientIdPost(String realm,
+      String groupId, String clientId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1645">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MappingsRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsGet(String realm,
+      String groupId) {
+<span class="nc" id="L1651">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsRealmAvailableGet(
+      String realm, String groupId) {
+<span class="nc" id="L1657">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsRealmCompositeGet(
+      String realm, String groupId, Boolean briefRepresentation) {
+<span class="nc" id="L1663">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdRoleMappingsRealmDelete(String realm,
+      String groupId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1669">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmGroupsGroupIdRoleMappingsRealmGet(String realm,
+      String groupId) {
+<span class="nc" id="L1675">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsGroupIdRoleMappingsRealmPost(String realm, String groupId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1681">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmGroupsPost(String realm,
+      Mono&lt;GroupRepresentation&gt; groupRepresentation) {
+<span class="nc" id="L1687">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, String&gt;&gt; adminRealmsRealmIdentityProviderImportConfigPost(String realm,
+      Mono&lt;Map&lt;String, Object&gt;&gt; requestBody) {
+<span class="nc" id="L1693">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesAliasDelete(String realm,
+      String alias) {
+<span class="nc" id="L1699">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesAliasExportGet(String realm,
+      String alias, @Nullable String format) {
+<span class="nc" id="L1705">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;IdentityProviderRepresentation&gt; adminRealmsRealmIdentityProviderInstancesAliasGet(
+      String realm, String alias) {
+<span class="nc" id="L1711">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmIdentityProviderInstancesAliasManagementPermissionsGet(
+      String realm, String alias) {
+<span class="nc" id="L1717">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmIdentityProviderInstancesAliasManagementPermissionsPut(
+      String realm, String alias,
+      Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L1724">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, IdentityProviderMapperTypeRepresentation&gt;&gt; adminRealmsRealmIdentityProviderInstancesAliasMapperTypesGet(
+      String realm, String alias) {
+<span class="nc" id="L1730">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;IdentityProviderMapperRepresentation&gt; adminRealmsRealmIdentityProviderInstancesAliasMappersGet(
+      String realm, String alias) {
+<span class="nc" id="L1736">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesAliasMappersIdDelete(String realm,
+      String alias, String id) {
+<span class="nc" id="L1742">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;IdentityProviderMapperRepresentation&gt; adminRealmsRealmIdentityProviderInstancesAliasMappersIdGet(
+      String realm, String alias, String id) {
+<span class="nc" id="L1748">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesAliasMappersIdPut(String realm,
+      String alias, String id,
+      Mono&lt;IdentityProviderMapperRepresentation&gt; identityProviderMapperRepresentation) {
+<span class="nc" id="L1755">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesAliasMappersPost(String realm,
+      String alias,
+      Mono&lt;IdentityProviderMapperRepresentation&gt; identityProviderMapperRepresentation) {
+<span class="nc" id="L1762">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesAliasPut(String realm, String alias,
+      Mono&lt;IdentityProviderRepresentation&gt; identityProviderRepresentation) {
+<span class="nc" id="L1768">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Boolean&gt; adminRealmsRealmIdentityProviderInstancesAliasReloadKeysGet(String realm,
+      String alias) {
+<span class="nc" id="L1774">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;IdentityProviderRepresentation&gt; adminRealmsRealmIdentityProviderInstancesGet(
+      String realm, @Nullable Boolean briefRepresentation,
+      @Nullable String capability, @Nullable Integer first,
+      @Nullable Integer max, @Nullable Boolean realmOnly,
+      @Nullable String search, @Nullable String type) {
+<span class="nc" id="L1783">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmIdentityProviderInstancesPost(String realm,
+      Mono&lt;IdentityProviderRepresentation&gt; identityProviderRepresentation) {
+<span class="nc" id="L1789">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Object&gt; adminRealmsRealmIdentityProviderProvidersProviderIdGet(String realm,
+      String providerId) {
+<span class="nc" id="L1795">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;CertificateRepresentation&gt; adminRealmsRealmIdentityProviderUploadCertificatePost(
+      String realm) {
+<span class="nc" id="L1801">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;KeysMetadataRepresentation&gt; adminRealmsRealmKeysGet(String realm) {
+<span class="nc" id="L1806">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;List&lt;String&gt;&gt; adminRealmsRealmLocalizationGet(String realm) {
+<span class="nc" id="L1811">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmLocalizationLocaleDelete(String realm, String locale) {
+<span class="nc" id="L1816">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, String&gt;&gt; adminRealmsRealmLocalizationLocaleGet(String realm,
+      String locale, @Nullable Boolean useRealmDefaultLocaleFallback) {
+<span class="nc" id="L1822">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmLocalizationLocaleKeyDelete(String realm, String key,
+      String locale) {
+<span class="nc" id="L1828">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;String&gt; adminRealmsRealmLocalizationLocaleKeyGet(String realm, String key,
+      String locale) {
+<span class="nc" id="L1834">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmLocalizationLocaleKeyPut(String realm, String key,
+      String locale, Mono&lt;String&gt; body) {
+<span class="nc" id="L1840">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmLocalizationLocalePost(String realm, String locale,
+      Mono&lt;Map&lt;String, String&gt;&gt; requestBody) {
+<span class="nc" id="L1846">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GlobalRequestResult&gt; adminRealmsRealmLogoutAllPost(String realm) {
+<span class="nc" id="L1851">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Long&gt; adminRealmsRealmOrganizationsCountGet(String realm,
+      @Nullable Boolean exact, @Nullable String q, @Nullable String search) {
+<span class="nc" id="L1857">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;OrganizationRepresentation&gt; adminRealmsRealmOrganizationsGet(String realm,
+      Boolean briefRepresentation, @Nullable Boolean exact,
+      @Nullable Integer first, @Nullable Integer max, @Nullable String q,
+      @Nullable String search) {
+<span class="nc" id="L1865">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;OrganizationRepresentation&gt; adminRealmsRealmOrganizationsMembersMemberIdOrganizationsGet(
+      String realm, String memberId, Boolean briefRepresentation) {
+<span class="nc" id="L1871">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdDelete(String realm, String orgId) {
+<span class="nc" id="L1876">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;OrganizationRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGet(String realm,
+      String orgId) {
+<span class="nc" id="L1882">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGet(String realm,
+      String orgId, Boolean briefRepresentation, Boolean exact,
+      @Nullable Integer first, @Nullable Integer max,
+      Boolean populateHierarchy, @Nullable String q, @Nullable String search,
+      Boolean subGroupsCount) {
+<span class="nc" id="L1891">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GroupRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupByPathPathGet(
+      String realm, String orgId, String path, Boolean subGroupsCount) {
+<span class="nc" id="L1897">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdChildrenGet(
+      String realm, String orgId, String groupId, @Nullable Boolean exact,
+      @Nullable Integer first, @Nullable Integer max, @Nullable String search,
+      @Nullable Boolean subGroupsCount) {
+<span class="nc" id="L1905">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdChildrenPost(String realm,
+      String orgId, String groupId, Mono&lt;GroupRepresentation&gt; groupRepresentation) {
+<span class="nc" id="L1911">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdDelete(String realm,
+      String orgId, String groupId) {
+<span class="nc" id="L1917">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GroupRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdGet(String realm,
+      String orgId, String groupId, Boolean subGroupsCount) {
+<span class="nc" id="L1923">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;MemberRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdMembersGet(
+      String realm, String orgId, String groupId, @Nullable Boolean briefRepresentation,
+      @Nullable Integer first, @Nullable Integer max) {
+<span class="nc" id="L1930">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdMembersUserIdDelete(String realm,
+      String orgId, String groupId, String userId) {
+<span class="nc" id="L1936">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdMembersUserIdPut(String realm,
+      String orgId, String groupId, String userId) {
+<span class="nc" id="L1942">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdPut(String realm, String orgId,
+      String groupId, Mono&lt;GroupRepresentation&gt; groupRepresentation) {
+<span class="nc" id="L1948">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsClientsClientIdAvailableGet(
+      String realm, String orgId, String groupId, String clientId) {
+<span class="nc" id="L1954">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsClientsClientIdCompositeGet(
+      String realm, String orgId, String groupId, String clientId,
+      Boolean briefRepresentation) {
+<span class="nc" id="L1961">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsClientsClientIdDelete(
+      String realm, String orgId, String groupId, String clientId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1968">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsClientsClientIdGet(
+      String realm, String orgId, String groupId, String clientId) {
+<span class="nc" id="L1974">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsClientsClientIdPost(
+      String realm, String orgId, String groupId, String clientId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L1981">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MappingsRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsGet(
+      String realm, String orgId, String groupId) {
+<span class="nc" id="L1987">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsRealmAvailableGet(
+      String realm, String orgId, String groupId) {
+<span class="nc" id="L1993">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsRealmCompositeGet(
+      String realm, String orgId, String groupId, Boolean briefRepresentation) {
+<span class="nc" id="L1999">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsRealmDelete(
+      String realm, String orgId, String groupId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2006">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsRealmGet(
+      String realm, String orgId, String groupId) {
+<span class="nc" id="L2012">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsGroupIdRoleMappingsRealmPost(
+      String realm, String orgId, String groupId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2019">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdGroupsPost(String realm, String orgId,
+      Mono&lt;GroupRepresentation&gt; groupRepresentation) {
+<span class="nc" id="L2025">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdIdentityProvidersAliasDelete(String realm,
+      String orgId, String alias) {
+<span class="nc" id="L2031">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;IdentityProviderRepresentation&gt; adminRealmsRealmOrganizationsOrgIdIdentityProvidersAliasGet(
+      String realm, String orgId, String alias) {
+<span class="nc" id="L2037">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmOrganizationsOrgIdIdentityProvidersAliasGroupsGet(
+      String realm, String orgId, String alias, Boolean briefRepresentation,
+      Boolean exact, @Nullable Integer first, @Nullable Integer max,
+      @Nullable String q, @Nullable String search, Boolean subGroupsCount) {
+<span class="nc" id="L2045">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;IdentityProviderRepresentation&gt; adminRealmsRealmOrganizationsOrgIdIdentityProvidersGet(
+      String realm, String orgId) {
+<span class="nc" id="L2051">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdIdentityProvidersPost(String realm,
+      String orgId, Mono&lt;String&gt; body) {
+<span class="nc" id="L2057">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;OrganizationInvitationRepresentation&gt; adminRealmsRealmOrganizationsOrgIdInvitationsGet(
+      String realm, String orgId, @Nullable String email, @Nullable Integer first,
+      @Nullable String firstName, @Nullable String lastName,
+      @Nullable Integer max, @Nullable String search,
+      @Nullable String status) {
+<span class="nc" id="L2066">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdInvitationsIdDelete(String realm,
+      String orgId, String id) {
+<span class="nc" id="L2072">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;OrganizationInvitationRepresentation&gt; adminRealmsRealmOrganizationsOrgIdInvitationsIdGet(
+      String realm, String orgId, String id) {
+<span class="nc" id="L2078">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdInvitationsIdResendPost(String realm,
+      String orgId, String id) {
+<span class="nc" id="L2084">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Long&gt; adminRealmsRealmOrganizationsOrgIdMembersCountGet(String realm, String orgId) {
+<span class="nc" id="L2089">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;MemberRepresentation&gt; adminRealmsRealmOrganizationsOrgIdMembersGet(String realm,
+      String orgId, Boolean briefRepresentation, @Nullable Boolean exact,
+      @Nullable Integer first, @Nullable Integer max,
+      @Nullable String membershipType, @Nullable String search) {
+<span class="nc" id="L2097">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdMembersInviteExistingUserPost(String realm,
+      String orgId, String id) {
+<span class="nc" id="L2103">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdMembersInviteUserPost(String realm,
+      String orgId, String email, String firstName, String lastName) {
+<span class="nc" id="L2109">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdMembersMemberIdDelete(String realm,
+      String orgId, String memberId) {
+<span class="nc" id="L2115">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MemberRepresentation&gt; adminRealmsRealmOrganizationsOrgIdMembersMemberIdGet(
+      String realm, String orgId, String memberId) {
+<span class="nc" id="L2121">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmOrganizationsOrgIdMembersMemberIdGroupsGet(
+      String realm, String orgId, String memberId, Boolean briefRepresentation,
+      @Nullable Integer first, @Nullable Integer max,
+      @Nullable String search) {
+<span class="nc" id="L2129">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;OrganizationRepresentation&gt; adminRealmsRealmOrganizationsOrgIdMembersMemberIdOrganizationsGet(
+      String realm, String orgId, String memberId, Boolean briefRepresentation) {
+<span class="nc" id="L2135">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdMembersPost(String realm, String orgId,
+      Mono&lt;String&gt; body) {
+<span class="nc" id="L2141">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsOrgIdPut(String realm, String orgId,
+      Mono&lt;OrganizationRepresentation&gt; organizationRepresentation) {
+<span class="nc" id="L2147">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmOrganizationsPost(String realm,
+      Mono&lt;OrganizationRepresentation&gt; organizationRepresentation) {
+<span class="nc" id="L2153">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RealmRepresentation&gt; adminRealmsRealmPartialExportPost(String realm,
+      @Nullable Boolean exportClients, @Nullable Boolean exportGroupsAndRoles) {
+<span class="nc" id="L2159">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Object&gt; adminRealmsRealmPartialImportPost(String realm, Mono&lt;Resource&gt; body) {
+<span class="nc" id="L2164">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;GlobalRequestResult&gt; adminRealmsRealmPushRevocationPost(String realm) {
+<span class="nc" id="L2169">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmPut(String realm,
+      Mono&lt;RealmRepresentation&gt; realmRepresentation) {
+<span class="nc" id="L2175">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesByIdRoleIdCompositesClientsClientUuidGet(
+      String realm, String clientUuid, String roleId) {
+<span class="nc" id="L2181">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesByIdRoleIdCompositesDelete(String realm, String roleId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2187">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesByIdRoleIdCompositesGet(String realm,
+      String roleId, @Nullable Integer first, @Nullable Integer max,
+      @Nullable String search) {
+<span class="nc" id="L2194">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesByIdRoleIdCompositesPost(String realm, String roleId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2200">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesByIdRoleIdCompositesRealmGet(String realm,
+      String roleId) {
+<span class="nc" id="L2206">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesByIdRoleIdDelete(String realm, String roleId) {
+<span class="nc" id="L2211">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RoleRepresentation&gt; adminRealmsRealmRolesByIdRoleIdGet(String realm, String roleId) {
+<span class="nc" id="L2216">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmRolesByIdRoleIdManagementPermissionsGet(
+      String realm, String roleId) {
+<span class="nc" id="L2222">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmRolesByIdRoleIdManagementPermissionsPut(
+      String realm, String roleId,
+      Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L2229">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesByIdRoleIdPut(String realm, String roleId,
+      Mono&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2235">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesGet(String realm,
+      Boolean briefRepresentation, @Nullable Integer first,
+      @Nullable Integer max, String search) {
+<span class="nc" id="L2242">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesPost(String realm,
+      Mono&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2248">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesRoleNameCompositesClientsTargetClientUuidGet(
+      String realm, String roleName, String targetClientUuid) {
+<span class="nc" id="L2254">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesRoleNameCompositesDelete(String realm, String roleName,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2260">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesRoleNameCompositesGet(String realm,
+      String roleName) {
+<span class="nc" id="L2266">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesRoleNameCompositesPost(String realm, String roleName,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2272">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmRolesRoleNameCompositesRealmGet(String realm,
+      String roleName) {
+<span class="nc" id="L2278">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesRoleNameDelete(String realm, String roleName) {
+<span class="nc" id="L2283">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;RoleRepresentation&gt; adminRealmsRealmRolesRoleNameGet(String realm, String roleName) {
+<span class="nc" id="L2288">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserRepresentation&gt; adminRealmsRealmRolesRoleNameGroupsGet(String realm,
+      String roleName, @Nullable Integer max, Boolean briefRepresentation,
+      @Nullable Integer first) {
+<span class="nc" id="L2295">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmRolesRoleNameManagementPermissionsGet(
+      String realm, String roleName) {
+<span class="nc" id="L2301">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmRolesRoleNameManagementPermissionsPut(
+      String realm, String roleName,
+      Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L2308">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmRolesRoleNamePut(String realm, String roleName,
+      Mono&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2314">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserRepresentation&gt; adminRealmsRealmRolesRoleNameUsersGet(String realm,
+      String roleName, @Nullable Boolean briefRepresentation, @Nullable Integer first,
+      @Nullable Integer max) {
+<span class="nc" id="L2321">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmSessionsSessionDelete(String realm, String session,
+      Boolean isOffline) {
+<span class="nc" id="L2327">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Integer&gt; adminRealmsRealmUsersCountGet(String realm,
+      @Nullable String createdAfter, @Nullable String createdBefore,
+      @Nullable String email, @Nullable Boolean emailVerified,
+      @Nullable Boolean enabled, @Nullable Boolean exact,
+      @Nullable String firstName, @Nullable String idpAlias,
+      @Nullable String idpUserId, @Nullable String lastName,
+      @Nullable String q, @Nullable String search, @Nullable String username) {
+<span class="nc" id="L2338">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserRepresentation&gt; adminRealmsRealmUsersGet(String realm,
+      @Nullable Boolean briefRepresentation, @Nullable String createdAfter,
+      @Nullable String createdBefore, @Nullable String email,
+      @Nullable Boolean emailVerified, @Nullable Boolean enabled,
+      @Nullable Boolean exact, @Nullable Integer first,
+      @Nullable String firstName, @Nullable String idpAlias,
+      @Nullable String idpUserId, @Nullable String lastName,
+      @Nullable Integer max, @Nullable String q, @Nullable String search,
+      @Nullable String username) {
+<span class="nc" id="L2351">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmUsersManagementPermissionsGet(
+      String realm) {
+<span class="nc" id="L2357">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;ManagementPermissionReference&gt; adminRealmsRealmUsersManagementPermissionsPut(
+      String realm, Mono&lt;ManagementPermissionReference&gt; managementPermissionReference) {
+<span class="nc" id="L2363">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersPost(String realm,
+      Mono&lt;UserRepresentation&gt; userRepresentation) {
+<span class="nc" id="L2369">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;UPConfig&gt; adminRealmsRealmUsersProfileGet(String realm) {
+<span class="nc" id="L2374">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;UserProfileMetadata&gt; adminRealmsRealmUsersProfileMetadataGet(String realm) {
+<span class="nc" id="L2379">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;UPConfig&gt; adminRealmsRealmUsersProfilePut(String realm,
+      Mono&lt;UPConfig&gt; upConfig) {
+<span class="nc" id="L2385">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;List&lt;String&gt;&gt; adminRealmsRealmUsersUserIdConfiguredUserStorageCredentialTypesGet(
+      String realm, String userId) {
+<span class="nc" id="L2391">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdConsentsClientDelete(String realm, String userId,
+      String client) {
+<span class="nc" id="L2397">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmUsersUserIdConsentsGet(String realm,
+      String userId) {
+<span class="nc" id="L2403">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdCredentialsCredentialIdDelete(String realm,
+      String userId, String credentialId) {
+<span class="nc" id="L2409">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdCredentialsCredentialIdMoveAfterNewPreviousCredentialIdPost(
+      String realm, String userId, String credentialId, String newPreviousCredentialId) {
+<span class="nc" id="L2415">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdCredentialsCredentialIdMoveToFirstPost(String realm,
+      String userId, String credentialId) {
+<span class="nc" id="L2421">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdCredentialsCredentialIdUserLabelPut(String realm,
+      String userId, String credentialId, Mono&lt;String&gt; body) {
+<span class="nc" id="L2427">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;CredentialRepresentation&gt; adminRealmsRealmUsersUserIdCredentialsGet(String realm,
+      String userId) {
+<span class="nc" id="L2433">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdDelete(String realm, String userId) {
+<span class="nc" id="L2438">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdDisableCredentialTypesPut(String realm,
+      String userId, Flux&lt;String&gt; requestBody) {
+<span class="nc" id="L2444">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdExecuteActionsEmailPut(String realm, String userId,
+      @Nullable String clientId, @Nullable Integer lifespan,
+      @Nullable String redirectUri, Flux&lt;String&gt; requestBody) {
+<span class="nc" id="L2451">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;FederatedIdentityRepresentation&gt; adminRealmsRealmUsersUserIdFederatedIdentityGet(
+      String realm, String userId) {
+<span class="nc" id="L2457">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdFederatedIdentityProviderDelete(String realm,
+      String userId, String provider) {
+<span class="nc" id="L2463">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdFederatedIdentityProviderPost(String realm,
+      String userId, String provider,
+      Mono&lt;FederatedIdentityRepresentation&gt; federatedIdentityRepresentation) {
+<span class="nc" id="L2470">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;UserRepresentation&gt; adminRealmsRealmUsersUserIdGet(String realm, String userId,
+      @Nullable Boolean userProfileMetadata) {
+<span class="nc" id="L2476">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, Long&gt;&gt; adminRealmsRealmUsersUserIdGroupsCountGet(String realm,
+      String userId, @Nullable String search) {
+<span class="nc" id="L2482">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;GroupRepresentation&gt; adminRealmsRealmUsersUserIdGroupsGet(String realm, String userId,
+      Boolean briefRepresentation, @Nullable Integer first,
+      @Nullable Integer max, @Nullable String search) {
+<span class="nc" id="L2489">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdGroupsGroupIdDelete(String realm, String userId,
+      String groupId) {
+<span class="nc" id="L2495">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdGroupsGroupIdPut(String realm, String userId,
+      String groupId) {
+<span class="nc" id="L2501">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, Object&gt;&gt; adminRealmsRealmUsersUserIdImpersonationPost(String realm,
+      String userId) {
+<span class="nc" id="L2507">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdLogoutPost(String realm, String userId) {
+<span class="nc" id="L2512">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserSessionRepresentation&gt; adminRealmsRealmUsersUserIdOfflineSessionsClientUuidGet(
+      String realm, String userId, String clientUuid) {
+<span class="nc" id="L2518">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdPut(String realm, String userId,
+      Mono&lt;UserRepresentation&gt; userRepresentation) {
+<span class="nc" id="L2524">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdResetPasswordEmailPut(String realm, String userId,
+      @Nullable String clientId, @Nullable String redirectUri) {
+<span class="nc" id="L2530">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdResetPasswordPut(String realm, String userId,
+      Mono&lt;CredentialRepresentation&gt; credentialRepresentation) {
+<span class="nc" id="L2536">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsClientsClientIdAvailableGet(
+      String realm, String userId, String clientId) {
+<span class="nc" id="L2542">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsClientsClientIdCompositeGet(
+      String realm, String userId, String clientId, Boolean briefRepresentation) {
+<span class="nc" id="L2548">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdRoleMappingsClientsClientIdDelete(String realm,
+      String userId, String clientId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2554">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsClientsClientIdGet(
+      String realm, String userId, String clientId) {
+<span class="nc" id="L2560">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdRoleMappingsClientsClientIdPost(String realm,
+      String userId, String clientId, Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2566">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;MappingsRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsGet(String realm,
+      String userId) {
+<span class="nc" id="L2572">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsRealmAvailableGet(
+      String realm, String userId) {
+<span class="nc" id="L2578">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsRealmCompositeGet(
+      String realm, String userId, Boolean briefRepresentation) {
+<span class="nc" id="L2584">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdRoleMappingsRealmDelete(String realm, String userId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2590">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;RoleRepresentation&gt; adminRealmsRealmUsersUserIdRoleMappingsRealmGet(String realm,
+      String userId) {
+<span class="nc" id="L2596">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdRoleMappingsRealmPost(String realm, String userId,
+      Flux&lt;RoleRepresentation&gt; roleRepresentation) {
+<span class="nc" id="L2602">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmUsersUserIdSendVerifyEmailPut(String realm, String userId,
+      @Nullable String clientId, @Nullable Integer lifespan,
+      @Nullable String redirectUri) {
+<span class="nc" id="L2609">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Flux&lt;UserSessionRepresentation&gt; adminRealmsRealmUsersUserIdSessionsGet(String realm,
+      String userId) {
+<span class="nc" id="L2615">    return Flux.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Map&lt;String, List&lt;String&gt;&gt;&gt; adminRealmsRealmUsersUserIdUnmanagedAttributesGet(
+      String realm, String userId) {
+<span class="nc" id="L2621">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;WorkflowRepresentation&gt; adminRealmsRealmWorkflowsGet(String realm,
+      @Nullable Boolean exact, @Nullable Integer first, @Nullable Integer max,
+      @Nullable String search) {
+<span class="nc" id="L2628">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmWorkflowsIdActivateTypeResourceIdPost(String realm, String id,
+      String resourceId, Object type, @Nullable String notBefore) {
+<span class="nc" id="L2634">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmWorkflowsIdDeactivateTypeResourceIdPost(String realm, String id,
+      String resourceId, Object type) {
+<span class="nc" id="L2640">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmWorkflowsIdDelete(String realm, String id) {
+<span class="nc" id="L2645">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;WorkflowRepresentation&gt; adminRealmsRealmWorkflowsIdGet(String realm, String id,
+      @Nullable Boolean includeId) {
+<span class="nc" id="L2651">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmWorkflowsIdPut(String realm, String id,
+      Mono&lt;WorkflowRepresentation&gt; workflowRepresentation) {
+<span class="nc" id="L2657">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmWorkflowsMigratePost(String realm, @Nullable String from,
+      @Nullable String to) {
+<span class="nc" id="L2663">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;Void&gt; adminRealmsRealmWorkflowsPost(String realm,
+      Mono&lt;WorkflowRepresentation&gt; workflowRepresentation) {
+<span class="nc" id="L2669">    return Mono.empty();</span>
+  }
+
+  @Override
+  public Mono&lt;WorkflowRepresentation&gt; adminRealmsRealmWorkflowsScheduledResourceIdGet(String realm,
+      String resourceId) {
+<span class="nc" id="L2675">    return Mono.empty();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

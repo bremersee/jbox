@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"org.bremersee.spring.boot.autoconfigure.minio.app","c":"TestConfiguration","l":"TestConfiguration()","u":"%3Cinit%3E()"}];updateSearchResults();
