@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.security.core;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.io.Serial;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -39,6 +41,11 @@ public class NormalizedUser implements NormalizedPrincipal {
   private final String name;
 
   /**
+   * The preferred username of the user.
+   */
+  private final String preferredUsername;
+
+  /**
    * The first name of the user.
    */
   private final String firstName;
@@ -57,12 +64,19 @@ public class NormalizedUser implements NormalizedPrincipal {
    * Instantiates a new normalized user.
    *
    * @param name the name
+   * @param preferredUsername the preferred username
    * @param firstName the first name
    * @param lastName the last name
    * @param email the email
    */
-  public NormalizedUser(String name, String firstName, String lastName, String email) {
+  public NormalizedUser(
+      String name,
+      String preferredUsername,
+      String firstName,
+      String lastName,
+      String email) {
     this.name = name;
+    this.preferredUsername = isEmpty(preferredUsername) ? name : preferredUsername;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
@@ -71,6 +85,11 @@ public class NormalizedUser implements NormalizedPrincipal {
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public String getPreferredUsername() {
+    return preferredUsername;
   }
 
   @Override
@@ -95,7 +114,7 @@ public class NormalizedUser implements NormalizedPrincipal {
    */
   @NonNull
   public static NormalizedUser empty() {
-    return new NormalizedUser("", null, null, null);
+    return new NormalizedUser("", "", null, null, null);
   }
 
 }

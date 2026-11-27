@@ -21,6 +21,11 @@ public class JsonPathJwtProperties {
   private final String nameJsonPath;
 
   /**
+   * The json path to the username.
+   */
+  private final String preferredNameJsonPath;
+
+  /**
    * The json path to the first name.
    */
   private final String firstNameJsonPath;

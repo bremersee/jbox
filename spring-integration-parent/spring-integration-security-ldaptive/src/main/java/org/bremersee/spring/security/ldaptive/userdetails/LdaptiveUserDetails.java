@@ -45,6 +45,12 @@ public interface LdaptiveUserDetails extends NormalizedPrincipalDetails {
    */
   String getDn();
 
+  @Value.Lazy
+  @Override
+  default String getPreferredUsername() {
+    return getName();
+  }
+
   @Nullable
   @Override
   String getPassword();

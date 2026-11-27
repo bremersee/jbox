@@ -19,7 +19,6 @@ package org.bremersee.spring.security.core;
 import java.util.Collection;
 import java.util.List;
 import org.immutables.value.Value;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,10 +32,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface NormalizedPrincipalDetails extends UserDetails, NormalizedPrincipal {
 
   @Value.Default
-  @NonNull
+  @NullMarked
   @Override
   default Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of();
+  }
+
+  @Value.Lazy
+  @Override
+  default String getPreferredUsername() {
+    return getName();
   }
 
   @Nullable

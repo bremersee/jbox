@@ -37,51 +37,58 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 public @interface WithNormalizedUser {
 
   /**
-   * Name string.
+   * The username.
    *
-   * @return the string
+   * @return the username
    */
   String name() default "junit";
 
   /**
-   * First name string.
+   * The preferred username.
    *
-   * @return the string
+   * @return the preferred username
+   */
+  String preferredUsername() default "tester";
+
+  /**
+   * The first name.
+   *
+   * @return the first name
    */
   String firstName() default "Test";
 
   /**
-   * Last name string.
+   * The last name.
    *
-   * @return the string
+   * @return the last name
    */
   String lastName() default "User";
 
   /**
-   * Email string.
+   * The e-mail.
    *
-   * @return the string
+   * @return the e-mail
    */
   String email() default "junit@localhost";
 
   /**
-   * Password string.
+   * The password.
    *
-   * @return the string
+   * @return the password
    */
   String password() default "secret";
 
   /**
-   * Authorities string [ ].
+   * The granted authorities.
    *
-   * @return the string [ ]
+   * @return the granted authorities
    */
   String[] authorities() default {};
 
   /**
-   * Groups string [ ].
+   * The groups.
    *
-   * @return the string [ ]
+   * @return the groups
    */
   String[] groups() default {};
 
