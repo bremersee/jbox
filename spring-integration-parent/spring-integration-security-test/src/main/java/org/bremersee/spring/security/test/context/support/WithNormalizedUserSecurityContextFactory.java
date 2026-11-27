@@ -64,6 +64,7 @@ final class WithNormalizedUserSecurityContextFactory
     Assert.hasText(name, "Name must not be null or empty.");
     NormalizedUser normalizedUser = new NormalizedUser(
         name,
+        user.preferredUsername(),
         user.firstName(),
         user.lastName(),
         user.email());

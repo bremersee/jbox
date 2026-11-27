@@ -42,6 +42,7 @@ class WithNormalizedUserTest {
    */
   @WithNormalizedUser(
       name = "tester",
+      preferredUsername = "junit",
       firstName = "Anna Livia",
       lastName = "Plurabelle",
       email = "anna@example.org",
@@ -63,6 +64,7 @@ class WithNormalizedUserTest {
         .isEqualTo(true);
     NormalizedPrincipal expectedPrinciple = new NormalizedUser(
         "tester",
+        "junit",
         "Anna Livia",
         "Plurabelle",
         "anna@example.org");

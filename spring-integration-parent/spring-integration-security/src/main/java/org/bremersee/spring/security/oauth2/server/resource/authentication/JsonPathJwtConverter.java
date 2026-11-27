@@ -72,6 +72,7 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
         source,
         new NormalizedUser(
             getUsername(source, parser),
+            getPreferredUsername(source, parser),
             getFirstName(parser),
             getLastName(parser),
             getEmail(parser)),
@@ -180,6 +181,20 @@ public class JsonPathJwtConverter implements Converter<Jwt, AbstractAuthenticati
    */
   protected String getUsername(Jwt source, JsonPathJwtParser parser) {
     return Optional.ofNullable(properties.getNameJsonPath())
+        .filter(jsonPath -> !jsonPath.isBlank())
+        .map(jsonPath -> parser.read(jsonPath, String.class))
+        .orElseGet(source::getSubject);
+  }
+
+  /**
+   * Gets preferred username.
+   *
+   * @param source the source
+   * @param parser the parser
+   * @return the preferred username
+   */
+  protected String getPreferredUsername(Jwt source, JsonPathJwtParser parser) {
+    return Optional.ofNullable(properties.getPreferredNameJsonPath())
         .filter(jsonPath -> !jsonPath.isBlank())
         .map(jsonPath -> parser.read(jsonPath, String.class))
         .orElseGet(source::getSubject);

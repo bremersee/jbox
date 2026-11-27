@@ -28,6 +28,15 @@ import org.jspecify.annotations.Nullable;
 public interface NormalizedPrincipal extends Principal, Serializable {
 
   /**
+   * Gets preferred username.
+   *
+   * @return the preferred username
+   */
+  default String getPreferredUsername() {
+    return getName();
+  }
+
+  /**
    * Gets first name.
    *
    * @return the first name
