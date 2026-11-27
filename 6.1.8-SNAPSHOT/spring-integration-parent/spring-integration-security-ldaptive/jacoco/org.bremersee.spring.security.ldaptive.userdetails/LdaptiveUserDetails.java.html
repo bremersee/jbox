@@ -45,6 +45,12 @@ public interface LdaptiveUserDetails extends NormalizedPrincipalDetails {
    */
   String getDn();
 
+  @Value.Lazy
+  @Override
+  default String getPreferredUsername() {
+<span class="nc" id="L51">    return getName();</span>
+  }
+
   @Nullable
   @Override
   String getPassword();
@@ -72,10 +78,10 @@ public interface LdaptiveUserDetails extends NormalizedPrincipalDetails {
    */
   @NonNull
   static LdaptiveUserDetails empty() {
-<span class="fc" id="L75">    return builder()</span>
-<span class="fc" id="L76">        .username(&quot;&quot;)</span>
-<span class="fc" id="L77">        .dn(&quot;&quot;)</span>
-<span class="fc" id="L78">        .build();</span>
+<span class="fc" id="L81">    return builder()</span>
+<span class="fc" id="L82">        .username(&quot;&quot;)</span>
+<span class="fc" id="L83">        .dn(&quot;&quot;)</span>
+<span class="fc" id="L84">        .build();</span>
   }
 
   /**
@@ -84,7 +90,7 @@ public interface LdaptiveUserDetails extends NormalizedPrincipalDetails {
    * @return the builder
    */
   static Builder builder() {
-<span class="fc" id="L87">    return new Builder();</span>
+<span class="fc" id="L93">    return new Builder();</span>
   }
 
   /**
@@ -96,8 +102,8 @@ public interface LdaptiveUserDetails extends NormalizedPrincipalDetails {
      * Instantiates a new builder.
      */
     public Builder() {
-<span class="fc" id="L99">      super();</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L105">      super();</span>
+<span class="fc" id="L106">    }</span>
 
   }
 

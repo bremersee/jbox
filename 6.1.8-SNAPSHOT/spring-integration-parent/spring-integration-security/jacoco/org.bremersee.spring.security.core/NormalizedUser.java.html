@@ -16,6 +16,8 @@
 
 package org.bremersee.spring.security.core;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.io.Serial;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -39,6 +41,11 @@ public class NormalizedUser implements NormalizedPrincipal {
   private final String name;
 
   /**
+   * The preferred username of the user.
+   */
+  private final String preferredUsername;
+
+  /**
    * The first name of the user.
    */
   private final String firstName;
@@ -57,35 +64,47 @@ public class NormalizedUser implements NormalizedPrincipal {
    * Instantiates a new normalized user.
    *
    * @param name the name
+   * @param preferredUsername the preferred username
    * @param firstName the first name
    * @param lastName the last name
    * @param email the email
    */
-<span class="fc" id="L64">  public NormalizedUser(String name, String firstName, String lastName, String email) {</span>
-<span class="fc" id="L65">    this.name = name;</span>
-<span class="fc" id="L66">    this.firstName = firstName;</span>
-<span class="fc" id="L67">    this.lastName = lastName;</span>
-<span class="fc" id="L68">    this.email = email;</span>
-<span class="fc" id="L69">  }</span>
+  public NormalizedUser(
+      String name,
+      String preferredUsername,
+      String firstName,
+      String lastName,
+<span class="fc" id="L77">      String email) {</span>
+<span class="fc" id="L78">    this.name = name;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    this.preferredUsername = isEmpty(preferredUsername) ? name : preferredUsername;</span>
+<span class="fc" id="L80">    this.firstName = firstName;</span>
+<span class="fc" id="L81">    this.lastName = lastName;</span>
+<span class="fc" id="L82">    this.email = email;</span>
+<span class="fc" id="L83">  }</span>
 
   @Override
   public String getName() {
-<span class="fc" id="L73">    return name;</span>
+<span class="fc" id="L87">    return name;</span>
+  }
+
+  @Override
+  public String getPreferredUsername() {
+<span class="nc" id="L92">    return preferredUsername;</span>
   }
 
   @Override
   public String getFirstName() {
-<span class="fc" id="L78">    return firstName;</span>
+<span class="fc" id="L97">    return firstName;</span>
   }
 
   @Override
   public String getLastName() {
-<span class="fc" id="L83">    return lastName;</span>
+<span class="fc" id="L102">    return lastName;</span>
   }
 
   @Override
   public String getEmail() {
-<span class="fc" id="L88">    return email;</span>
+<span class="fc" id="L107">    return email;</span>
   }
 
   /**
@@ -95,7 +114,7 @@ public class NormalizedUser implements NormalizedPrincipal {
    */
   @NonNull
   public static NormalizedUser empty() {
-<span class="fc" id="L98">    return new NormalizedUser(&quot;&quot;, null, null, null);</span>
+<span class="fc" id="L117">    return new NormalizedUser(&quot;&quot;, &quot;&quot;, null, null, null);</span>
   }
 
 }

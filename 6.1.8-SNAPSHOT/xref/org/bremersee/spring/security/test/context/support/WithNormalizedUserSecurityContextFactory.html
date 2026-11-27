@@ -72,25 +72,26 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      Assert.hasText(name, <span class="jxr_string">"Name must not be null or empty."</span>);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      <a name="NormalizedUser" href="../../../../../../../org/bremersee/spring/security/core/NormalizedUser.html#NormalizedUser">NormalizedUser</a> normalizedUser = <strong class="jxr_keyword">new</strong> <a name="NormalizedUser" href="../../../../../../../org/bremersee/spring/security/core/NormalizedUser.html#NormalizedUser">NormalizedUser</a>(
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          name,
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          user.firstName(),
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          user.lastName(),
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          user.email());
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      Collection&lt;GrantedAuthority&gt; authorities = Arrays.stream(user.authorities())
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          .map(SimpleGrantedAuthority::<strong class="jxr_keyword">new</strong>)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          .collect(Collectors.toSet());
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      Collection&lt;Group&gt; groups = Arrays.stream(user.groups())
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          .map(NormalizedGroup::of)
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          .collect(Collectors.toSet());
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      Authentication authentication = NormalizedUsernamePasswordAuthenticationToken.authenticated(
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          normalizedUser,
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>          user.password(),
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          authorities,
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          groups);
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      SecurityContext context = <strong class="jxr_keyword">this</strong>.securityContextHolderStrategy.createEmptyContext();
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      context.setAuthentication(authentication);
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">return</strong> context;
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>    }
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          user.preferredUsername(),
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          user.firstName(),
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          user.lastName(),
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          user.email());
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      Collection&lt;GrantedAuthority&gt; authorities = Arrays.stream(user.authorities())
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          .map(SimpleGrantedAuthority::<strong class="jxr_keyword">new</strong>)
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          .collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      Collection&lt;Group&gt; groups = Arrays.stream(user.groups())
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          .map(NormalizedGroup::of)
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          .collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      Authentication authentication = NormalizedUsernamePasswordAuthenticationToken.authenticated(
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          normalizedUser,
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          user.password(),
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          authorities,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          groups);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      SecurityContext context = <strong class="jxr_keyword">this</strong>.securityContextHolderStrategy.createEmptyContext();
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      context.setAuthentication(authentication);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">return</strong> context;
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>    }
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2019–2026 <a href="https://bremersee.org">bremersee.org</a></div>

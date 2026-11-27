@@ -72,11 +72,12 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
         source,
         new NormalizedUser(
 <span class="fc" id="L74">            getUsername(source, parser),</span>
-<span class="fc" id="L75">            getFirstName(parser),</span>
-<span class="fc" id="L76">            getLastName(parser),</span>
-<span class="fc" id="L77">            getEmail(parser)),</span>
-<span class="fc" id="L78">        getGrantedAuthorities(parser),</span>
-<span class="fc" id="L79">        getGroups(parser));</span>
+<span class="fc" id="L75">            getPreferredUsername(source, parser),</span>
+<span class="fc" id="L76">            getFirstName(parser),</span>
+<span class="fc" id="L77">            getLastName(parser),</span>
+<span class="fc" id="L78">            getEmail(parser)),</span>
+<span class="fc" id="L79">        getGrantedAuthorities(parser),</span>
+<span class="fc" id="L80">        getGroups(parser));</span>
   }
 
   /**
@@ -86,12 +87,12 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the groups
    */
   protected Collection&lt;? extends GrantedAuthority&gt; getGrantedAuthorities(JsonPathJwtParser parser) {
-<span class="fc bfc" id="L89" title="All 2 branches covered.">    Stream&lt;String&gt; values = properties.isRolesValueList()</span>
-<span class="fc" id="L90">        ? getAuthoritiesFromList(parser)</span>
-<span class="fc" id="L91">        : getAuthoritiesFromValue(parser);</span>
-<span class="fc" id="L92">    Set&lt;GrantedAuthority&gt; authorities = values.map(SimpleGrantedAuthority::new)</span>
-<span class="fc" id="L93">        .collect(Collectors.toSet());</span>
-<span class="fc" id="L94">    return properties.getAuthoritiesMapper().mapAuthorities(authorities);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    Stream&lt;String&gt; values = properties.isRolesValueList()</span>
+<span class="fc" id="L91">        ? getAuthoritiesFromList(parser)</span>
+<span class="fc" id="L92">        : getAuthoritiesFromValue(parser);</span>
+<span class="fc" id="L93">    Set&lt;GrantedAuthority&gt; authorities = values.map(SimpleGrantedAuthority::new)</span>
+<span class="fc" id="L94">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L95">    return properties.getAuthoritiesMapper().mapAuthorities(authorities);</span>
   }
 
   /**
@@ -102,11 +103,11 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    */
   protected Stream&lt;String&gt; getAuthoritiesFromList(JsonPathJwtParser parser) {
     //noinspection unchecked
-<span class="fc" id="L105">    return Stream.ofNullable(properties.getRolesJsonPath())</span>
-<span class="fc" id="L106">        .map(path -&gt; parser.read(path, List.class))</span>
-<span class="fc" id="L107">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L108">        .map(list -&gt; (List&lt;String&gt;) list)</span>
-<span class="fc" id="L109">        .flatMap(Collection::stream);</span>
+<span class="fc" id="L106">    return Stream.ofNullable(properties.getRolesJsonPath())</span>
+<span class="fc" id="L107">        .map(path -&gt; parser.read(path, List.class))</span>
+<span class="fc" id="L108">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L109">        .map(list -&gt; (List&lt;String&gt;) list)</span>
+<span class="fc" id="L110">        .flatMap(Collection::stream);</span>
   }
 
   /**
@@ -116,13 +117,13 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the authorities from value
    */
   protected Stream&lt;String&gt; getAuthoritiesFromValue(JsonPathJwtParser parser) {
-<span class="fc" id="L119">    return Stream.ofNullable(properties.getRolesJsonPath())</span>
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        .filter(path -&gt; !isEmpty(properties.getRolesValueSeparator()))</span>
-<span class="fc" id="L121">        .map(path -&gt; parser.read(path, String.class))</span>
-<span class="fc" id="L122">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L123">        .map(value -&gt; value.split(Pattern.quote(properties.getRolesValueSeparator())))</span>
-<span class="fc" id="L124">        .flatMap(Arrays::stream)</span>
-<span class="fc" id="L125">        .map(String::valueOf);</span>
+<span class="fc" id="L120">    return Stream.ofNullable(properties.getRolesJsonPath())</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        .filter(path -&gt; !isEmpty(properties.getRolesValueSeparator()))</span>
+<span class="fc" id="L122">        .map(path -&gt; parser.read(path, String.class))</span>
+<span class="fc" id="L123">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L124">        .map(value -&gt; value.split(Pattern.quote(properties.getRolesValueSeparator())))</span>
+<span class="fc" id="L125">        .flatMap(Arrays::stream)</span>
+<span class="fc" id="L126">        .map(String::valueOf);</span>
   }
 
   /**
@@ -132,12 +133,12 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the groups
    */
   protected Collection&lt;Group&gt; getGroups(JsonPathJwtParser parser) {
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">    Stream&lt;String&gt; values = properties.isGroupsValueList()</span>
-<span class="nc" id="L136">        ? getGroupsFromList(parser)</span>
-<span class="fc" id="L137">        : getGroupsFromValue(parser);</span>
-<span class="fc" id="L138">    Set&lt;Group&gt; groups = values.map(NormalizedGroup::of)</span>
-<span class="fc" id="L139">        .collect(Collectors.toSet());</span>
-<span class="fc" id="L140">    return properties.getGroupsMapper().mapGroups(groups);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">    Stream&lt;String&gt; values = properties.isGroupsValueList()</span>
+<span class="nc" id="L137">        ? getGroupsFromList(parser)</span>
+<span class="fc" id="L138">        : getGroupsFromValue(parser);</span>
+<span class="fc" id="L139">    Set&lt;Group&gt; groups = values.map(NormalizedGroup::of)</span>
+<span class="fc" id="L140">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L141">    return properties.getGroupsMapper().mapGroups(groups);</span>
   }
 
   /**
@@ -148,11 +149,11 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    */
   protected Stream&lt;String&gt; getGroupsFromList(JsonPathJwtParser parser) {
     //noinspection unchecked
-<span class="nc" id="L151">    return Stream.ofNullable(properties.getGroupsJsonPath())</span>
-<span class="nc" id="L152">        .map(path -&gt; parser.read(path, List.class))</span>
-<span class="nc" id="L153">        .filter(Objects::nonNull)</span>
-<span class="nc" id="L154">        .map(list -&gt; (List&lt;String&gt;) list)</span>
-<span class="nc" id="L155">        .flatMap(Collection::stream);</span>
+<span class="nc" id="L152">    return Stream.ofNullable(properties.getGroupsJsonPath())</span>
+<span class="nc" id="L153">        .map(path -&gt; parser.read(path, List.class))</span>
+<span class="nc" id="L154">        .filter(Objects::nonNull)</span>
+<span class="nc" id="L155">        .map(list -&gt; (List&lt;String&gt;) list)</span>
+<span class="nc" id="L156">        .flatMap(Collection::stream);</span>
   }
 
   /**
@@ -162,13 +163,13 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the groups from value
    */
   protected Stream&lt;String&gt; getGroupsFromValue(JsonPathJwtParser parser) {
-<span class="fc" id="L165">    return Stream.ofNullable(properties.getGroupsJsonPath())</span>
-<span class="pc bnc" id="L166" title="All 2 branches missed.">        .filter(path -&gt; !isEmpty(properties.getGroupsValueSeparator()))</span>
-<span class="pc" id="L167">        .map(path -&gt; parser.read(path, String.class))</span>
-<span class="fc" id="L168">        .filter(Objects::nonNull)</span>
-<span class="pc" id="L169">        .map(value -&gt; value.split(Pattern.quote(properties.getGroupsValueSeparator())))</span>
-<span class="fc" id="L170">        .flatMap(Arrays::stream)</span>
-<span class="fc" id="L171">        .map(String::valueOf);</span>
+<span class="fc" id="L166">    return Stream.ofNullable(properties.getGroupsJsonPath())</span>
+<span class="pc bnc" id="L167" title="All 2 branches missed.">        .filter(path -&gt; !isEmpty(properties.getGroupsValueSeparator()))</span>
+<span class="pc" id="L168">        .map(path -&gt; parser.read(path, String.class))</span>
+<span class="fc" id="L169">        .filter(Objects::nonNull)</span>
+<span class="pc" id="L170">        .map(value -&gt; value.split(Pattern.quote(properties.getGroupsValueSeparator())))</span>
+<span class="fc" id="L171">        .flatMap(Arrays::stream)</span>
+<span class="fc" id="L172">        .map(String::valueOf);</span>
   }
 
   /**
@@ -179,10 +180,24 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the username
    */
   protected String getUsername(Jwt source, JsonPathJwtParser parser) {
-<span class="fc" id="L182">    return Optional.ofNullable(properties.getNameJsonPath())</span>
-<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        .filter(jsonPath -&gt; !jsonPath.isBlank())</span>
-<span class="fc" id="L184">        .map(jsonPath -&gt; parser.read(jsonPath, String.class))</span>
-<span class="fc" id="L185">        .orElseGet(source::getSubject);</span>
+<span class="fc" id="L183">    return Optional.ofNullable(properties.getNameJsonPath())</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        .filter(jsonPath -&gt; !jsonPath.isBlank())</span>
+<span class="fc" id="L185">        .map(jsonPath -&gt; parser.read(jsonPath, String.class))</span>
+<span class="fc" id="L186">        .orElseGet(source::getSubject);</span>
+  }
+
+  /**
+   * Gets preferred username.
+   *
+   * @param source the source
+   * @param parser the parser
+   * @return the preferred username
+   */
+  protected String getPreferredUsername(Jwt source, JsonPathJwtParser parser) {
+<span class="fc" id="L197">    return Optional.ofNullable(properties.getPreferredNameJsonPath())</span>
+<span class="pc bnc" id="L198" title="All 2 branches missed.">        .filter(jsonPath -&gt; !jsonPath.isBlank())</span>
+<span class="pc" id="L199">        .map(jsonPath -&gt; parser.read(jsonPath, String.class))</span>
+<span class="fc" id="L200">        .orElseGet(source::getSubject);</span>
   }
 
   /**
@@ -192,7 +207,7 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the first name
    */
   protected String getFirstName(JsonPathJwtParser parser) {
-<span class="fc" id="L195">    return parser.read(properties.getFirstNameJsonPath(), String.class);</span>
+<span class="fc" id="L210">    return parser.read(properties.getFirstNameJsonPath(), String.class);</span>
   }
 
   /**
@@ -202,7 +217,7 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the last name
    */
   protected String getLastName(JsonPathJwtParser parser) {
-<span class="fc" id="L205">    return parser.read(properties.getLastNameJsonPath(), String.class);</span>
+<span class="fc" id="L220">    return parser.read(properties.getLastNameJsonPath(), String.class);</span>
   }
 
   /**
@@ -212,7 +227,7 @@ public class JsonPathJwtConverter implements Converter&lt;Jwt, AbstractAuthentic
    * @return the email
    */
   protected String getEmail(JsonPathJwtParser parser) {
-<span class="fc" id="L215">    return parser.read(properties.getEmailJsonPath(), String.class);</span>
+<span class="fc" id="L230">    return parser.read(properties.getEmailJsonPath(), String.class);</span>
   }
 
 }

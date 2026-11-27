@@ -64,23 +64,24 @@ import org.springframework.util.Assert;
 <span class="fc" id="L64">    Assert.hasText(name, &quot;Name must not be null or empty.&quot;);</span>
 <span class="fc" id="L65">    NormalizedUser normalizedUser = new NormalizedUser(</span>
         name,
-<span class="fc" id="L67">        user.firstName(),</span>
-<span class="fc" id="L68">        user.lastName(),</span>
-<span class="fc" id="L69">        user.email());</span>
-<span class="fc" id="L70">    Collection&lt;GrantedAuthority&gt; authorities = Arrays.stream(user.authorities())</span>
-<span class="fc" id="L71">        .map(SimpleGrantedAuthority::new)</span>
-<span class="fc" id="L72">        .collect(Collectors.toSet());</span>
-<span class="fc" id="L73">    Collection&lt;Group&gt; groups = Arrays.stream(user.groups())</span>
-<span class="fc" id="L74">        .map(NormalizedGroup::of)</span>
-<span class="fc" id="L75">        .collect(Collectors.toSet());</span>
-<span class="fc" id="L76">    Authentication authentication = NormalizedUsernamePasswordAuthenticationToken.authenticated(</span>
+<span class="fc" id="L67">        user.preferredUsername(),</span>
+<span class="fc" id="L68">        user.firstName(),</span>
+<span class="fc" id="L69">        user.lastName(),</span>
+<span class="fc" id="L70">        user.email());</span>
+<span class="fc" id="L71">    Collection&lt;GrantedAuthority&gt; authorities = Arrays.stream(user.authorities())</span>
+<span class="fc" id="L72">        .map(SimpleGrantedAuthority::new)</span>
+<span class="fc" id="L73">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L74">    Collection&lt;Group&gt; groups = Arrays.stream(user.groups())</span>
+<span class="fc" id="L75">        .map(NormalizedGroup::of)</span>
+<span class="fc" id="L76">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L77">    Authentication authentication = NormalizedUsernamePasswordAuthenticationToken.authenticated(</span>
         normalizedUser,
-<span class="fc" id="L78">        user.password(),</span>
+<span class="fc" id="L79">        user.password(),</span>
         authorities,
         groups);
-<span class="fc" id="L81">    SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();</span>
-<span class="fc" id="L82">    context.setAuthentication(authentication);</span>
-<span class="fc" id="L83">    return context;</span>
+<span class="fc" id="L82">    SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();</span>
+<span class="fc" id="L83">    context.setAuthentication(authentication);</span>
+<span class="fc" id="L84">    return context;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
